@@ -1,7 +1,7 @@
-from datatools.data import *
 import re
 import pytest
 from numpy.testing import assert_array_equal
+from datascience import *
 
 
 #########

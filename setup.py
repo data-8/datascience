@@ -33,16 +33,16 @@ class PyTest(TestCommand):
 
 setup(
   name = 'datascience',
-  packages = ['datascience'],
-  version = '0.1.0',
+  py_modules = ['datascience'],
+  version = '0.1.1',
   install_requires = install_requires,
   tests_require = test_requires,
   cmdclass = {'test': PyTest},
-  description = 'datatools for UC Berkeley\'s DS10 course',
+  description = 'A Python library for introductory data science',
   author = 'John DeNero, David Culler, Alvin Wan',
   author_email = 'ds-instr@berkeley.edu',
   url = 'https://github.com/dsten/datascience',
-  download_url = 'https://github.com/dsten/datascience/archive/0.1.0.zip',
+  download_url = 'https://github.com/dsten/datascience/archive/0.1.1.zip',
   keywords = ['data', 'tools', 'berkeley'],
   classifiers = [],
 )
