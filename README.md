@@ -9,7 +9,7 @@ data tools for UC Berkeley's Data Science 10 course
 Use pip. The latest version is v0.1
 
 ```
-pip install git+git://github.com/alvinwan/datatools.git@v01
+pip install git+git://github.com/alvinwan/datatools.git@v0.1
 ```
 
 If you clone this repository, you may run tests against datatools.
