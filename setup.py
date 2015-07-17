@@ -42,7 +42,7 @@ setup(
   author = 'John DeNero, David Culler, Alvin Wan',
   author_email = 'ds-instr@berkeley.edu',
   url = 'https://github.com/dsten/datascience',
-  download_url = 'https://github.com/github/dsten/tarball/0.1',
+  download_url = 'https://github.com/dsten/datascience/archive/0.1.0.zip',
   keywords = ['data', 'tools', 'berkeley'],
   classifiers = [],
 )
