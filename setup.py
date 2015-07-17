@@ -32,8 +32,8 @@ class PyTest(TestCommand):
 
 
 setup(
-  name = 'datatools',
-  packages = ['datatools'],
+  name = 'datascience',
+  packages = ['datascience'],
   version = '0.1',
   install_requires = install_requires,
   tests_require = test_requires,
@@ -41,8 +41,8 @@ setup(
   description = 'datatools for UC Berkeley\'s DS10 course',
   author = 'John DeNero, David Culler, Alvin Wan',
   author_email = '',
-  url = 'https://github.com/alvinwan/datatools',
-  download_url = 'https://github.com/github/alvinwan/tarball/0.1',
+  url = 'https://github.com/dsten/datascience',
+  download_url = 'https://github.com/github/dsten/tarball/0.1',
   keywords = ['data', 'tools', 'berkeley'],
   classifiers = [],
 )

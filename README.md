@@ -6,13 +6,13 @@ data tools for UC Berkeley's Data Science 10 course
 
 ## Installation
 
-Use pip. The latest version is v0.1
+Use pip.
 
 ```
-pip install git+git://github.com/alvinwan/datatools.git@v01
+pip install datascience
 ```
 
-If you clone this repository, you may run tests against datatools.
+If you clone this repository, you may run tests against datascience.
 
 ```
 python setup.py test
