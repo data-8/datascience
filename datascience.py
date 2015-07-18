@@ -312,35 +312,14 @@ class Table(collections.abc.Mapping):
         del joined[self._unused_label(other_label)] # Remove redundant column
         return joined.move_to_start(column_label).sort(column_label)
 
-    def dist(self, pivot_label, value_label, remove=False):
-        """
-        Distribute the values in a column over new columns defined by items in a pivot column"
-        """
-        dtable = self.copy()
-        pivots = list(np.unique(dtable[pivot_label]))
-        pivot_col_labels = [dtable._unused_label(label + "-" + value_label) for label in pivots]
-        dtable.move_to_end(pivot_label)
-        dtable.move_to_end(value_label)
-        for pivot,label in zip(pivots,pivot_col_labels):
-            dtable[label] = np.where(dtable[pivot_label]==pivot,dtable[value_label],None)
-        if remove:
-            del dtable[pivot_label]
-            del dtable[value_label]
-        return dtable
-
-    def pivot(self, pivot_label, group_label, collect=None, init=0):
-        """
-        Pivot on a column forming new columns of unique values,
-        grouping a column according to the unique entries in all
-        other columns.
+    def pivot(self, pivot_label, group_label, collect=lambda s: s, init=0):
+        """Pivot on a column forming new columns of unique values, grouping a
+        column according to the unique entries in all other columns.
 
         The non-pivot, non-group items form the first columns of the result
         and our sorted, followed by the grouped entries in the pivot columns.
         """
-        if collect:
-            collect = _zero_on_type_error(collect)
-        else:
-            collect = lambda x: x
+        collect = _zero_on_type_error(collect)
 
         sorted = self.sort(pivot_label)
         sorted.move_to_end(pivot_label)
@@ -370,8 +349,6 @@ class Table(collections.abc.Mapping):
             [rows.append((getattr(row, key), k, v)) for k, v in row._asdict().items()
              if k != key and k in column_labels]
         return Table.from_rows(rows, [key, 'column', 'value'])
-
-
 
     def currency(self, column_label_or_labels, symbol):
         if isinstance(column_label_or_labels, str):
@@ -679,7 +656,7 @@ def _zero_on_type_error(column_fn):
 def _distribute(full_labels, labels, values):
     """Distribute values to their labels position in full_labels."""
     row = [[] for x in full_labels]
-    for label, value in zip(labels,values):
+    for label, value in zip(labels, values):
         i = full_labels.index(label)
         row[i].append(value)
     return row
