@@ -246,15 +246,17 @@ class Table(collections.abc.Mapping):
             row_numbers = np.array(row_numbers[::-1])
         return self.take(row_numbers)
 
-    def group(self, column_or_label, collect=None):
+    def group(self, column_or_label, collect=lambda s: s):
         """Group rows by unique values in column_label, aggregating values.
 
         collect -- an optional function applied to the values for each group.
 
-        The grouped column will appear first in the result.
+        The grouped column will appear first in the result table.
         """
-        self = self.sort(column_or_label)
+        self = self._with_columns(self.columns) # Shallow self
+        collect = _zero_on_type_error(collect)
 
+        # Remove column used for grouping
         column = self._get_column(column_or_label)
         if column_or_label in self.column_labels:
             column_label = column_or_label
@@ -262,37 +264,21 @@ class Table(collections.abc.Mapping):
         else:
             column_label = self._unused_label('group')
 
-        if collect:
-            collect = _zero_on_type_error(collect)
-        else:
-            collect = lambda x: x
-
-        values, starts = np.unique(column, return_index=True)
-        ends = np.append(starts[1:], self.num_rows)
-        columns = self.columns
-
-        rows = []
-        for value, start, end in zip(values, starts, ends):
-            row = []
-            for i, column in enumerate(columns):
-                taken = np.take(column, range(start, end))
-                cell = collect(taken)
-                if cell is None: # on invalid collection, group the entries and try to reduce
-                    cell = np.unique(taken)
-                    if len(cell) == 1: cell = cell[0]
-                row.append(cell)
-            rows.append(row)
-
-        labels = []
+        # Generate grouped columns
+        groups = self.index_by(column)
+        keys = sorted(groups.keys())
+        columns, labels = [], []
         for i, label in enumerate(self.column_labels):
             if not collect.__name__.startswith('<'):
                 labels.append(label + ' ' + collect.__name__)
             else:
                 labels.append(label)
+            c = [collect(np.array([row[i] for row in groups[k]])) for k in keys]
+            columns.append(c)
 
-        table = self.from_rows(rows, labels)
+        table = type(self)(columns, labels)
         assert column_label == self._unused_label(column_label)
-        table[column_label] = values
+        table[column_label] = keys
         table.move_to_start(column_label)
         return table
 
