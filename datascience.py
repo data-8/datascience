@@ -282,6 +282,36 @@ class Table(collections.abc.Mapping):
         table.move_to_start(column_label)
         return table
 
+    def join(self, column_label, other, other_label=None):
+        """Generate a table with the columns of self and other, containing rows
+        for all values of a column that appear in both tables. If a join value
+        appears more than once, only its first row will be used.
+
+        If the result is empty, return None.
+        """
+        if self.num_rows == 0 or other.num_rows == 0:
+            return None
+        if not other_label:
+            other_label = column_label
+
+        self_rows = self.index_by(column_label)
+        other_rows = other.index_by(other_label)
+
+        # build set of rows from rows that have values in both tables
+        joined_rows = []
+        for label, rows in self_rows.items():
+            if label in other_rows:
+                row, other_row = rows[0], other_rows[label][0]
+                joined_rows.append(row + other_row)
+        if not joined_rows:
+            return None
+
+        labels = list(self.column_labels)
+        labels += [self._unused_label(s) for s in other.column_labels]
+        joined = Table.from_rows(joined_rows, labels)
+        del joined[self._unused_label(other_label)] # Remove redundant column
+        return joined.move_to_start(column_label).sort(column_label)
+
     def dist(self, pivot_label, value_label, remove=False):
         """
         Distribute the values in a column over new columns defined by items in a pivot column"
@@ -341,36 +371,7 @@ class Table(collections.abc.Mapping):
              if k != key and k in column_labels]
         return Table.from_rows(rows, [key, 'column', 'value'])
 
-    def join(self, column_label, other, other_label=None):
-        """Generate a table with the columns of self and other, containing rows
-        for all values of a column that appear in both tables. If a join value
-        appears more than once, only its first row will be used.
 
-        If the result is empty, return None.
-        """
-        if self.num_rows == 0 or other.num_rows == 0:
-            return None
-        if not other_label:
-            other_label = column_label
-
-        self_rows = self.index_by(column_label)
-        other_rows = other.index_by(other_label)
-
-        # build set of rows from rows that have values in both tables
-        joined_rows = []
-        for label, rows in self_rows.items():
-            if label in other_rows:
-                row, other_row = rows[0], other_rows[label][0]
-                joined_rows.append(row + other_row)
-
-        if not joined_rows:
-            return None
-
-        labels = list(self.column_labels)
-        labels += [self._unused_label(s) for s in other.column_labels]
-        joined = Table.from_rows(joined_rows, labels)
-        del joined[self._unused_label(other_label)] # Remove redundant column
-        return joined.move_to_start(column_label).sort(column_label)
 
     def currency(self, column_label_or_labels, symbol):
         if isinstance(column_label_or_labels, str):
