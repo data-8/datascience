@@ -11,27 +11,27 @@ from datascience import *
 
 @pytest.fixture(scope='function')
 def table():
-	""" Setup alphanumeric table """
+	"""Setup alphanumeric table"""
 	letter, count, points = ['a', 'b', 'c', 'z'], [9, 3, 3, 1], [1, 2, 2, 10]
-	return Table([('letter', letter), ('count', count), ('points', points)])
+	return Table([letter, count, points], ['letter', 'count', 'points'])
 
 
 @pytest.fixture(scope='function')
 def table2():
-	""" Setup second alphanumeric table """
+	"""Setup second alphanumeric table"""
 	points, names = (1, 2, 3), ('one', 'two', 'three')
-	return Table([('points', points), ('names', names)])
+	return Table([points, names], ['points', 'names'])
 
 
 @pytest.fixture(scope='module')
 def t():
-	""" Create one table for entire module """
+	"""Create one table for entire module"""
 	return table()
 
 
 @pytest.fixture(scope='module')
 def u():
-	""" Setup second alphanumeric table """
+	"""Setup second alphanumeric table"""
 	return table2()
 
 
@@ -48,7 +48,7 @@ def assert_equal(string1, string2):
 
 
 def test_basic(t):
-	""" Tests that t works """
+	"""Tests that t works"""
 	assert_equal(t, """\
 	letter | count | points
 	a      | 9     | 1
@@ -64,7 +64,7 @@ def test_basic_points(t):
 
 def test_basic_rows(t):
 	assert_equal(
-		t.rows()[2],
+		t.rows[2],
 	     "Row(letter='c', count=3, points=2)")
 
 
@@ -180,7 +180,7 @@ def test_group_with_func(t):
 
 
 def test_join(t, u):
-	""" Tests that join works, not destructive """
+	"""Tests that join works, not destructive"""
 	test = t.join('points', u)
 	assert_equal(test, """\
 	points | letter | count | totals | names
@@ -213,15 +213,15 @@ def test_join(t, u):
 
 
 def test_move_to_start(table):
-	assert table.column_labels() == ('letter', 'count', 'points')
+	assert table.column_labels == ('letter', 'count', 'points')
 	table.move_to_start('points')
-	assert table.column_labels() == ('points', 'letter', 'count')
+	assert table.column_labels == ('points', 'letter', 'count')
 
 
 def test_move_to_end(table):
-	assert table.column_labels() == ('letter', 'count', 'points')
+	assert table.column_labels == ('letter', 'count', 'points')
 	table.move_to_end('letter')
-	assert table.column_labels() == ('count', 'points', 'letter')
+	assert table.column_labels == ('count', 'points', 'letter')
 
 
 def test_append_row(table):
@@ -258,7 +258,7 @@ def test_append_bad_table(table, u):
 
 
 def test_relabel():
-	table = Table([('points', (1, 2, 3)), ('id', (12345, 123, 5123))])
+	table = Table([(1, 2, 3), (12345, 123, 5123)], ['points', 'id'])
 	table.relabel('id', 'yolo')
 	assert_equal(table, """\
 	points | yolo
@@ -303,32 +303,6 @@ def test_from_rows():
 	""")
 
 
-def test_from_matrix():
-	identity = array([[1, 0], [0, 1]])
-	m = Table.from_matrix(identity, ['x', 'y'])
-	assert_equal(m, """\
-	x    | y
-	1    | 0
-	0    | 1
-	""")
-	assert_equal(m.matrix(), """\
-	[[1 0]
-	 [0 1]]
-	""")
-
-
-def test_from_columns():
-	letters = [('a', 'b', 'c', 'z'), (9, 3, 3, 1), (1, 2, 2, 10)]
-	t = Table.from_columns(letters, ['letter', 'count', 'points'])
-	assert_equal(t, """\
-	letter | count | points
-	a      | 9     | 1
-	b      | 3     | 2
-	c      | 3     | 2
-	z      | 1     | 10
-	""")
-
-
 #############
 # Transform #
 #############
@@ -336,7 +310,7 @@ def test_from_columns():
 
 def test_group_by_tuples():
 	tuples = [(('a', 'b', 'c', 'z'), (1, 2, 2, 10), (1, 2, 2, 10)), (3, 3, 1)]
-	t = Table.from_columns(tuples, ['tuples', 'ints'])
+	t = Table(tuples, ['tuples', 'ints'])
 	assert_equal(t, """\
 	tuples             | ints
 	['a' 'b' 'c' 'z']  | 3
@@ -354,7 +328,7 @@ def test_group_by_tuples():
 
 
 def test_group_no_new_column(table):
-	table.group(table.columns()[1])
+	table.group(table.columns[1])
 	assert_equal(table, """\
 	letter | count | points
 	a      | 9     | 1
