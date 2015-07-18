@@ -52,11 +52,7 @@ class Table(collections.abc.Mapping):
 
     def __setitem__(self, label, values):
         if not isinstance(values, np.ndarray):
-            values = np.array(list(values))
-            if len(values.shape) == 2 and ',' not in values.dtype.str:
-                # Convert to an array of tuples
-                m = values
-                values = m.view(dtype=','.join([m.dtype.str]*m.shape[1])).reshape((-1,))
+            values = np.array(values)
         if hasattr(self, '_num_rows') & self.num_rows > 0:
             assert len(values) == self.num_rows, 'column length mismatch'
         else:
@@ -228,7 +224,7 @@ class Table(collections.abc.Mapping):
 
     def take(self, row_numbers):
         """Return a Table of a sequence of rows taken by number."""
-        columns = [np.take(column, row_numbers) for column in self.columns]
+        columns = [np.take(column, row_numbers, axis=0) for column in self.columns]
         return self._with_columns(columns)
 
     def where(self, column_or_label, value=None):
@@ -244,8 +240,7 @@ class Table(collections.abc.Mapping):
         if distinct:
             _, row_numbers = np.unique(column, return_index=True)
         else:
-            # TODO argsort on multi-dimentsional array creates problems
-            row_numbers = np.argsort(column)
+            row_numbers = np.argsort(column, axis=0)
         assert (row_numbers < self.num_rows).all(), row_numbers
         if decreasing:
             row_numbers = np.array(row_numbers[::-1])

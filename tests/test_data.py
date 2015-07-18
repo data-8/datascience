@@ -207,6 +207,24 @@ def test_join(t, u):
 ########
 
 
+def test_tuples(t, u):
+	"""Tests that different-sized tuples are allowed."""
+	different = [((5, 1), (1, 2, 2, 10)), ('short', 'long')]
+	t = Table(different, ['tuple', 'size'])
+	assert_equal(t, """\
+	tuple         | size
+    (5, 1)        | short
+    (1, 2, 2, 10) | long
+	""")
+	same = [((5, 4, 3, 1), (1, 2, 2, 10)), ('long', 'long')]
+	u = Table(same, ['tuple', 'size'])
+	assert_equal(u, """\
+	tuple         | size
+    [5 4 3 1]     | long
+    [ 1  2  2 10] | long
+	""")
+
+
 ##########
 # Modify #
 ##########
@@ -309,19 +327,19 @@ def test_from_rows():
 
 
 def test_group_by_tuples():
-	tuples = [(('a', 'b', 'c', 'z'), (1, 2, 2, 10), (1, 2, 2, 10)), (3, 3, 1)]
+	tuples = [((5, 1), (1, 2, 2, 10), (1, 2, 2, 10)), (3, 3, 1)]
 	t = Table(tuples, ['tuples', 'ints'])
 	assert_equal(t, """\
-	tuples                | ints
-	('a', 'b', 'c', 'z')  | 3
-	('1', '2', '2', '10') | 3
-	('1', '2', '2', '10') | 1
+	tuples        | ints
+	(5, 1)        | 3
+	(1, 2, 2, 10) | 3
+	(1, 2, 2, 10) | 1
 	""")
 	table = t.group('tuples')
 	assert_equal(table, """\
-	tuples                | ints
-	('1', '2', '2', '10') | [3 1]
-	('a', 'b', 'c', 'z')  | [3]
+	tuples        | ints
+	(1, 2, 2, 10) | [3 1]
+	(5, 1)        | [3]
 	""")
 
 
