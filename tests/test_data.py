@@ -59,7 +59,7 @@ def test_basic(t):
 
 
 def test_basic_points(t):
-	assert_array_equal(t['points'], array([1, 2, 2, 10]))
+	assert_array_equal(t['points'], np.array([1, 2, 2, 10]))
 
 
 def test_basic_rows(t):
@@ -312,18 +312,16 @@ def test_group_by_tuples():
 	tuples = [(('a', 'b', 'c', 'z'), (1, 2, 2, 10), (1, 2, 2, 10)), (3, 3, 1)]
 	t = Table(tuples, ['tuples', 'ints'])
 	assert_equal(t, """\
-	tuples             | ints
-	['a' 'b' 'c' 'z']  | 3
-	['1' '2' '2' '10'] | 3
-	['1' '2' '2' '10'] | 1
+	tuples                | ints
+	('a', 'b', 'c', 'z')  | 3
+	('1', '2', '2', '10') | 3
+	('1', '2', '2', '10') | 1
 	""")
-	assert_equal(t.sort('tuples'), """\
-	""")
-	t.group('tuples')
+	table = t.group('tuples')
 	assert_equal(table, """\
-	tuples             | ints
-	['a' 'b' 'c' 'z']  | 3
-	['1' '2' '2' '10'] | ['3' '1']
+	tuples                | ints
+	('1', '2', '2', '10') | [3 1]
+	('a', 'b', 'c', 'z')  | [3]
 	""")
 
 

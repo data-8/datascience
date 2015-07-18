@@ -52,7 +52,11 @@ class Table(collections.abc.Mapping):
 
     def __setitem__(self, label, values):
         if not isinstance(values, np.ndarray):
-            values = array(list(values))
+            values = np.array(list(values))
+            if len(values.shape) == 2 and ',' not in values.dtype.str:
+                # Convert to an array of tuples
+                m = values
+                values = m.view(dtype=','.join([m.dtype.str]*m.shape[1])).reshape((-1,))
         if hasattr(self, '_num_rows') & self.num_rows > 0:
             assert len(values) == self.num_rows, 'column length mismatch'
         else:
@@ -115,7 +119,7 @@ class Table(collections.abc.Mapping):
 
     def apply(self, fn, column_label):
         """Apply a function to each element of a column."""
-        return array([fn(v) for v in self[column_label]])
+        return [fn(v) for v in self[column_label]]
 
     ##########
     # Modify #
@@ -244,7 +248,7 @@ class Table(collections.abc.Mapping):
             row_numbers = np.argsort(column)
         assert (row_numbers < self.num_rows).all(), row_numbers
         if decreasing:
-            row_numbers = array(row_numbers[::-1])
+            row_numbers = np.array(row_numbers[::-1])
         return self.take(row_numbers)
 
     def group(self, column_or_label, collect=None):
@@ -675,15 +679,6 @@ class Table(collections.abc.Mapping):
 
         def __repr__(self):
             return '{0}({1})'.format(type(self).__name__, repr(self._table))
-
-
-def array(*args, **vargs):
-    """Create an array. String arrays are endowed with string methods."""
-    a = np.array(*args, **vargs)
-    if a.dtype.char in ('S', 'U'):
-        return a.view(np.chararray)
-    else:
-        return a
 
 
 def _zero_on_type_error(column_fn):
