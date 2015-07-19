@@ -54,3 +54,7 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# Idea Projects
+datascience.iml
+.idea/*
