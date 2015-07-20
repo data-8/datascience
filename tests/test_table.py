@@ -277,6 +277,17 @@ def test_tuples(t, u):
 	""")
 
 
+def test_keys_and_values():
+	"""Tests that a table can be constructed from keys and values."""
+	d = {1: 2, 3: 4}
+	t = Table([d.keys(), d.values()], ['keys', 'values'])
+	assert_equal(t, """\
+	keys | values
+	1    | 2
+	3    | 4
+	""")
+
+
 ##########
 # Modify #
 ##########

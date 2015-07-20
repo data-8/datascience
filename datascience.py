@@ -53,9 +53,9 @@ class Table(collections.abc.Mapping):
     def __setitem__(self, label, values):
         if not isinstance(values, np.ndarray):
             # Coerce a single value to a sequence
-            if isinstance(values, str) or not isinstance(values, collections.abc.Sequence):
+            if not _is_non_string_iterable(values):
                 values = [values] * max(self.num_rows, 1)
-            values = np.array(values)
+            values = np.array(tuple(values))
         if hasattr(self, '_num_rows') & self.num_rows > 0:
             assert len(values) == self.num_rows, 'column length mismatch'
         else:
@@ -689,7 +689,7 @@ def _fill_with_zeroes(order, rows, zero=None):
     assert len(rows) > 0
     index = dict(rows)
     if zero is None:
-        array = np.array(list(index.values()))
+        array = np.array(tuple(index.values()))
         if len(array.shape) == 1:
             zero = array.dtype.type()
     return np.array([index.get(k, zero) for k in order])
@@ -697,7 +697,7 @@ def _fill_with_zeroes(order, rows, zero=None):
 
 def _as_labels(column_label_or_labels):
     """Return a list of labels for a label or labels."""
-    if not isinstance(column_label_or_labels, collections.abc.Sequence):
+    if not _is_non_string_iterable(column_label_or_labels):
         return [column_label_or_labels]
     else:
         return column_label_or_labels
@@ -718,3 +718,14 @@ def _collected_label(collect, label):
         return label + ' ' + collect.__name__
     else:
         return label
+
+
+def _is_non_string_iterable(value):
+    """Whether a value is iterable."""
+    if isinstance(value, str):
+        return False
+    if hasattr(value, '__iter__'):
+        return True
+    if isinstance(value, collections.abc.Sequence):
+        return True
+    return False
