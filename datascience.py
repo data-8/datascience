@@ -52,6 +52,9 @@ class Table(collections.abc.Mapping):
 
     def __setitem__(self, label, values):
         if not isinstance(values, np.ndarray):
+            # Coerce a single value to a sequence
+            if isinstance(values, str) or not isinstance(values, collections.abc.Sequence):
+                values = [values] * max(self.num_rows, 1)
             values = np.array(values)
         if hasattr(self, '_num_rows') & self.num_rows > 0:
             assert len(values) == self.num_rows, 'column length mismatch'
@@ -183,7 +186,8 @@ class Table(collections.abc.Mapping):
         if filepath_or_buffer.endswith('.csv') and 'sep' not in vargs:
             vargs['sep'] = ','
         df = pandas.read_table(filepath_or_buffer, *args, **vargs)
-        return Table([(label, df[label].values) for label in df])
+        labels = df.columns
+        return Table([df[label].values for label in labels], labels)
 
     def _with_columns(self, columns):
         """Create a table from a sequence of columns, copying column labels."""
@@ -246,15 +250,17 @@ class Table(collections.abc.Mapping):
             row_numbers = np.array(row_numbers[::-1])
         return self.take(row_numbers)
 
-    def group(self, column_or_label, collect=None):
+    def group(self, column_or_label, collect=lambda s: s):
         """Group rows by unique values in column_label, aggregating values.
 
         collect -- an optional function applied to the values for each group.
 
-        The grouped column will appear first in the result.
+        The grouped column will appear first in the result table.
         """
-        self = self.sort(column_or_label)
+        self = self._with_columns(self.columns) # Shallow self
+        collect = _zero_on_type_error(collect)
 
+        # Remove column used for grouping
         column = self._get_column(column_or_label)
         if column_or_label in self.column_labels:
             column_label = column_or_label
@@ -262,87 +268,66 @@ class Table(collections.abc.Mapping):
         else:
             column_label = self._unused_label('group')
 
-        if collect:
-            collect = _zero_on_type_error(collect)
-        else:
-            collect = lambda x: x
-
-        values, starts = np.unique(column, return_index=True)
-        ends = np.append(starts[1:], self.num_rows)
-        columns = self.columns
-
-        rows = []
-        for value, start, end in zip(values, starts, ends):
-            row = []
-            for i, column in enumerate(columns):
-                taken = np.take(column, range(start, end))
-                cell = collect(taken)
-                if cell is None: # on invalid collection, group the entries and try to reduce
-                    cell = np.unique(taken)
-                    if len(cell) == 1: cell = cell[0]
-                row.append(cell)
-            rows.append(row)
-
-        labels = []
+        # Generate grouped columns
+        groups = self.index_by(column)
+        keys = sorted(groups.keys())
+        columns, labels = [], []
         for i, label in enumerate(self.column_labels):
-            if not collect.__name__.startswith('<'):
-                labels.append(label + ' ' + collect.__name__)
-            else:
-                labels.append(label)
+            labels.append(_collected_label(collect, label))
+            c = [collect(np.array([row[i] for row in groups[k]])) for k in keys]
+            columns.append(c)
 
-        table = self.from_rows(rows, labels)
+        grouped = type(self)(columns, labels)
         assert column_label == self._unused_label(column_label)
-        table[column_label] = values
-        table.move_to_start(column_label)
-        return table
+        grouped[column_label] = keys
+        grouped.move_to_start(column_label)
+        return grouped
 
-    def dist(self, pivot_label, value_label, remove=False):
-        """
-        Distribute the values in a column over new columns defined by items in a pivot column"
-        """
-        dtable = self.copy()
-        pivots = list(np.unique(dtable[pivot_label]))
-        pivot_col_labels = [dtable._unused_label(label + "-" + value_label) for label in pivots]
-        dtable.move_to_end(pivot_label)
-        dtable.move_to_end(value_label)
-        for pivot,label in zip(pivots,pivot_col_labels):
-            dtable[label] = np.where(dtable[pivot_label]==pivot,dtable[value_label],None)
-        if remove:
-            del dtable[pivot_label]
-            del dtable[value_label]
-        return dtable
+    def groups(self, column_labels, collect=lambda s: s):
+        """Group rows by multiple columns, aggregating values."""
+        collect = _zero_on_type_error(collect)
+        columns = []
+        for label in column_labels:
+            assert label in self.column_labels
+            columns.append(self._get_column(label))
+        grouped = self.group(list(zip(*columns)))
+        grouped._columns.popitem(last=False) # Discard the column of tuples
 
-    def pivot(self, pivot_label, group_label, collect=None, init=0):
-        """
-        Pivot on a column forming new columns of unique values,
-        grouping a column according to the unique entries in all
-        other columns.
+        # Flatten grouping values and move them to front
+        for label in column_labels[::-1]:
+            grouped[label] = grouped.apply(_assert_same, label)
+            grouped.move_to_start(label)
 
-        The non-pivot, non-group items form the first columns of the result
-        and our sorted, followed by the grouped entries in the pivot columns.
-        """
-        if collect:
-            collect = _zero_on_type_error(collect)
-        else:
-            collect = lambda x: x
+        # Aggregate other values
+        for label in grouped.column_labels:
+            if label in column_labels:
+                continue
+            column = [collect(v) for v in grouped[label]]
+            del grouped[label]
+            grouped[_collected_label(collect, label)] = column
 
-        sorted = self.sort(pivot_label)
-        sorted.move_to_end(pivot_label)
-        sorted.move_to_end(group_label)
-        fixed_column_labels = list(sorted.column_labels[0:-2])
-        for column_label in reversed(fixed_column_labels):
-            sorted = sorted.sort(column_label)
-        pivots = list(np.unique(sorted[pivot_label]))
-        pivot_col_labels = [sorted._unused_label(label + "-" + group_label) for label in pivots]
-        labels = fixed_column_labels + pivot_col_labels
-        fixed_rows, starts = sorted._starts(fixed_column_labels)
-        ends = np.append(starts[1:], self.num_rows)
-        rows = []
-        for fixed_row, start, end in zip(fixed_rows, starts, ends):
-            pivot_row = _distribute(pivots, sorted[pivot_label][start:end],sorted[group_label][start:end])
-            pivot_row = [collect(group) if len(group) > 1 else (group[0] if len(group)==1 else init) for group in pivot_row]
-            rows.append(fixed_row + pivot_row)
-        return Table.from_rows(rows, labels)
+        return grouped
+
+    def pivot(self, columns, rows, values, collect=lambda s:s, zero=None):
+        """Generate a table with a column for rows and a column for each
+        unique value in columns. Each row aggregates over the values that
+        match both row and column.
+
+        columns, rows, values -- column labels in self
+        collect -- aggregation function over values
+        zero -- zero value for non-existent row-column combinations
+        """
+        selected = self.select([columns, rows, values])
+        grouped = selected.groups([columns, rows], collect)
+        row_values = np.unique(self._get_column(rows))
+        pivoted = Table([row_values], [rows])
+        by_columns = grouped.index_by(columns)
+        for label in sorted(by_columns):
+            pairs = [t[1:] for t in by_columns[label]] # Discard column value
+            column = _fill_with_zeroes(row_values, pairs, zero)
+            pivot = self._unused_label(str(label) + ' ' + values)
+            pivoted[pivot] = column
+        return pivoted
 
     def stack(self, key, column_labels=None):
         """
@@ -376,7 +361,6 @@ class Table(collections.abc.Mapping):
             if label in other_rows:
                 row, other_row = rows[0], other_rows[label][0]
                 joined_rows.append(row + other_row)
-
         if not joined_rows:
             return None
 
@@ -487,46 +471,54 @@ class Table(collections.abc.Mapping):
         if not max_rows or max_rows > self.num_rows:
             max_rows = self.num_rows
         omitted = max(0, self.num_rows - max_rows)
-        lines =  []
-        lines.append((0, '<table border="1" class="dataframe">'))
-        lines.append((1, '<thead>'))
-        lines.append((2, '<tr>'))
         labels = self.column_labels
-        lines.append((3, ' '.join('<th>' + label + '</th>' for label in labels)))
-        lines.append((2, '</tr>'))
-        lines.append((1, '</thead>'))
-        lines.append((1, '<tbody>'))
+        lines = [
+            (0, '<table border="1" class="dataframe">'),
+            (1, '<thead>'),
+            (2, '<tr>'),
+            (3, ' '.join('<th>' + label + '</th>' for label in labels)),
+            (2, '</tr>'),
+            (1, '</thead>'),
+            (1, '<tbody>'),
+        ]
         fmts = [self._formats.get(k, self.format_column(k, v[:max_rows])) for
             k, v in self._columns.items()]
         for row in itertools.islice(self.rows, max_rows):
-            lines.append((2, '<tr>'))
-            lines.append((3, ' '.join('<td>' + fmt(v) + '</td>' for
-                v, fmt in zip(row, fmts))))
-            lines.append((2, '</tr>'))
-            lines.append((1, '</tbody>'))
+            lines += [
+                (2, '<tr>'),
+                (3, ' '.join('<td>' + fmt(v) + '</td>' for v, fmt in zip(row, fmts))),
+                (2, '</tr>'),
+                (1, '</tbody>'),
+            ]
         lines.append((0, '</table>'))
         if omitted:
             lines.append((0, '<p>... ({} rows omitted)</p'.format(omitted)))
         return '\n'.join(4 * indent * ' ' + text for indent, text in lines)
 
     @classmethod
-    def format_column(cls, label, column):
+    def format_column(cls, label, column, min_width=min_val_width, max_width=max_val_width, etc=' ...'):
         """Return a formatting function that pads values."""
-        val_width = 0 if len(column) == 0 else max(len(str(v)) for v in column)
-        val_width = min(val_width, cls.max_val_width)
-        width = max(val_width, len(str(label)), cls.min_val_width)
+        val_width = 0 if len(column) == 0 else max(len(cls.format_value(v)) for v in column)
+        val_width = min(val_width, max_width)
+        width = max(val_width, len(str(label)), min_width, len(etc))
         def pad(value):
-            try:
-                assert not isinstance(value, (bool, np.bool_))
-                raw = '{:G}'.format(value)
-            except (ValueError, TypeError, AssertionError):
-                raw = str(value)
+            raw = cls.format_value(value)
             if len(raw) > width:
-                prefix = raw[:width-4] + ' ...'
+                prefix = raw[:width-len(etc)] + etc
             else:
                 prefix = raw
             return prefix.ljust(width)
         return pad
+
+    @staticmethod
+    def format_value(value):
+        """Pretty-print an arbitrary value."""
+        if isinstance(value, (bool, np.bool_)):
+            return str(value)
+        try:
+            return '{:G}'.format(value)
+        except (ValueError, TypeError):
+            return str(value)
 
     def matrix(self):
         """Return a 2-D array with the contents of the table."""
@@ -689,13 +681,19 @@ def _zero_on_type_error(column_fn):
                 raise
     return wrapped
 
-def _distribute(full_labels, labels, values):
-    """Distribute values to their labels position in full_labels."""
-    row = [[] for x in full_labels]
-    for label, value in zip(labels,values):
-        i = full_labels.index(label)
-        row[i].append(value)
-    return row
+
+def _fill_with_zeroes(order, rows, zero=None):
+    """Return a column of the index-1 elements in rows, where the index
+    of each value is determined by matching index-0 to an element of keys.
+    """
+    assert len(rows) > 0
+    index = dict(rows)
+    if zero is None:
+        array = np.array(list(index.values()))
+        if len(array.shape) == 1:
+            zero = array.dtype.type()
+    return np.array([index.get(k, zero) for k in order])
+
 
 def _as_labels(column_label_or_labels):
     """Return a list of labels for a label or labels."""
@@ -703,3 +701,20 @@ def _as_labels(column_label_or_labels):
         return [column_label_or_labels]
     else:
         return column_label_or_labels
+
+
+def _assert_same(values):
+    """Assert that all values are identical and return the unique value."""
+    assert len(values) > 0
+    first, rest = values[0], values[1:]
+    for v in rest:
+        assert v == first
+    return first
+
+
+def _collected_label(collect, label):
+    """Label of a collected column."""
+    if not collect.__name__.startswith('<'):
+        return label + ' ' + collect.__name__
+    else:
+        return label
