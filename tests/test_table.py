@@ -179,6 +179,32 @@ def test_group_with_func(t):
 	""")
 
 
+def test_groups(t):
+	t = t.copy()
+	t.append(('e', 12, 1, 12))
+	t['early'] = t['letter'] < 'd'
+	test = t.groups(['points', 'early'])
+	assert_equal(test, """\
+    points | early | letter    | count | totals
+    1      | False | ['e']     | [12]  | [12]
+    1      | True  | ['a']     | [9]   | [9]
+    2      | True  | ['b' 'c'] | [3 3] | [6 6]
+    10     | False | ['z']     | [1]   | [10]
+	""")
+
+def test_groups_collect(t):
+	t = t.copy()
+	t.append(('e', 12, 1, 12))
+	t['early'] = t['letter'] < 'd'
+	test = t.select(['points', 'early', 'count']).groups(['points', 'early'], sum)
+	assert_equal(test, """\
+    points | early | count sum
+    1      | False | 12
+    1      | True  | 9
+    2      | True  | 6
+    10     | False | 1
+	""")
+
 def test_join(t, u):
 	"""Tests that join works, not destructive"""
 	test = t.join('points', u)
@@ -199,6 +225,32 @@ def test_join(t, u):
 	b      | 3     | 2      | 6
 	c      | 3     | 2      | 6
 	z      | 1     | 10     | 10
+	""")
+
+
+def test_pivot(t):
+	t = t.copy()
+	t.append(('e', 12, 1, 12))
+	t['early'] = t['letter'] < 'd'
+	t['exists'] = 1
+	test = t.pivot('points', 'early', 'exists')
+	assert_equal(test, """\
+    early | 1 exists | 2 exists | 10 exists
+    False | [1]      | None     | [1]
+    True  | [1]      | [1 1]    | None
+	""")
+
+
+def test_pivot_sum(t):
+	t = t.copy()
+	t.append(('e', 12, 1, 12))
+	t['early'] = t['letter'] < 'd'
+	t['exists'] = 1
+	test = t.pivot('points', 'early', 'exists', sum)
+	assert_equal(test, """\
+	early | 1 exists | 2 exists | 10 exists
+    False | 1        | 0        | 1
+    True  | 1        | 2        | 0
 	""")
 
 
