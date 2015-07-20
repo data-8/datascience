@@ -308,25 +308,25 @@ class Table(collections.abc.Mapping):
 
         return grouped
 
-    def pivot(self, columns_label, rows_label, values_label, collect=lambda s:s, zero=None):
-        """Generate a table with a column for rows_label and a column for each
-        unique value in columns_label. Each row aggregates over the values that
+    def pivot(self, columns, rows, values, collect=lambda s:s, zero=None):
+        """Generate a table with a column for rows and a column for each
+        unique value in columns. Each row aggregates over the values that
         match both row and column.
 
-        columns_label, rows_label, values_label -- column labels in self
+        columns, rows, values -- column labels in self
         collect -- aggregation function over values
         zero -- zero value for non-existent row-column combinations
         """
-        selected = self.select([columns_label, rows_label, values_label])
-        grouped = selected.groups([columns_label, rows_label], collect)
-        row_values = np.unique(self._get_column(rows_label))
-        pivoted = Table([row_values], [rows_label])
-        by_columns = grouped.index_by(columns_label)
+        selected = self.select([columns, rows, values])
+        grouped = selected.groups([columns, rows], collect)
+        row_values = np.unique(self._get_column(rows))
+        pivoted = Table([row_values], [rows])
+        by_columns = grouped.index_by(columns)
         for label in sorted(by_columns):
-            rows = [t[1:] for t in by_columns[label]] # Discard column value
-            column = _fill_with_zeroes(row_values, rows, zero)
-            pivot_label = self._unused_label(str(label) + ' ' + values_label)
-            pivoted[pivot_label] = column
+            pairs = [t[1:] for t in by_columns[label]] # Discard column value
+            column = _fill_with_zeroes(row_values, pairs, zero)
+            pivot = self._unused_label(str(label) + ' ' + values)
+            pivoted[pivot] = column
         return pivoted
 
     def stack(self, key, column_labels=None):
