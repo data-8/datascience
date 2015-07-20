@@ -451,23 +451,25 @@ class Table(collections.abc.Mapping):
         if not max_rows or max_rows > self.num_rows:
             max_rows = self.num_rows
         omitted = max(0, self.num_rows - max_rows)
-        lines =  []
-        lines.append((0, '<table border="1" class="dataframe">'))
-        lines.append((1, '<thead>'))
-        lines.append((2, '<tr>'))
         labels = self.column_labels
-        lines.append((3, ' '.join('<th>' + label + '</th>' for label in labels)))
-        lines.append((2, '</tr>'))
-        lines.append((1, '</thead>'))
-        lines.append((1, '<tbody>'))
+        lines = [
+            (0, '<table border="1" class="dataframe">'),
+            (1, '<thead>'),
+            (2, '<tr>'),
+            (3, ' '.join('<th>' + label + '</th>' for label in labels)),
+            (2, '</tr>'),
+            (1, '</thead>'),
+            (1, '<tbody>'),
+        ]
         fmts = [self._formats.get(k, self.format_column(k, v[:max_rows])) for
             k, v in self._columns.items()]
         for row in itertools.islice(self.rows, max_rows):
-            lines.append((2, '<tr>'))
-            lines.append((3, ' '.join('<td>' + fmt(v) + '</td>' for
-                v, fmt in zip(row, fmts))))
-            lines.append((2, '</tr>'))
-            lines.append((1, '</tbody>'))
+            lines += [
+                (2, '<tr>'),
+                (3, ' '.join('<td>' + fmt(v) + '</td>' for v, fmt in zip(row, fmts))),
+                (2, '</tr>'),
+                (1, '</tbody>'),
+            ]
         lines.append((0, '</table>'))
         if omitted:
             lines.append((0, '<p>... ({} rows omitted)</p'.format(omitted)))
