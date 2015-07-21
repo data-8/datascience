@@ -1,4 +1,4 @@
-from .loader import init_js
-from .maps import draw_map
+from .loader import *
+from .maps import *
 
 init_js()

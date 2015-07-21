@@ -1,2 +1,2 @@
-from .table import Table
-from .maps import maps
+from .table import *
+from .maps import *
