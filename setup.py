@@ -33,8 +33,9 @@ class PyTest(TestCommand):
 
 setup(
   name = 'datascience',
-  py_modules = ['datascience', 'polymaps'],
-  version = '0.1.1',
+  py_modules = ['datascience'],
+  packages = ['polymaps'],
+  version = '0.2.1',
   install_requires = install_requires,
   tests_require = test_requires,
   cmdclass = {'test': PyTest},
@@ -42,7 +43,7 @@ setup(
   author = 'John DeNero, David Culler, Alvin Wan',
   author_email = 'ds-instr@berkeley.edu',
   url = 'https://github.com/dsten/datascience',
-  download_url = 'https://github.com/dsten/datascience/archive/0.1.1.zip',
+  download_url = 'https://github.com/dsten/datascience/archive/0.2.0.zip',
   keywords = ['data', 'tools', 'berkeley'],
   classifiers = [],
 )
