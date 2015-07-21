@@ -704,7 +704,6 @@ class Table(collections.abc.Mapping):
         def __repr__(self):
             return '{0}({1})'.format(type(self).__name__, repr(self._table))
 
-
 def array(*args, **vargs):
     """Create an array. String arrays are endowed with string methods."""
     a = np.array(*args, **vargs)
