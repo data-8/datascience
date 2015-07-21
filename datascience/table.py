@@ -667,7 +667,6 @@ class Table(collections.abc.Mapping):
         def __repr__(self):
             return '{0}({1})'.format(type(self).__name__, repr(self._table))
 
-
 def _zero_on_type_error(column_fn):
     """Wrap a function on an np.ndarray to return 0 on a type error."""
     @functools.wraps(column_fn)
