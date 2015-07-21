@@ -34,6 +34,7 @@ class PyTest(TestCommand):
 setup(
   name = 'datascience',
   py_modules = ['datascience'],
+  packages = ['polymaps'],
   version = '0.2.1',
   install_requires = install_requires,
   tests_require = test_requires,
