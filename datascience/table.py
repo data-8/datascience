@@ -7,8 +7,8 @@ import itertools
 import operator
 
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
+import pandas
 import IPython
 
 
@@ -27,20 +27,24 @@ class Table(collections.abc.Mapping):
     z      | 1     | 10
     """
 
-    def __init__(self, columns=None):
+    def __init__(self, columns=None, labels=None):
         """Create an table.
 
-        columns -- a dictionary of sequence keyed by column label OR
-                   a sequence of (label, sequence) pairs,
-                   with all columns of equal length
+        columns -- a dictionary of sequence keyed by label [labels == None] OR
+                   a sequence of sequences [labels != None]
+        labels  -- a sequence of labels; columns must not contain labels
         """
         self._columns = collections.OrderedDict()
         self._formats = dict()
         if not columns:
-            columns = []
-        if hasattr(columns, 'items'):
-            columns = columns.items()
-        for label, column in columns:
+            assert not labels, 'labels but no columns'
+            columns, labels = [], []
+        if isinstance(columns, collections.abc.Mapping):
+            assert labels is None, 'labels must be None if columns has labels'
+            columns, labels = columns.values(), columns.keys()
+        assert labels is not None, 'Labels are required'
+        assert len(labels) == len(columns), 'label/column number mismatch'
+        for column, label in zip(columns, labels):
             self[label] = column
 
     def __getitem__(self, label):
@@ -48,7 +52,10 @@ class Table(collections.abc.Mapping):
 
     def __setitem__(self, label, values):
         if not isinstance(values, np.ndarray):
-            values = array(list(values))
+            # Coerce a single value to a sequence
+            if not _is_non_string_iterable(values):
+                values = [values] * max(self.num_rows, 1)
+            values = np.array(tuple(values))
         if hasattr(self, '_num_rows') & self.num_rows > 0:
             assert len(values) == self.num_rows, 'column length mismatch'
         else:
@@ -64,21 +71,21 @@ class Table(collections.abc.Mapping):
         return len(self._columns)
 
     def __iter__(self):
-        return iter(self.column_labels())
+        return iter(self.column_labels)
 
     def __getattr__(self, attr):
         """Return a method that applies to all columns or a table of attributes."""
-        if self.columns() and all(hasattr(c, attr) for c in self.columns()):
-            attrs = [getattr(c, attr) for c in self.columns()]
+        if self.columns and all(hasattr(c, attr) for c in self.columns):
+            attrs = [getattr(c, attr) for c in self.columns]
             if all(callable(attr) for attr in attrs):
                 @functools.wraps(attrs[0])
                 def method(*args, **vargs):
                     """Create a table from the results of calling attrs."""
                     columns = [attr(*args, **vargs) for attr in attrs]
-                    return self.with_columns(columns)
+                    return self._with_columns(columns)
                 return method
             else:
-                return self.with_columns([[attr] for attr in attrs])
+                return self._with_columns([[attr] for attr in attrs])
         else:
             msg = "'{0}' object has no attribute '{1}'".format(type(self).__name__, attr)
             raise AttributeError(msg)
@@ -91,24 +98,27 @@ class Table(collections.abc.Mapping):
         else:
             return 0
 
+    @property
     def rows(self):
         """Return a view of all rows."""
         return self.Rows(self)
 
+    @property
     def column_labels(self):
         """Return a tuple of column labels."""
         return tuple(self._columns.keys())
 
+    @property
     def columns(self):
         return tuple(self._columns.values())
 
     def column_index(self, column_label):
         """Return the index of a column."""
-        return self.column_labels().index(column_label)
+        return self.column_labels.index(column_label)
 
     def apply(self, fn, column_label):
         """Apply a function to each element of a column."""
-        return array([fn(v) for v in self[column_label]])
+        return [fn(v) for v in self[column_label]]
 
     ##########
     # Modify #
@@ -131,13 +141,13 @@ class Table(collections.abc.Mapping):
         return self
 
     def append(self, row_or_table):
-        """Append a row or the rows of a table with identical column names."""
+        """Append a row or all rows of a table with identical column names."""
         if not row_or_table:
             return
         if isinstance(row_or_table, Table):
             table = row_or_table
-            assert table.column_labels() == self.column_labels()
-            for row in list(row_or_table.rows()):
+            assert table.column_labels == self.column_labels
+            for row in list(row_or_table.rows):
                 self.append(row)
         else:
             row = row_or_table
@@ -163,26 +173,7 @@ class Table(collections.abc.Mapping):
     @classmethod
     def from_rows(cls, rows, column_labels=None):
         """Create a table from a sequence of fixed-length rows."""
-        return Table.from_columns(list(zip(*rows)), column_labels)
-
-    @classmethod
-    def from_columns(cls, columns, column_labels=None):
-        """Create a table from a sequence of fixed-length columns."""
-        assert columns and len(columns[0]), 'Tables cannot have empty columns'
-        if not column_labels:
-            column_labels = ['column_' + str(i) for i in range(len(columns))]
-        assert len(column_labels) == len(columns), "columns do not match column_labels"
-        return cls(list(zip(column_labels, columns)))
-
-    @staticmethod
-    def from_matrix(numpy_matrix, columns_labels=None):
-        """Creates table from a 2-d array (matrix)."""
-        return Table.from_columns(numpy_matrix.tolist(), columns_labels)
-
-    @classmethod
-    def from_labels(cls, column_labels):
-        """Create and empty table of labeled columns that can be filled by row with append."""
-        return cls([(label, []) for label in column_labels])
+        return Table(list(zip(*rows)), column_labels)
 
     @classmethod
     def read_table(cls, filepath_or_buffer, *args, **vargs):
@@ -194,19 +185,14 @@ class Table(collections.abc.Mapping):
         """
         if filepath_or_buffer.endswith('.csv') and 'sep' not in vargs:
             vargs['sep'] = ','
-        df = pd.read_table(filepath_or_buffer, *args, **vargs)
-        return Table([(label, df[label].values) for label in df])
+        df = pandas.read_table(filepath_or_buffer, *args, **vargs)
+        labels = df.columns
+        return Table([df[label].values for label in labels], labels)
 
-    def with_rows(self, rows):
-        """Create a table from a sequence of rows, copying column labels."""
-        table = self.from_rows(rows, self.column_labels())
-        table._formats = self._formats.copy()
-        return table
-
-    def with_columns(self, columns):
+    def _with_columns(self, columns):
         """Create a table from a sequence of columns, copying column labels."""
         table = Table()
-        for label, column in zip(self.column_labels(), columns):
+        for label, column in zip(self.column_labels, columns):
             self._add_column_and_format(table, label, column)
         return table
 
@@ -223,37 +209,27 @@ class Table(collections.abc.Mapping):
     def copy(self):
         """Return a copy of a Table."""
         table = Table()
-        for label in self.column_labels():
+        for label in self.column_labels:
             self._add_column_and_format(table, label, np.copy(self[label]))
         return table
 
     def select(self, column_label_or_labels):
-        """Return a Table of selected column or sequence of columns by label."""
-        if isinstance(column_label_or_labels, str):
-            column_labels = [column_label_or_labels]
-        else:
-            column_labels = column_label_or_labels
+        """Return a Table with selected column or columns by label."""
+        column_labels = _as_labels(column_label_or_labels)
         table = Table()
         for label in column_labels:
             self._add_column_and_format(table, label, np.copy(self[label]))
         return table
 
     def drop(self, column_label_or_labels):
-        """Return a Table of selected column or sequence of columns by label."""
-        if isinstance(column_label_or_labels, str):
-            column_labels = [column_label_or_labels]
-        else:
-            column_labels = column_label_or_labels
-        table = Table()
-        for label in self.column_labels() :
-            if label not in column_labels:
-                self._add_column_and_format(table, label, np.copy(self[label]))
-        return table
+        """Return a Table with only columns other than selected label or labels."""
+        exclude = _as_labels(column_label_or_labels)
+        return self.select([c for c in self.column_labels if c not in exclude])
 
     def take(self, row_numbers):
         """Return a Table of a sequence of rows taken by number."""
-        columns = [np.take(column, row_numbers) for column in self.columns()]
-        return self.with_columns(columns)
+        columns = [np.take(column, row_numbers, axis=0) for column in self.columns]
+        return self._with_columns(columns)
 
     def where(self, column_or_label, value=None):
         """Return a Table of rows for which the column is value or a non-zero value."""
@@ -268,118 +244,98 @@ class Table(collections.abc.Mapping):
         if distinct:
             _, row_numbers = np.unique(column, return_index=True)
         else:
-            # TODO argsort on multi-dimentsional array creates problems
-            row_numbers = np.argsort(column)
+            row_numbers = np.argsort(column, axis=0)
         assert (row_numbers < self.num_rows).all(), row_numbers
         if decreasing:
-            row_numbers = array(row_numbers[::-1])
+            row_numbers = np.array(row_numbers[::-1])
         return self.take(row_numbers)
 
-    def group(self, column_or_label, collect=None):
+    def group(self, column_or_label, collect=lambda s: s):
         """Group rows by unique values in column_label, aggregating values.
 
         collect -- an optional function applied to the values for each group.
 
-        The grouped column will appear first in the result.
+        The grouped column will appear first in the result table.
         """
-        self = self.sort(column_or_label)
+        self = self._with_columns(self.columns) # Shallow self
+        collect = _zero_on_type_error(collect)
 
+        # Remove column used for grouping
         column = self._get_column(column_or_label)
-        if column_or_label in self.column_labels():
+        if column_or_label in self.column_labels:
             column_label = column_or_label
             del self[column_label]
         else:
             column_label = self._unused_label('group')
 
-        if collect:
-            collect = _zero_on_type_error(collect)
-        else:
-            collect = lambda x: x
+        # Generate grouped columns
+        groups = self.index_by(column)
+        keys = sorted(groups.keys())
+        columns, labels = [], []
+        for i, label in enumerate(self.column_labels):
+            labels.append(_collected_label(collect, label))
+            c = [collect(np.array([row[i] for row in groups[k]])) for k in keys]
+            columns.append(c)
 
-        values, starts = np.unique(column, return_index=True)
-        ends = np.append(starts[1:], self.num_rows)
-        columns = self.columns()
-
-        rows = []
-        for value, start, end in zip(values, starts, ends):
-            row = []
-            for i, column in enumerate(columns):
-                taken = np.take(column, range(start, end))
-                cell = collect(taken)
-                if cell is None: # on invalid collection, group the entries and try to reduce
-                    cell = np.unique(taken)
-                    if len(cell) == 1: cell = cell[0]
-                row.append(cell)
-            rows.append(row)
-
-        labels = []
-        for i, label in enumerate(self.column_labels()):
-            if not collect.__name__.startswith('<'):
-                labels.append(label + ' ' + collect.__name__)
-            else:
-                labels.append(label)
-
-        table = self.from_rows(rows, labels)
+        grouped = type(self)(columns, labels)
         assert column_label == self._unused_label(column_label)
-        table[column_label] = values
-        table.move_to_start(column_label)
-        return table
+        grouped[column_label] = keys
+        grouped.move_to_start(column_label)
+        return grouped
 
-    def dist(self, pivot_label, value_label, remove=False):
-        """
-        Distribute the values in a column over new columns defined by items in a pivot column"
-        """
-        dtable = self.copy()
-        pivots = list(np.unique(dtable[pivot_label]))
-        pivot_col_labels = [dtable._unused_label(label + "-" + value_label) for label in pivots]
-        dtable.move_to_end(pivot_label)
-        dtable.move_to_end(value_label)
-        for pivot,label in zip(pivots,pivot_col_labels):
-            dtable[label] = np.where(dtable[pivot_label]==pivot,dtable[value_label],None)
-        if remove:
-            del dtable[pivot_label]
-            del dtable[value_label]
-        return dtable
+    def groups(self, column_labels, collect=lambda s: s):
+        """Group rows by multiple columns, aggregating values."""
+        collect = _zero_on_type_error(collect)
+        columns = []
+        for label in column_labels:
+            assert label in self.column_labels
+            columns.append(self._get_column(label))
+        grouped = self.group(list(zip(*columns)))
+        grouped._columns.popitem(last=False) # Discard the column of tuples
 
-    def pivot(self, pivot_label, group_label, collect=None, init=0):
-        """
-        Pivot on a column forming new columns of unique values,
-        grouping a column according to the unique entries in all
-        other columns.
+        # Flatten grouping values and move them to front
+        for label in column_labels[::-1]:
+            grouped[label] = grouped.apply(_assert_same, label)
+            grouped.move_to_start(label)
 
-        The non-pivot, non-group items form the first columns of the result
-        and our sorted, followed by the grouped entries in the pivot columns.
-        """
-        if collect:
-            collect = _zero_on_type_error(collect)
-        else:
-            collect = lambda x: x
+        # Aggregate other values
+        for label in grouped.column_labels:
+            if label in column_labels:
+                continue
+            column = [collect(v) for v in grouped[label]]
+            del grouped[label]
+            grouped[_collected_label(collect, label)] = column
 
-        sorted = self.sort(pivot_label)
-        sorted.move_to_end(pivot_label)
-        sorted.move_to_end(group_label)
-        fixed_column_labels = list(sorted.column_labels()[0:-2])
-        for column_label in reversed(fixed_column_labels):
-            sorted = sorted.sort(column_label)
-        pivots = list(np.unique(sorted[pivot_label]))
-        pivot_col_labels = [sorted._unused_label(label + "-" + group_label) for label in pivots]
-        labels = fixed_column_labels + pivot_col_labels
-        fixed_rows, starts = sorted._starts(fixed_column_labels)
-        ends = np.append(starts[1:], self.num_rows)
-        rows = []
-        for fixed_row, start, end in zip(fixed_rows, starts, ends):
-            pivot_row = _distribute(pivots, sorted[pivot_label][start:end],sorted[group_label][start:end])
-            pivot_row = [collect(group) if len(group) > 1 else (group[0] if len(group)==1 else init) for group in pivot_row]
-            rows.append(fixed_row + pivot_row)
-        return Table.from_rows(rows, labels)
+        return grouped
+
+    def pivot(self, columns, rows, values, collect=lambda s:s, zero=None):
+        """Generate a table with a column for rows and a column for each
+        unique value in columns. Each row aggregates over the values that
+        match both row and column.
+
+        columns, rows, values -- column labels in self
+        collect -- aggregation function over values
+        zero -- zero value for non-existent row-column combinations
+        """
+        selected = self.select([columns, rows, values])
+        grouped = selected.groups([columns, rows], collect)
+        row_values = np.unique(self._get_column(rows))
+        pivoted = Table([row_values], [rows])
+        by_columns = grouped.index_by(columns)
+        for label in sorted(by_columns):
+            pairs = [t[1:] for t in by_columns[label]] # Discard column value
+            column = _fill_with_zeroes(row_values, pairs, zero)
+            pivot = self._unused_label(str(label) + ' ' + values)
+            pivoted[pivot] = column
+        return pivoted
 
     def stack(self, key, column_labels=None):
         """
         Takes k original columns and returns two columns, with col. 1 of
         all column names and col. 2 of all associated data.
         """
-        rows, column_labels = [], column_labels or self.column_labels()
-        for row in self.rows():
+        rows, column_labels = [], column_labels or self.column_labels
+        for row in self.rows:
             [rows.append((getattr(row, key), k, v)) for k, v in row._asdict().items()
              if k != key and k in column_labels]
         return Table.from_rows(rows, [key, 'column', 'value'])
@@ -405,12 +361,11 @@ class Table(collections.abc.Mapping):
             if label in other_rows:
                 row, other_row = rows[0], other_rows[label][0]
                 joined_rows.append(row + other_row)
-
         if not joined_rows:
             return None
 
-        labels = list(self.column_labels())
-        labels += [self._unused_label(s) for s in other.column_labels()]
+        labels = list(self.column_labels)
+        labels += [self._unused_label(s) for s in other.column_labels]
         joined = Table.from_rows(joined_rows, labels)
         del joined[self._unused_label(other_label)] # Remove redundant column
         return joined.move_to_start(column_label).sort(column_label)
@@ -420,7 +375,7 @@ class Table(collections.abc.Mapping):
             column_labels = [column_label_or_labels]
         else: column_labels = column_label_or_labels
         table = Table()
-        for label in self.column_labels():
+        for label in self.column_labels:
             if label in column_labels:
                 assert isinstance(self[label][0],str), "Columns must contain strings"
                 table[label] = [float(x.strip(symbol)) for x in self[label]]
@@ -433,9 +388,9 @@ class Table(collections.abc.Mapping):
         """Compute statistics for each column and place them in a table."""
         names = [op.__name__ for op in ops]
         ops = [_zero_on_type_error(op) for op in ops]
-        rows = [[op(column) for column in self.columns()] for op in ops]
-        table = self.with_rows(rows)
-        stats = self._unused_label('statistic')
+        columns = [[op(column) for op in ops] for column in self.columns]
+        table = self._with_columns(columns)
+        stats = table._unused_label('statistic')
         table[stats] = names
         table.move_to_start(stats)
         return table
@@ -443,7 +398,7 @@ class Table(collections.abc.Mapping):
     def _unused_label(self, label):
         """Generate an unused label."""
         original = label
-        existing = self.column_labels()
+        existing = self.column_labels
         i = 2
         while label in existing:
             label = '{}_{}'.format(original, i)
@@ -453,7 +408,7 @@ class Table(collections.abc.Mapping):
     def _get_column(self, column_or_label):
         """Convert label to column and check column length."""
         c = column_or_label
-        if isinstance(c, collections.Hashable) and  c in self.column_labels():
+        if isinstance(c, collections.Hashable) and  c in self.column_labels:
             return self[c]
         else:
             assert len(c) == self.num_rows, 'column length mismatch'
@@ -480,7 +435,7 @@ class Table(collections.abc.Mapping):
         return '<{0}({1} rows): | {3} |>'.format(
             type(self).__name__,
             len(self),self.num_rows,
-            " | ".join(map(str, self.column_labels())))
+            " | ".join(map(str, self.column_labels)))
 
     def __str__(self):
         return self.as_text(self.max_str_rows)
@@ -504,7 +459,7 @@ class Table(collections.abc.Mapping):
         fmts = [self._formats.get(k, self.format_column(k, v[:max_rows])) for
             k, v in self._columns.items()]
         rows = [[fmt(label) for fmt, label in zip(fmts, labels)]]
-        for row in itertools.islice(self.rows(), max_rows):
+        for row in itertools.islice(self.rows, max_rows):
             rows.append([f(v) for v, f in zip(row, fmts)])
         lines = [sep.join(row) for row in rows]
         if omitted:
@@ -516,58 +471,66 @@ class Table(collections.abc.Mapping):
         if not max_rows or max_rows > self.num_rows:
             max_rows = self.num_rows
         omitted = max(0, self.num_rows - max_rows)
-        lines =  []
-        lines.append((0, '<table border="1" class="dataframe">'))
-        lines.append((1, '<thead>'))
-        lines.append((2, '<tr>'))
-        labels = self.column_labels()
-        lines.append((3, ' '.join('<th>' + label + '</th>' for label in labels)))
-        lines.append((2, '</tr>'))
-        lines.append((1, '</thead>'))
-        lines.append((1, '<tbody>'))
+        labels = self.column_labels
+        lines = [
+            (0, '<table border="1" class="dataframe">'),
+            (1, '<thead>'),
+            (2, '<tr>'),
+            (3, ' '.join('<th>' + label + '</th>' for label in labels)),
+            (2, '</tr>'),
+            (1, '</thead>'),
+            (1, '<tbody>'),
+        ]
         fmts = [self._formats.get(k, self.format_column(k, v[:max_rows])) for
             k, v in self._columns.items()]
-        for row in itertools.islice(self.rows(), max_rows):
-            lines.append((2, '<tr>'))
-            lines.append((3, ' '.join('<td>' + fmt(v) + '</td>' for
-                v, fmt in zip(row, fmts))))
-            lines.append((2, '</tr>'))
-            lines.append((1, '</tbody>'))
+        for row in itertools.islice(self.rows, max_rows):
+            lines += [
+                (2, '<tr>'),
+                (3, ' '.join('<td>' + fmt(v) + '</td>' for v, fmt in zip(row, fmts))),
+                (2, '</tr>'),
+                (1, '</tbody>'),
+            ]
         lines.append((0, '</table>'))
         if omitted:
             lines.append((0, '<p>... ({} rows omitted)</p'.format(omitted)))
         return '\n'.join(4 * indent * ' ' + text for indent, text in lines)
 
     @classmethod
-    def format_column(cls, label, column):
+    def format_column(cls, label, column, min_width=min_val_width, max_width=max_val_width, etc=' ...'):
         """Return a formatting function that pads values."""
-        val_width = 0 if len(column) == 0 else max(len(str(v)) for v in column)
-        val_width = min(val_width, cls.max_val_width)
-        width = max(val_width, len(str(label)), cls.min_val_width)
+        val_width = 0 if len(column) == 0 else max(len(cls.format_value(v)) for v in column)
+        val_width = min(val_width, max_width)
+        width = max(val_width, len(str(label)), min_width, len(etc))
         def pad(value):
-            try:
-                assert not isinstance(value, (bool, np.bool_))
-                raw = '{:G}'.format(value)
-            except (ValueError, TypeError, AssertionError):
-                raw = str(value)
+            raw = cls.format_value(value)
             if len(raw) > width:
-                prefix = raw[:width-4] + ' ...'
+                prefix = raw[:width-len(etc)] + etc
             else:
                 prefix = raw
             return prefix.ljust(width)
         return pad
+
+    @staticmethod
+    def format_value(value):
+        """Pretty-print an arbitrary value."""
+        if isinstance(value, (bool, np.bool_)):
+            return str(value)
+        try:
+            return '{:G}'.format(value)
+        except (ValueError, TypeError):
+            return str(value)
 
     def matrix(self):
         """Return a 2-D array with the contents of the table."""
         return np.matrix(list(self._columns.values()))
 
     def index_by(self, column_or_label):
-        """
-        Return a dict from the values in a column to the rows containing that value.
+        """Return a dict keyed by values in a column that contains lists of
+        rows corresponding to each value.
         """
         column = self._get_column(column_or_label)
         index = {}
-        for key, row in zip(column, self.rows()):
+        for key, row in zip(column, self.rows):
             index.setdefault(key, []).append(row)
         return index
 
@@ -627,7 +590,7 @@ class Table(collections.abc.Mapping):
 
     def _split(self, column_or_label):
         """Return the specified column and labels of other columns."""
-        labels = list(self.column_labels())
+        labels = list(self.column_labels)
         if column_or_label is None:
             return None, labels
         if column_or_label in labels:
@@ -671,11 +634,11 @@ class Table(collections.abc.Mapping):
         colors = list(itertools.islice(itertools.cycle(('b', 'g', 'r')), n))
         if overlay:
             plt.figure(figsize=(6, 4))
-            plt.hist(self.columns(), color=colors, **vargs)
-            plt.legend(self.column_labels())
+            plt.hist(self.columns, color=colors, **vargs)
+            plt.legend(self.column_labels)
         else:
             _, axes = plt.subplots(n, 1, figsize=(6, 4 * n))
-            for axis, label, color in zip(axes, self.column_labels(), colors):
+            for axis, label, color in zip(axes, self.column_labels, colors):
                 axis.hist(self[label], color=color, **vargs)
                 axis.set_xlabel(label, fontsize=16)
 
@@ -692,7 +655,7 @@ class Table(collections.abc.Mapping):
         def __getitem__(self, i):
             if isinstance(i, slice):
                 return [self[j] for j in range(*i.indices(len(self)))]
-            labels = tuple(self._table.column_labels())
+            labels = tuple(self._table.column_labels)
             if labels != self._labels:
                 self._labels = labels
                 self._row = collections.namedtuple('Row', labels, rename=True)
@@ -703,15 +666,6 @@ class Table(collections.abc.Mapping):
 
         def __repr__(self):
             return '{0}({1})'.format(type(self).__name__, repr(self._table))
-
-def array(*args, **vargs):
-    """Create an array. String arrays are endowed with string methods."""
-    a = np.array(*args, **vargs)
-    if a.dtype.char in ('S', 'U'):
-        return a.view(np.chararray)
-    else:
-        return a
-
 
 def _zero_on_type_error(column_fn):
     """Wrap a function on an np.ndarray to return 0 on a type error."""
@@ -726,11 +680,51 @@ def _zero_on_type_error(column_fn):
                 raise
     return wrapped
 
-def _distribute(full_labels, labels, values):
-    """Distribute values to their labels position in full_labels."""
-    row = [[] for x in full_labels]
-    for label, value in zip(labels,values):
-        i = full_labels.index(label)
-        row[i].append(value)
-    return row
 
+def _fill_with_zeroes(order, rows, zero=None):
+    """Return a column of the index-1 elements in rows, where the index
+    of each value is determined by matching index-0 to an element of keys.
+    """
+    assert len(rows) > 0
+    index = dict(rows)
+    if zero is None:
+        array = np.array(tuple(index.values()))
+        if len(array.shape) == 1:
+            zero = array.dtype.type()
+    return np.array([index.get(k, zero) for k in order])
+
+
+def _as_labels(column_label_or_labels):
+    """Return a list of labels for a label or labels."""
+    if not _is_non_string_iterable(column_label_or_labels):
+        return [column_label_or_labels]
+    else:
+        return column_label_or_labels
+
+
+def _assert_same(values):
+    """Assert that all values are identical and return the unique value."""
+    assert len(values) > 0
+    first, rest = values[0], values[1:]
+    for v in rest:
+        assert v == first
+    return first
+
+
+def _collected_label(collect, label):
+    """Label of a collected column."""
+    if not collect.__name__.startswith('<'):
+        return label + ' ' + collect.__name__
+    else:
+        return label
+
+
+def _is_non_string_iterable(value):
+    """Whether a value is iterable."""
+    if isinstance(value, str):
+        return False
+    if hasattr(value, '__iter__'):
+        return True
+    if isinstance(value, collections.abc.Sequence):
+        return True
+    return False

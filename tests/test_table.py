@@ -11,27 +11,27 @@ from datascience import *
 
 @pytest.fixture(scope='function')
 def table():
-	""" Setup alphanumeric table """
+	"""Setup alphanumeric table"""
 	letter, count, points = ['a', 'b', 'c', 'z'], [9, 3, 3, 1], [1, 2, 2, 10]
-	return Table([('letter', letter), ('count', count), ('points', points)])
+	return Table([letter, count, points], ['letter', 'count', 'points'])
 
 
 @pytest.fixture(scope='function')
 def table2():
-	""" Setup second alphanumeric table """
+	"""Setup second alphanumeric table"""
 	points, names = (1, 2, 3), ('one', 'two', 'three')
-	return Table([('points', points), ('names', names)])
+	return Table([points, names], ['points', 'names'])
 
 
 @pytest.fixture(scope='module')
 def t():
-	""" Create one table for entire module """
+	"""Create one table for entire module"""
 	return table()
 
 
 @pytest.fixture(scope='module')
 def u():
-	""" Setup second alphanumeric table """
+	"""Setup second alphanumeric table"""
 	return table2()
 
 
@@ -48,7 +48,7 @@ def assert_equal(string1, string2):
 
 
 def test_basic(t):
-	""" Tests that t works """
+	"""Tests that t works"""
 	assert_equal(t, """\
 	letter | count | points
 	a      | 9     | 1
@@ -59,12 +59,12 @@ def test_basic(t):
 
 
 def test_basic_points(t):
-	assert_array_equal(t['points'], array([1, 2, 2, 10]))
+	assert_array_equal(t['points'], np.array([1, 2, 2, 10]))
 
 
 def test_basic_rows(t):
 	assert_equal(
-		t.rows()[2],
+		t.rows[2],
 	     "Row(letter='c', count=3, points=2)")
 
 
@@ -179,8 +179,34 @@ def test_group_with_func(t):
 	""")
 
 
+def test_groups(t):
+	t = t.copy()
+	t.append(('e', 12, 1, 12))
+	t['early'] = t['letter'] < 'd'
+	test = t.groups(['points', 'early'])
+	assert_equal(test, """\
+    points | early | letter    | count | totals
+    1      | False | ['e']     | [12]  | [12]
+    1      | True  | ['a']     | [9]   | [9]
+    2      | True  | ['b' 'c'] | [3 3] | [6 6]
+    10     | False | ['z']     | [1]   | [10]
+	""")
+
+def test_groups_collect(t):
+	t = t.copy()
+	t.append(('e', 12, 1, 12))
+	t['early'] = t['letter'] < 'd'
+	test = t.select(['points', 'early', 'count']).groups(['points', 'early'], sum)
+	assert_equal(test, """\
+    points | early | count sum
+    1      | False | 12
+    1      | True  | 9
+    2      | True  | 6
+    10     | False | 1
+	""")
+
 def test_join(t, u):
-	""" Tests that join works, not destructive """
+	"""Tests that join works, not destructive"""
 	test = t.join('points', u)
 	assert_equal(test, """\
 	points | letter | count | totals | names
@@ -202,9 +228,64 @@ def test_join(t, u):
 	""")
 
 
+def test_pivot(t):
+	t = t.copy()
+	t.append(('e', 12, 1, 12))
+	t['early'] = t['letter'] < 'd'
+	t['exists'] = 1
+	test = t.pivot('points', 'early', 'exists')
+	assert_equal(test, """\
+    early | 1 exists | 2 exists | 10 exists
+    False | [1]      | None     | [1]
+    True  | [1]      | [1 1]    | None
+	""")
+
+
+def test_pivot_sum(t):
+	t = t.copy()
+	t.append(('e', 12, 1, 12))
+	t['early'] = t['letter'] < 'd'
+	t['exists'] = 1
+	test = t.pivot('points', 'early', 'exists', sum)
+	assert_equal(test, """\
+	early | 1 exists | 2 exists | 10 exists
+    False | 1        | 0        | 1
+    True  | 1        | 2        | 0
+	""")
+
+
 ########
 # Init #
 ########
+
+
+def test_tuples(t, u):
+	"""Tests that different-sized tuples are allowed."""
+	different = [((5, 1), (1, 2, 2, 10)), ('short', 'long')]
+	t = Table(different, ['tuple', 'size'])
+	assert_equal(t, """\
+	tuple         | size
+    (5, 1)        | short
+    (1, 2, 2, 10) | long
+	""")
+	same = [((5, 4, 3, 1), (1, 2, 2, 10)), ('long', 'long')]
+	u = Table(same, ['tuple', 'size'])
+	assert_equal(u, """\
+	tuple         | size
+    [5 4 3 1]     | long
+    [ 1  2  2 10] | long
+	""")
+
+
+def test_keys_and_values():
+	"""Tests that a table can be constructed from keys and values."""
+	d = {1: 2, 3: 4}
+	t = Table([d.keys(), d.values()], ['keys', 'values'])
+	assert_equal(t, """\
+	keys | values
+	1    | 2
+	3    | 4
+	""")
 
 
 ##########
@@ -213,15 +294,15 @@ def test_join(t, u):
 
 
 def test_move_to_start(table):
-	assert table.column_labels() == ('letter', 'count', 'points')
+	assert table.column_labels == ('letter', 'count', 'points')
 	table.move_to_start('points')
-	assert table.column_labels() == ('points', 'letter', 'count')
+	assert table.column_labels == ('points', 'letter', 'count')
 
 
 def test_move_to_end(table):
-	assert table.column_labels() == ('letter', 'count', 'points')
+	assert table.column_labels == ('letter', 'count', 'points')
 	table.move_to_end('letter')
-	assert table.column_labels() == ('count', 'points', 'letter')
+	assert table.column_labels == ('count', 'points', 'letter')
 
 
 def test_append_row(table):
@@ -258,7 +339,7 @@ def test_append_bad_table(table, u):
 
 
 def test_relabel():
-	table = Table([('points', (1, 2, 3)), ('id', (12345, 123, 5123))])
+	table = Table([(1, 2, 3), (12345, 123, 5123)], ['points', 'id'])
 	table.relabel('id', 'yolo')
 	assert_equal(table, """\
 	points | yolo
@@ -303,58 +384,30 @@ def test_from_rows():
 	""")
 
 
-def test_from_matrix():
-	identity = array([[1, 0], [0, 1]])
-	m = Table.from_matrix(identity, ['x', 'y'])
-	assert_equal(m, """\
-	x    | y
-	1    | 0
-	0    | 1
-	""")
-	assert_equal(m.matrix(), """\
-	[[1 0]
-	 [0 1]]
-	""")
-
-
-def test_from_columns():
-	letters = [('a', 'b', 'c', 'z'), (9, 3, 3, 1), (1, 2, 2, 10)]
-	t = Table.from_columns(letters, ['letter', 'count', 'points'])
-	assert_equal(t, """\
-	letter | count | points
-	a      | 9     | 1
-	b      | 3     | 2
-	c      | 3     | 2
-	z      | 1     | 10
-	""")
-
-
 #############
 # Transform #
 #############
 
 
 def test_group_by_tuples():
-	tuples = [(('a', 'b', 'c', 'z'), (1, 2, 2, 10), (1, 2, 2, 10)), (3, 3, 1)]
-	t = Table.from_columns(tuples, ['tuples', 'ints'])
+	tuples = [((5, 1), (1, 2, 2, 10), (1, 2, 2, 10)), (3, 3, 1)]
+	t = Table(tuples, ['tuples', 'ints'])
 	assert_equal(t, """\
-	tuples             | ints
-	['a' 'b' 'c' 'z']  | 3
-	['1' '2' '2' '10'] | 3
-	['1' '2' '2' '10'] | 1
+	tuples        | ints
+	(5, 1)        | 3
+	(1, 2, 2, 10) | 3
+	(1, 2, 2, 10) | 1
 	""")
-	assert_equal(t.sort('tuples'), """\
-	""")
-	t.group('tuples')
+	table = t.group('tuples')
 	assert_equal(table, """\
-	tuples             | ints
-	['a' 'b' 'c' 'z']  | 3
-	['1' '2' '2' '10'] | ['3' '1']
+	tuples        | ints
+	(1, 2, 2, 10) | [3 1]
+	(5, 1)        | [3]
 	""")
 
 
 def test_group_no_new_column(table):
-	table.group(table.columns()[1])
+	table.group(table.columns[1])
 	assert_equal(table, """\
 	letter | count | points
 	a      | 9     | 1

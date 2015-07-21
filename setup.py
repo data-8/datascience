@@ -43,7 +43,7 @@ data_files = [(os.path.join(ipython_dir, "nbextensions/datascience_js"),
 setup(
   name = 'datascience',
   py_modules = ['datascience'],
-  version = '0.1.1',
+  version = '0.2.1',
   install_requires = install_requires,
   tests_require = test_requires,
   data_files = data_files,
@@ -52,7 +52,7 @@ setup(
   author = 'John DeNero, David Culler, Alvin Wan, Sam Lau',
   author_email = 'ds-instr@berkeley.edu',
   url = 'https://github.com/dsten/datascience',
-  download_url = 'https://github.com/dsten/datascience/archive/0.1.1.zip',
+  download_url = 'https://github.com/dsten/datascience/archive/0.2.0.zip',
   keywords = ['data', 'tools', 'berkeley'],
   classifiers = [],
 )
