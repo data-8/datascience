@@ -5,14 +5,33 @@ Integrates the folium package to draw maps.
 """
 
 from IPython.core.display import HTML
+import json
 import folium
+
+
+#########################
+# Exposed Functionality #
+#########################
+
+
+def draw_map(center, zoom=None, **kwargs):
+    """ 
+    Draw a map with center & zoom containing all points and
+    regions that displays points as circles and regions as polygons.
+    """
+
+    return Map(
+        location=center, 
+        zoom_start=zoom, 
+        **kwargs).map().to_html()
+
 
 #########
 # Utils #
 #########
 
 
-def map_to_defaults(defaults, params, excludes=[], includes=[]):
+def _map_to_defaults(defaults, params, excludes=[], includes=[]):
     """
     Squishes together two dictionaries, with one containing defaults
     """
@@ -25,7 +44,7 @@ def map_to_defaults(defaults, params, excludes=[], includes=[]):
     }
 
 
-def hook(f):
+def _hook(f):
     """
     Decorator for obj method, checks for PREFIX_before and PREFIX_after 
     a method is called 
@@ -46,7 +65,8 @@ def hook(f):
     return method
 
 
-class MapError(Exception):
+class ProgrammerError(Exception):
+    """ Thrown when programmers make a mistake """
     
     message = ''
     prefix = 'Please report this to your instructors'
@@ -54,22 +74,14 @@ class MapError(Exception):
     def get_message(self):
         return '%s: %s' % (self.prefix, self.message)
 
+class MapError(Exception):
+    """ Thrown when users make a mistake """
+    pass
+
 
 ######################
 # Folium Abstraction #
 ######################
-
-
-def draw_map(center, zoom, **kwargs):
-    """ 
-    Draw a map with center & zoom containing all points and
-    regions that displays points as circles and regions as polygons.
-    """
-
-    return Map(
-        location=center, 
-        zoom_start=zoom, 
-        **kwargs).map().to_html()
 
 
 class MapEntity:
@@ -83,10 +95,17 @@ class MapEntity:
 
     def __init__(self, **kwargs):
         """ Saves attributes, with defaults """
-        self.data = map_to_defaults(self.defaults, kwargs)
-        self.attributes = map_to_defaults(self.defaults, kwargs, excludes=self.dataonly)
+        self.data = _map_to_defaults(self.defaults, kwargs)
+        self.attributes = _map_to_defaults(
+            self.defaults, kwargs, excludes=self.dataonly)
 
-    @hook
+    def __setitem__(self, k, v):
+        self.data[k] = v
+
+    def __getitem__(self, k):
+        return self.data[k]
+
+    @_hook
     def map(self, map=None):
         """ Maps this object, with its own attributes """
         if not callable(self.mapper):
@@ -96,6 +115,13 @@ class MapEntity:
 
 
 class Map(MapEntity):
+    """
+    Represents a map, potentially with MapPoints and MapRegions
+
+    >>> map = Map().map()
+    >>> map.to_html()
+    <IPython.core.display.HTML object>
+    """
 
     mapper = folium.Map
     
@@ -111,7 +137,7 @@ class Map(MapEntity):
         'regions': []                       # regions -- a list of MapRegions
     }
 
-    @hook
+    @_hook
     def to_html(self):
         """
         Takes in a folium map as a parameter and outputs the HTML that
@@ -125,7 +151,9 @@ class Map(MapEntity):
                     'border: none"></iframe>' % (map_html, map.width, map.height))
     
     def before_to_html(self):
-        """ called before to_html, add points and regions before outputting map """
+        """
+        Called before to_html, add points and regions before outputting map 
+        """
         for point in self.data['points']:
             point.map(self.folium)
 
@@ -147,14 +175,37 @@ class MapPoint(MapEntity):
         'fill_opacity': 0.6         # fill_opacity -- opacity of circle fill
     }
 
+    def __init__(self, location, **kwargs):
+        super().__init__(location=location, **kwargs)
+
+    def __str__(self):
+        return str(list(self.location))
+
+
 class MapRegion(MapEntity):
-    """ A polygon. Draw by passing into draw_map."""
+    """
+    A polygon. Draw by passing into draw_map.
+
+    regions -- list of MapRegions (if present, locations and points are not used)
+    locations -- list of list of lat-long pairs for locations with multiple 
+                 polygons (if present, points are not used)
+    points -- list of lat-long pairs for a normal polygon
+    """
+    # composite options
+
+    CHILDREN = 'children'  # invoke map() for children
+    GROUP = 'group'  # invoke to_json() for children
+    ONE = 'one'  # invoke to_polygon() for children
     
     mapper = 'geo_json'
 
-    dataonly = 'locations'
+    dataonly = ['points', 'locations', 'regions', 'composite']
     
     defaults = {
+        'composite': GROUP,
+        'regions': [],
+        'locations': [[]],
+        'points': [],
         'fill_color': 'blue',
         'fill_opacity': 0.6,
         'line_color': 'black',
@@ -162,28 +213,123 @@ class MapRegion(MapEntity):
         'line_opacity': 1
     }
 
+    allowed_collections = (list, set, tuple)
+
     def before_map(self):
-        """ Translates locations into folium-ready JSON """
-        self.to_geo_json()  # do something with to_json
+        """ Prepares for mapping by passing JSON representation """
+        self._validate()
+        self.attributes['geo_str'] = self._to_json()
 
-    def to_geo_json(self):
-        """ Converts Region to JSON """
-        points = self.data['locations']
 
-        json = {
+    def map(self, map=None):
+        """
+        Takes action, depending on composite
+            CHILDREN -- invoke map() for each child
+            GROUP -- invoke parent map() normally
+            ONE -- invoke parent map() normally
+        """
+        composite = self['composite']
+        if composite in (MapRegion.GROUP, MapRegion.ONE):
+            super().map(map)
+        elif composite == MapRegion.CHILDREN:
+            for region in self['regions']:
+                region.map(map)
+
+    def _validate(self):
+        """ Checks for validity of data """
+        locations = self.data['locations']
+        points = self.data['points']
+
+        if not isinstance(locations, self.allowed_collections) \
+            or not isinstance(locations[0], self.allowed_collections):
+            raise MapError('"Locations" must be a %s of %ss' %
+                (' or '.join(self.allowed_collections),
+                    's or '.join(self.allowed_collections)))
+
+        if not locations[0]:
+            if not isinstance(points, self.allowed_collections):
+                raise MapError('"Points" must be a %s' % 
+                    ' or '.join(self.allowed_collections))
+
+    @staticmethod
+    def to_json(features, **kwargs):
+        return _map_to_defaults({
             'type': 'FeatureCollection',
-            'features': [feature(coord) for coord in features]
-        }
+            'features': features
+        }, kwargs)
 
-        def feature(coords):
-            return {
-                'type': 'Feature',
-                'id': None,
-                'properties': {},
-                'geometry': {
-                    'type': 'Polygon',
-                    'coordinates': coords
-                }
-            }
+    def _to_json(self):
+        """
+        Converts MapRegion to folium-ready geoJSON, depending on composite
+            CHILDREN -- none
+            GROUP -- construct jsons with children
+            ONE -- construct polygons with children
+        """
+        composite = self['composite']
+        if composite == MapRegion.GROUP:
+            return MapRegion.to_json(
+                self._to_feature_json())
+        elif composite == MapRegion.ONE:
+            return MapRegion.to_json(
+                MapRegion.to_feature_json(
+                    self._to_polygon_json()))
+        return None
 
-        return json
+    @staticmethod
+    def to_feature_json(feature, **kwargs):
+        """ Converts single feature into feature JSON """
+        return _map_to_defaults({
+            'type': 'Feature',
+            'geometry': feature
+        }, kwargs)
+
+    def _to_feature_json(self):
+        """ Converts to list of feature JSONs """
+        return [MapRegion.to_feature_json(feat) 
+            for feat in self.to_feature()]
+
+    def to_feature(self):
+        """ Converts to list of poylgon JSONs """
+        regions = self['regions']
+
+        if regions:
+            rval = []
+            for region in regions:
+                rval += (region.to_feature() or [])
+            return rval
+
+        return [self._to_polygon_json()]
+
+    @staticmethod   
+    def to_polygon_json(polygon, **kwargs):
+        """ Converts single polygon into polygon JSON """
+        return _map_to_defaults({
+            'type': 'Polygon',
+            'coordinates': polygon
+        }, kwargs)
+
+    def _to_polygon_json(self):
+        """ Converts to one polygon JSON """
+        return MapRegion.to_polygon_json(self.to_polygon())
+
+    def to_polygon(self):
+        """ Converts to list of polygons, including that of descendants """
+        regions, locations, points = self['regions'], self['locations'], self['points']
+
+        if regions:
+            rval = []
+            for region in regions:
+                rval += region.to_polygon()
+            return rval
+
+        return self._to_locations()
+
+    def _to_locations(self):
+        """ Converts to list of polygons """
+        locations, points = self['locations'], self['points']
+        if not locations[0]:
+            return [points]
+        return locations
+
+    def __str__(self):
+        return json.dumps(self._to_json())
