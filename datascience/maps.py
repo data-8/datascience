@@ -12,10 +12,10 @@ def draw_map(center, zoom=17, points=[], regions=[]):
 
     center -- lat-long pair at the center of the map
     zoom -- zoom level
-    points -- a sequence of MapPoints
-    regions -- a sequence of MapRegions
+    points -- a list of MapPoints
+    regions -- a list of MapRegions
 
-    TODO(sam): Add points and regions functionality
+    TODO(sam): Add regions functionality
     """
     map = folium.Map(
         location=center,
@@ -24,6 +24,9 @@ def draw_map(center, zoom=17, points=[], regions=[]):
         width=MAP_WIDTH,
         height=MAP_HEIGHT
     )
+
+    for point in points:
+        map.circle_marker(**point.attributes)
 
     return _to_html(map)
 
@@ -37,12 +40,28 @@ def _to_html(map):
                 'border: none"></iframe>' % (map_html, map.width, map.height))
 
 class MapPoint:
-    """A circle https://developers.google.com/maps/documentation/javascript/shapes#circles"""
-    def __init__(self, center, radius, strokeColor, strokeOpacity, strokeWeight, fillColor, fillOpacity):
-        pass
+    """A circle. Draw by passing into draw_map."""
+
+    def __init__(self, location, radius=10, popup='', line_color='#3186cc', fill_color='#3186cc', fill_opacity=0.6):
+        """
+        location -- lat-long pair at center of circle
+        radius -- radius of circle on map
+        popup -- text that pops up when circle is clicked
+        line_color -- color of circle border
+        fill_color -- color of circle within border
+        fill_opacity -- opacity of circle fill
+        """
+        self.attributes = {
+            'location': location,
+            'radius': radius,
+            'popup': popup,
+            'line_color': line_color,
+            'fill_color': fill_color,
+            'fill_opacity': fill_opacity
+        }
 
 class MapRegion:
-    """A polygon https://developers.google.com/maps/documentation/javascript/shapes#polygons"""
+    """A polygon. Draw by passing into draw_map."""
     def __init__(self, paths, strokeColor, strokeOpacity, strokeWeight, fillColor, fillOpacity):
         """paths -- a list of lat-long pairs or a list of list of lat-long pairs"""
         pass
