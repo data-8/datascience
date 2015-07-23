@@ -7,7 +7,8 @@ from setuptools.command.test import test as TestCommand
 install_requires = [
   'numpy',
   'matplotlib',
-  'pandas'
+  'pandas',
+  'folium'
 ]
 
 test_requires = [
@@ -33,20 +34,12 @@ class PyTest(TestCommand):
         sys.exit(errno)
 
 
-# Installs GMaps Javascript in the nbextensions folder for loading.
-# We load this file using IPython.load_extensions('datascience_js/maps') in
-# Javascript. Keep in sync with the path in maps/leader.py
-ipython_dir = IPython.utils.path.get_ipython_dir()
-data_files = [(os.path.join(ipython_dir, "nbextensions/datascience_js"),
-               ["datascience/maps/js/maps.js"] )]
-
 setup(
   name = 'datascience',
   packages = ['datascience'],
   version = '0.2.2',
   install_requires = install_requires,
   tests_require = test_requires,
-  data_files = data_files,
   cmdclass = {'test': PyTest},
   description = 'A Jupyter notebook Python library for introductory data science',
   author = 'John DeNero, David Culler, Alvin Wan, Sam Lau',

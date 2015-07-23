@@ -1,17 +1,12 @@
-from IPython.html import widgets # Widget definitions
-from IPython.utils.traitlets import Unicode
+"""Integrates the folium package to draw maps."""
 
-"""
-This file contains the Python backend to draw maps with overlaid polygons.
-TODO(sam): Actually make this draw maps
-"""
+from IPython.core.display import HTML
+import folium
 
-class TestWidget(widgets.DOMWidget):
-    _view_name = Unicode('TestWidgetView', sync=True)
-    _view_module = Unicode('maps', sync=True)
+MAP_WIDTH = 960
+MAP_HEIGHT = 500
 
-
-def draw_map(center, zoom, points=[], regions=[]):
+def draw_map(center, zoom=17, points=[], regions=[]):
     """Draw a map with center & zoom containing all points and
     regions that displays points as circles and regions as polygons.
 
@@ -19,8 +14,27 @@ def draw_map(center, zoom, points=[], regions=[]):
     zoom -- zoom level
     points -- a sequence of MapPoints
     regions -- a sequence of MapRegions
+
+    TODO(sam): Add points and regions functionality
     """
-    # Some magic to get javascript to display the map
+    map = folium.Map(
+        location=center,
+        tiles='Stamen Toner',
+        zoom_start=zoom,
+        width=MAP_WIDTH,
+        height=MAP_HEIGHT
+    )
+
+    return _to_html(map)
+
+def _to_html(map):
+    """Takes in a folium map as a parameter and outputs the HTML that
+    IPython will display."""
+    map._build_map()
+    map_html = map.HTML.replace('"', '&quot;')
+    return HTML('<iframe srcdoc="%s" '
+                'style="width: %spx; height: %spx; '
+                'border: none"></iframe>' % (map_html, map.width, map.height))
 
 class MapPoint:
     """A circle https://developers.google.com/maps/documentation/javascript/shapes#circles"""
