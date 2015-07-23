@@ -12,13 +12,17 @@ import folium
 #########
 
 
-def map_to_defaults(defaults, params, excludes=[]):
+def map_to_defaults(defaults, params, excludes=[], includes=[]):
     """
     Squishes together two dictionaries, with one containing defaults
     """
     rval = defaults.copy()
     rval.update(params)
-    return {k: v for k, v in rval.items() if k not in excludes}
+    return {
+        k: v for k, v in rval.items() 
+        if k not in excludes
+        and k in (includes or rval.keys())
+    }
 
 
 def hook(f):
@@ -82,6 +86,7 @@ class MapEntity:
         self.data = map_to_defaults(self.defaults, kwargs)
         self.attributes = map_to_defaults(self.defaults, kwargs, excludes=self.dataonly)
 
+    @hook
     def map(self, map=None):
         """ Maps this object, with its own attributes """
         if not callable(self.mapper):
@@ -142,11 +147,12 @@ class MapPoint(MapEntity):
         'fill_opacity': 0.6         # fill_opacity -- opacity of circle fill
     }
 
-
 class MapRegion(MapEntity):
     """ A polygon. Draw by passing into draw_map."""
     
     mapper = 'geo_json'
+
+    dataonly = 'locations'
     
     defaults = {
         'fill_color': 'blue',
@@ -155,3 +161,29 @@ class MapRegion(MapEntity):
         'line_weight': 1,
         'line_opacity': 1
     }
+
+    def before_map(self):
+        """ Translates locations into folium-ready JSON """
+        self.to_geo_json()  # do something with to_json
+
+    def to_geo_json(self):
+        """ Converts Region to JSON """
+        points = self.data['locations']
+
+        json = {
+            'type': 'FeatureCollection',
+            'features': [feature(coord) for coord in features]
+        }
+
+        def feature(coords):
+            return {
+                'type': 'Feature',
+                'id': None,
+                'properties': {},
+                'geometry': {
+                    'type': 'Polygon',
+                    'coordinates': coords
+                }
+            }
+
+        return json

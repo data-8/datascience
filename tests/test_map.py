@@ -8,7 +8,14 @@ def test_draw_map():
 	map_html = draw_map((51.5135015, -0.1362392), regions=[region], zoom=3)
 	assert isinstance(map_html, HTML)
 	
-		
+
+def test_draw_marker():
+	""" Tests that draw_map returns HTML """
+	points = [MapPoint((51.5135015, -0.1358392))]
+	map_html = draw_map((51.5135015, -0.1362392), points=points)
+	assert isinstance(map_html, HTML)
+
+
 def test_setup_map():
 	""" Tests that to_html() returns HTML """
 	center = [45.5244, -122.6699]
