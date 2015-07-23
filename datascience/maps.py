@@ -56,7 +56,8 @@ class MapPoint:
             'radius': radius,
             'popup': popup,
             'line_color': line_color,
-            'fill_color': fill_color
+            'fill_color': fill_color,
+            'fill_opacity': fill_opacity
         }
 
 class MapRegion:
