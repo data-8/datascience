@@ -6,6 +6,7 @@ import folium
 MAP_WIDTH = 960
 MAP_HEIGHT = 500
 
+
 def draw_map(center, zoom=17, points=[], regions=[]):
     """Draw a map with center & zoom containing all points and
     regions that displays points as circles and regions as polygons.
@@ -27,8 +28,12 @@ def draw_map(center, zoom=17, points=[], regions=[]):
 
     for point in points:
         map.circle_marker(**point.attributes)
+        
+    for region in regions:
+        map.geo_json(**region.attributes)
 
     return _to_html(map)
+
 
 def _to_html(map):
     """Takes in a folium map as a parameter and outputs the HTML that
@@ -38,6 +43,7 @@ def _to_html(map):
     return HTML('<iframe srcdoc="%s" '
                 'style="width: %spx; height: %spx; '
                 'border: none"></iframe>' % (map_html, map.width, map.height))
+
 
 class MapPoint:
     """A circle. Draw by passing into draw_map."""
@@ -60,8 +66,20 @@ class MapPoint:
             'fill_opacity': fill_opacity
         }
 
+
 class MapRegion:
     """A polygon. Draw by passing into draw_map."""
-    def __init__(self, paths, strokeColor, strokeOpacity, strokeWeight, fillColor, fillOpacity):
-        """paths -- a list of lat-long pairs or a list of list of lat-long pairs"""
-        pass
+    
+    defaults = {
+        'fill_color': 'blue',
+        'fill_opacity': 0.6,
+        'line_color': 'black',
+        'line_weight': 1,
+        'line_opacity': 1
+    }
+
+    def __init__(self, **kwargs):
+        """ Sets up a Map Region for folium.geo_json"""
+        self.attributes = self.defaults.copy()
+        for k, v in kwargs.items():
+            self.attributes[k] = v
