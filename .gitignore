@@ -57,3 +57,6 @@ target/
 
 .idea/
 *.iml
+
+cache/
+*.ipynb_checkpoints/

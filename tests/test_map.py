@@ -10,15 +10,15 @@ import pytest
 @pytest.fixture(scope='function')
 def locations1():
 	# locations are a list of list of lat-long pairs, for regions with multiple polygons (i.e., Alaska)
-	locations1 = [[(51.5135015, -0.1358392), (51.5135020, -0.1358392), (51.5135015, -0.1358398)], 
-				[(51.5135020, -0.1358392), (51.5135025, -0.1358392), (51.5135020, -0.1358398)]]
+	locations1 = [[(51.5135015, -0.1358392), (51.5137, -0.1358392), (51.5132, -0.138)], 
+				[(51.514, -0.1361), (51.5143, -0.1361), (51.5145, -0.1383)]]
 	return locations1
 
 
 @pytest.fixture(scope='function')
 def locations2():
 	# points are just a list of lat-long pairs
-	locations2 = [(51.5135010, -0.1358392), (51.5135015, -0.1358392), (51.5135010, -0.1358398)]
+	locations2 = [(51.514, -0.132), (51.5143, -0.132), (51.5145, -0.135)]
 	return locations2
 
 
@@ -30,8 +30,8 @@ def region1(locations1):
 
 @pytest.fixture(scope='function')
 def region2(locations2):
-	region1 = MapRegion(points=locations2)
-	return region1
+	region2 = MapRegion(points=locations2)
+	return region2
 
 
 ############
@@ -42,7 +42,7 @@ def region2(locations2):
 def test_draw_map():
 	""" Tests that draw_map returns HTML """
 	region = MapRegion(geo_path='../data/us-states.json')
-	map_html = draw_map((51.5135015, -0.1362392), regions=[region], zoom=3)
+	map_html = draw_map((40, -90), regions=[region], zoom_start=4)
 	assert isinstance(map_html, HTML)
 
 

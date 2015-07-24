@@ -7,22 +7,21 @@ Integrates the folium package to draw maps.
 from IPython.core.display import HTML
 import json
 import folium
-
+import random
 
 #########################
 # Exposed Functionality #
 #########################
 
 
-def draw_map(center, zoom=None, **kwargs):
+def draw_map(center, **kwargs):
     """ 
     Draw a map with center & zoom containing all points and
     regions that displays points as circles and regions as polygons.
     """
 
     return Map(
-        location=center, 
-        zoom_start=zoom, 
+        location=center,
         **kwargs).map().to_html()
 
 
@@ -129,7 +128,7 @@ class Map(MapEntity):
 
     defaults = {
         'location': [45.5244, -122.6699],   # center -- lat-long pair at the center of the map
-        'tiles': 'Stamen Toner',            # zoom -- zoom level
+        'tiles': 'Stamen Toner',            # zoom_start -- zoom level
         'zoom_start': 17,                   # points -- a list of MapPoints
         'width': 960,
         'height': 500,
@@ -213,13 +212,24 @@ class MapRegion(MapEntity):
         'line_opacity': 1
     }
 
+    TEMP_FILE = None  # TODO: temporary workaround - will need a more permanent solution
+
     allowed_collections = (list, set, tuple)
 
     def before_map(self):
         """ Prepares for mapping by passing JSON representation """
         self._validate()
-        self.attributes['geo_str'] = self._to_json()
-
+        json_str = json.dumps(self._to_json()).replace(']]]}}', ']]]}}\n')
+        # self.attributes['geo_str'] = json_str
+        if self['locations'][0] or self['points'] or self['regions']:  # TODO: temporary workaround
+            import os
+            try:
+                os.mkdir('cache/')
+            except FileExistsError:
+                pass
+            self.TEMP_FILE = 'cache/'+str(round(random.random()*100))+'temp.json'
+            open(self.TEMP_FILE, 'w').write(json_str)
+            self.attributes['geo_path'] = self.TEMP_FILE
 
     def map(self, map=None):
         """
@@ -280,6 +290,7 @@ class MapRegion(MapEntity):
         """ Converts single feature into feature JSON """
         return _map_to_defaults({
             'type': 'Feature',
+            'properties': {'featurecla': 'Map'},
             'geometry': feature
         }, kwargs)
 
