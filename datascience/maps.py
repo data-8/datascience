@@ -19,11 +19,55 @@ def draw_map(center=None, **kwargs):
     Draw a map with center & zoom containing all points and
     regions that displays points as circles and regions as polygons.
     """
+    return get_map(center, **kwargs).to_html()
 
-    return Map(
-        location=center,
-        **kwargs).map().to_html()
 
+def get_map(center=None, **kwargs):
+    """
+    Get a map and play with it before drawing it. Use to_html() to draw.
+    """
+    return Map(location=center, **kwargs).map()
+
+
+class Data:
+    """
+    Abstracts away a geoJSON string, object, or file
+
+    >>> data = Data('../data/us-states.json')
+    >>> data.CA
+    (list of coordinates)
+    """
+
+    _data = None
+
+    def __init__(self, path_or_json_or_string):
+        """ Loads geoJSON """
+        jsons = path = string = path_or_json_or_string
+        if isinstance(jsons, (dict, list)):
+            self._data = jsons
+        try:
+            self._data = json.loads(string)
+        except ValueError:
+            pass
+        try:
+            self._data = json.loads(open(path, 'r').read())
+        except FileNotFoundError:
+            pass
+        if not self._data:
+            raise MapError('Data accepts a valid geoJSON object,\
+            geoJSON string, or path to a geoJSON file')
+        self.process_data()
+
+    def process_data(self):
+        """
+        Processes the data, and makes each list coordinates accessible via
+        the ID of the feature.
+        """
+        self._features = self._data['features']
+        for i, feature in enumerate(self._features):
+            setattr(self, feature.get('id', i),
+                    MapRegion(locations=feature['geometry']['coordinates'],
+                              geo_formatted=True))
 
 #########
 # Utils #
@@ -93,7 +137,7 @@ class MapEntity:
 
     _init = {}                                  # params for initial call
     _defaults = {}                              # defaults for both attributes and data
-    _attributes = {}                            # only data passed to mapper
+    _attributes = None                          # only data passed to mapper
     _allowed_attributes = []                    # allowed attributes
     _mapper = None                              # default function to display this shape on the map
     _folium = None                              # access to the map object (kind of)
@@ -102,7 +146,7 @@ class MapEntity:
     @_hook
     def __init__(self, **kwargs):
         """ Saves attributes, with defaults """
-        self._init = kwargs
+        self._init, self._attributes = kwargs, {}
         self._attributes = _map_to_defaults(
             self._defaults, kwargs, includes=self._allowed_attributes)
         self.set(**_map_to_defaults(self._defaults, kwargs))
@@ -114,6 +158,10 @@ class MapEntity:
     def __getitem__(self, k):
         """ Get attribute """
         return self._attributes[k]
+    
+    def __delitem__(self, k):
+        """ Delete attribute """
+        del self._attributes[k]
 
     def set(self, override=False, **kwargs):
         """ Transform args into properties """
@@ -187,7 +235,7 @@ class Map(MapEntity):
         return HTML('<iframe srcdoc="%s" '
                     'style="width: %spx; height: %spx; '
                     'border: none"></iframe>' % (map_html, map.width, map.height))
-    
+
     def _before_to_html(self, *args, **kwargs):
         """
         Called before to_html, add points and regions before outputting map 
@@ -204,6 +252,9 @@ class Map(MapEntity):
     
     def _before_map(self, *args, **kwargs):
         """ Autozoom map where appropriate """
+        if self.location:
+            self._dynamic_arg('location')
+            
         self.bounds = self._autobounds()
         
         if not self.location:
@@ -279,6 +330,36 @@ class Map(MapEntity):
             midpoint(bounds['min_long'], bounds['max_long'])
         )
         
+    def _dynamic_arg(self, key):
+        """ Checks the first arg in check_map for other options """
+        val = getattr(self, key, None)
+        if val:
+            setattr(self, key, None)
+            del self[key]
+            if isinstance(val, MapRegion):
+                self.regions.append(val)
+            elif isinstance(val, MapPoint):
+                self.points.append(val)
+            else:
+                setattr(self, key, val)
+                self[key] = val
+
+    @classmethod
+    def reverse(cls, lst_or_coord_or_obj):
+        """
+        Reverses all coordinates in a list or list of lists or so on
+        and so forth - effectively translates all EPSG-compliant coordinates
+        into valid geoJSON coordinates
+        """
+        lst = coord = obj = lst_or_coord_or_obj
+        if not lst:
+            return
+        if isinstance(coord[0], (int, float)):
+            return coord[::-1]
+        if isinstance(lst, cls._allowed_collections):
+            return [cls.reverse(item) for item in lst]
+        return obj
+
 
 class MapPoint(MapEntity):
     """ A circle. Draw by passing into draw_map."""
@@ -303,7 +384,12 @@ class MapPoint(MapEntity):
         'fill_opacity': 0.6
     }
 
-    def __init__(self, location, **kwargs):
+    def __init__(self, location_or_x, y=None, **kwargs):
+        location = x = location_or_x
+        if isinstance(location, self._allowed_collections):
+            pass
+        elif isinstance(x, (int, float)):
+            location = (x, y)
         super().__init__(location=location, **kwargs)
 
     def __str__(self):
@@ -312,8 +398,7 @@ class MapPoint(MapEntity):
     def _after___init__(self, *args, **kwargs):
         """ Translates all lat-long pairs into long-lat pairs, from EPSG-compliant to GeoJSON format """
         if 'geo_formatted' not in kwargs or not kwargs['geo_formatted']:
-            y, x = self.location
-            self.location = (x, y)
+            self.location = Map.reverse(self.location)
 
 
 class MapRegion(MapEntity):
@@ -377,11 +462,9 @@ class MapRegion(MapEntity):
         """ Translates all lat-long pairs into long-lat pairs, from EPSG-compliant to GeoJSON format """
         if 'geo_formatted' not in kwargs or not kwargs['geo_formatted']:
             if 'locations' in kwargs:
-                self.locations = [
-                    [(y, x) for x, y in location]
-                    for location in kwargs['locations']]
+                self.locations = Map.reverse(kwargs['locations'])
             if 'points' in kwargs:
-                self.points = [(y, x) for x, y in kwargs['points']]
+                self.points = Map.reverse(kwargs['points'])
 
     def _before_map(self, *args, **kwargs):
         """ Prepares for mapping by passing JSON representation """
@@ -427,6 +510,7 @@ class MapRegion(MapEntity):
 
     @staticmethod
     def to_json(features, **kwargs):
+        """ Converts any features list to FeatureCollection JSON """
         return _map_to_defaults({
             'type': 'FeatureCollection',
             'features': features

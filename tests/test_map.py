@@ -60,6 +60,16 @@ def test_setup_map():
 	}
 	map_html = Map(location=center, **kwargs).map().to_html()
 	assert isinstance(map_html, HTML)
+	
+	
+def test_draw_map_arg(region1):
+	""" Tests that draw_map accepts a MapRegion or MapPoint as the first arg """
+	map_html = draw_map(region1)
+	assert isinstance(map_html, HTML)
+	
+	point = MapPoint((51.5135015, -0.1358392))
+	map_html = draw_map(point)
+	assert isinstance(map_html, HTML)
 
 
 ############
@@ -70,6 +80,13 @@ def test_setup_map():
 def test_draw_marker():
 	""" Tests that draw_map returns HTML """
 	points = [MapPoint((51.5135015, -0.1358392))]
+	map_html = draw_map((51.5135015, -0.1362392), points=points)
+	assert isinstance(map_html, HTML)
+
+
+def test_point_init():
+	""" Tests that you can pass in a collection of coordinates or two coordinates"""
+	points = [MapPoint((51.5135015, -0.1358392)), MapPoint(51.5135015, -0.1358392)]
 	map_html = draw_map((51.5135015, -0.1362392), points=points)
 	assert isinstance(map_html, HTML)
 
@@ -181,3 +198,14 @@ def test_bounds_limits():
 	assert bounds['min_lat'] == -90
 	assert bounds['max_long'] == 180
 	assert bounds['min_long'] == -180
+	
+	
+#######################
+# Additional Features #
+#######################
+
+def test_data_abstraction():
+	""" Tests that data behaves normally """
+	data = Data('data/us-states.json')
+	map_html = draw_map(data.CA)
+	assert isinstance(map_html, HTML)
