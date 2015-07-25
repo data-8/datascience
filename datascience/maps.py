@@ -289,7 +289,7 @@ class Map(MapEntity):
         if not self.location:
             self._autocenter(self.bounds)
 
-        # remove with new Folium release
+        # TODO(Alvin): remove with new Folium release
         if 'zoom_start' not in self._init:
             self._autofit(self.bounds)
             
