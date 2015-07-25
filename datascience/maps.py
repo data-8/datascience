@@ -40,9 +40,11 @@ class Data:
 
     _data = None
 
-    def __init__(self, path_or_json_or_string):
+    def __init__(self, path_or_json_or_string = None):
         """ Loads geoJSON """
         jsons = path = string = path_or_json_or_string
+        if not string:
+            return
         if isinstance(jsons, (dict, list)):
             self._data = jsons
         try:
@@ -64,10 +66,19 @@ class Data:
         the ID of the feature.
         """
         self._features = self._data['features']
+        self._data = {}
         for i, feature in enumerate(self._features):
-            setattr(self, feature.get('id', i),
-                    MapRegion(locations=feature['geometry']['coordinates'],
-                              geo_formatted=True))
+            key, val = feature.get('id', i), MapRegion(
+                locations=feature['geometry']['coordinates'],
+                geo_formatted=True)
+            self._data[key] = val
+            setattr(self, key, val)
+            
+    def to_dict(self):
+        return self._data
+    
+    def to_list(self):
+        return self._data.values()
 
 #########
 # Utils #
