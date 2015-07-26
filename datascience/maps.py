@@ -1,53 +1,41 @@
-"""
-
-Integrates the folium package to draw maps.
-
-"""
+"""Draw maps using folium."""
 
 from IPython.core.display import HTML
 import json
 import folium
+import functools
 import random
 
 #########################
 # Exposed Functionality #
 #########################
 
-
 def draw_map(obj=None, **kwargs):
-    """ 
-    Draw a map with center & zoom containing all points and regions that 
-    displays points as circles and regions as polygons.
-    
-    obj -- a coordinate for the center, a MapRegion, or a MapPoint
-    see help(Map) for more parameters to pass to draw_map
-    """
+   """Draw a map with center & zoom containing all points and regions that
+   displays points as circles and regions as polygons.
+
+   obj -- a coordinate for the center, a MapRegion, or a MapPoint
+   see help(Map) for more parameters to pass to draw_map
+   """
     return get_map(obj, **kwargs).to_html()
 
 
 def get_map(obj=None, **kwargs):
-    """
-    Get a map and play with it before drawing it. Use to_html() to draw.
-    
-    obj -- a coordinate for the center, a MapRegion, or a MapPoint
-    see help(Map) for more parameters to pass to draw_map
-    """
+   """Get a map object to manipulate before drawing it. Use to_html() to draw.
+
+   obj -- a coordinate for the center, a MapRegion, or a MapPoint
+   see help(Map) for more parameters to pass to draw_map
+   """
     return Map(location=obj, **kwargs).map()
 
 
-class Data:
-    """
-    Abstracts away a geoJSON string, object, or file
-
-    >>> data = Data('../data/us-states.json')
-    >>> data.CA
-    (list of coordinates)
-    """
+class MapData:
+   """A geoJSON string, object, or file."""
 
     _data = None
 
     def __init__(self, path_or_json_or_string = None):
-        """ Loads geoJSON """
+       """Loads geoJSON"""
         jsons = path = string = path_or_json_or_string
         if not string:
             return
@@ -62,15 +50,14 @@ class Data:
         except FileNotFoundError:
             pass
         if not self._data:
-            raise MapError('Data accepts a valid geoJSON object,\
-            geoJSON string, or path to a geoJSON file')
-        self.process_data()
+            raise MapError('MapData accepts a valid geoJSON object'
+            'geoJSON string, or path to a geoJSON file')
+        self._process_data()
 
-    def process_data(self):
-        """
-        Processes the data, and makes each list coordinates accessible via
-        the ID of the feature.
-        """
+    def _process_data(self):
+       """Processes the data, and makes each list coordinates accessible via
+       the ID of the feature.
+       """
         self._features = self._data['features']
         self._data = {}
         for i, feature in enumerate(self._features):
@@ -79,64 +66,63 @@ class Data:
                 geo_formatted=True)
             self._data[key] = val
             setattr(self, key, val)
-            
-    def to_dict(self):
-        return self._data
-    
-    def to_list(self):
-        return self._data.values()
 
-#########
-# Utils #
-#########
+    def to_dict(self):
+        return self._data.copy()
+
+    def to_list(self):
+        return list(self._data.values())
+
+
+##################
+# Implementation #
+##################
 
 
 def _map_to_defaults(defaults, params, excludes=[], includes=[]):
-    """
-    Squishes together two dictionaries, with one containing defaults
-    """
+   """Squishes together two dictionaries, with one containing defaults."""
     rval = defaults.copy()
     rval.update(params)
     return {
-        k: v for k, v in rval.items() 
+        k: v for k, v in rval.items()
         if k not in excludes
         and k in (includes or rval.keys())
     }
 
 
 def _hook(f):
-    """
-    Decorator for obj method, checks for and invokes PREFIX_before and 
+   """
+    Decorator for obj method, checks for and invokes PREFIX_before and
     PREFIX_after a method is called
-    """
+   """
 
     def call_hook(self, template, *args, **kwargs):
         fn = getattr(self, template % f.__name__, None)
         if callable(fn):
             fn(*args, **kwargs)
 
+    @functools.wraps(f)
     def method(self, *args, **kwargs):
         call_hook(self, '_before_%s', *args, **kwargs)
         rval = f(self, *args, **kwargs)
         call_hook(self, '_after_%s', *args, **kwargs)
         return rval
-    
-    method.__name__ = getattr(f, '__name__', method.__name__)
+
     return method
 
 
 class ProgrammerError(Exception):
-    """ Thrown when programmers make a mistake """
-    
+   """Thrown when programmers make a mistake"""
+
     message = ''
     prefix = 'Please report this to your instructors'
-    
+
     def get_message(self):
         return '%s: %s' % (self.prefix, self.message)
 
 
 class MapError(Exception):
-    """ Thrown when users make a mistake """
+   """Thrown when users make a mistake"""
     pass
 
 
@@ -146,19 +132,19 @@ class MapError(Exception):
 
 
 class MapEntity:
-    """
+   """
     A base utility for all entities related to map
-    
-    "Attributes" are arguments that will be passed to the object's associated 
+
+    "Attributes" are arguments that will be passed to the object's associated
     Folium method (called, the "mapper")
     - get and set "attributes", using map[prop]
-    - after initializing the object, all properties will either be filled with 
+    - after initializing the object, all properties will either be filled with
       a specified default or be set to None, to accept Folium's default
-    
-    All other data are pieces of data that you may wish to associate with the 
+
+    All other data are pieces of data that you may wish to associate with the
     object.
     - all other data get and set, using map.prop
-    """
+   """
 
     _init = {}                                  # params for initial call
     _defaults = {}                              # defaults for attrs and data
@@ -170,42 +156,42 @@ class MapEntity:
 
     @_hook
     def __init__(self, **kwargs):
-        """ Saves attributes, with defaults """
+       """Saves attributes, with defaults"""
         self._init, self._attributes = kwargs, {}
         self._attributes = _map_to_defaults(
             self._defaults, kwargs, includes=self._allowed_attributes)
         self.set(**_map_to_defaults(self._defaults, kwargs))
 
     def __setitem__(self, k, v):
-        """ Set attribute """
+       """Set attribute"""
         self._attributes[k] = v
 
     def __getitem__(self, k):
-        """ Get attribute """
+       """Get attribute"""
         return self._attributes[k]
-    
+
     def __delitem__(self, k):
-        """ Delete attribute """
+       """Delete attribute"""
         del self._attributes[k]
 
     def set(self, override=False, **kwargs):
-        """ Transform args into properties """
+       """Transform args into properties"""
         for k, v in kwargs.items():
             attr = getattr(self, k, None)
             if callable(attr) and not override:
                 raise ProgrammerError('"%s" is an existing method' % k)
             setattr(self, k, v)
         return self
-    
+
     def get(self, *args):
-        """ Get a set of variables - use pairs to set getattr default """
+       """Get a set of variables - use pairs to set getattr default"""
         get = lambda val: getattr(self, val[0], val[1]) \
             if isinstance(val, tuple) else getattr(self, val)
         return (get(var) for var in args)
 
     @_hook
     def map(self, map=None):
-        """ Maps this object, with its own attributes """
+       """Maps this object, with its own attributes"""
         if not callable(self._mapper):
             self._mapper = getattr(map, self._mapper)
         self._folium = self._mapper(**self._attributes)
@@ -213,9 +199,9 @@ class MapEntity:
 
 
 class Map(MapEntity):
-    """
+   """
     Represents a map, potentially with MapPoints and MapRegions
-      
+
     location or center -- lat-long pair at the center of the map
     width -- pixel int or percentage string
     height -- pixel int or percentage string
@@ -230,10 +216,10 @@ class Map(MapEntity):
     >>> map = Map().map()
     >>> map.to_html()
     <IPython.core.display.HTML object>
-    """
+   """
 
     _mapper = folium.Map
-    
+
     _allowed_attributes = [
         'location',
         'width',
@@ -256,19 +242,19 @@ class Map(MapEntity):
 
     @_hook
     def to_html(self):
-        """ Outputs the HTML that IPython will display. """
+       """Outputs the HTML that IPython will display."""
         map = self._folium
         map._build_map()
         map_html = map.HTML.replace('"', '&quot;')
         return HTML('<iframe srcdoc="%s" '
                     'style="width: %spx; height: %spx; '
-                    'border: none"></iframe>' 
+                    'border: none"></iframe>'
                     % (map_html, map.width, map.height))
 
     def _before_to_html(self, *args, **kwargs):
-        """
-        Called before to_html, add points and regions before outputting map 
-        """
+       """
+        Called before to_html, add points and regions before outputting map
+       """
         for point in self.points:
             point.map(self._folium)
 
@@ -278,23 +264,23 @@ class Map(MapEntity):
         # uncomment the following with new Folium release
         # if 'zoom_start' not in self._init:
         #     self._autofit(self.bounds)
-    
+
     def _before_map(self, *args, **kwargs):
-        """ Autozoom map where appropriate """
+       """Autozoom map where appropriate"""
         if self.location:
             self._dynamic_arg('location')
-            
+
         self.bounds = self._autobounds()
-        
+
         if not self.location:
             self._autocenter(self.bounds)
 
         # TODO(Alvin): remove with new Folium release
         if 'zoom_start' not in self._init:
             self._autofit(self.bounds)
-            
+
     def _autobounds(self):
-        """ Simple calculation for bounds """
+       """Simple calculation for bounds"""
         bounds = {}
 
         def check(prop, compare, extreme, val):
@@ -320,18 +306,18 @@ class Map(MapEntity):
         bound_check([point.location for point in self.points])
         bound_check([region.to_polygon() for region in self.regions])
         return bounds
-        
+
     def _autofit(self, bounds):
-        """ Automatically fits everything with the maximum zoom possible """
+       """Automatically fits everything with the maximum zoom possible"""
         if not bounds:
             return
-        
+
         # TODO(Alvin): uncomment with new Folium release
         # self._folium.fit_bounds(
         #     [bounds['min_long'], bounds['min_lat']],
         #     [bounds['max_long'], bounds['max_lat']]
         # )
-        
+
         # remove the following with new Folium release
         # rough approximation, assuming max_zoom is 18
         import math
@@ -349,18 +335,18 @@ class Map(MapEntity):
             to create_map')
 
     def _autocenter(self, bounds):
-        """ Find the center """
+       """Find the center"""
         if not bounds:
             return
-        
+
         midpoint = lambda a, b: (a + b)/2
         self['location'] = (
             midpoint(bounds['min_lat'], bounds['max_lat']),
             midpoint(bounds['min_long'], bounds['max_long'])
         )
-        
+
     def _dynamic_arg(self, key):
-        """ Checks the first arg in check_map for other options """
+       """Checks the first arg in check_map for other options"""
         val = getattr(self, key, None)
         if val:
             setattr(self, key, None)
@@ -375,11 +361,11 @@ class Map(MapEntity):
 
     @classmethod
     def reverse(cls, lst_or_coord_or_obj):
-        """
-        Reverses all coordinates in a list or list of lists or so on and so 
-        forth - effectively translates all EPSG-compliant coordinates into 
+       """
+        Reverses all coordinates in a list or list of lists or so on and so
+        forth - effectively translates all EPSG-compliant coordinates into
         valid geoJSON coordinates
-        """
+       """
         lst = coord = obj = lst_or_coord_or_obj
         if not lst:
             return
@@ -391,28 +377,28 @@ class Map(MapEntity):
 
 
 class MapPoint(MapEntity):
-    """
+   """
     A circle, wrapper for Folium's draw_circle. Draw by passing into draw_map.
-    
+
     location -- lat-long pair at center of circle
     radius -- radius of circle on map
     popup -- text that pops up when circle is clicked
     line_color -- color of circle border
     fill_color -- color of circle within border
     fill_opacity -- opacity of circle fill
-    """
-    
+   """
+
     _mapper = 'circle_marker'
-    
+
     _allowed_attributes = [
-        'location',     
-        'radius',          
-        'popup',  
+        'location',
+        'radius',
+        'popup',
         'line_color',
         'fill_color',
         'fill_opacity'
     ]
-    
+
     _defaults = {
         'location': [],
         'radius': 10,
@@ -423,10 +409,10 @@ class MapPoint(MapEntity):
     }
 
     def __init__(self, location_or_x, y=None, **kwargs):
-        """
-        Checks for coordinates passed in as two args, default is to pass as 
+       """
+        Checks for coordinates passed in as two args, default is to pass as
         one arg
-        """
+       """
         location = x = location_or_x
         if isinstance(x, (int, float)):
             location = (x, y)
@@ -436,18 +422,18 @@ class MapPoint(MapEntity):
         return str(list(self.location))
 
     def _after___init__(self, *args, **kwargs):
-        """ 
-        Translates all lat-long pairs into long-lat pairs, from EPSG-compliant 
-        to GeoJSON format 
-        """
+       """
+        Translates all lat-long pairs into long-lat pairs, from EPSG-compliant
+        to GeoJSON format
+       """
         if 'geo_formatted' not in kwargs \
                 or not kwargs['geo_formatted']:
             self.location = Map.reverse(self.location)
 
 
 class MapRegion(MapEntity):
-    """
-    A polygon, wrapper for Folium's geo_json method, with a few customizations. 
+   """
+    A polygon, wrapper for Folium's geo_json method, with a few customizations.
     Draw by passing into draw_map.
 
     regions -- list of MapRegions (if present, locations and points not used)
@@ -456,20 +442,20 @@ class MapRegion(MapEntity):
     points -- list of lat-long pairs for a normal polygon
     geo_formatted -- boolean, True if the data is formatted as long-lat pairs
     *pass any other kwarg to save it with the object
-    
-    Note: GeoJSON requires long-lat-alt triplets, or just long-lat pairs, 
-    although EPSG:4326 states that the coordinate order should be lat-long. For 
-    this reason, MapRegion has to flip incoming lat-long pairs to become 
-    long-lat pairs. By default, MapRegion accepts lat-long pairs, to match 
+
+    Note: GeoJSON requires long-lat-alt triplets, or just long-lat pairs,
+    although EPSG:4326 states that the coordinate order should be lat-long. For
+    this reason, MapRegion has to flip incoming lat-long pairs to become
+    long-lat pairs. By default, MapRegion accepts lat-long pairs, to match
     MapPoint's behavior.
-    """
-    
+   """
+
     # composite options
 
     CHILDREN = 'children'  # invoke map() for children
     GROUP = 'group'  # invoke to_json() for children
     ONE = 'one'  # invoke to_polygon() for children
-    
+
     _mapper = 'geo_json'
 
     _allowed_attributes = [
@@ -489,7 +475,7 @@ class MapRegion(MapEntity):
         'topojson',
         'reset'
     ]
-    
+
     _defaults = {
         'composite': GROUP,
         'regions': [],
@@ -506,10 +492,10 @@ class MapRegion(MapEntity):
     TEMP_FILE = None
 
     def _after___init__(self, *args, **kwargs):
-        """
-        Translates all lat-long pairs into long-lat pairs, from EPSG-compliant 
+       """
+        Translates all lat-long pairs into long-lat pairs, from EPSG-compliant
         to GeoJSON format
-        """
+       """
         if 'geo_formatted' not in kwargs or not kwargs['geo_formatted']:
             if 'locations' in kwargs:
                 self.locations = Map.reverse(kwargs['locations'])
@@ -517,10 +503,10 @@ class MapRegion(MapEntity):
                 self.points = Map.reverse(kwargs['points'])
 
     def _before_map(self, *args, **kwargs):
-        """ Prepares for mapping by passing JSON representation """
+       """Prepares for mapping by passing JSON representation"""
         self._validate()
         json_str = json.dumps(self._to_json()).replace(']]]}}', ']]]}}\n')
-        
+
         # self.attributes['geo_str'] = json_str
 
         # TODO(Alvin): find soln to temporary workaround
@@ -533,12 +519,12 @@ class MapRegion(MapEntity):
             self._attributes['geo_path'] = self.TEMP_FILE
 
     def map(self, map=None):
-        """
-        Takes action, depending on composite
-            CHILDREN -- invoke map() for each child
-            GROUP -- invoke parent map() normally
-            ONE -- invoke parent map() normally
-        """
+       """Takes action, depending on composite
+
+       CHILDREN -- invoke map() for each child
+       GROUP -- invoke parent map() normally
+       ONE -- invoke parent map() normally
+       """
         composite = self.composite
         if composite in (MapRegion.GROUP, MapRegion.ONE):
             super().map(map)
@@ -547,7 +533,7 @@ class MapRegion(MapEntity):
                 region.map(map)
 
     def _validate(self):
-        """ Checks for validity of data """
+       """Checks for validity of data"""
         locations, points = self.get('locations', 'points')
 
         if not isinstance(points, self._allowed_collections):
@@ -556,19 +542,19 @@ class MapRegion(MapEntity):
 
     @staticmethod
     def to_json(features, **kwargs):
-        """ Converts any features list to FeatureCollection JSON """
+       """Converts any features list to FeatureCollection JSON"""
         return _map_to_defaults({
             'type': 'FeatureCollection',
             'features': features
         }, kwargs)
 
     def _to_json(self):
-        """
-        Converts MapRegion to folium-ready geoJSON, depending on composite
-            CHILDREN -- none
-            GROUP -- construct jsons with children
-            ONE -- construct polygons with children
-        """
+       """Converts MapRegion to folium-ready geoJSON, depending on composite.
+
+       CHILDREN -- none
+       GROUP -- construct jsons with children
+       ONE -- construct polygons with children
+       """
         composite = self.composite
         if composite == MapRegion.GROUP:
             return MapRegion.to_json(
@@ -581,7 +567,7 @@ class MapRegion(MapEntity):
 
     @staticmethod
     def to_feature_json(feature, **kwargs):
-        """ Converts single feature into feature JSON """
+       """Converts single feature into feature JSON"""
         return _map_to_defaults({
             'type': 'Feature',
             'properties': {'featurecla': 'Map'},
@@ -589,12 +575,12 @@ class MapRegion(MapEntity):
         }, kwargs)
 
     def _to_feature_json(self):
-        """ Converts to list of feature JSONs """
-        return [MapRegion.to_feature_json(feat) 
+       """Converts to list of feature JSONs"""
+        return [MapRegion.to_feature_json(feat)
             for feat in self.to_feature()]
 
     def to_feature(self):
-        """ Converts to list of poylgon JSONs """
+       """Converts to list of poylgon JSONs"""
         regions = self.regions
 
         if regions:
@@ -605,20 +591,20 @@ class MapRegion(MapEntity):
 
         return [self._to_polygon_json()]
 
-    @staticmethod   
+    @staticmethod
     def to_polygon_json(polygon, **kwargs):
-        """ Converts single polygon into polygon JSON """
+       """Converts single polygon into polygon JSON"""
         return _map_to_defaults({
             'type': 'Polygon',
             'coordinates': polygon
         }, kwargs)
 
     def _to_polygon_json(self):
-        """ Converts to one polygon JSON """
+       """Converts to one polygon JSON"""
         return MapRegion.to_polygon_json(self.to_polygon())
 
     def to_polygon(self):
-        """ Converts to list of polygons, including that of descendants """
+       """Converts to list of polygons, including that of descendants"""
         regions, locations, points = self.get('regions', 'locations', 'points')
 
         if regions:
@@ -630,7 +616,7 @@ class MapRegion(MapEntity):
         return self._to_locations()
 
     def _to_locations(self):
-        """ Converts to list of polygons """
+       """Converts to list of polygons"""
         locations, points = self.get('locations', 'points')
         if not locations[0]:
             return [points]
