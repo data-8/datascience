@@ -322,10 +322,10 @@ class Map(MapEntity):
             zoom = math.log(area/max_area)/-factor
             self['zoom_start'] = max(1, min(18, round(zoom)))
         except ValueError:
-            raise MapError('Uh oh. Is the data formatted as long-lat \
-            pairs? (Check. If the smallest number is less than -90, \
-            those are long-lat pairs) If so, please add geo_formatted=True \
-            to create_map')
+            raise MapError('Uh oh. Is the data formatted as long-lat '
+            'pairs? (Check. If the smallest number is less than -90, '
+            'those are long-lat pairs) If so, please add geo_formatted=True '
+            'to create_map')
 
     def _autocenter(self, bounds):
         """Find the center."""
