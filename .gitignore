@@ -54,3 +54,9 @@ docs/_build/
 
 # PyBuilder
 target/
+
+.idea/
+*.iml
+
+cache/
+*.ipynb_checkpoints/
