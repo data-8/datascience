@@ -37,7 +37,7 @@ class PyTest(TestCommand):
 setup(
   name = 'datascience',
   packages = ['datascience'],
-  version = '0.2.2',
+  version = '0.2.3',
   install_requires = install_requires,
   tests_require = test_requires,
   cmdclass = {'test': PyTest},
@@ -45,7 +45,7 @@ setup(
   author = 'John DeNero, David Culler, Alvin Wan, Sam Lau',
   author_email = 'ds-instr@berkeley.edu',
   url = 'https://github.com/dsten/datascience',
-  download_url = 'https://github.com/dsten/datascience/archive/0.2.0.zip',
+  download_url = 'https://github.com/dsten/datascience/archive/0.2.3.zip',
   keywords = ['data', 'tools', 'berkeley'],
   classifiers = [],
 )
