@@ -239,7 +239,7 @@ class Table(collections.abc.Mapping):
             column = column == value
         return self.take(np.nonzero(column)[0])
 
-    def sort(self, column_or_label, decreasing=False, distinct=False):
+    def sort(self, column_or_label, ascending=False, distinct=False):
         """Return a Table of sorted rows by the values in a column."""
         column = self._get_column(column_or_label)
         if distinct:
@@ -247,7 +247,7 @@ class Table(collections.abc.Mapping):
         else:
             row_numbers = np.argsort(column, axis=0)
         assert (row_numbers < self.num_rows).all(), row_numbers
-        if decreasing:
+        if not ascending:
             row_numbers = np.array(row_numbers[::-1])
         return self.take(row_numbers)
 
@@ -343,8 +343,9 @@ class Table(collections.abc.Mapping):
 
     def join(self, column_label, other, other_label=None):
         """Generate a table with the columns of self and other, containing rows
-        for all values of a column that appear in both tables. If a join value
-        appears more than once, only its first row will be used.
+        for all values of a column that appear in both tables. 
+        If a join value appears more than once in self, each row will be used,
+        but in the other table, only the first of each will be used.
 
         If the result is empty, return None.
         """
@@ -360,8 +361,9 @@ class Table(collections.abc.Mapping):
         joined_rows = []
         for label, rows in self_rows.items():
             if label in other_rows:
-                row, other_row = rows[0], other_rows[label][0]
-                joined_rows.append(row + other_row)
+                for row in rows:
+                    other_row = other_rows[label][0]
+                    joined_rows.append(row + other_row)
         if not joined_rows:
             return None
 
