@@ -639,6 +639,7 @@ class Table(collections.abc.Mapping):
             plt.legend(self.column_labels)
         else:
             _, axes = plt.subplots(n, 1, figsize=(6, 4 * n))
+            if n==1 : axes = [axes]
             for axis, label, color in zip(axes, self.column_labels, colors):
                 axis.hist(self[label], color=color, **vargs)
                 axis.set_xlabel(label, fontsize=16)
