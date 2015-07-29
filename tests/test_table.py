@@ -39,7 +39,7 @@ def assert_equal(string1, string2):
 	string1, string2 = str(string1), str(string2)
 	whitespace = re.compile('\s')
 	purify = lambda s: whitespace.sub('', s)
-	assert purify(string1) == purify(string2), string1 + " != " + string2
+	assert purify(string1) == purify(string2), "\n%s\n!=\n%s" % (string1, string2)
 
 
 ############
@@ -139,12 +139,12 @@ def test_sort(t):
 
 
 def test_sort_args(t):
-	test = t.sort('points', decreasing=True, distinct=True)
+	test = t.sort('points', descending=False, distinct=True)
 	assert_equal(test, """\
 	letter | count | points | totals
-	z      | 1     | 10     | 10
-	b      | 3     | 2      | 6
 	a      | 9     | 1      | 9
+	b      | 3     | 2      | 6
+	z      | 1     | 10     | 10
 	""")
 
 

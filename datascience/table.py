@@ -13,6 +13,7 @@ import IPython
 
 import datascience.maps as maps
 
+
 class Table(collections.abc.Mapping):
     """A sequence of labeled columns.
 
@@ -239,7 +240,7 @@ class Table(collections.abc.Mapping):
             column = column == value
         return self.take(np.nonzero(column)[0])
 
-    def sort(self, column_or_label, ascending=False, distinct=False):
+    def sort(self, column_or_label, descending=False, distinct=False):
         """Return a Table of sorted rows by the values in a column."""
         column = self._get_column(column_or_label)
         if distinct:
@@ -247,7 +248,7 @@ class Table(collections.abc.Mapping):
         else:
             row_numbers = np.argsort(column, axis=0)
         assert (row_numbers < self.num_rows).all(), row_numbers
-        if not ascending:
+        if descending:
             row_numbers = np.array(row_numbers[::-1])
         return self.take(row_numbers)
 
