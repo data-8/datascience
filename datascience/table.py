@@ -50,7 +50,8 @@ class Table(collections.abc.Mapping):
             self[label] = column
 
     def __getitem__(self, label):
-        return self._columns[label]
+        return self._columns[label] \
+            if label in self.column_labels else [None]*self.num_rows
 
     def __setitem__(self, label, values):
         if not isinstance(values, np.ndarray):
@@ -113,6 +114,16 @@ class Table(collections.abc.Mapping):
     @property
     def columns(self):
         return tuple(self._columns.values())
+    
+    def get_columns(self, *args):
+        """Get columns according to order of args.
+        Args may also be tuples of (column_label, filler value)
+        "filler value" is used if the column does not exist in the table
+        Example: get_columns('points', ('counts', 0), ('letters', ''))
+        """
+        get = lambda val: self[val[0]] or [val[1]]*self.num_rows \
+            if isinstance(val, tuple) else self[val]
+        return tuple(get(var) for var in args)
 
     def column_index(self, column_label):
         """Return the index of a column."""
@@ -144,14 +155,11 @@ class Table(collections.abc.Mapping):
 
     def append(self, row_or_table):
         """Append a row or all rows of a table with identical column names."""
-        if not row_or_table:
+        row, table, inc = row_or_table, row_or_table, 1
+        if not row:
             return
-        if isinstance(row_or_table, Table):
-            table = row_or_table
-            assert table.column_labels == self.column_labels
-            row, inc = list(row_or_table.columns), row_or_table.num_rows
-        else:
-            row, inc = row_or_table, 1
+        if isinstance(table, Table):
+            row, inc = table.get_columns(*self.column_labels), table.num_rows
         for i, column in enumerate(self._columns):
             self._columns[column] = np.append(self[column], row[i])
         self._num_rows = self.num_rows + inc

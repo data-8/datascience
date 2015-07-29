@@ -23,6 +23,13 @@ def table2():
 	return Table([points, names], ['points', 'names'])
 
 
+@pytest.fixture(scope='function')
+def table3():
+	"""Setup alphanumeric table, identical columns in diff order from first"""
+	letter, count, points = ['x', 'y', 'z'], [0, 54, 5], [3, 10, 24]
+	return Table([count, points, letter], ['count', 'points', 'letter'])
+
+
 @pytest.fixture(scope='module')
 def t():
 	"""Create one table for entire module"""
@@ -335,9 +342,33 @@ def test_append_table(table):
 	""")
 
 
-def test_append_bad_table(table, u):
-	with pytest.raises(AssertionError):
-		table.append(u)
+def test_append_different_table(table, u):
+	table.append(u)
+	assert_equal(table, """\
+	letter | count | points
+	a      | 9     | 1
+	b      | 3     | 2
+	c      | 3     | 2
+	z      | 1     | 10
+	None   | None  | 1
+	None   | None  | 2
+	None   | None  | 3
+	""")
+	
+
+def test_append_different_order(table, table3):
+	"""Tests append with same columns, diff order"""
+	table.append(table3)
+	assert_equal(table, """\
+	letter | count | points
+	a      | 9     | 1
+	b      | 3     | 2
+	c      | 3     | 2
+	z      | 1     | 10
+	x      | 0     | 3
+	y      | 54    | 10
+	z      | 5     | 24
+	""")
 
 
 def test_relabel():
