@@ -19,7 +19,7 @@ class Table(collections.abc.Mapping):
     >>> letters = ['a', 'b', 'c', 'z']
     >>> counts = [9, 3, 3, 1]
     >>> points = [1, 2, 2, 10]
-    >>> t = Table([('letter', letters), ('count', counts), ('points', points)])
+    >>> t = Table([letters, counts, points], ['letter', 'count', 'points'])
     >>> print(t)
     letter | count | points
     a      | 9     | 1
