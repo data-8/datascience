@@ -149,13 +149,12 @@ class Table(collections.abc.Mapping):
         if isinstance(row_or_table, Table):
             table = row_or_table
             assert table.column_labels == self.column_labels
-            for row in list(row_or_table.rows):
-                self.append(row)
+            row, inc = list(row_or_table.columns), row_or_table.num_rows
         else:
-            row = row_or_table
-            for i, column in enumerate(self._columns):
-                self._columns[column] = np.append(self[column], row[i])
-        self._num_rows = self.num_rows + 1
+            row, inc = row_or_table, 1
+        for i, column in enumerate(self._columns):
+            self._columns[column] = np.append(self[column], row[i])
+        self._num_rows = self.num_rows + inc
         return self
 
     def relabel(self, column_label, new_label):

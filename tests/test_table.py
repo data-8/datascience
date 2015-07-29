@@ -192,6 +192,7 @@ def test_groups(t):
     10     | False | ['z']     | [1]   | [10]
 	""")
 
+
 def test_groups_collect(t):
 	t = t.copy()
 	t.append(('e', 12, 1, 12))
@@ -204,6 +205,7 @@ def test_groups_collect(t):
     2      | True  | 6
     10     | False | 1
 	""")
+
 
 def test_join(t, u):
 	"""Tests that join works, not destructive"""
