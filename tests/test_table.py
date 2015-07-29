@@ -139,12 +139,12 @@ def test_sort(t):
 
 
 def test_sort_args(t):
-	test = t.sort('points', descending=False, distinct=True)
+	test = t.sort('points', descending=True, distinct=True)
 	assert_equal(test, """\
 	letter | count | points | totals
-	a      | 9     | 1      | 9
-	b      | 3     | 2      | 6
 	z      | 1     | 10     | 10
+	b      | 3     | 2      | 6
+	a      | 9     | 1      | 9
 	""")
 
 
