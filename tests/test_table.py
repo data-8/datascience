@@ -221,6 +221,9 @@ def test_join(t, u):
 	points | letter | count | totals | names
 	1      | a      | 9     | 9      | one
 	2      | b      | 3     | 6      | two
+	2      | c      | 3     | 6      | two
+	10     | z      | 1     | 10     | None
+
 	""")
 	assert_equal(u, """\
 	points  | names
@@ -483,6 +486,8 @@ def test_join_basic(table, table2):
 	points | letter | count | totals | names
 	1      | a      | 9     | 9      | one
 	2      | b      | 3     | 6      | two
+	2      | c      | 3     | 6      | two
+	10     | z      | 1     | 10     | None
 	""")
 
 
@@ -490,12 +495,29 @@ def test_join_with_booleans(table, table2):
 	table['totals'] = table['points'] * table['count']
 	table['points'] = table['points'] > 1
 	table2['points'] = table2['points'] > 1
+	
+	assert_equal(table, """\
+	letter | count | points | totals
+	a      | 9     | False  | 9
+	b      | 3     | True   | 6
+	c      | 3     | True   | 6
+	z      | 1     | True   | 10
+	""")
+	
+	assert_equal(table2, """\
+	points | names
+	False  | one
+	True   | two
+	True   | three
+	""")
 
 	test = table.join('points', table2)
 	assert_equal(test, """\
 	points | letter | count | totals | names
 	False  | a      | 9     | 9      | one
 	True   | b      | 3     | 6      | two
+	True   | c      | 3     | 6      | two
+	True   | z      | 1     | 10     | two
 	""")
 
 
@@ -505,6 +527,7 @@ def test_join_with_self(table):
 	count | letter | points | letter_2 | points_2
 	1     | z      | 10     | z        | 10
 	3     | b      | 2      | b        | 2
+	3     | c      | 2      | b        | 2
 	9     | a      | 1      | a        | 1
 	""")
 

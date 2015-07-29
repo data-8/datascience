@@ -368,10 +368,11 @@ class Table(collections.abc.Mapping):
         # build set of rows from rows that have values in both tables
         joined_rows = []
         for label, rows in self_rows.items():
-            if label in other_rows:
-                for row in rows:
-                    other_row = other_rows[label][0]
-                    joined_rows.append(row + other_row)
+            for row in rows:
+                other_row = other_rows[label][0]\
+                    if label in other_rows\
+                    else tuple([None]*other.num_rows)
+                joined_rows.append(row + other_row)
         if not joined_rows:
             return None
 
