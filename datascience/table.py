@@ -351,7 +351,7 @@ class Table(collections.abc.Mapping):
 
     def join(self, column_label, other, other_label=None):
         """Generate a table with the columns of self and other, containing rows
-        for all values of a column that appear in both tables. 
+        for all values of a column that appear in both tables.
         If a join value appears more than once in self, each row will be used,
         but in the other table, only the first of each will be used.
 
@@ -656,7 +656,7 @@ class Table(collections.abc.Mapping):
                 axis.set_xlabel(label, fontsize=16)
 
 
-    def points(self, column__lat, column__long, 
+    def points(self, column__lat, column__long,
             radii=None, labels=None, colors=None, **kwargs) :
         latitudes = self._get_column(column__lat)
         longitudes = self._get_column(column__long)
@@ -670,7 +670,7 @@ class Table(collections.abc.Mapping):
                            popup=label,
                            fill_color = color,
                            line_color = color,
-                           **kwargs) 
+                           **kwargs)
                   for lat,long,label,color,radius in zip(latitudes,longitudes,
                                                          labels,colors,radii)]
         center_lat = sum(latitudes)/len(latitudes)
