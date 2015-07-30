@@ -13,13 +13,14 @@ import IPython
 
 import datascience.maps as maps
 
+
 class Table(collections.abc.Mapping):
     """A sequence of labeled columns.
 
     >>> letters = ['a', 'b', 'c', 'z']
     >>> counts = [9, 3, 3, 1]
     >>> points = [1, 2, 2, 10]
-    >>> t = Table([('letter', letters), ('count', counts), ('points', points)])
+    >>> t = Table([letters, counts, points], ['letter', 'count', 'points'])
     >>> print(t)
     letter | count | points
     a      | 9     | 1
@@ -49,7 +50,8 @@ class Table(collections.abc.Mapping):
             self[label] = column
 
     def __getitem__(self, label):
-        return self._columns[label]
+        return self._columns[label] \
+            if label in self.column_labels else [None]*self.num_rows
 
     def __setitem__(self, label, values):
         if not isinstance(values, np.ndarray):
@@ -112,6 +114,16 @@ class Table(collections.abc.Mapping):
     @property
     def columns(self):
         return tuple(self._columns.values())
+    
+    def get_columns(self, *args):
+        """Get columns according to order of args.
+        Args may also be tuples of (column_label, filler value)
+        "filler value" is used if the column does not exist in the table
+        Example: get_columns('points', ('counts', 0), ('letters', ''))
+        """
+        get = lambda val: self[val[0]] or [val[1]]*self.num_rows \
+            if isinstance(val, tuple) else self[val]
+        return tuple(get(var) for var in args)
 
     def column_index(self, column_label):
         """Return the index of a column."""
@@ -143,18 +155,14 @@ class Table(collections.abc.Mapping):
 
     def append(self, row_or_table):
         """Append a row or all rows of a table with identical column names."""
-        if not row_or_table:
+        row, table, inc = row_or_table, row_or_table, 1
+        if not row:
             return
-        if isinstance(row_or_table, Table):
-            table = row_or_table
-            assert table.column_labels == self.column_labels
-            for row in list(row_or_table.rows):
-                self.append(row)
-        else:
-            row = row_or_table
-            for i, column in enumerate(self._columns):
-                self._columns[column] = np.append(self[column], row[i])
-        self._num_rows = self.num_rows + 1
+        if isinstance(table, Table):
+            row, inc = table.get_columns(*self.column_labels), table.num_rows
+        for i, column in enumerate(self._columns):
+            self._columns[column] = np.append(self[column], row[i])
+        self._num_rows = self.num_rows + inc
         return self
 
     def relabel(self, column_label, new_label):
@@ -239,7 +247,7 @@ class Table(collections.abc.Mapping):
             column = column == value
         return self.take(np.nonzero(column)[0])
 
-    def sort(self, column_or_label, ascending=False, distinct=False):
+    def sort(self, column_or_label, descending=False, distinct=False):
         """Return a Table of sorted rows by the values in a column."""
         column = self._get_column(column_or_label)
         if distinct:
@@ -247,7 +255,7 @@ class Table(collections.abc.Mapping):
         else:
             row_numbers = np.argsort(column, axis=0)
         assert (row_numbers < self.num_rows).all(), row_numbers
-        if not ascending:
+        if descending:
             row_numbers = np.array(row_numbers[::-1])
         return self.take(row_numbers)
 
@@ -360,10 +368,11 @@ class Table(collections.abc.Mapping):
         # build set of rows from rows that have values in both tables
         joined_rows = []
         for label, rows in self_rows.items():
-            if label in other_rows:
-                for row in rows:
-                    other_row = other_rows[label][0]
-                    joined_rows.append(row + other_row)
+            for row in rows:
+                other_row = other_rows[label][0]\
+                    if label in other_rows\
+                    else tuple([None]*other.num_rows)
+                joined_rows.append(row + other_row)
         if not joined_rows:
             return None
 

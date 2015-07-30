@@ -23,6 +23,13 @@ def table2():
 	return Table([points, names], ['points', 'names'])
 
 
+@pytest.fixture(scope='function')
+def table3():
+	"""Setup alphanumeric table, identical columns in diff order from first"""
+	letter, count, points = ['x', 'y', 'z'], [0, 54, 5], [3, 10, 24]
+	return Table([count, points, letter], ['count', 'points', 'letter'])
+
+
 @pytest.fixture(scope='module')
 def t():
 	"""Create one table for entire module"""
@@ -39,7 +46,7 @@ def assert_equal(string1, string2):
 	string1, string2 = str(string1), str(string2)
 	whitespace = re.compile('\s')
 	purify = lambda s: whitespace.sub('', s)
-	assert purify(string1) == purify(string2), string1 + " != " + string2
+	assert purify(string1) == purify(string2), "\n%s\n!=\n%s" % (string1, string2)
 
 
 ############
@@ -139,7 +146,7 @@ def test_sort(t):
 
 
 def test_sort_args(t):
-	test = t.sort('points', decreasing=True, distinct=True)
+	test = t.sort('points', descending=True, distinct=True)
 	assert_equal(test, """\
 	letter | count | points | totals
 	z      | 1     | 10     | 10
@@ -192,6 +199,7 @@ def test_groups(t):
     10     | False | ['z']     | [1]   | [10]
 	""")
 
+
 def test_groups_collect(t):
 	t = t.copy()
 	t.append(('e', 12, 1, 12))
@@ -205,6 +213,7 @@ def test_groups_collect(t):
     10     | False | 1
 	""")
 
+
 def test_join(t, u):
 	"""Tests that join works, not destructive"""
 	test = t.join('points', u)
@@ -212,6 +221,9 @@ def test_join(t, u):
 	points | letter | count | totals | names
 	1      | a      | 9     | 9      | one
 	2      | b      | 3     | 6      | two
+	2      | c      | 3     | 6      | two
+	10     | z      | 1     | 10     | None
+
 	""")
 	assert_equal(u, """\
 	points  | names
@@ -333,9 +345,33 @@ def test_append_table(table):
 	""")
 
 
-def test_append_bad_table(table, u):
-	with pytest.raises(AssertionError):
-		table.append(u)
+def test_append_different_table(table, u):
+	table.append(u)
+	assert_equal(table, """\
+	letter | count | points
+	a      | 9     | 1
+	b      | 3     | 2
+	c      | 3     | 2
+	z      | 1     | 10
+	None   | None  | 1
+	None   | None  | 2
+	None   | None  | 3
+	""")
+	
+
+def test_append_different_order(table, table3):
+	"""Tests append with same columns, diff order"""
+	table.append(table3)
+	assert_equal(table, """\
+	letter | count | points
+	a      | 9     | 1
+	b      | 3     | 2
+	c      | 3     | 2
+	z      | 1     | 10
+	x      | 0     | 3
+	y      | 54    | 10
+	z      | 5     | 24
+	""")
 
 
 def test_relabel():
@@ -450,6 +486,8 @@ def test_join_basic(table, table2):
 	points | letter | count | totals | names
 	1      | a      | 9     | 9      | one
 	2      | b      | 3     | 6      | two
+	2      | c      | 3     | 6      | two
+	10     | z      | 1     | 10     | None
 	""")
 
 
@@ -457,12 +495,29 @@ def test_join_with_booleans(table, table2):
 	table['totals'] = table['points'] * table['count']
 	table['points'] = table['points'] > 1
 	table2['points'] = table2['points'] > 1
+	
+	assert_equal(table, """\
+	letter | count | points | totals
+	a      | 9     | False  | 9
+	b      | 3     | True   | 6
+	c      | 3     | True   | 6
+	z      | 1     | True   | 10
+	""")
+	
+	assert_equal(table2, """\
+	points | names
+	False  | one
+	True   | two
+	True   | three
+	""")
 
 	test = table.join('points', table2)
 	assert_equal(test, """\
 	points | letter | count | totals | names
 	False  | a      | 9     | 9      | one
 	True   | b      | 3     | 6      | two
+	True   | c      | 3     | 6      | two
+	True   | z      | 1     | 10     | two
 	""")
 
 
@@ -472,6 +527,7 @@ def test_join_with_self(table):
 	count | letter | points | letter_2 | points_2
 	1     | z      | 10     | z        | 10
 	3     | b      | 2      | b        | 2
+	3     | c      | 2      | b        | 2
 	9     | a      | 1      | a        | 1
 	""")
 
