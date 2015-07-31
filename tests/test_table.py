@@ -572,16 +572,16 @@ def test_sample_wrepl_basic(table):
 
 def test_sample_wwgts_basic(table):
 	"""Tests that sample with weights doesn't break"""
-	table.sample(table.num_rows, weights=[1/3, 1/3, 1/3])
+	table.sample(table.num_rows, weights=[1/4]*4)
 	
 	
 def test_sample_weights_ne1(table):
 	"""Tests that a series of weights with total != 1 is not accepted"""
-	with pytest.raises(AssertionError):
-		table.sample(table.num_rows, weights=[1/3, 1/2])
+	with pytest.raises(ValueError):
+		table.sample(table.num_rows, weights=[1/4, 1/4, 1/4, 1/6])
 		
-	with pytest.raises(AssertionError):
-		table.sample(table.num_rows, weights=[1/2, 1/2, 1/3])
+	with pytest.raises(ValueError):
+		table.sample(table.num_rows, weights=[1/4, 1/4, 1/4, 1/2])
 	
 	
 def test_sample_weights_worepl(table):
