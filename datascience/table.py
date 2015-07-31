@@ -529,7 +529,7 @@ class Table(collections.abc.Mapping):
         if isinstance(value, (bool, np.bool_)):
             return str(value)
         try:
-            return '{:G}'.format(value)
+            return '{:n}'.format(value)
         except (ValueError, TypeError):
             return str(value)
 
