@@ -553,6 +553,26 @@ def test_format_large_ints():
 		Table.format_value(123456789**5),
 		28679718602997181072337614380936720482949
 	)
+	
+	
+# probabilities testing utility
+def probabilities(population, distributions, method, args, kwargs, iters=10000):
+	i = 0
+	while i < iters:
+		results = method(*args, **kwargs)
+		i += 1
+	
+	
+# def test_sample_wo_replacement(table):
+# 	"""Tests basic without replacement"""
+# 	population, n = table.rows, table.num_rows
+# 	distributions = [1/n] * n
+	
+	
+def test_sample_basic(table):
+	"""Tests that sample doesn't break"""
+	table.sample(table.num_rows)
+	
 
 #############
 # Visualize #

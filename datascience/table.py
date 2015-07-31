@@ -5,6 +5,7 @@ import collections.abc
 import functools
 import itertools
 import operator
+import random
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -546,6 +547,16 @@ class Table(collections.abc.Mapping):
         for key, row in zip(column, self.rows):
             index.setdefault(key, []).append(row)
         return index
+    
+    def _sample(self, k, with_replacement=False):
+        """Returns list of sampled rows"""
+        return random.sample(self.rows, k)
+        
+    def sample(self, k, with_replacement=False):
+        """Returns a new table"""
+        return Table.from_rows(
+            self._sample(k, with_replacement),
+            self.column_labels)
 
     #############
     # Visualize #
