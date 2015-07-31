@@ -550,10 +550,11 @@ class Table(collections.abc.Mapping):
     
     def _sample(self, k, with_replacement, weights):
         """Returns list of sampled rows"""
+        almost_equal = lambda v1, v2, decimals: abs(v1-v2) < 0.1**decimals
         if weights:
             assert len(weights) == len(self.columns), \
                 'Number of columns and weights do not match'
-            assert itertools.accumulate(weights)[-1] == 1, \
+            assert almost_equal(list(itertools.accumulate(weights))[-1], 1, 2), \
                 'Weights must total to 1'
         indices = np.random.choice(self.num_rows, k, replace=with_replacement)
         return [self.rows[i] for i in indices]

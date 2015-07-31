@@ -555,24 +555,47 @@ def test_format_large_ints():
 	)
 	
 	
-# probabilities testing utility
-def probabilities(population, distributions, method, args, kwargs, iters=10000):
-	i = 0
-	while i < iters:
-		results = method(*args, **kwargs)
-		i += 1
-	
-	
-# def test_sample_wo_replacement(table):
-# 	"""Tests basic without replacement"""
-# 	population, n = table.rows, table.num_rows
-# 	distributions = [1/n] * n
-	
-	
 def test_sample_basic(table):
 	"""Tests that sample doesn't break"""
 	table.sample(table.num_rows)
+
+
+def test_sample_basic_modk(table):
+	"""Tests that sample k<n doesn't break"""
+	table.sample(2)
+
+
+def test_sample_wrepl_basic(table):
+	"""Tests that sample with_replacement=True doesn't break"""
+	table.sample(table.num_rows, with_replacement=True)
+
+
+def test_sample_wwgts_basic(table):
+	"""Tests that sample with weights doesn't break"""
+	table.sample(table.num_rows, weights=[1/3, 1/3, 1/3])
 	
+	
+def test_sample_weights_ne1(table):
+	"""Tests that a series of weights with total != 1 is not accepted"""
+	with pytest.raises(AssertionError):
+		table.sample(table.num_rows, weights=[1/3, 1/2])
+		
+	with pytest.raises(AssertionError):
+		table.sample(table.num_rows, weights=[1/2, 1/2, 1/3])
+	
+	
+def test_sample_weights_worepl(table):
+	"""Tests that with_replacement flag works - ensures with_replacement=False 
+	works by asserting unique rows for each iteration
+	1000: ~3.90s
+	2000: ~7.04s
+	4000: ~13.2s
+	"""
+	iterations, i = 100,  0
+	while i < iterations:
+		u = table.sample(table.num_rows)
+		assert len(set(u.rows)) == len(u.rows)
+		i += 1
 
 #############
 # Visualize #
