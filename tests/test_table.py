@@ -590,6 +590,7 @@ def test_sample_weights_worepl(table):
 	1000: ~3.90s
 	2000: ~7.04s
 	4000: ~13.2s
+	10000: ~33.18s
 	"""
 	iterations, i = 100,  0
 	while i < iterations:
