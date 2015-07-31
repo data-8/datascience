@@ -548,14 +548,20 @@ class Table(collections.abc.Mapping):
             index.setdefault(key, []).append(row)
         return index
     
-    def _sample(self, k, with_replacement=False):
+    def _sample(self, k, with_replacement, weights):
         """Returns list of sampled rows"""
-        return random.sample(self.rows, k)
+        if weights:
+            assert len(weights) == len(self.columns), \
+                'Number of columns and weights do not match'
+            assert itertools.accumulate(weights)[-1] == 1, \
+                'Weights must total to 1'
+        indices = np.random.choice(self.num_rows, k, replace=with_replacement)
+        return [self.rows[i] for i in indices]
         
-    def sample(self, k, with_replacement=False):
+    def sample(self, k, with_replacement=False, weights=None):
         """Returns a new table"""
         return Table.from_rows(
-            self._sample(k, with_replacement),
+            self._sample(k, with_replacement, weights),
             self.column_labels)
 
     #############
