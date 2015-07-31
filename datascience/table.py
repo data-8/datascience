@@ -154,7 +154,8 @@ class Table(collections.abc.Mapping):
         return self
 
     def append(self, row_or_table):
-        """Append a row or all rows of a table with identical column names."""
+        """Append a row or all rows of a table. Rows or columns that do not
+        correspond will be padded with None values"""
         row, table, inc = row_or_table, row_or_table, 1
         if not row:
             return
@@ -266,7 +267,7 @@ class Table(collections.abc.Mapping):
 
         The grouped column will appear first in the result table.
         """
-        self = self._with_columns(self.columns) # Shallow self
+        self = self._with_columns(self.columns)  # Shallow self
         collect = _zero_on_type_error(collect)
 
         # Remove column used for grouping
@@ -702,6 +703,24 @@ class Table(collections.abc.Mapping):
 
         def __repr__(self):
             return '{0}({1})'.format(type(self).__name__, repr(self._table))
+
+
+class Q:
+    """advanced query manager for Table"""
+    
+    array = None
+    
+    def __init__(self, array):
+        """save numpy array"""
+        self.array = array
+    
+    def __and__(self, other):
+        """allows bitwise & operations"""
+        return np.logical_and(self.array, other.array)
+        
+    def __or__(self, other):
+        return np.logical_or(self.array, other.array)
+
 
 def _zero_on_type_error(column_fn):
     """Wrap a function on an np.ndarray to return 0 on a type error."""

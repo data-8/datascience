@@ -558,3 +558,22 @@ def test_join_with_strings(table):
 ###########
 # Support #
 ###########
+
+
+def test_q_and(table):
+	"""Test that Q performs logical AND correctly"""
+	test = table.where(Q(table['letter'] < 'c') & Q(table['points'] > 1))
+	assert_equal(test, """\
+	letter | count | points
+	b      | 3     | 2
+	""")
+
+
+def test_q_or(table):
+	"""Test that Q performs logical OR correctly"""
+	test = table.where(Q(table['letter'] < 'b') | Q(table['points'] > 2))
+	assert_equal(test, """\
+	letter | count | points
+	a      | 9     | 1
+	z      | 1     | 10
+	""")
