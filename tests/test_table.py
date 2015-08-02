@@ -553,6 +553,50 @@ def test_format_large_ints():
 		Table.format_value(123456789**5),
 		28679718602997181072337614380936720482949
 	)
+	
+	
+def test_sample_basic(table):
+	"""Tests that sample doesn't break"""
+	table.sample(table.num_rows)
+
+
+def test_sample_basic_modk(table):
+	"""Tests that sample k<n doesn't break"""
+	table.sample(2)
+
+
+def test_sample_wrepl_basic(table):
+	"""Tests that sample with_replacement=True doesn't break"""
+	table.sample(table.num_rows, with_replacement=True)
+
+
+def test_sample_wwgts_basic(table):
+	"""Tests that sample with weights doesn't break"""
+	table.sample(table.num_rows, weights=[1/4]*4)
+	
+	
+def test_sample_weights_ne1(table):
+	"""Tests that a series of weights with total != 1 is not accepted"""
+	with pytest.raises(ValueError):
+		table.sample(table.num_rows, weights=[1/4, 1/4, 1/4, 1/6])
+		
+	with pytest.raises(ValueError):
+		table.sample(table.num_rows, weights=[1/4, 1/4, 1/4, 1/2])
+	
+	
+def test_sample_weights_worepl(table):
+	"""Tests that with_replacement flag works - ensures with_replacement=False 
+	works by asserting unique rows for each iteration
+	1000: ~3.90s
+	2000: ~7.04s
+	4000: ~13.2s
+	10000: ~33.18s
+	"""
+	iterations, i = 100,  0
+	while i < iterations:
+		u = table.sample(table.num_rows)
+		assert len(set(u.rows)) == len(u.rows)
+		i += 1
 
 #############
 # Visualize #
