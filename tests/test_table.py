@@ -547,7 +547,12 @@ def test_join_with_strings(table):
 # Export/Display #
 ##################
 
-
+def test_format_large_ints():
+	"""Tests that large ints are NOT formatted using scientific notation"""
+	assert_equal(
+		Table.format_value(123456789**5),
+		28679718602997181072337614380936720482949
+	)
 
 #############
 # Visualize #
@@ -558,3 +563,22 @@ def test_join_with_strings(table):
 ###########
 # Support #
 ###########
+
+
+def test_q_and(table):
+	"""Test that Q performs logical AND correctly"""
+	test = table.where(Q(table['letter'] < 'c') & Q(table['points'] > 1))
+	assert_equal(test, """\
+	letter | count | points
+	b      | 3     | 2
+	""")
+
+
+def test_q_or(table):
+	"""Test that Q performs logical OR correctly"""
+	test = table.where(Q(table['letter'] < 'b') | Q(table['points'] > 2))
+	assert_equal(test, """\
+	letter | count | points
+	a      | 9     | 1
+	z      | 1     | 10
+	""")
