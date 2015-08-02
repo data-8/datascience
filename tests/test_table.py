@@ -626,3 +626,13 @@ def test_q_or(table):
 	a      | 9     | 1
 	z      | 1     | 10
 	""")
+	
+
+def test_q_chaining(table):
+	"""Tests that successive Qs can be added"""
+	test_q_or_filter = Q(table['letter'] < 'b') | Q(table['points'] > 2)
+	test = table.where(Q(test_q_or_filter) & Q(table['count'] > 2))
+	assert_equal(test, """\
+	letter | count | points
+	a      | 9     | 1
+	""")
