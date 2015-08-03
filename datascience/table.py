@@ -662,7 +662,6 @@ class Table(collections.abc.Mapping):
                 axis.hist(self[label], color=color, **vargs)
                 axis.set_xlabel(label, fontsize=16)
 
-
     def points(self, column__lat, column__long,
             radii=None, labels=None, colors=None, **kwargs) :
         latitudes = self._get_column(column__lat)
@@ -712,8 +711,7 @@ class Table(collections.abc.Mapping):
 
 
 class Q:
-    """advanced query manager for Table"""
-
+    """Query manager for Tables."""
     array = None
 
     def __init__(self, array):
