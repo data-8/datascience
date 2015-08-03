@@ -115,7 +115,7 @@ class Table(collections.abc.Mapping):
     @property
     def columns(self):
         return tuple(self._columns.values())
-    
+
     def get_columns(self, *args):
         """Get columns according to order of args.
         Args may also be tuples of (column_label, filler value)
@@ -547,13 +547,13 @@ class Table(collections.abc.Mapping):
         for key, row in zip(column, self.rows):
             index.setdefault(key, []).append(row)
         return index
-    
+
     def _sample(self, k, with_replacement, weights):
         """Returns list of sampled rows"""
         indices = np.random.choice(
             self.num_rows, k, replace=with_replacement, p=weights)
         return [self.rows[i] for i in indices]
-        
+
     def sample(self, k, with_replacement=False, weights=None):
         """Returns a new table"""
         return Table.from_rows(
@@ -596,7 +596,17 @@ class Table(collections.abc.Mapping):
     def _visualize(self, labels, ticks, overlay, draw, annotate, height=4):
         """Generic visualization using overlay or not."""
         n = len(labels)
-        colors = list(itertools.islice(itertools.cycle(('b', 'y', 'g', 'r')), n))
+        colors = list(itertools.islice(itertools.cycle((
+            '#001A44',
+            '#FFC800',
+            '#576884',
+            '#B39C4D',
+            '#768948',
+            '#067BC2',
+            '#FB5012',
+            '#19381F',
+            '#4C3C37',
+        )), n))
         if overlay:
             _, axis = plt.subplots(figsize=(6, height))
             for label, color in zip(labels, colors):
@@ -720,17 +730,17 @@ class Table(collections.abc.Mapping):
 
 class Q:
     """advanced query manager for Table"""
-    
+
     array = None
-    
+
     def __init__(self, array):
         """save numpy array"""
         self.array = array
-    
+
     def __and__(self, other):
         """allows bitwise & operations"""
         return np.logical_and(self.array, other.array)
-        
+
     def __or__(self, other):
         return np.logical_or(self.array, other.array)
 
