@@ -424,19 +424,6 @@ class Table(collections.abc.Mapping):
             assert len(c) == self.num_rows, 'column length mismatch'
             return c
 
-    def _starts(self, column_labels):
-        """Return a sequence of start points for unique combinations of  sorted rows"""
-        val = [self[c][0] for c in column_labels]
-        starts = [0]
-        values = [val]
-        for i in range(1,self.num_rows):
-            ival = [self[c][i] for c in column_labels ]
-            if ival != val:
-                starts.append(i)
-                values.append(ival)
-                val = ival
-        return values, starts
-
     ##################
     # Export/Display #
     ##################
