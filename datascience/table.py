@@ -31,9 +31,9 @@ class Table(collections.abc.Mapping):
     """
 
     def __init__(self, columns=None, labels=None):
-        """Create an table.
+        """Create a table from a list or dictionary of sequences.
 
-        columns -- a dictionary of sequence keyed by label [labels == None] OR
+        columns -- a dictionary of sequences keyed by label [labels == None] OR
                    a sequence of sequences [labels != None]
         labels  -- a sequence of labels; columns must not contain labels
         """
@@ -51,8 +51,7 @@ class Table(collections.abc.Mapping):
             self[label] = column
 
     def __getitem__(self, label):
-        return self._columns[label] \
-            if label in self.column_labels else [None]*self.num_rows
+        return self._columns[label]
 
     def __setitem__(self, label, values):
         if not isinstance(values, np.ndarray):
@@ -78,7 +77,10 @@ class Table(collections.abc.Mapping):
         return iter(self.column_labels)
 
     def __getattr__(self, attr):
-        """Return a method that applies to all columns or a table of attributes."""
+        """Return a method that applies to all columns or a table of attributes.
+
+        E.g., t.sum() on a Table will return a table with the sum of each column.
+        """
         if self.columns and all(hasattr(c, attr) for c in self.columns):
             attrs = [getattr(c, attr) for c in self.columns]
             if all(callable(attr) for attr in attrs):
@@ -116,16 +118,6 @@ class Table(collections.abc.Mapping):
     def columns(self):
         return tuple(self._columns.values())
 
-    def get_columns(self, *args):
-        """Get columns according to order of args.
-        Args may also be tuples of (column_label, filler value)
-        "filler value" is used if the column does not exist in the table
-        Example: get_columns('points', ('counts', 0), ('letters', ''))
-        """
-        get = lambda val: self[val[0]] or [val[1]]*self.num_rows \
-            if isinstance(val, tuple) else self[val]
-        return tuple(get(var) for var in args)
-
     def column_index(self, column_label):
         """Return the index of a column."""
         return self.column_labels.index(column_label)
@@ -155,16 +147,19 @@ class Table(collections.abc.Mapping):
         return self
 
     def append(self, row_or_table):
-        """Append a row or all rows of a table. Rows or columns that do not
-        correspond will be padded with None values"""
-        row, table, inc = row_or_table, row_or_table, 1
-        if not row:
+        """Append a row or all rows of a table. An appended table must have all
+        columns of self."""
+        if not row_or_table:
             return
-        if isinstance(table, Table):
-            row, inc = table.get_columns(*self.column_labels), table.num_rows
+        if isinstance(row_or_table, Table):
+            t = row_or_table
+            row = list(t.select(self.column_labels)._columns.values())
+            n = t.num_rows
+        else:
+            row, n = row_or_table, 1
         for i, column in enumerate(self._columns):
             self._columns[column] = np.append(self[column], row[i])
-        self._num_rows = self.num_rows + inc
+        self._num_rows = self.num_rows + n
         return self
 
     def relabel(self, column_label, new_label):

@@ -346,18 +346,12 @@ def test_append_table(table):
 
 
 def test_append_different_table(table, u):
-	table.append(u)
-	assert_equal(table, """\
-	letter | count | points
-	a      | 9     | 1
-	b      | 3     | 2
-	c      | 3     | 2
-	z      | 1     | 10
-	None   | None  | 1
-	None   | None  | 2
-	None   | None  | 3
-	""")
-	
+	try:
+		table.append(u)
+		assert False, 'KeyError expected'
+	except KeyError:
+		pass
+
 
 def test_append_different_order(table, table3):
 	"""Tests append with same columns, diff order"""
@@ -495,7 +489,7 @@ def test_join_with_booleans(table, table2):
 	table['totals'] = table['points'] * table['count']
 	table['points'] = table['points'] > 1
 	table2['points'] = table2['points'] > 1
-	
+
 	assert_equal(table, """\
 	letter | count | points | totals
 	a      | 9     | False  | 9
@@ -503,7 +497,7 @@ def test_join_with_booleans(table, table2):
 	c      | 3     | True   | 6
 	z      | 1     | True   | 10
 	""")
-	
+
 	assert_equal(table2, """\
 	points | names
 	False  | one
@@ -553,8 +547,8 @@ def test_format_large_ints():
 		Table.format_value(123456789**5),
 		28679718602997181072337614380936720482949
 	)
-	
-	
+
+
 def test_sample_basic(table):
 	"""Tests that sample doesn't break"""
 	table.sample(table.num_rows)
@@ -573,19 +567,19 @@ def test_sample_wrepl_basic(table):
 def test_sample_wwgts_basic(table):
 	"""Tests that sample with weights doesn't break"""
 	table.sample(table.num_rows, weights=[1/4]*4)
-	
-	
+
+
 def test_sample_weights_ne1(table):
 	"""Tests that a series of weights with total != 1 is not accepted"""
 	with pytest.raises(ValueError):
 		table.sample(table.num_rows, weights=[1/4, 1/4, 1/4, 1/6])
-		
+
 	with pytest.raises(ValueError):
 		table.sample(table.num_rows, weights=[1/4, 1/4, 1/4, 1/2])
-	
-	
+
+
 def test_sample_weights_worepl(table):
-	"""Tests that with_replacement flag works - ensures with_replacement=False 
+	"""Tests that with_replacement flag works - ensures with_replacement=False
 	works by asserting unique rows for each iteration
 	1000: ~3.90s
 	2000: ~7.04s
@@ -626,7 +620,7 @@ def test_q_or(table):
 	a      | 9     | 1
 	z      | 1     | 10
 	""")
-	
+
 
 def test_q_chaining(table):
 	"""Tests that successive Qs can be added"""
