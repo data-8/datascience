@@ -749,17 +749,22 @@ def _zero_on_type_error(column_fn):
     return wrapped
 
 
-def _fill_with_zeroes(order, rows, zero=None):
-    """Return a column of the index-1 elements in rows, where the index
-    of each value is determined by matching index-0 to an element of keys.
+def _fill_with_zeroes(keys, rows, zero=None):
+    """Return a column of the index-(-1) elements in rows, where the index
+    of each value is determined by matching index-(0:-1) to an element of
+    keys.
     """
     assert len(rows) > 0
-    index = dict(rows)
+    if not _is_non_string_iterable(keys):
+        keys = [(k,) for k in keys]
+    index = {}
+    for row in rows:
+        index[tuple(row[:-1])] = row[-1]
     if zero is None:
         array = np.array(tuple(index.values()))
         if len(array.shape) == 1:
             zero = array.dtype.type()
-    return np.array([index.get(k, zero) for k in order])
+    return np.array([index.get(k, zero) for k in keys])
 
 
 def _as_labels(column_label_or_labels):
