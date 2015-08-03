@@ -501,11 +501,12 @@ class Table(collections.abc.Mapping):
 
     def _sample(self, k, with_replacement, weights):
         """Returns list of sampled rows"""
+        n = self.num_rows
         indices = np.random.choice(
-            self.num_rows, k, replace=with_replacement, p=weights)
+            n, k or n, replace=with_replacement, p=weights)
         return [self.rows[i] for i in indices]
 
-    def sample(self, k, with_replacement=False, weights=None):
+    def sample(self, k=None, with_replacement=False, weights=None):
         """Returns a new table"""
         return Table.from_rows(
             self._sample(k, with_replacement, weights),

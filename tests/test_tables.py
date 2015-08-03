@@ -596,6 +596,17 @@ def test_sample_weights_worepl(table):
 		assert len(set(u.rows)) == len(u.rows)
 		i += 1
 
+
+def test_sample_weights_with_none_k(table):
+	"""Tests that with_replacement flag works - ensures with_replacement=False
+	works by asserting unique rows for each iteration, with k=None default
+	"""
+	iterations, i = 100,  0
+	while i < iterations:
+		u = table.sample()
+		assert len(set(u.rows)) == len(u.rows)
+		i += 1
+
 #############
 # Visualize #
 #############
