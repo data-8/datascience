@@ -165,8 +165,9 @@ class Table(collections.abc.Mapping):
     def relabel(self, column_label, new_label):
         """Change the label of a column."""
         assert column_label in self._columns
-        update = lambda s: new_label if s == column_label else s
-        self._columns = collections.OrderedDict((update(s), c) for s, c in self._columns.items())
+        rewrite = lambda s: new_label if s == column_label else s
+        columns = [(rewrite(s), c) for s, c in self._columns.items()]
+        self._columns = collections.OrderedDict(columns)
         if column_label in self._formats:
             formatter = self._formats.pop(column_label)
             self._formats[new_label] = formatter
