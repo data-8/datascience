@@ -599,7 +599,7 @@ def test_sample_weights_worepl(table):
 
 
 ###########
-# Support #
+# Queries #
 ###########
 
 
