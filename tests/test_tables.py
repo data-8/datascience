@@ -414,6 +414,35 @@ def test_from_rows():
 	""")
 
 
+def test_from_records():
+	letters = [
+		{'letter': 'a',
+		 'count': 9,
+		 'points': 1,
+		},
+		{'letter': 'b',
+		 'count': 3,
+		 'points': 2,
+		},
+		{'letter': 'c',
+		 'count': 3,
+		 'points': 2,
+		},
+		{'letter': 'z',
+		 'count': 1,
+		 'points': 10,
+		},
+	]
+	t = Table.from_records(letters)
+	assert_equal(t.select(['letter', 'count', 'points']), """
+	letter | count | points
+	a      | 9     | 1
+	b      | 3     | 2
+	c      | 3     | 2
+	z      | 1     | 10
+	""")
+
+
 #############
 # Transform #
 #############

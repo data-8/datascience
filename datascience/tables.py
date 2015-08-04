@@ -187,9 +187,17 @@ class Table(collections.abc.Mapping):
     ##########
 
     @classmethod
-    def from_rows(cls, rows, column_labels=None):
-        """Create a table from a sequence of fixed-length rows."""
-        return Table(list(zip(*rows)), column_labels)
+    def from_rows(cls, rows, column_labels):
+        """Create a table from a sequence of rows (fixed-length sequences)."""
+        return cls(list(zip(*rows)), column_labels)
+
+    @classmethod
+    def from_records(cls, records):
+        """Create a table from a sequence of records (dicts with fixed keys)."""
+        if not records:
+            return cls()
+        labels = sorted(list(records[0].keys()))
+        return cls([[rec[label] for rec in records] for label in labels], labels)
 
     @classmethod
     def read_table(cls, filepath_or_buffer, *args, **vargs):
@@ -471,7 +479,7 @@ class Table(collections.abc.Mapping):
             (1, '</thead>'),
             (1, '<tbody>'),
         ]
-        fmts = [self._formats.get(k, self.format_column(k, v[:max_rows])) for
+        fmts = [self._formats.get(k, self.formatter.format_column(k, v[:max_rows])) for
             k, v in self._columns.items()]
         for row in itertools.islice(self.rows, max_rows):
             lines += [
