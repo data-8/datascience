@@ -253,6 +253,22 @@ def test_pivot(t):
 	""")
 
 
+def test_pivot_multiple_rows(t):
+	t = t.copy()
+	t.append(('e', 12, 1, 12))
+	t['early'] = t['letter'] < 'd'
+	t['late'] = t['letter'] > 'c'
+	t['exists'] = 1
+	test = t.pivot('points', ['early', 'late'], 'exists')
+	assert_equal(test, """\
+	early | late  | 1 exists | 2 exists | 10 exists
+	False | False | None     | None     | None
+	False | True  | [1]      | None     | [1]
+	True  | False | [1]      | [1 1]    | None
+	True  | True  | None     | None     | None
+	""")
+
+
 def test_pivot_sum(t):
 	t = t.copy()
 	t.append(('e', 12, 1, 12))
