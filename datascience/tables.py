@@ -12,8 +12,8 @@ import matplotlib.pyplot as plt
 import pandas
 import IPython
 
-import datascience.maps as maps
-
+import datascience.maps as _maps
+import datascience.formats as _formats
 
 class Table(collections.abc.Mapping):
     """A sequence of labeled columns.
@@ -30,7 +30,7 @@ class Table(collections.abc.Mapping):
     z      | 1     | 10
     """
 
-    def __init__(self, columns=None, labels=None):
+    def __init__(self, columns=None, labels=None, formatter=_formats.default_formatter):
         """Create a table from a list or dictionary of sequences.
 
         columns -- a dictionary of sequences keyed by label [labels == None] OR
@@ -39,6 +39,7 @@ class Table(collections.abc.Mapping):
         """
         self._columns = collections.OrderedDict()
         self._formats = dict()
+        self.formatter = formatter
         if not columns:
             assert not labels, 'labels but no columns'
             columns, labels = [], []
@@ -130,10 +131,18 @@ class Table(collections.abc.Mapping):
     # Modify #
     ##########
 
-    def set_format(self, column_label, formatter):
-        """Set the format function for a column."""
-        assert callable(formatter), 'formatter must be a function'
-        self._formats[column_label] = formatter
+    def set_format(self, column_label_or_labels, formatter):
+        """Set the format of a column."""
+        for label in _as_labels(column_label_or_labels):
+            if callable(formatter):
+                self._formats[label] = lambda v, label: v if label else str(formatter(v))
+            elif isinstance(formatter, _formats.Formatter):
+                if formatter.converts_values:
+                    self[label] = self.apply(formatter.convert, label)
+                column = self[label]
+                self._formats[label] = formatter.format_column(label, column)
+            else:
+                raise Exception('Expected Formatter or function: ' + str(formatter))
         return self
 
     def move_to_start(self, column_label):
@@ -178,9 +187,17 @@ class Table(collections.abc.Mapping):
     ##########
 
     @classmethod
-    def from_rows(cls, rows, column_labels=None):
-        """Create a table from a sequence of fixed-length rows."""
-        return Table(list(zip(*rows)), column_labels)
+    def from_rows(cls, rows, column_labels):
+        """Create a table from a sequence of rows (fixed-length sequences)."""
+        return cls(list(zip(*rows)), column_labels)
+
+    @classmethod
+    def from_records(cls, records):
+        """Create a table from a sequence of records (dicts with fixed keys)."""
+        if not records:
+            return cls()
+        labels = sorted(list(records[0].keys()))
+        return cls([[rec[label] for rec in records] for label in labels], labels)
 
     @classmethod
     def read_table(cls, filepath_or_buffer, *args, **vargs):
@@ -207,7 +224,7 @@ class Table(collections.abc.Mapping):
         """Add a column to table, copying the formatter from self."""
         table[label] = column
         if label in self._formats:
-            table.set_format(label, self._formats[label])
+            table._formats[label] = self._formats[label]
 
     #############
     # Transform #
@@ -380,20 +397,6 @@ class Table(collections.abc.Mapping):
         del joined[self._unused_label(other_label)] # Remove redundant column
         return joined.move_to_start(column_label).sort(column_label)
 
-    def currency(self, column_label_or_labels, symbol):
-        if isinstance(column_label_or_labels, str):
-            column_labels = [column_label_or_labels]
-        else: column_labels = column_label_or_labels
-        table = Table()
-        for label in self.column_labels:
-            if label in column_labels:
-                assert isinstance(self[label][0],str), "Columns must contain strings"
-                table[label] = [float(x.strip(symbol)) for x in self[label]]
-                table.set_format(label, lambda x: symbol+"{0:.2f}".format(x))
-            else:
-                self._add_column_and_format(table, label, np.copy(self[label]))
-        return table
-
     def stats(self, ops=(min, max, np.median, sum)):
         """Compute statistics for each column and place them in a table."""
         names = [op.__name__ for op in ops]
@@ -443,8 +446,6 @@ class Table(collections.abc.Mapping):
     def show(self, max_rows=0):
         return IPython.display.HTML(self.as_html(max_rows))
 
-    min_val_width = 4
-    max_val_width = 60
     max_str_rows = 10
 
     def as_text(self, max_rows=0, sep=" | "):
@@ -453,11 +454,11 @@ class Table(collections.abc.Mapping):
             max_rows = self.num_rows
         omitted = max(0, self.num_rows - max_rows)
         labels = self._columns.keys()
-        fmts = [self._formats.get(k, self.format_column(k, v[:max_rows])) for
+        fmts = [self._formats.get(k, self.formatter.format_column(k, v[:max_rows])) for
             k, v in self._columns.items()]
-        rows = [[fmt(label) for fmt, label in zip(fmts, labels)]]
+        rows = [[fmt(label, label=True) for fmt, label in zip(fmts, labels)]]
         for row in itertools.islice(self.rows, max_rows):
-            rows.append([f(v) for v, f in zip(row, fmts)])
+            rows.append([f(v, label=False) for v, f in zip(row, fmts)])
         lines = [sep.join(row) for row in rows]
         if omitted:
             lines.append('... ({} rows omitted)'.format(omitted))
@@ -478,12 +479,13 @@ class Table(collections.abc.Mapping):
             (1, '</thead>'),
             (1, '<tbody>'),
         ]
-        fmts = [self._formats.get(k, self.format_column(k, v[:max_rows])) for
+        fmts = [self._formats.get(k, self.formatter.format_column(k, v[:max_rows])) for
             k, v in self._columns.items()]
         for row in itertools.islice(self.rows, max_rows):
             lines += [
                 (2, '<tr>'),
-                (3, ' '.join('<td>' + fmt(v) + '</td>' for v, fmt in zip(row, fmts))),
+                (3, ' '.join('<td>' + fmt(v, label=False) + '</td>' for
+                    v, fmt in zip(row, fmts))),
                 (2, '</tr>'),
                 (1, '</tbody>'),
             ]
@@ -491,31 +493,6 @@ class Table(collections.abc.Mapping):
         if omitted:
             lines.append((0, '<p>... ({} rows omitted)</p'.format(omitted)))
         return '\n'.join(4 * indent * ' ' + text for indent, text in lines)
-
-    @classmethod
-    def format_column(cls, label, column, min_width=min_val_width, max_width=max_val_width, etc=' ...'):
-        """Return a formatting function that pads values."""
-        val_width = 0 if len(column) == 0 else max(len(cls.format_value(v)) for v in column)
-        val_width = min(val_width, max_width)
-        width = max(val_width, len(str(label)), min_width, len(etc))
-        def pad(value):
-            raw = cls.format_value(value)
-            if len(raw) > width:
-                prefix = raw[:width-len(etc)] + etc
-            else:
-                prefix = raw
-            return prefix.ljust(width)
-        return pad
-
-    @staticmethod
-    def format_value(value):
-        """Pretty-print an arbitrary value."""
-        if isinstance(value, (bool, np.bool_)):
-            return str(value)
-        try:
-            return '{:n}'.format(value)
-        except (ValueError, TypeError):
-            return str(value)
 
     def matrix(self):
         """Return a 2-D array with the contents of the table."""
@@ -548,6 +525,18 @@ class Table(collections.abc.Mapping):
     # Visualize #
     #############
 
+    chart_colors = (
+        '#001A44',
+        '#FFC800',
+        '#576884',
+        '#B39C4D',
+        '#768948',
+        '#067BC2',
+        '#FB5012',
+        '#19381F',
+        '#4C3C37',
+    )
+
     def plot(self, column_for_xticks=None, overlay=False, **vargs):
         """Plot contents as lines."""
         xticks, labels = self._split(column_for_xticks)
@@ -577,29 +566,19 @@ class Table(collections.abc.Mapping):
         height = max(4, len(index)/2)
         self._visualize(labels, yticks, overlay, draw, annotate, height)
 
-    def _visualize(self, labels, ticks, overlay, draw, annotate, height=4):
-        """Generic visualization using overlay or not."""
+    def _visualize(self, labels, ticks, overlay, draw, annotate, width=6, height=4):
+        """Generic visualization that overlays or separates the draw function."""
         n = len(labels)
-        colors = list(itertools.islice(itertools.cycle((
-            '#001A44',
-            '#FFC800',
-            '#576884',
-            '#B39C4D',
-            '#768948',
-            '#067BC2',
-            '#FB5012',
-            '#19381F',
-            '#4C3C37',
-        )), n))
+        colors = list(itertools.islice(itertools.cycle(self.chart_colors), n))
         if overlay:
-            _, axis = plt.subplots(figsize=(6, height))
+            _, axis = plt.subplots(figsize=(width, height))
             for label, color in zip(labels, colors):
                 draw(axis, label, color)
             if ticks is not None:
                 annotate(axis, ticks)
             axis.legend(labels, bbox_to_anchor=(1.5, 1.0))
         else:
-            _, axes = plt.subplots(n, 1, figsize=(6, height * n))
+            _, axes = plt.subplots(n, 1, figsize=(width, height * n))
             if not isinstance(axes, collections.Iterable):
                 axes=[axes]
             for axis, label, color in zip(axes, labels, colors):
@@ -658,7 +637,8 @@ class Table(collections.abc.Mapping):
             plt.legend(self.column_labels)
         else:
             _, axes = plt.subplots(n, 1, figsize=(6, 4 * n))
-            if n==1 : axes = [axes]
+            if n == 1:
+                axes = [axes]
             for axis, label, color in zip(axes, self.column_labels, colors):
                 axis.hist(self[label], color=color, **vargs)
                 axis.set_xlabel(label, fontsize=16)
@@ -673,7 +653,7 @@ class Table(collections.abc.Mapping):
         else : colors = self._get_column(colors)
         if radii is None : radii = [5] * self.num_rows
         else : radii = self._get_column(radii)
-        points = [maps.MapPoint((lat,long),radius=radius,
+        points = [_maps.MapPoint((lat,long),radius=radius,
                            popup=label,
                            fill_color = color,
                            line_color = color,
@@ -682,7 +662,7 @@ class Table(collections.abc.Mapping):
                                                          labels,colors,radii)]
         center_lat = sum(latitudes)/len(latitudes)
         center_long = sum(longitudes)/len(longitudes)
-        return maps.draw_map((center_lat,center_long), points = points)
+        return _maps.draw_map((center_lat,center_long), points = points)
 
 
     ###########

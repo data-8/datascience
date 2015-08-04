@@ -35,10 +35,12 @@ class PyTest(TestCommand):
         sys.exit(errno)
 
 
+VERSION = '0.2.4'
+
 setup(
     name = 'datascience',
     packages = ['datascience'],
-    version = '0.2.3',
+    version = VERSION,
     install_requires = install_requires + tests_requires,
     tests_require = tests_requires,
     cmdclass = {'test': PyTest},
@@ -46,7 +48,7 @@ setup(
     author = 'John DeNero, David Culler, Alvin Wan, Sam Lau',
     author_email = 'ds8-instructors@berkeley.edu',
     url = 'https://github.com/dsten/datascience',
-    download_url = 'https://github.com/dsten/datascience/archive/0.2.3.zip',
+    download_url = 'https://github.com/dsten/datascience/archive/%s.zip' % VERSION,
     keywords = ['data', 'tools', 'berkeley'],
-    classifiers = [],
+    classifiers = []
 )
