@@ -320,22 +320,30 @@ class Table(collections.abc.Mapping):
         return grouped
 
     def pivot(self, columns, rows, values, collect=lambda s:s, zero=None):
-        """Generate a table with a column for rows and a column for each
-        unique value in columns. Each row aggregates over the values that
-        match both row and column.
+        """Generate a table with a column for rows (or a column for each row
+        in rows list) and a column for each unique value in columns. Each row
+        aggregates over the values that match both row and column.
 
         columns, rows, values -- column labels in self
         collect -- aggregation function over values
         zero -- zero value for non-existent row-column combinations
         """
-        selected = self.select([columns, rows, values])
-        grouped = selected.groups([columns, rows], collect)
-        row_values = np.unique(self._get_column(rows))
-        pivoted = Table([row_values], [rows])
+        if not _is_non_string_iterable(rows):
+            rows = [rows]
+        selected = self.select([columns, values] + rows)
+        grouped = selected.groups([columns] + rows, collect)
+
+        # Generate all possible combinations of values from columns in rows
+        rows_list_values = \
+            list(itertools.product(*(np.unique(self._get_column(column_label))
+                                     for column_label in rows)))
+        pivoted = Table.from_rows(rows_list_values, rows)
+
+        # Generate other columns and add them to pivoted
         by_columns = grouped.index_by(columns)
         for label in sorted(by_columns):
             pairs = [t[1:] for t in by_columns[label]] # Discard column value
-            column = _fill_with_zeroes(row_values, pairs, zero)
+            column = _fill_with_zeroes(rows_list_values, pairs, zero)
             pivot = self._unused_label(str(label) + ' ' + values)
             pivoted[pivot] = column
         return pivoted
