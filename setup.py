@@ -6,7 +6,8 @@ install_requires = [
     'numpy',
     'matplotlib',
     'pandas',
-    'folium'
+    'folium',
+    'IPython'
 ]
 
 tests_requires = [
