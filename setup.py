@@ -7,7 +7,8 @@ install_requires = [
     'matplotlib',
     'pandas',
     'folium',
-    'IPython'
+    'IPython',
+    'jinja2',  # folium dependency?
 ]
 
 tests_requires = [
