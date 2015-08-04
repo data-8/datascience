@@ -13,8 +13,8 @@ install_requires = [
 
 tests_requires = [
     'pytest',
-    'coverage',
-    'coveralls'
+    'coverage == 3.7.1',
+    'coveralls == 0.5'
 ]
 
 
