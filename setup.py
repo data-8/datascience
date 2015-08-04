@@ -8,7 +8,7 @@ install_requires = [
     'pandas',
     'folium',
     'IPython',
-    'jinja2',  # folium dependency?
+    'jinja2',  # folium dependency
 ]
 
 tests_requires = [

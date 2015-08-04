@@ -2,7 +2,7 @@ language: python
 
 
 python:
-  - "3.4"
+  - "3.4.3"
 
 
 script:
@@ -23,4 +23,4 @@ sudo: false
 
 cache:
   directories:
-  - /home/travis/virtualenv/python3.4.2/
+  - /home/travis/virtualenv/python3.4.3/
