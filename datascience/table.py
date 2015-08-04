@@ -334,16 +334,16 @@ class Table(collections.abc.Mapping):
         grouped = selected.groups([columns] + rows, collect)
 
         # Generate all possible combinations of values from columns in rows
-        rows_list_values = \
+        rows_values = \
             list(itertools.product(*(np.unique(self._get_column(column_label))
                                      for column_label in rows)))
-        pivoted = Table.from_rows(rows_list_values, rows)
+        pivoted = Table.from_rows(rows_values, rows)
 
         # Generate other columns and add them to pivoted
         by_columns = grouped.index_by(columns)
         for label in sorted(by_columns):
             pairs = [t[1:] for t in by_columns[label]] # Discard column value
-            column = _fill_with_zeroes(rows_list_values, pairs, zero)
+            column = _fill_with_zeroes(rows_values, pairs, zero)
             pivot = self._unused_label(str(label) + ' ' + values)
             pivoted[pivot] = column
         return pivoted
