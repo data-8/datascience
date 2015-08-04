@@ -224,7 +224,7 @@ class Table(collections.abc.Mapping):
         """Add a column to table, copying the formatter from self."""
         table[label] = column
         if label in self._formats:
-            table.set_format(label, self._formats[label])
+            table._formats[label] = self._formats[label]
 
     #############
     # Transform #
@@ -484,7 +484,8 @@ class Table(collections.abc.Mapping):
         for row in itertools.islice(self.rows, max_rows):
             lines += [
                 (2, '<tr>'),
-                (3, ' '.join('<td>' + fmt(v) + '</td>' for v, fmt in zip(row, fmts))),
+                (3, ' '.join('<td>' + fmt(v, label=False) + '</td>' for
+                    v, fmt in zip(row, fmts))),
                 (2, '</tr>'),
                 (1, '</tbody>'),
             ]
@@ -568,7 +569,7 @@ class Table(collections.abc.Mapping):
     def _visualize(self, labels, ticks, overlay, draw, annotate, width=6, height=4):
         """Generic visualization that overlays or separates the draw function."""
         n = len(labels)
-        colors = list(itertools.islice(itertools.cycle(self.chart_colors)), n)
+        colors = list(itertools.islice(itertools.cycle(self.chart_colors), n))
         if overlay:
             _, axis = plt.subplots(figsize=(width, height))
             for label, color in zip(labels, colors):
