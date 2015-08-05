@@ -427,6 +427,13 @@ class Table(collections.abc.Mapping):
             assert len(c) == self.num_rows, 'column length mismatch'
             return c
 
+    def percentile(self, label, p):
+        """Assumes that the column contains numbers.
+
+        Returns the smallest number that is at least as large as the p% of
+        numbers in the column.
+        """
+        return np.percentile(self[label], p, interpolation='higher')
     ##################
     # Export/Display #
     ##################

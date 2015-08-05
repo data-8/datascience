@@ -565,6 +565,11 @@ def test_join_with_strings(table):
 	z      | 1     | 10     | 1       | 10
 	""")
 
+def test_percentile(table):
+    assert_equal(table.percentile('count', 67), 9)
+    assert_equal(table.percentile('count', 66), 3)
+    assert_equal(table.percentile('points', 67), 10)
+    assert_equal(table.percentile('points', 66), 2)
 
 ##################
 # Export/Display #
