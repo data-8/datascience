@@ -324,7 +324,8 @@ class Table(collections.abc.Mapping):
         in rows list) and a column for each unique value in columns. Each row
         aggregates over the values that match both row and column.
 
-        columns, rows, values -- column labels in self
+        columns, values -- column labels in self
+        rows -- column label or a list of column labels
         collect -- aggregation function over values
         zero -- zero value for non-existent row-column combinations
         """
@@ -340,7 +341,7 @@ class Table(collections.abc.Mapping):
         by_columns = grouped.index_by(columns)
         for label in sorted(by_columns):
             tuples = [t[1:] for t in by_columns[label]] # Discard column value
-            column = _fill_with_zeroes(rows_values, tuples, zero)
+            column = _fill_with_zeros(rows_values, tuples, zero)
             pivot = self._unused_label(str(label) + ' ' + values)
             pivoted[pivot] = column
         return pivoted
@@ -753,22 +754,32 @@ def _zero_on_type_error(column_fn):
     return wrapped
 
 
-def _fill_with_zeroes(keys, rows, zero=None):
-    """Return a column of the index-(-1) elements in rows, where the index
-    of each value is determined by matching index-(0:-1) to an element of
-    keys.
+def _fill_with_zeros(partials, rows, zero=None):
+    """Find and return values from rows for all partials. In cases where no
+    row matches a partial, zero is assumed as value. For a row, the first
+    (n-1) fields are assumed to be the partial, and the last field,
+    the value, where n is the total number of fields in each row. It is
+    assumed that there is a unique row for each partial.
+    partials -- single field values or tuples of field values
+    rows -- table rows
+    zero -- value used when no rows match a particular partial
     """
     assert len(rows) > 0
-    if not _is_non_string_iterable(keys):
-        keys = [(k,) for k in keys]
-    index = {}
+    if not _is_non_string_iterable(partials):
+        # Convert partials to tuple for comparison against row slice later
+        partials = [(partial,) for partial in partials]
+
+    # Construct mapping of partials to values in rows
+    mapping = {}
     for row in rows:
-        index[tuple(row[:-1])] = row[-1]
+        mapping[tuple(row[:-1])] = row[-1]
+
     if zero is None:
-        array = np.array(tuple(index.values()))
+        # Try to infer zero from given row values.
+        array = np.array(tuple(mapping.values()))
         if len(array.shape) == 1:
             zero = array.dtype.type()
-    return np.array([index.get(k, zero) for k in keys])
+    return np.array([mapping.get(partial, zero) for partial in partials])
 
 
 def _as_labels(column_label_or_labels):
