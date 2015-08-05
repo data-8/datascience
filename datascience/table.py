@@ -328,22 +328,19 @@ class Table(collections.abc.Mapping):
         collect -- aggregation function over values
         zero -- zero value for non-existent row-column combinations
         """
-        if not _is_non_string_iterable(rows):
-            rows = [rows]
+        rows = _as_labels(rows)
         selected = self.select([columns, values] + rows)
         grouped = selected.groups([columns] + rows, collect)
 
-        # Generate all possible combinations of values from columns in rows
-        rows_values = \
-            list(itertools.product(*(np.unique(self._get_column(column_label))
-                                     for column_label in rows)))
+        # Generate existing combinations of values from columns in rows
+        rows_values = sorted(list(set(self.select(rows).rows)))
         pivoted = Table.from_rows(rows_values, rows)
 
         # Generate other columns and add them to pivoted
         by_columns = grouped.index_by(columns)
         for label in sorted(by_columns):
-            pairs = [t[1:] for t in by_columns[label]] # Discard column value
-            column = _fill_with_zeroes(rows_values, pairs, zero)
+            tuples = [t[1:] for t in by_columns[label]] # Discard column value
+            column = _fill_with_zeroes(rows_values, tuples, zero)
             pivot = self._unused_label(str(label) + ' ' + values)
             pivoted[pivot] = column
         return pivoted
@@ -676,7 +673,6 @@ class Table(collections.abc.Mapping):
             for axis, label, color in zip(axes, self.column_labels, colors):
                 axis.hist(self[label], color=color, **vargs)
                 axis.set_xlabel(label, fontsize=16)
-
 
     def points(self, column__lat, column__long,
             radii=None, labels=None, colors=None, **kwargs) :
