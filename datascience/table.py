@@ -549,9 +549,9 @@ class Table(collections.abc.Mapping):
         rows corresponding to each value.
         """
         column = self._get_column(column_or_label)
-        index = collections.defaultdict(list)
+        index = {}
         for key, row in zip(column, self.rows):
-            index[key].append(row)
+            index.setdefault(key, []).append(row)
         return index
     
     def _sample(self, k, with_replacement, weights):
