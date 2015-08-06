@@ -1,0 +1,26 @@
+language: python
+
+
+python:
+  - "3.4.2"
+
+
+script:
+  - coverage run setup.py test
+
+
+install:
+  - pip install pip --upgrade
+  - python3 setup.py install
+
+
+after_success:
+  - coveralls
+
+
+sudo: false
+
+
+cache:
+  directories:
+  - /home/travis/virtualenv/python3.4.2/

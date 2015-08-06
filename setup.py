@@ -1,19 +1,22 @@
 import sys
-import os
-import IPython
 from setuptools import setup
 from setuptools.command.test import test as TestCommand
 
 install_requires = [
-  'numpy',
-  'matplotlib',
-  'pandas',
-  'folium'
+    'numpy',
+    'matplotlib',
+    'pandas',
+    'folium',
+    'IPython',
+    'jinja2',  # folium dependency
 ]
 
-test_requires = [
-  'pytest'
+tests_requires = [
+    'pytest',
+    'coverage == 3.7.1',
+    'coveralls == 0.5'
 ]
+
 
 class PyTest(TestCommand):
     user_options = [('pytest-args=', 'a', "Arguments to pass to py.test")]
@@ -34,18 +37,20 @@ class PyTest(TestCommand):
         sys.exit(errno)
 
 
+VERSION = '0.2.4'
+
 setup(
-  name = 'datascience',
-  packages = ['datascience'],
-  version = '0.2.3',
-  install_requires = install_requires,
-  tests_require = test_requires,
-  cmdclass = {'test': PyTest},
-  description = 'A Jupyter notebook Python library for introductory data science',
-  author = 'John DeNero, David Culler, Alvin Wan, Sam Lau',
-  author_email = 'ds-instr@berkeley.edu',
-  url = 'https://github.com/dsten/datascience',
-  download_url = 'https://github.com/dsten/datascience/archive/0.2.3.zip',
-  keywords = ['data', 'tools', 'berkeley'],
-  classifiers = [],
+    name = 'datascience',
+    packages = ['datascience'],
+    version = VERSION,
+    install_requires = install_requires + tests_requires,
+    tests_require = tests_requires,
+    cmdclass = {'test': PyTest},
+    description = 'A Jupyter notebook Python library for introductory data science',
+    author = 'John DeNero, David Culler, Alvin Wan, Sam Lau',
+    author_email = 'ds8-instructors@berkeley.edu',
+    url = 'https://github.com/dsten/datascience',
+    download_url = 'https://github.com/dsten/datascience/archive/%s.zip' % VERSION,
+    keywords = ['data', 'tools', 'berkeley'],
+    classifiers = []
 )

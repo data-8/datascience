@@ -72,7 +72,7 @@ def test_basic_points(t):
 def test_basic_rows(t):
     assert_equal(
         t.rows[2],
-         "Row(letter='c', count=3, points=2)")
+        "Row(letter='c', count=3, points=2)")
 
 
 def test_select(t):
@@ -289,14 +289,14 @@ def test_tuples(t, u):
     """Tests that different-sized tuples are allowed."""
     different = [((5, 1), (1, 2, 2, 10)), ('short', 'long')]
     t = Table(different, ['tuple', 'size'])
-    assert_equal(t, """\
+    assert_equal(t, """
     tuple         | size
     (5, 1)        | short
     (1, 2, 2, 10) | long
     """)
     same = [((5, 4, 3, 1), (1, 2, 2, 10)), ('long', 'long')]
     u = Table(same, ['tuple', 'size'])
-    assert_equal(u, """\
+    assert_equal(u, """
     tuple         | size
     [5 4 3 1]     | long
     [ 1  2  2 10] | long
@@ -307,7 +307,7 @@ def test_keys_and_values():
     """Tests that a table can be constructed from keys and values."""
     d = {1: 2, 3: 4}
     t = Table([d.keys(), d.values()], ['keys', 'values'])
-    assert_equal(t, """\
+    assert_equal(t, """
     keys | values
     1    | 2
     3    | 4
@@ -334,7 +334,7 @@ def test_move_to_end(table):
 def test_append_row(table):
     row = ['g', 2, 2]
     table.append(row)
-    assert_equal(table, """\
+    assert_equal(table, """
     letter | count | points
     a      | 9     | 1
     b      | 3     | 2
@@ -346,7 +346,7 @@ def test_append_row(table):
 
 def test_append_table(table):
     table.append(table)
-    assert_equal(table, """\
+    assert_equal(table, """
     letter | count | points
     a      | 9     | 1
     b      | 3     | 2
@@ -360,23 +360,17 @@ def test_append_table(table):
 
 
 def test_append_different_table(table, u):
-    table.append(u)
-    assert_equal(table, """\
-    letter | count | points
-    a      | 9     | 1
-    b      | 3     | 2
-    c      | 3     | 2
-    z      | 1     | 10
-    None   | None  | 1
-    None   | None  | 2
-    None   | None  | 3
-    """)
-    
+    try:
+        table.append(u)
+        assert False, 'KeyError expected'
+    except KeyError:
+        pass
+
 
 def test_append_different_order(table, table3):
     """Tests append with same columns, diff order"""
     table.append(table3)
-    assert_equal(table, """\
+    assert_equal(table, """
     letter | count | points
     a      | 9     | 1
     b      | 3     | 2
@@ -391,7 +385,7 @@ def test_append_different_order(table, table3):
 def test_relabel():
     table = Table([(1, 2, 3), (12345, 123, 5123)], ['points', 'id'])
     table.relabel('id', 'yolo')
-    assert_equal(table, """\
+    assert_equal(table, """
     points | yolo
     1      | 12345
     2      | 123
@@ -400,7 +394,7 @@ def test_relabel():
 
 
 def test_relabel_with_chars(table):
-    assert_equal(table, """\
+    assert_equal(table, """
     letter | count | points
     a      | 9     | 1
     b      | 3     | 2
@@ -408,7 +402,7 @@ def test_relabel_with_chars(table):
     z      | 1     | 10
     """)
     table.relabel('points', 'minions')
-    assert_equal(table, """\
+    assert_equal(table, """
     letter | count | minions
     a      | 9     | 1
     b      | 3     | 2
@@ -425,7 +419,36 @@ def test_relabel_with_chars(table):
 def test_from_rows():
     letters = [('a', 9, 1), ('b', 3, 2), ('c', 3, 2), ('z', 1, 10)]
     t = Table.from_rows(letters, ['letter', 'count', 'points'])
-    assert_equal(t, """\
+    assert_equal(t, """
+    letter | count | points
+    a      | 9     | 1
+    b      | 3     | 2
+    c      | 3     | 2
+    z      | 1     | 10
+    """)
+
+
+def test_from_records():
+    letters = [
+        {'letter': 'a',
+         'count': 9,
+         'points': 1,
+        },
+        {'letter': 'b',
+         'count': 3,
+         'points': 2,
+        },
+        {'letter': 'c',
+         'count': 3,
+         'points': 2,
+        },
+        {'letter': 'z',
+         'count': 1,
+         'points': 10,
+        },
+    ]
+    t = Table.from_records(letters)
+    assert_equal(t.select(['letter', 'count', 'points']), """
     letter | count | points
     a      | 9     | 1
     b      | 3     | 2
@@ -442,14 +465,14 @@ def test_from_rows():
 def test_group_by_tuples():
     tuples = [((5, 1), (1, 2, 2, 10), (1, 2, 2, 10)), (3, 3, 1)]
     t = Table(tuples, ['tuples', 'ints'])
-    assert_equal(t, """\
+    assert_equal(t, """
     tuples        | ints
     (5, 1)        | 3
     (1, 2, 2, 10) | 3
     (1, 2, 2, 10) | 1
     """)
     table = t.group('tuples')
-    assert_equal(table, """\
+    assert_equal(table, """
     tuples        | ints
     (1, 2, 2, 10) | [3 1]
     (5, 1)        | [3]
@@ -458,7 +481,7 @@ def test_group_by_tuples():
 
 def test_group_no_new_column(table):
     table.group(table.columns[1])
-    assert_equal(table, """\
+    assert_equal(table, """
     letter | count | points
     a      | 9     | 1
     b      | 3     | 2
@@ -469,7 +492,7 @@ def test_group_no_new_column(table):
 
 def test_stack(table):
     test = table.stack(key='letter')
-    assert_equal(test, """\
+    assert_equal(test, """
     letter | column | value
     a      | count  | 9
     a      | points | 1
@@ -484,7 +507,7 @@ def test_stack(table):
 
 def test_stack_restrict_columns(table):
     test = table.stack(key='letter', column_labels=['count'])
-    assert_equal(test, """\
+    assert_equal(test, """
     letter | column | value
     a      | count  | 9
     b      | count  | 3
@@ -496,7 +519,7 @@ def test_stack_restrict_columns(table):
 def test_join_basic(table, table2):
     table['totals'] = table['points'] * table['count']
     test = table.join('points', table2)
-    assert_equal(test, """\
+    assert_equal(test, """
     points | letter | count | totals | names
     1      | a      | 9     | 9      | one
     2      | b      | 3     | 6      | two
@@ -509,16 +532,16 @@ def test_join_with_booleans(table, table2):
     table['totals'] = table['points'] * table['count']
     table['points'] = table['points'] > 1
     table2['points'] = table2['points'] > 1
-    
-    assert_equal(table, """\
+
+    assert_equal(table, """
     letter | count | points | totals
     a      | 9     | False  | 9
     b      | 3     | True   | 6
     c      | 3     | True   | 6
     z      | 1     | True   | 10
     """)
-    
-    assert_equal(table2, """\
+
+    assert_equal(table2, """
     points | names
     False  | one
     True   | two
@@ -526,7 +549,7 @@ def test_join_with_booleans(table, table2):
     """)
 
     test = table.join('points', table2)
-    assert_equal(test, """\
+    assert_equal(test, """
     points | letter | count | totals | names
     False  | a      | 9     | 9      | one
     True   | b      | 3     | 6      | two
@@ -537,7 +560,7 @@ def test_join_with_booleans(table, table2):
 
 def test_join_with_self(table):
     test = table.join('count', table)
-    assert_equal(test, """\
+    assert_equal(test, """
     count | letter | points | letter_2 | points_2
     1     | z      | 10     | z        | 10
     3     | b      | 2      | b        | 2
@@ -548,7 +571,7 @@ def test_join_with_self(table):
 
 def test_join_with_strings(table):
     test = table.join('letter', table)
-    assert_equal(test, """\
+    assert_equal(test, """
     letter | count | points | count_2 | points_2
     a      | 9     | 1      | 9       | 1
     b      | 3     | 2      | 3       | 2
@@ -561,14 +584,19 @@ def test_join_with_strings(table):
 # Export/Display #
 ##################
 
-def test_format_large_ints():
-    """Tests that large ints are NOT formatted using scientific notation"""
-    assert_equal(
-        Table.format_value(123456789**5),
-        28679718602997181072337614380936720482949
-    )
-    
-    
+
+def test_format_function(table):
+    """Test that formatting can be applied by a function."""
+    table = table.copy().set_format('points', lambda v: float(v))
+    assert_equal(table, """
+    letter | count | points
+    a      | 9     | 1.0
+    b      | 3     | 2.0
+    c      | 3     | 2.0
+    z      | 1     | 10.0
+    """)
+
+
 def test_sample_basic(table):
     """Tests that sample doesn't break"""
     table.sample(table.num_rows)
@@ -587,19 +615,19 @@ def test_sample_wrepl_basic(table):
 def test_sample_wwgts_basic(table):
     """Tests that sample with weights doesn't break"""
     table.sample(table.num_rows, weights=[1/4]*4)
-    
-    
+
+
 def test_sample_weights_ne1(table):
     """Tests that a series of weights with total != 1 is not accepted"""
     with pytest.raises(ValueError):
         table.sample(table.num_rows, weights=[1/4, 1/4, 1/4, 1/6])
-        
+
     with pytest.raises(ValueError):
         table.sample(table.num_rows, weights=[1/4, 1/4, 1/4, 1/2])
-    
-    
+
+
 def test_sample_weights_worepl(table):
-    """Tests that with_replacement flag works - ensures with_replacement=False 
+    """Tests that with_replacement flag works - ensures with_replacement=False
     works by asserting unique rows for each iteration
     1000: ~3.90s
     2000: ~7.04s
@@ -612,6 +640,17 @@ def test_sample_weights_worepl(table):
         assert len(set(u.rows)) == len(u.rows)
         i += 1
 
+
+def test_sample_weights_with_none_k(table):
+    """Tests that with_replacement flag works - ensures with_replacement=False
+    works by asserting unique rows for each iteration, with k=None default
+    """
+    iterations, i = 100,  0
+    while i < iterations:
+        u = table.sample()
+        assert len(set(u.rows)) == len(u.rows)
+        i += 1
+
 #############
 # Visualize #
 #############
@@ -619,14 +658,14 @@ def test_sample_weights_worepl(table):
 
 
 ###########
-# Support #
+# Queries #
 ###########
 
 
 def test_q_and(table):
     """Test that Q performs logical AND correctly"""
     test = table.where(Q(table['letter'] < 'c') & Q(table['points'] > 1))
-    assert_equal(test, """\
+    assert_equal(test, """
     letter | count | points
     b      | 3     | 2
     """)
@@ -635,18 +674,18 @@ def test_q_and(table):
 def test_q_or(table):
     """Test that Q performs logical OR correctly"""
     test = table.where(Q(table['letter'] < 'b') | Q(table['points'] > 2))
-    assert_equal(test, """\
+    assert_equal(test, """
     letter | count | points
     a      | 9     | 1
     z      | 1     | 10
     """)
-    
+
 
 def test_q_chaining(table):
     """Tests that successive Qs can be added"""
     test_q_or_filter = Q(table['letter'] < 'b') | Q(table['points'] > 2)
     test = table.where(Q(test_q_or_filter) & Q(table['count'] > 2))
-    assert_equal(test, """\
+    assert_equal(test, """
     letter | count | points
     a      | 9     | 1
     """)
