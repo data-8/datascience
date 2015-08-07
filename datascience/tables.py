@@ -14,6 +14,7 @@ import IPython
 
 import datascience.maps as _maps
 import datascience.formats as _formats
+from .util import *
 
 class Table(collections.abc.Mapping):
     """A sequence of labeled columns.
@@ -445,8 +446,7 @@ class Table(collections.abc.Mapping):
         count | points
         9     | 10
         """
-        percentiles = [np.percentile(self[column_name], p, interpolation='higher')
-            for column_name in self]
+        percentiles = [percentile(self[column_name], p) for column_name in self]
         return Table(percentiles, self.column_labels)
     ##################
     # Export/Display #
