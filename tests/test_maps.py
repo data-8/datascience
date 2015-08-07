@@ -179,7 +179,8 @@ def test_map_autofit_mix(region1):
 
 def test_bounds():
     """ Tests that generated bounds are correct """
-    points = [MapPoint((0, 0)), MapPoint((-90, 180)), MapPoint((90, -180))]
+    points = [MapPoint(0, 0), MapPoint((180, -90)),
+              MapPoint(90, -180, geo_formatted=True)]
     bounds = Map(points=points)._autobounds()
     assert bounds['max_lat'] == 90
     assert bounds['min_lat'] == -90
@@ -192,7 +193,9 @@ def test_bounds_limits():
     Tests that randomly large lats and lots are truncated to
     the correct max, min values """
 
-    points = [MapPoint((0, 0)), MapPoint((-100, 200)), MapPoint((90, -180))]
+    points = [MapPoint(0, 0),
+              MapPoint(-100, 200, geo_formatted=True), 
+              MapPoint(90, -180, geo_formatted=True)]
     bounds = Map(points=points)._autobounds()
     assert bounds['max_lat'] == 90
     assert bounds['min_lat'] == -90
@@ -202,7 +205,10 @@ def test_bounds_limits():
 
 def test_bounds_floats():
 	"""Tests that bounds with floats work (should, in theory)"""
-	points = [MapPoint(51.5135015, -0.1358392), MapPoint((51.5137, -0.1358392)), MapPoint((51.5132, -0.138)), MapPoint((51.5143, -0.135))]
+	points = [MapPoint(51.5135015, -0.1358392, geo_formatted=True), 
+	          MapPoint(51.5137, -0.1358392, geo_formatted=True), 
+	          MapPoint(51.5132, -0.138, geo_formatted=True), 
+	          MapPoint(51.5143, -0.135, geo_formatted=True)]
 	bounds = Map(points=points)._autobounds()
 	assert bounds['max_lat'] == 51.5143
 	assert bounds['min_lat'] == 51.5132

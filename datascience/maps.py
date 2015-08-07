@@ -40,8 +40,7 @@ class MapData:
             geo_formatted=True),
         'Point': lambda feature: MapPoint(
             feature['geometry']['coordinates'],
-            radius=feature['properties']['size'],
-            geo_formatted=True),
+            radius=feature['properties']['size']),
         'MultiPolygon': lambda feature: MapRegion(
             locations=feature['geometry']['coordinates'],
             geo_formatted=True)
@@ -440,7 +439,7 @@ class MapPoint(MapEntity):
         """
         if 'geo_formatted' not in kwargs \
                 or not kwargs['geo_formatted']:
-            self.location = Map.reverse(self.location)
+            self.location = self['location'] = Map.reverse(self.location)
 
     def copy(self):
         """Makes a deep copy of a MapPoint"""
@@ -519,9 +518,9 @@ class MapRegion(MapEntity):
         """
         if 'geo_formatted' not in kwargs or not kwargs['geo_formatted']:
             if 'locations' in kwargs:
-                self.locations = Map.reverse(kwargs['locations'])
+                self.locations = self['locations'] = Map.reverse(kwargs['locations'])
             if 'points' in kwargs:
-                self.points = Map.reverse(kwargs['points'])
+                self.points = self['points'] = Map.reverse(kwargs['points'])
 
     def _before_map(self, *args, **kwargs):
         """Prepares for mapping by passing JSON representation"""
