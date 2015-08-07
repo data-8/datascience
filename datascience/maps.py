@@ -34,6 +34,18 @@ class MapData:
     """A geoJSON string, object, or file."""
 
     _data = None
+    _types = {
+        'Polygon': lambda feature: MapRegion(
+            locations=feature['geometry']['coordinates'],
+            geo_formatted=True),
+        'Point': lambda feature: MapPoint(
+            feature['geometry']['coordinates'],
+            radius=feature['properties']['size'],
+            geo_formatted=True),
+        'MultiPolygon': lambda feature: MapRegion(
+            locations=feature['geometry']['coordinates'],
+            geo_formatted=True)
+    }
 
     def __init__(self, path_or_json_or_string = None):
         """Loads geoJSON"""
@@ -52,7 +64,7 @@ class MapData:
             pass
         if not self._data:
             raise MapError('MapData accepts a valid geoJSON object'
-            'geoJSON string, or path to a geoJSON file')
+                           'geoJSON string, or path to a geoJSON file')
         self._process_data()
 
     def _process_data(self):
@@ -61,12 +73,18 @@ class MapData:
         """
         self._features = self._data['features']
         self._data = {}
-        for i, feature in enumerate(self._features):
-            key, val = feature.get('id', i), MapRegion(
-                locations=feature['geometry']['coordinates'],
-                geo_formatted=True)
-            self._data[key] = val
-            setattr(self, key, val)
+        try:
+            for i, feature in enumerate(self._features):
+                key = feature.get('id', str(i))
+                val = self._types[feature['geometry']['type']](feature)
+                self._data[key] = val
+                setattr(self, key, val)
+        except KeyError:
+            raise MapError('Either the geoJSON is malformed -- does not \
+                           contain a "geometry" or "type" property -- or the \
+                           provided geometry type is not supported. Confused \
+                           by this message? This just means that we do not \
+                           currently support this type of geoJSON.')
 
     def to_dict(self):
         return self._data.copy()
@@ -426,7 +444,7 @@ class MapPoint(MapEntity):
 
     def copy(self):
         """Makes a deep copy of a MapPoint"""
-        attributes = {k:v for k, v in self._attributes.items()
+        attributes = {k: v for k, v in self._attributes.items()
                       if k not in ['location']}
         return MapPoint(
             self['location'][:], 
@@ -630,8 +648,8 @@ class MapRegion(MapEntity):
     
     def copy(self):
         """Makes a deep copy of MapRegion"""
-        attributes = {k:v for k, v in self._attributes.items()
-            if k not in ['locations', 'regions', 'points']}
+        attributes = {k: v for k, v in self._attributes.items()
+                      if k not in ['locations', 'regions', 'points']}
         return MapRegion(
             regions=[region.copy() for region in self.regions],
             locations=[loc.copy() for loc in self.locations],
