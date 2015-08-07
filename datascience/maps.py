@@ -83,8 +83,9 @@ def _map_to_defaults(defaults, params, excludes=[], includes=[]):
     """Squishes together two dictionaries, with one containing defaults."""
     rval = defaults.copy()
     rval.update(params)
+    val = lambda v: v.copy() if hasattr(v, 'copy') else v
     return {
-        k: v for k, v in rval.items()
+        k: val(v) for k, v in rval.items()
         if k not in excludes
         and k in (includes or rval.keys())
     }
@@ -226,7 +227,6 @@ class Map(MapEntity):
     ]
 
     _defaults = {
-        'location': [45.5244, -122.6699],
         'tiles': 'Stamen Toner',
         'zoom_start': 17,
         'width': 960,

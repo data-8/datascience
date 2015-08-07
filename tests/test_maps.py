@@ -199,3 +199,12 @@ def test_bounds_limits():
 	assert bounds['max_long'] == 180
 	assert bounds['min_long'] == -180
 
+
+def test_bounds_floats():
+	"""Tests that bounds with floats work (should, in theory)"""
+	points = [MapPoint(51.5135015, -0.1358392), MapPoint((51.5137, -0.1358392)), MapPoint((51.5132, -0.138)), MapPoint((51.5143, -0.135))]
+	bounds = Map(points=points)._autobounds()
+	assert bounds['max_lat'] == 51.5143
+	assert bounds['min_lat'] == 51.5132
+	assert bounds['max_long'] == -0.135
+	assert bounds['min_long'] == -0.138
