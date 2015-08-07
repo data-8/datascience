@@ -315,7 +315,7 @@ class Map(MapEntity):
             else:
                 raise ProgrammerError('Ended up with %s.' % type(coord))
 
-        bound_check([point.location for point in self.points])
+        bound_check([point.location[::-1] for point in self.points])
         bound_check([region.to_polygon() for region in self.regions])
         return bounds
 
