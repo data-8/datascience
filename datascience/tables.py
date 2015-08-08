@@ -446,7 +446,7 @@ class Table(collections.abc.Mapping):
         count | points
         9     | 10
         """
-        percentiles = [percentile(self[column_name], p) for column_name in self]
+        percentiles = [percentile(p, self[column_name]) for column_name in self]
         return Table(percentiles, self.column_labels)
     ##################
     # Export/Display #
