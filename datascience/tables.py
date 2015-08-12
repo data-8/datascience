@@ -14,6 +14,7 @@ import IPython
 
 import datascience.maps as _maps
 import datascience.formats as _formats
+from .util import *
 
 class Table(collections.abc.Mapping):
     """A sequence of labeled columns.
@@ -427,12 +428,32 @@ class Table(collections.abc.Mapping):
     def _get_column(self, column_or_label):
         """Convert label to column and check column length."""
         c = column_or_label
-        if isinstance(c, collections.Hashable) and  c in self.column_labels:
+        if isinstance(c, collections.Hashable) and c in self.column_labels:
             return self[c]
         else:
             assert len(c) == self.num_rows, 'column length mismatch'
             return c
 
+    def percentile(self, p):
+        """Assumes that each column only contains one type of value.
+
+        Returns a new table with one row and the same column labels.
+        The row contains the pth percentile of the original column, where the
+        pth percentile of a column is the smallest value that at at least as
+        large as the p% of numbers in the column.
+
+        >>> print(t)
+        count | points
+        9     | 1
+        3     | 2
+        3     | 2
+        1     | 10
+        >>> t.percentile(67)
+        count | points
+        9     | 10
+        """
+        percentiles = [percentile(p, self[column_name]) for column_name in self]
+        return Table(percentiles, self.column_labels)
     ##################
     # Export/Display #
     ##################

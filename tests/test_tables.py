@@ -29,6 +29,11 @@ def table3():
     letter, count, points = ['x', 'y', 'z'], [0, 54, 5], [3, 10, 24]
     return Table([count, points, letter], ['count', 'points', 'letter'])
 
+@pytest.fixture(scope='function')
+def numbers_table():
+    """Setup table containing only numbers"""
+    count, points = [9, 3, 3, 1], [1, 2, 2, 10]
+    return Table([count, points], ['count', 'points'])
 
 @pytest.fixture(scope='module')
 def t():
@@ -579,6 +584,16 @@ def test_join_with_strings(table):
     z      | 1     | 10     | 1       | 10
     """)
 
+def test_percentile(numbers_table):
+    assert_equal(numbers_table.percentile(67), """
+    count | points
+    9     | 10
+    """)
+
+    assert_equal(numbers_table.percentile(66), """
+    count | points
+    3     | 2
+    """)
 
 ##################
 # Export/Display #
