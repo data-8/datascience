@@ -10,6 +10,7 @@ import random
 # Exposed Functionality #
 #########################
 
+
 def draw_map(obj=None, **kwargs):
     """Draw a map with center & zoom containing all points and regions that
     displays points as circles and regions as polygons.
@@ -83,8 +84,9 @@ def _map_to_defaults(defaults, params, excludes=[], includes=[]):
     """Squishes together two dictionaries, with one containing defaults."""
     rval = defaults.copy()
     rval.update(params)
+    val = lambda v: v.copy() if hasattr(v, 'copy') else v
     return {
-        k: v for k, v in rval.items()
+        k: val(v) for k, v in rval.items()
         if k not in excludes
         and k in (includes or rval.keys())
     }
@@ -226,7 +228,6 @@ class Map(MapEntity):
     ]
 
     _defaults = {
-        'location': [45.5244, -122.6699],
         'tiles': 'Stamen Toner',
         'zoom_start': 17,
         'width': 960,
@@ -249,10 +250,10 @@ class Map(MapEntity):
     def _before_to_html(self, *args, **kwargs):
         """Called before to_html; add points and regions before mapping."""
         for point in self.points:
-            point.map(self._folium)
+            point.copy().map(self._folium)
 
         for region in self.regions:
-            region.map(self._folium)
+            region.copy().map(self._folium)
 
         # uncomment the following with new Folium release
         # if 'zoom_start' not in self._init:
@@ -422,6 +423,15 @@ class MapPoint(MapEntity):
         if 'geo_formatted' not in kwargs \
                 or not kwargs['geo_formatted']:
             self.location = Map.reverse(self.location)
+
+    def copy(self):
+        """Makes a deep copy of a MapPoint"""
+        attributes = {k:v for k, v in self._attributes.items()
+                      if k not in ['location']}
+        return MapPoint(
+            self['location'][:], 
+            geo_formatted=True,
+            **attributes)
 
 
 class MapRegion(MapEntity):
@@ -617,3 +627,14 @@ class MapRegion(MapEntity):
 
     def __str__(self):
         return json.dumps(self._to_json())
+    
+    def copy(self):
+        """Makes a deep copy of MapRegion"""
+        attributes = {k:v for k, v in self._attributes.items()
+            if k not in ['locations', 'regions', 'points']}
+        return MapRegion(
+            regions=[region.copy() for region in self.regions],
+            locations=[loc.copy() for loc in self.locations],
+            points=[pt[:] for pt in self.points], 
+            geo_formatted=True,
+            **attributes)
