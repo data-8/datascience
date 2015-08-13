@@ -417,8 +417,6 @@ class Circle(Marker):
 
     Defaults from Folium:
 
-    line_color: string, default black
-        Line color. Can pass hex value here as well.
     fill_opacity: float, default 0.6
         Circle fill opacity
     """
@@ -427,7 +425,7 @@ class Circle(Marker):
     _color_param = 'fill_color'
 
     def __init__(self, lat, lon, popup='', color='blue', radius=10, **kwargs):
-        super().__init__(lat, lon, popup, color, radius=radius, **kwargs)
+        super().__init__(lat, lon, popup, color, radius=radius, line_color=None, **kwargs)
 
 
 class Region(_MapFeature):
