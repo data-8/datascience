@@ -471,7 +471,8 @@ class Table(collections.abc.MutableMapping):
         return self.as_html(self.max_str_rows)
 
     def show(self, max_rows=0):
-        return IPython.display.HTML(self.as_html(max_rows))
+        """Display the table."""
+        IPython.display.display(IPython.display.HTML(self.as_html(max_rows)))
 
     max_str_rows = 10
 

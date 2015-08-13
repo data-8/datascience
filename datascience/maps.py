@@ -1,7 +1,6 @@
 """Draw maps using folium."""
 
-from IPython.core.display import HTML
-
+import IPython.display
 import folium
 import pandas
 
@@ -33,7 +32,7 @@ class _FoliumWrapper(abc.ABC):
 
     def show(self):
         """Publish HTML."""
-        return HTML(self.as_html())
+        IPython.display.display(IPython.display.HTML(self.as_html()))
 
     def _repr_html_(self):
         return self.as_html()
@@ -44,7 +43,14 @@ class _FoliumWrapper(abc.ABC):
         m._build_map()
         src = m.HTML.replace('"', '&quot;')
         style = "width: {}px; height: {}px".format(width, height)
-        return '<iframe srcdoc="{}" style="{}"; border: none"></iframe>'.format(src, style)
+        html = '<iframe srcdoc="{}" style="{}"; border: none"></iframe>'.format(src, style)
+        # See https://github.com/python-visualization/folium/issues/176
+        if hasattr(m, 'json_data'):
+            for name, data in m.json_data.items():
+                stub = 'function(callback){callback(null, JSON.parse('
+                replace = stub + repr(json.dumps(data).replace('"', '&quot;')) + '))}'
+                html = html.replace('d3.json, ' + repr(name), replace)
+        return html
 
     @abc.abstractmethod
     def _set_folium_map(self):
