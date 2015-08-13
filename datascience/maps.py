@@ -1,8 +1,13 @@
 """Draw maps using folium."""
 
 from IPython.core.display import HTML
-import json
+
 import folium
+import pandas
+
+import collections
+import collections.abc
+import json
 import functools
 import random
 
@@ -22,27 +27,53 @@ def _convert_point(feature):
     return Marker(lat, lon)
 
 
+def _lat_lons_from_geojson(s):
+    """Return a latitude-longitude pairs from nested GeoJSON coordinates.
+
+    GeoJSON coordinates are always stored in (longitude, latitude) order.
+    """
+    if len(s) >= 2 and isinstance(s[0], (int, float)) and isinstance(s[0], (int, float)):
+        lat, lon = s[1], s[0]
+        return [(lat, lon)]
+    else:
+        return [lat_lon for sub in s for lat_lon in _lat_lons_from_geojson(sub)]
+
+
 def load_geojson(path_or_json_or_string):
-    """Load a geoJSON string, object, or file. Return a dict of map features."""
+    """Load a geoJSON string, object, or file. Return a dict of features keyed by ID."""
     assert path_or_json_or_string
     data = None
     if isinstance(path_or_json_or_string, (dict, list)):
         data = path_or_json_or_string
-    elif isinstance(path_or_json_or_string, str):
-        try:
-            data = json.loads(path_or_json_or_string)
-        except ValueError:
-            pass
-        try:
-            data = json.loads(open(path_or_json_or_string, 'r').read())
-        except FileNotFoundError, IOError:
-            pass
-        # TODO Handle web address
+    try:
+        data = json.loads(path_or_json_or_string)
+    except ValueError:
+        pass
+    try:
+        data = json.loads(open(path_or_json_or_string, 'r').read())
+    except FileNotFoundError:
+        pass
     if not data:
         raise MapError('MapData accepts a valid geoJSON object, '
             'geoJSON string, or path to a geoJSON file')
+    return Map(_read_geojson_features(data))
 
-    return Region(data)
+
+def _read_geojson_features(data, features=None, prefix=""):
+    """Return a dict of features keyed by ID."""
+    if features is None:
+        features = collections.OrderedDict()
+    for i, feature in enumerate(data['features']):
+        key = feature.get('id', prefix + str(i))
+        feature_type = feature['geometry']['type']
+        if feature_type == 'FeatureCollection':
+            _read_geojson_features(feature, features, prefix + '.' + key)
+        elif feature_type == 'Point':
+            value = _convert_point(feature)
+        else:
+            value = Region(feature)
+        features[key] = value
+    return features
 
 
 class _FoliumWrapper:
@@ -75,14 +106,21 @@ class _FoliumWrapper:
         return self.as_html()
 
 
-class Map(_FoliumWrapper):
-    """A map displaying features. Keyword args are forwarded to folium."""
+class Map(_FoliumWrapper, collections.abc.Mapping):
+    """A map from IDs to features. Keyword args are forwarded to folium."""
 
     _mapper = folium.Map
     _default_lat_lon = (37.872, -122.258)
     _default_zoom = 12
 
-    def __init__(self, features=(), width=960, height=500, **kwargs):
+    def __init__(self, features=(), ids=(), width=960, height=500, **kwargs):
+        if isinstance(features, (tuple, set, list)):
+            if len(ids) == len(features):
+                features = dict(zip(ids, features))
+            else:
+                assert len(ids) == 0
+                features = dict(enumerate(features))
+        assert isinstance(features, dict)
         self._features = features
         self._attrs = {
             'tiles': 'Stamen Toner',
@@ -93,15 +131,24 @@ class Map(_FoliumWrapper):
         self._height = height
         self._attrs.update(kwargs)
 
+    def __getitem__(self, id):
+        return self._features[id]
+
+    def __len__(self):
+        return len(self._features)
+
+    def __iter__(self):
+        return iter(self._features)
+
     def _set_folium_map(self):
         attrs = {'width': self._width, 'height': self._height}
         attrs.update(self._autozoom())
         attrs.update(self._attrs.copy())
         # Enforce zoom consistency
-        attrs['max_zoom'] = max(attrs['zoom_start'], attrs['max_zoom'])
-        attrs['min_zoom'] = min(attrs['zoom_start'], attrs['min_zoom'])
+        attrs['max_zoom'] = max(attrs['zoom_start']+2, attrs['max_zoom'])
+        attrs['min_zoom'] = min(attrs['zoom_start']-2, attrs['min_zoom'])
         self._folium_map = self._mapper(**attrs)
-        for feature in self._features:
+        for feature in self._features.values():
             feature.draw_on(self._folium_map)
 
     def _autozoom(self):
@@ -121,7 +168,8 @@ class Map(_FoliumWrapper):
             check('max_lon', max, 180, lon)
             check('min_lon', min, -180, lon)
 
-        lat_lons = [lat_lon for f in self._features for lat_lon in f.lat_lons]
+        lat_lons = [lat_lon for feature in self._features.values() for
+                    lat_lon in feature.lat_lons]
         if not lat_lons:
             lat_lons.append(self._default_lat_lon)
         for lat_lon in lat_lons:
@@ -185,9 +233,13 @@ class _MapFeature(_FoliumWrapper):
         """kwargs for a call to a map method."""
         return self._attrs.copy()
 
+    def geojson(self, feature_id):
+        """Return GeoJSON."""
+        return {'id': feature_id}
+
 
 class Marker(_MapFeature):
-    """A marker wrapping Folium's simple_marker method.
+    """A marker displayed with Folium's simple_marker method.
 
     location -- lat-lon pair
     popup -- text that pops up when marker is clicked
@@ -203,9 +255,9 @@ class Marker(_MapFeature):
     _map_method_name = 'simple_marker'
 
     def __init__(self, lat, lon, popup="", **kwargs):
+        assert isinstance(lat, (int, float))
+        assert isinstance(lon, (int, float))
         self.lat_lon = (lat, lon)
-        if isinstance(popup, str):
-            self._name = popup
         self._attrs = {
             'popup': popup,
             'popup_on': bool(popup),
@@ -218,7 +270,7 @@ class Marker(_MapFeature):
 
     def copy(self):
         """Return a deep copy"""
-        return MapPoint(self.lat_lon[:], **self._attrs.copy())
+        return MapPoint(self.lat_lon[:], **self._attrs)
 
     @property
     def _folium_kwargs(self):
@@ -226,146 +278,70 @@ class Marker(_MapFeature):
         attrs['location'] = self.lat_lon
         return attrs
 
-    @property
-    def geojson(self):
+    def geojson(self, feature_id):
         """GeoJSON representation of the point."""
+        lat, lon = self.lat_lon
+        return {
+            'type': 'Feature',
+            'id': feature_id,
+            'geometry': {
+                'type': 'Point',
+                'coordinates': (lon, lat),
+            },
+        }
+
+    def format(self, **kwargs):
+        attrs = self._attrs.copy()
+        attrs.update(kwargs)
+        lat, lon = self.lat_lon
+        return Marker(lat, lon, **attrs)
 
 
-class Region(MapFeature):
-    """An arbitrary set of features wrapping Folium's geo_json method."""
+def as_markers(latitudes, longitudes, labels=None, **kwargs):
+    """Return a list of Markers from columns of coordinates and labels."""
+    assert len(latitudes) == len(longitudes)
+    if labels is None:
+        return [Marker(lat, lon, **kwargs) for lat, lon in zip(latitudes, longitudes)]
+    else:
+        assert len(labels) == len(latitudes)
+        return [Marker(lat, lon, popup, **kwargs) for
+                lat, lon, popup in zip(latitudes, longitudes, labels)]
+
+
+class Region(_MapFeature):
+    """A GeoJSON feature displayed with Folium's geo_json method."""
 
     _map_method_name = 'geo_json'
 
-    def _before_map(self, *args, **kwargs):
-        """Prepares for mapping by passing JSON representation"""
-        self._validate()
-        json_str = json.dumps(self._to_json()).replace(']]]}}', ']]]}}\n')
+    def __init__(self, geojson, **kwargs):
+        assert 'type' in geojson
+        assert geojson['type'] == 'Feature'
+        self._geojson = geojson
+        self._attrs = kwargs
 
-        # self.attributes['geo_str'] = json_str
-
-        # TODO(Alvin): find soln to temporary workaround
-        if self.locations[0] or self.lat_lons or self.regions:
-            import os
-            os.makedirs(self.CACHE_DIR, exist_ok=True)
-            self.TEMP_FILE = os.path.join(
-                self.CACHE_DIR, str(round(random.random()*1000))+'temp.json')
-            open(self.TEMP_FILE, 'w').write(json_str)
-            self._attributes['geo_path'] = self.TEMP_FILE
-
-    def map(self, map=None):
-        """Takes action, depending on composite
-
-        CHILDREN -- invoke map() for each child
-        GROUP -- invoke parent map() normally
-        ONE -- invoke parent map() normally
-        """
-        composite = self.composite
-        if composite in (MapRegion.GROUP, MapRegion.ONE):
-            super().map(map)
-        elif composite == MapRegion.CHILDREN:
-            for region in self.regions:
-                region.map(map)
-
-    def _validate(self):
-        """Checks for validity of data"""
-        locations, lat_lons = self.get('locations', 'lat_lons')
-
-        if not isinstance(lat_lons, self._allowed_collections):
-            raise MapError('"Points" must be a %s' %
-                ' or '.join(self._allowed_collections))
-
-    @staticmethod
-    def to_json(features, **kwargs):
-        """Converts any features list to FeatureCollection JSON"""
-        return _map_to_defaults({
-            'type': 'FeatureCollection',
-            'features': features
-        }, kwargs)
-
-    def _to_json(self):
-        """Converts MapRegion to folium-ready geoJSON, depending on composite.
-
-        CHILDREN -- none
-        GROUP -- construct jsons with children
-        ONE -- construct polygons with children
-        """
-        composite = self.composite
-        if composite == MapRegion.GROUP:
-            return MapRegion.to_json(
-                self._to_feature_json())
-        elif composite == MapRegion.ONE:
-            return MapRegion.to_json(
-                MapRegion.to_feature_json(
-                    self._to_polygon_json()))
-        return None
-
-    @staticmethod
-    def to_feature_json(feature, **kwargs):
-        """Converts single feature into feature JSON"""
-        return _map_to_defaults({
-            'type': 'Feature',
-            'properties': {'featurecla': 'Map'},
-            'geometry': feature
-        }, kwargs)
-
-    def _to_feature_json(self):
-        """Converts to list of feature JSONs"""
-        return [MapRegion.to_feature_json(feat)
-            for feat in self.to_feature()]
-
-    def to_feature(self):
-        """Converts to list of poylgon JSONs"""
-        regions = self.regions
-
-        if regions:
-            rval = []
-            for region in regions:
-                rval += (region.to_feature() or [])
-            return rval
-
-        return [self._to_polygon_json()]
-
-    @staticmethod
-    def to_polygon_json(polygon, **kwargs):
-        """Converts single polygon into polygon JSON"""
-        return _map_to_defaults({
-            'type': 'Polygon',
-            'coordinates': polygon
-        }, kwargs)
-
-    def _to_polygon_json(self):
-        """Converts to one polygon JSON"""
-        return MapRegion.to_polygon_json(self.to_polygon())
-
-    def to_polygon(self):
-        """Converts to list of polygons, including that of descendants"""
-        regions, locations, lat_lons = self.get('regions', 'locations', 'lat_lons')
-
-        if regions:
-            rval = []
-            for region in regions:
-                rval += region.to_polygon()
-            return rval
-
-        return self._to_locations()
-
-    def _to_locations(self):
-        """Converts to list of polygons"""
-        locations, lat_lons = self.get('locations', 'lat_lons')
-        if not locations[0]:
-            return [lat_lons]
-        return locations
-
-    def __str__(self):
-        return json.dumps(self._to_json())
+    @property
+    def lat_lons(self):
+        return _lat_lons_from_geojson(self._geojson['geometry']['coordinates'])
 
     def copy(self):
-        """Makes a deep copy of MapRegion"""
-        attributes = {k: v for k, v in self._attributes.items()
-                      if k not in ['locations', 'regions', 'lat_lons']}
-        return MapRegion(
-            regions=[region.copy() for region in self.regions],
-            locations=[loc.copy() for loc in self.locations],
-            lat_lons=[pt[:] for pt in self.lat_lons],
-            geo_formatted=True,
-            **attributes)
+        """Return a deep copy"""
+        return Region(self._geojson.copy(), **self._attrs)
+
+    @property
+    def _folium_kwargs(self):
+        attrs = self._attrs.copy()
+        attrs['geo_str'] = json.dumps(self._geojson)
+        return attrs
+
+    def geojson(self, feature_id):
+        if self._geojson.get('id', feature_id) == feature_id:
+            return self._geojson
+        else:
+            geo = self._geojson.copy()
+            geo['id'] = feature_id
+            return geo
+
+    def format(self, **kwargs):
+        attrs = self._attrs.copy()
+        attrs.update(kwargs)
+        return Region(self._geojson, **attrs)

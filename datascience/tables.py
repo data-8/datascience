@@ -16,7 +16,7 @@ import datascience.maps as _maps
 import datascience.formats as _formats
 from .util import *
 
-class Table(collections.abc.Mapping):
+class Table(collections.abc.MutableMapping):
     """A sequence of labeled columns.
 
     >>> letters = ['a', 'b', 'c', 'z']
