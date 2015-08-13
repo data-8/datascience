@@ -357,7 +357,7 @@ class Marker(_MapFeature):
 
     def copy(self):
         """Return a deep copy"""
-        return MapPoint(self.lat_lon[:], **self._attrs)
+        return type(self)(self.lat_lon[:], **self._attrs)
 
     @property
     def _folium_kwargs(self):
@@ -382,7 +382,7 @@ class Marker(_MapFeature):
         attrs = self._attrs.copy()
         attrs.update(kwargs)
         lat, lon = self.lat_lon
-        return Marker(lat, lon, **attrs)
+        return type(self)(lat, lon, **attrs)
 
     @classmethod
     def _convert_point(cls, feature):
@@ -405,6 +405,29 @@ class Marker(_MapFeature):
         return Map(ms)
 
 
+class Circle(Marker):
+    """A marker displayed with Folium's circle_marker method.
+
+    location -- lat-lon pair
+    popup -- text that pops up when marker is clicked
+    radius -- pixel radius of the circle
+
+    Defaults from Folium:
+
+    line_color: string, default black
+        Line color. Can pass hex value here as well.
+    fill_color: string, default black
+        Fill color. Can pass hex value here as well.
+    fill_opacity: float, default 0.6
+        Circle fill opacity
+    """
+
+    _map_method_name = 'circle_marker'
+
+    def __init__(self, lat, lon, popup="", radius=10, **kwargs):
+        super().__init__(lat, lon, popup, radius=radius, **kwargs)
+
+
 class Region(_MapFeature):
     """A GeoJSON feature displayed with Folium's geo_json method."""
 
@@ -422,7 +445,7 @@ class Region(_MapFeature):
 
     def copy(self):
         """Return a deep copy"""
-        return Region(self._geojson.copy(), **self._attrs)
+        return type(self)(self._geojson.copy(), **self._attrs)
 
     @property
     def _folium_kwargs(self):
