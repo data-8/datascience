@@ -1,7 +1,7 @@
+import collections.abc
 import pytest
 import re
 from datascience import *
-
 
 def assert_equal(string1, string2):
     string1, string2 = str(string1), str(string2)
