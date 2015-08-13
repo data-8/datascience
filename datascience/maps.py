@@ -6,325 +6,135 @@ import folium
 import functools
 import random
 
-#########################
-# Exposed Functionality #
-#########################
+
+def _inline_map(m, width, height):
+    """Returns an embedded iframe of a folium.map."""
+    m._build_map()
+    src = m.HTML.replace('"', '&quot;')
+    style = "width: {}px; height: {}px".format(width, height)
+    return '<iframe srcdoc="{}" style="{}"; border: none"></iframe>'.format(src, style)
 
 
-def draw_map(obj=None, **kwargs):
-    """Draw a map with center & zoom containing all points and regions that
-    displays points as circles and regions as polygons.
-
-    obj -- a coordinate for the center, a MapRegion, or a MapPoint
-    see help(Map) for more parameters to pass to draw_map
-    """
-    return get_map(obj, **kwargs).to_html()
+def _convert_point(feature):
+    """Convert a GeoJSON point to a Marker."""
+    lon, lat = feature['geometry']['coordinates']
+    popup = feature['properties'].get('name', '')
+    return Marker(lat, lon)
 
 
-def get_map(obj=None, **kwargs):
-    """Get a map object to manipulate before drawing it. Use to_html() to draw.
-
-    obj -- a coordinate for the center, a MapRegion, or a MapPoint
-    see help(Map) for more parameters to pass to draw_map
-    """
-    return Map(location=obj, **kwargs).map()
-
-
-class MapData:
-    """A geoJSON string, object, or file."""
-
-    _data = None
-    _types = {
-        'Polygon': lambda feature: MapRegion(
-            locations=feature['geometry']['coordinates'],
-            geo_formatted=True),
-        'Point': lambda feature: MapPoint(
-            feature['geometry']['coordinates'],
-            radius=feature['properties']['size']),
-        'MultiPolygon': lambda feature: MapRegion(
-            locations=feature['geometry']['coordinates'],
-            geo_formatted=True)
-    }
-
-    def __init__(self, path_or_json_or_string = None):
-        """Loads geoJSON"""
-        jsons = path = string = path_or_json_or_string
-        if not string:
-            return
-        if isinstance(jsons, (dict, list)):
-            self._data = jsons
+def load_geojson(path_or_json_or_string):
+    """Load a geoJSON string, object, or file. Return a dict of map features."""
+    assert path_or_json_or_string
+    data = None
+    if isinstance(path_or_json_or_string, (dict, list)):
+        data = path_or_json_or_string
+    elif isinstance(path_or_json_or_string, str):
         try:
-            self._data = json.loads(string)
+            data = json.loads(path_or_json_or_string)
         except ValueError:
             pass
         try:
-            self._data = json.loads(open(path, 'r').read())
-        except FileNotFoundError:
+            data = json.loads(open(path_or_json_or_string, 'r').read())
+        except FileNotFoundError, IOError:
             pass
-        if not self._data:
-            raise MapError('MapData accepts a valid geoJSON object'
-                           'geoJSON string, or path to a geoJSON file')
-        self._process_data()
+        # TODO Handle web address
+    if not data:
+        raise MapError('MapData accepts a valid geoJSON object, '
+            'geoJSON string, or path to a geoJSON file')
 
-    def _process_data(self):
-        """Processes the data, and makes each list coordinates accessible via
-        the ID of the feature.
-        """
-        self._features = self._data['features']
-        self._data = {}
-        try:
-            for i, feature in enumerate(self._features):
-                key = feature.get('id', str(i))
-                val = self._types[feature['geometry']['type']](feature)
-                self._data[key] = val
-                setattr(self, key, val)
-        except KeyError:
-            raise MapError('Either the geoJSON is malformed -- does not \
-                           contain a "geometry" or "type" property -- or the \
-                           provided geometry type is not supported. Confused \
-                           by this message? This just means that we do not \
-                           currently support this type of geoJSON.')
-
-    def to_dict(self):
-        return self._data.copy()
-
-    def to_list(self):
-        return list(self._data.values())
+    return Region(data)
 
 
-##################
-# Implementation #
-##################
+class _FoliumWrapper:
+    """A map element that can be drawn."""
+    _width = 180
+    _height = 180
+    _folium_map = None
+
+    def draw(self):
+        """Return a Folium rendering."""
+        raise NotImplementedError
+
+    def draw(self):
+        if not self._folium_map:
+            self._set_folium_map()
+        return self._folium_map
+
+    def _set_folium_map(self):
+        """Set the _folium_map attribute to a map."""
+
+    def as_html(self):
+        if not self._folium_map:
+            self.draw()
+        return _inline_map(self._folium_map, self._width, self._height)
+
+    def show(self):
+        return HTML(self.as_html(self._width, self._height))
+
+    def _repr_html_(self):
+        return self.as_html()
 
 
-def _map_to_defaults(defaults, params, excludes=[], includes=[]):
-    """Squishes together two dictionaries, with one containing defaults."""
-    rval = defaults.copy()
-    rval.update(params)
-    val = lambda v: v.copy() if hasattr(v, 'copy') else v
-    return {
-        k: val(v) for k, v in rval.items()
-        if k not in excludes
-        and k in (includes or rval.keys())
-    }
-
-
-def _hook(f):
-    """Decorator for obj method, checks for and invokes PREFIX_before and
-    PREFIX_after a method is called
-    """
-
-    def call_hook(self, template, *args, **kwargs):
-        fn = getattr(self, template % f.__name__, None)
-        if callable(fn):
-            fn(*args, **kwargs)
-
-    @functools.wraps(f)
-    def method(self, *args, **kwargs):
-        call_hook(self, '_before_%s', *args, **kwargs)
-        rval = f(self, *args, **kwargs)
-        call_hook(self, '_after_%s', *args, **kwargs)
-        return rval
-
-    return method
-
-
-class ProgrammerError(Exception):
-    """Thrown when programmers make a mistake"""
-
-    message = ''
-    prefix = 'Please report this to your instructors'
-
-    def get_message(self):
-        return '%s: %s' % (self.prefix, self.message)
-
-
-class MapError(Exception):
-    """Thrown when users make a mistake"""
-    pass
-
-
-######################
-# Folium Abstraction #
-######################
-
-
-class MapEntity:
-    """A base utility for all entities related to map
-
-    "Attributes" are arguments that will be passed to the object's associated
-    Folium method (called, the "mapper")
-    - get and set "attributes", using map[prop]
-    - after initializing the object, all properties will either be filled with
-     a specified default or be set to None, to accept Folium's default
-
-    All other data are pieces of data that you may wish to associate with the
-    object.
-    - all other data get and set, using map.prop
-    """
-
-    _init = {}                                  # params for initial call
-    _defaults = {}                              # defaults for attrs and data
-    _attributes = None                          # only data passed to mapper
-    _allowed_attributes = []                    # allowed attributes
-    _mapper = None                              # default function to map obj
-    _folium = None                              # access to the map object
-    _allowed_collections = (list, set, tuple)   # for list of locations
-
-    @_hook
-    def __init__(self, **kwargs):
-        """Saves attributes, with defaults"""
-        self._init, self._attributes = kwargs, {}
-        self._attributes = _map_to_defaults(
-            self._defaults, kwargs, includes=self._allowed_attributes)
-        self.set(**_map_to_defaults(self._defaults, kwargs))
-
-    def __setitem__(self, k, v):
-        self._attributes[k] = v
-
-    def __getitem__(self, k):
-        return self._attributes[k]
-
-    def __delitem__(self, k):
-        del self._attributes[k]
-
-    def set(self, override=False, **kwargs):
-        """Transform args into properties"""
-        for k, v in kwargs.items():
-            attr = getattr(self, k, None)
-            if callable(attr) and not override:
-                raise ProgrammerError('"%s" is an existing method' % k)
-            setattr(self, k, v)
-        return self
-
-    def get(self, *args):
-        """Get a set of variables - use pairs to set getattr default"""
-        get = lambda val: getattr(self, val[0], val[1]) \
-            if isinstance(val, tuple) else getattr(self, val)
-        return (get(var) for var in args)
-
-    @_hook
-    def map(self, map=None):
-        """Maps this object, with its own attributes"""
-        if not callable(self._mapper):
-            self._mapper = getattr(map, self._mapper)
-        self._folium = self._mapper(**self._attributes)
-        return self
-
-
-class Map(MapEntity):
-    """
-    Represents a map, potentially with MapPoints and MapRegions
-
-    location or center -- lat-long pair at the center of the map
-    width -- pixel int or percentage string
-    height -- pixel int or percentage string
-    tiles -- map tileset, or "theme"
-    API_key -- for Cloudmade or Mapbox tiles
-    max_zoom -- maximum zoom, default 18
-    zoom_start -- starting zoom level
-    points -- a list of MapPoints
-    regions -- a list of MapRegions
-    *pass any other kwarg to save it with the object
-
-    >>> map = Map().map()
-    >>> map.to_html()
-    <IPython.core.display.HTML object>
-    """
+class Map(_FoliumWrapper):
+    """A map displaying features. Keyword args are forwarded to folium."""
 
     _mapper = folium.Map
+    _default_lat_lon = (37.872, -122.258)
+    _default_zoom = 12
 
-    _allowed_attributes = [
-        'location',
-        'width',
-        'height',
-        'tiles',
-        'API_key',
-        'max_zoom',
-        'zoom_start',
-    ]
+    def __init__(self, features=(), width=960, height=500, **kwargs):
+        self._features = features
+        self._attrs = {
+            'tiles': 'Stamen Toner',
+            'max_zoom': 17,
+            'min_zoom': 10,
+        }
+        self._width = width
+        self._height = height
+        self._attrs.update(kwargs)
 
-    _defaults = {
-        'tiles': 'Stamen Toner',
-        'zoom_start': 17,
-        'width': 960,
-        'height': 500,
-        'points': [],
-        'regions': []
-    }
+    def _set_folium_map(self):
+        attrs = {'width': self._width, 'height': self._height}
+        attrs.update(self._autozoom())
+        attrs.update(self._attrs.copy())
+        # Enforce zoom consistency
+        attrs['max_zoom'] = max(attrs['zoom_start'], attrs['max_zoom'])
+        attrs['min_zoom'] = min(attrs['zoom_start'], attrs['min_zoom'])
+        self._folium_map = self._mapper(**attrs)
+        for feature in self._features:
+            feature.draw_on(self._folium_map)
 
-    @_hook
-    def to_html(self):
-        """Outputs the HTML that IPython will display."""
-        map = self._folium
-        map._build_map()
-        map_html = map.HTML.replace('"', '&quot;')
-        return HTML('<iframe srcdoc="%s" '
-                    'style="width: %spx; height: %spx; '
-                    'border: none"></iframe>'
-                    % (map_html, map.width, map.height))
-
-    def _before_to_html(self, *args, **kwargs):
-        """Called before to_html; add points and regions before mapping."""
-        for point in self.points:
-            point.copy().map(self._folium)
-
-        for region in self.regions:
-            region.copy().map(self._folium)
-
-        # uncomment the following with new Folium release
-        # if 'zoom_start' not in self._init:
-        #     self._autofit(self.bounds)
-
-    def _before_map(self, *args, **kwargs):
-        """Autozoom map where appropriate."""
-        if self.location:
-            self._dynamic_arg('location')
-
-        self.bounds = self._autobounds()
-
-        if not self.location:
-            self._autocenter(self.bounds)
-
-        # TODO(Alvin): remove with new Folium release
-        if 'zoom_start' not in self._init:
-            self._autofit(self.bounds)
-
-    def _autobounds(self):
+    def _autozoom(self):
         """Simple calculation for bounds."""
         bounds = {}
+        attrs = {}
 
         def check(prop, compare, extreme, val):
             opp = min if compare is max else max
             bounds.setdefault(prop, val)
             bounds[prop] = opp(compare(bounds[prop], val), extreme)
 
-        def bound_check(coord):
-            if not coord:
-                return
-            if isinstance(coord, self._allowed_collections):
-                if isinstance(coord[0], (int, float)):
-                    long, lat = coord
-                    check('max_lat', max, 90, lat)
-                    check('min_lat', min, -90, lat)
-                    check('max_long', max, 180, long)
-                    check('min_long', min, -180, long)
-                else:
-                    [bound_check(c) for c in coord]
-            else:
-                raise ProgrammerError('Ended up with %s.' % type(coord))
+        def bound_check(lat_lon):
+            lat, lon = lat_lon
+            check('max_lat', max, 90, lat)
+            check('min_lat', min, -90, lat)
+            check('max_lon', max, 180, lon)
+            check('min_lon', min, -180, lon)
 
-        bound_check([point.location[::-1] for point in self.points])
-        bound_check([region.to_polygon() for region in self.regions])
-        return bounds
+        lat_lons = [lat_lon for f in self._features for lat_lon in f.lat_lons]
+        if not lat_lons:
+            lat_lons.append(self._default_lat_lon)
+        for lat_lon in lat_lons:
+            bound_check(lat_lon)
 
-    def _autofit(self, bounds):
-        """Automatically fit everything with the maximum zoom possible."""
-        if not bounds:
-            return
+        midpoint = lambda a, b: (a + b)/2
+        attrs['location'] = (
+            midpoint(bounds['min_lat'], bounds['max_lat']),
+            midpoint(bounds['min_lon'], bounds['max_lon'])
+        )
 
         # TODO(Alvin): uncomment with new Folium release
-        # self._folium.fit_bounds(
+        # self._folium_map.fit_bounds(
         #     [bounds['min_long'], bounds['min_lat']],
         #     [bounds['max_long'], bounds['max_lat']]
         # )
@@ -334,193 +144,97 @@ class Map(MapEntity):
         import math
         try:
             factor = 1.2
-            width = ((bounds['max_lat'] - bounds['min_lat']) or 2)
-            height = ((bounds['max_long'] - bounds['min_long']) or 2)
-            area, max_area = width*height, 180*360
-            zoom = math.log(area/max_area)/-factor
-            self['zoom_start'] = max(1, min(18, round(zoom)))
-        except ValueError:
-            raise MapError('Uh oh. Is the data formatted as long-lat '
-            'pairs? (Check. If the smallest number is less than -90, '
-            'those are long-lat pairs) If so, please add geo_formatted=True '
-            'to create_map')
-
-    def _autocenter(self, bounds):
-        """Find the center."""
-        if not bounds:
-            return
-
-        midpoint = lambda a, b: (a + b)/2
-        self['location'] = (
-            midpoint(bounds['min_lat'], bounds['max_lat']),
-            midpoint(bounds['min_long'], bounds['max_long'])
-        )
-
-    def _dynamic_arg(self, key):
-        """Check the first arg in check_map for other options."""
-        val = getattr(self, key, None)
-        if val:
-            setattr(self, key, None)
-            del self[key]
-            if isinstance(val, MapRegion):
-                self.regions.append(val)
-            elif isinstance(val, MapPoint):
-                self.points.append(val)
+            lat_diff = bounds['max_lat'] - bounds['min_lat']
+            lon_diff = bounds['max_lon'] - bounds['min_lon']
+            area, max_area = lat_diff*lon_diff, 180*360
+            if area:
+                zoom = math.log(area/max_area)/-factor
             else:
-                setattr(self, key, val)
-                self[key] = val
+                zoom = self._default_zoom
+            zoom = max(1, min(18, round(zoom)))
+            attrs['zoom_start'] = zoom
+        except ValueError as e:
+            raise Exception('Check that your locations are lat-lon pairs', e)
 
-    @classmethod
-    def reverse(cls, lst_or_coord_or_obj):
-        """Reverse all coordinates in a (possibly nested) list.
-
-        Effectively translates all EPSG-compliant coordinates into valid
-        geoJSON coordinates.
-        """
-        lst = coord = obj = lst_or_coord_or_obj
-        if not lst:
-            return
-        if isinstance(coord[0], (int, float)):
-            return coord[::-1]
-        if isinstance(lst, cls._allowed_collections):
-            return [cls.reverse(item) for item in lst]
-        return obj
+        return attrs
 
 
-class MapPoint(MapEntity):
+class _MapFeature(_FoliumWrapper):
+    """A feature displayed on a map."""
+
+    _map_method_name = ""
+    _attrs = {}
+
+    @property
+    def lat_lons(self):
+        """All lat_lons that describe a map feature (for zooming)."""
+        return []
+
+    def draw_on(self, folium_map):
+        """Add feature to Folium map object."""
+        f = getattr(folium_map, self._map_method_name)
+        f(**self._folium_kwargs)
+
+    def _set_folium_map(self):
+        """A map containing only the feature."""
+        m = Map(features=[self], width=self._width, height=self._height)
+        self._folium_map = m.draw()
+
+    @property
+    def _folium_kwargs(self):
+        """kwargs for a call to a map method."""
+        return self._attrs.copy()
+
+
+class Marker(_MapFeature):
+    """A marker wrapping Folium's simple_marker method.
+
+    location -- lat-lon pair
+    popup -- text that pops up when marker is clicked
+
+    Defaults from Folium:
+    marker_color='blue'
+    marker_icon='info-sign'
+    clustered_marker=False
+    icon_angle=0
+    width=300
     """
-    A circle, wrapper for Folium's draw_circle. Draw by passing into draw_map.
 
-    location -- lat-long pair at center of circle
-    radius -- radius of circle on map
-    popup -- text that pops up when circle is clicked
-    line_color -- color of circle border
-    fill_color -- color of circle within border
-    fill_opacity -- opacity of circle fill
-    """
+    _map_method_name = 'simple_marker'
 
-    _mapper = 'circle_marker'
+    def __init__(self, lat, lon, popup="", **kwargs):
+        self.lat_lon = (lat, lon)
+        if isinstance(popup, str):
+            self._name = popup
+        self._attrs = {
+            'popup': popup,
+            'popup_on': bool(popup),
+        }
+        self._attrs.update(kwargs)
 
-    _allowed_attributes = [
-        'location',
-        'radius',
-        'popup',
-        'line_color',
-        'fill_color',
-        'fill_opacity'
-    ]
-
-    _defaults = {
-        'location': [],
-        'radius': 10,
-        'popup': '',
-        'line_color': '#3186cc',
-        'fill_color': '#3186cc',
-        'fill_opacity': 0.6
-    }
-
-    def __init__(self, location_or_x, y=None, **kwargs):
-        """
-        Checks for coordinates passed in as two args, default is to pass as
-        one arg
-        """
-        location = x = location_or_x
-        if isinstance(x, (int, float)):
-            location = (x, y)
-        super().__init__(location=location, **kwargs)
-
-    def __str__(self):
-        return str(list(self.location))
-
-    def _after___init__(self, *args, **kwargs):
-        """
-        Translates all lat-long pairs into long-lat pairs, from EPSG-compliant
-        to GeoJSON format
-        """
-        if 'geo_formatted' not in kwargs \
-                or not kwargs['geo_formatted']:
-            self.location = self['location'] = Map.reverse(self.location)
+    @property
+    def lat_lons(self):
+        return [self.lat_lon]
 
     def copy(self):
-        """Makes a deep copy of a MapPoint"""
-        attributes = {k: v for k, v in self._attributes.items()
-                      if k not in ['location']}
-        return MapPoint(
-            self['location'][:], 
-            geo_formatted=True,
-            **attributes)
+        """Return a deep copy"""
+        return MapPoint(self.lat_lon[:], **self._attrs.copy())
+
+    @property
+    def _folium_kwargs(self):
+        attrs = self._attrs.copy()
+        attrs['location'] = self.lat_lon
+        return attrs
+
+    @property
+    def geojson(self):
+        """GeoJSON representation of the point."""
 
 
-class MapRegion(MapEntity):
-    """
-    A polygon, wrapper for Folium's geo_json method, with a few customizations.
-    Draw by passing into draw_map.
+class Region(MapFeature):
+    """An arbitrary set of features wrapping Folium's geo_json method."""
 
-    regions -- list of MapRegions (if present, locations and points not used)
-    locations -- list of list of lat-long pairs for locations with multiple
-                 polygons (if present, points are not used)
-    points -- list of lat-long pairs for a normal polygon
-    geo_formatted -- boolean, True if the data is formatted as long-lat pairs
-    *pass any other kwarg to save it with the object
-
-    Note: GeoJSON requires long-lat-alt triplets, or just long-lat pairs,
-    although EPSG:4326 states that the coordinate order should be lat-long. For
-    this reason, MapRegion has to flip incoming lat-long pairs to become
-    long-lat pairs. By default, MapRegion accepts lat-long pairs, to match
-    MapPoint's behavior.
-    """
-
-    # composite options
-
-    CHILDREN = 'children'  # invoke map() for children
-    GROUP = 'group'  # invoke to_json() for children
-    ONE = 'one'  # invoke to_polygon() for children
-
-    _mapper = 'geo_json'
-
-    _allowed_attributes = [
-        'geo_path',
-        'geo_str',
-        'data_out',
-        'data',
-        'columns',
-        'key_on',
-        'threshold_scale',
-        'fill_color',
-        'fill_opacity',
-        'line_color',
-        'line_weight',
-        'line_opacity',
-        'legend_name',
-        'topojson',
-        'reset'
-    ]
-
-    _defaults = {
-        'composite': GROUP,
-        'regions': [],
-        'locations': [[]],
-        'points': [],
-        'fill_color': 'blue',
-        'fill_opacity': 0.6,
-        'line_color': 'black',
-        'line_weight': 1,
-        'line_opacity': 1
-    }
-
-    CACHE_DIR = 'cache'
-    TEMP_FILE = None
-
-    def _after___init__(self, *args, **kwargs):
-        """
-        Translates all lat-long pairs into long-lat pairs, from EPSG-compliant
-        to GeoJSON format
-        """
-        if 'geo_formatted' not in kwargs or not kwargs['geo_formatted']:
-            if 'locations' in kwargs:
-                self.locations = self['locations'] = Map.reverse(kwargs['locations'])
-            if 'points' in kwargs:
-                self.points = self['points'] = Map.reverse(kwargs['points'])
+    _map_method_name = 'geo_json'
 
     def _before_map(self, *args, **kwargs):
         """Prepares for mapping by passing JSON representation"""
@@ -530,7 +244,7 @@ class MapRegion(MapEntity):
         # self.attributes['geo_str'] = json_str
 
         # TODO(Alvin): find soln to temporary workaround
-        if self.locations[0] or self.points or self.regions:
+        if self.locations[0] or self.lat_lons or self.regions:
             import os
             os.makedirs(self.CACHE_DIR, exist_ok=True)
             self.TEMP_FILE = os.path.join(
@@ -554,9 +268,9 @@ class MapRegion(MapEntity):
 
     def _validate(self):
         """Checks for validity of data"""
-        locations, points = self.get('locations', 'points')
+        locations, lat_lons = self.get('locations', 'lat_lons')
 
-        if not isinstance(points, self._allowed_collections):
+        if not isinstance(lat_lons, self._allowed_collections):
             raise MapError('"Points" must be a %s' %
                 ' or '.join(self._allowed_collections))
 
@@ -625,7 +339,7 @@ class MapRegion(MapEntity):
 
     def to_polygon(self):
         """Converts to list of polygons, including that of descendants"""
-        regions, locations, points = self.get('regions', 'locations', 'points')
+        regions, locations, lat_lons = self.get('regions', 'locations', 'lat_lons')
 
         if regions:
             rval = []
@@ -637,21 +351,21 @@ class MapRegion(MapEntity):
 
     def _to_locations(self):
         """Converts to list of polygons"""
-        locations, points = self.get('locations', 'points')
+        locations, lat_lons = self.get('locations', 'lat_lons')
         if not locations[0]:
-            return [points]
+            return [lat_lons]
         return locations
 
     def __str__(self):
         return json.dumps(self._to_json())
-    
+
     def copy(self):
         """Makes a deep copy of MapRegion"""
         attributes = {k: v for k, v in self._attributes.items()
-                      if k not in ['locations', 'regions', 'points']}
+                      if k not in ['locations', 'regions', 'lat_lons']}
         return MapRegion(
             regions=[region.copy() for region in self.regions],
             locations=[loc.copy() for loc in self.locations],
-            points=[pt[:] for pt in self.points], 
+            lat_lons=[pt[:] for pt in self.lat_lons],
             geo_formatted=True,
             **attributes)
