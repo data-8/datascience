@@ -454,6 +454,7 @@ class Table(collections.abc.MutableMapping):
         """
         percentiles = [percentile(p, self[column_name]) for column_name in self]
         return Table(percentiles, self.column_labels)
+
     ##################
     # Export/Display #
     ##################

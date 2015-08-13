@@ -320,13 +320,11 @@ class _MapFeature(_FoliumWrapper, abc.ABC):
 class Marker(_MapFeature):
     """A marker displayed with Folium's simple_marker method.
 
-    location -- lat-lon pair
     popup -- text that pops up when marker is clicked
+    color -- fill color
 
     Defaults from Folium:
 
-    marker_color: string, default 'blue'
-        color of marker you want
     marker_icon: string, default 'info-sign'
         icon from (http://getbootstrap.com/components/) you want on the
         marker
@@ -340,14 +338,16 @@ class Marker(_MapFeature):
     """
 
     _map_method_name = 'simple_marker'
+    _color_param = 'marker_color'
 
-    def __init__(self, lat, lon, popup="", **kwargs):
+    def __init__(self, lat, lon, popup='', color='blue', **kwargs):
         assert isinstance(lat, (int, float))
         assert isinstance(lon, (int, float))
         self.lat_lon = (lat, lon)
         self._attrs = {
             'popup': popup,
             'popup_on': bool(popup),
+            self._color_param: color,
         }
         self._attrs.update(kwargs)
 
@@ -392,40 +392,42 @@ class Marker(_MapFeature):
         return cls(lat, lon)
 
     @classmethod
-    def map(cls, latitudes, longitudes, labels=None, **kwargs):
+    def map(cls, latitudes, longitudes, labels=None, colors=None, **kwargs):
         """Return a Map of Markers from columns of coordinates and labels."""
         assert len(latitudes) == len(longitudes)
-        if labels is None:
-            ms = [cls(lat, lon, **kwargs) for
-                  lat, lon in zip(latitudes, longitudes)]
-        else:
+        inputs = [latitudes, longitudes]
+        if labels is not None:
             assert len(labels) == len(latitudes)
-            ms = [cls(lat, lon, popup, **kwargs) for
-                  lat, lon, popup in zip(latitudes, longitudes, labels)]
+            inputs.append(labels)
+        else:
+            inputs.append(("",) * len(latitudes))
+        if colors is not None:
+            assert len(colors) == len(latitudes)
+            inputs.append(colors)
+        ms = [cls(*args, **kwargs) for args in zip(*inputs)]
         return Map(ms)
 
 
 class Circle(Marker):
     """A marker displayed with Folium's circle_marker method.
 
-    location -- lat-lon pair
     popup -- text that pops up when marker is clicked
+    color -- fill color
     radius -- pixel radius of the circle
 
     Defaults from Folium:
 
     line_color: string, default black
         Line color. Can pass hex value here as well.
-    fill_color: string, default black
-        Fill color. Can pass hex value here as well.
     fill_opacity: float, default 0.6
         Circle fill opacity
     """
 
     _map_method_name = 'circle_marker'
+    _color_param = 'fill_color'
 
-    def __init__(self, lat, lon, popup="", radius=10, **kwargs):
-        super().__init__(lat, lon, popup, radius=radius, **kwargs)
+    def __init__(self, lat, lon, popup='', color='blue', radius=10, **kwargs):
+        super().__init__(lat, lon, popup, color, radius=radius, **kwargs)
 
 
 class Region(_MapFeature):
