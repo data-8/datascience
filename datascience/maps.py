@@ -33,7 +33,7 @@ class _FoliumWrapper(abc.ABC):
 
     def show(self):
         """Publish HTML."""
-        return HTML(self.as_html(self._width, self._height))
+        return HTML(self.as_html())
 
     def _repr_html_(self):
         return self.as_html()
@@ -100,28 +100,9 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         return self._mapper(**attrs)
 
     def _autozoom(self):
-        """Simple calculation for bounds."""
-        bounds = {}
+        """Calculate zoom and location."""
+        bounds = self._autobounds()
         attrs = {}
-
-        def check(prop, compare, extreme, val):
-            opp = min if compare is max else max
-            bounds.setdefault(prop, val)
-            bounds[prop] = opp(compare(bounds[prop], val), extreme)
-
-        def bound_check(lat_lon):
-            lat, lon = lat_lon
-            check('max_lat', max, 90, lat)
-            check('min_lat', min, -90, lat)
-            check('max_lon', max, 180, lon)
-            check('min_lon', min, -180, lon)
-
-        lat_lons = [lat_lon for feature in self._features.values() for
-                    lat_lon in feature.lat_lons]
-        if not lat_lons:
-            lat_lons.append(self._default_lat_lon)
-        for lat_lon in lat_lons:
-            bound_check(lat_lon)
 
         midpoint = lambda a, b: (a + b)/2
         attrs['location'] = (
@@ -154,6 +135,31 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
 
         return attrs
 
+    def _autobounds(self):
+        """Simple calculation for bounds."""
+        bounds = {}
+
+        def check(prop, compare, extreme, val):
+            opp = min if compare is max else max
+            bounds.setdefault(prop, val)
+            bounds[prop] = opp(compare(bounds[prop], val), extreme)
+
+        def bound_check(lat_lon):
+            lat, lon = lat_lon
+            check('max_lat', max, 90, lat)
+            check('min_lat', min, -90, lat)
+            check('max_lon', max, 180, lon)
+            check('min_lon', min, -180, lon)
+
+        lat_lons = [lat_lon for feature in self._features.values() for
+                    lat_lon in feature.lat_lons]
+        if not lat_lons:
+            lat_lons.append(self._default_lat_lon)
+        for lat_lon in lat_lons:
+            bound_check(lat_lon)
+
+        return bounds
+
     def format(self, **kwargs):
         """Apply formatting."""
         attrs = self._attrs.copy()
@@ -161,10 +167,17 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         attrs.update(kwargs)
         return Map(self._features, **attrs)
 
+    def geojson(self):
+        """Render features as a FeatureCollection."""
+        return {
+            "type": "FeatureCollection",
+            "features": [f.geojson(i) for i, f in self._features.items()]
+        }
+
     def color(self, values, ids=(), key_on='feature.id', palette='YlOrBr', **kwargs):
         """Color map features by binning values.
 
-        values -- a sequence of values
+        values -- a sequence of values or a table of keys and values
         ids -- an ID for each value; if none are provided, indices are used
         key_on -- attribute of each feature to match to ids
 
@@ -190,19 +203,28 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         legend_name: string, default None
             Title for data legend. If not passed, defaults to columns[1].
         """
-        m = self._create_map()
-        geo = {
-            "type": "FeatureCollection",
-            "features": [f.geojson(i) for i, f in self._features.items()]
-        }
+        # Set values and ids to both be simple sequences by inspecting values
+        id_name, value_name = 'IDs', 'values'
+        if isinstance(values, collections.abc.Mapping):
+            assert not ids, 'IDs and a map cannot both be used together'
+            if hasattr(values, 'columns') and len(values.columns) == 2:
+                # Use column labels from a Table
+                ids, values = values.columns
+                id_name, value_name = values.column_labels
+            else:
+                # Use items from a dict
+                ids, values = list(values.keys()), list(values.values())
         if len(ids) != len(values):
             assert len(ids) == 0
+            # Use indices as IDs
             ids = list(range(len(values)))
-        data = pandas.DataFrame({'ids': ids, 'values': values})
+
+        m = self._create_map()
+        data = pandas.DataFrame({id_name: ids, value_name: values})
         m.geo_json(
-            geo_str=json.dumps(geo),
+            geo_str=json.dumps(self.geojson()),
             data=data,
-            columns=['ids', 'values'],
+            columns=[id_name, value_name],
             key_on=key_on,
             fill_color=palette,
             **kwargs)
@@ -226,9 +248,7 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         except FileNotFoundError:
             pass
         # TODO web address
-        if not data:
-            raise MapError('MapData accepts a valid geoJSON object, '
-                'geoJSON string, or path to a geoJSON file')
+        assert data, 'MapData accepts a valid geoJSON object, geoJSON string, or path to a geoJSON file'
         return cls(cls._read_geojson_features(data))
 
     @staticmethod
