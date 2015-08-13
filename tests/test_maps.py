@@ -64,6 +64,15 @@ def test_marker_map():
     Marker.map(lats, lons, labels).show()
 
 
+def test_marker_map_table():
+    """ Tests that Marker.map_table generates a map """
+    lats = [51, 52, 53]
+    lons = [-1, -2, -3]
+    labels = ['A', 'B', 'C']
+    t = Table([lats, lons, labels], ['A', 'B', 'C'])
+    Marker.map_table(t).show()
+
+
 def test_circle_html():
     """ Tests that a Circle can be rendered. """
     Circle(51.514, -0.132).show()

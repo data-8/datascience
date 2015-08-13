@@ -3,6 +3,7 @@
 import IPython.display
 import folium
 import pandas
+import numpy as np
 
 import abc
 import collections
@@ -10,6 +11,8 @@ import collections.abc
 import json
 import functools
 import random
+
+_number = (int, float, np.number)
 
 
 class _FoliumWrapper(abc.ABC):
@@ -341,8 +344,8 @@ class Marker(_MapFeature):
     _color_param = 'marker_color'
 
     def __init__(self, lat, lon, popup='', color='blue', **kwargs):
-        assert isinstance(lat, (int, float))
-        assert isinstance(lon, (int, float))
+        assert isinstance(lat, _number)
+        assert isinstance(lon, _number)
         self.lat_lon = (lat, lon)
         self._attrs = {
             'popup': popup,
@@ -393,7 +396,7 @@ class Marker(_MapFeature):
 
     @classmethod
     def map(cls, latitudes, longitudes, labels=None, colors=None, **kwargs):
-        """Return a Map of Markers from columns of coordinates and labels."""
+        """Return markers from columns of coordinates, labels, & colors."""
         assert len(latitudes) == len(longitudes)
         inputs = [latitudes, longitudes]
         if labels is not None:
@@ -407,6 +410,10 @@ class Marker(_MapFeature):
         ms = [cls(*args, **kwargs) for args in zip(*inputs)]
         return Map(ms)
 
+    @classmethod
+    def map_table(cls, table, **kwargs):
+        """Return markers from the colums of a table."""
+        return cls.map(*table.columns, **kwargs)
 
 class Circle(Marker):
     """A marker displayed with Folium's circle_marker method.
@@ -474,7 +481,7 @@ def _lat_lons_from_geojson(s):
 
     GeoJSON coordinates are always stored in (longitude, latitude) order.
     """
-    if len(s) >= 2 and isinstance(s[0], (int, float)) and isinstance(s[0], (int, float)):
+    if len(s) >= 2 and isinstance(s[0], _number) and isinstance(s[0], _number):
         lat, lon = s[1], s[0]
         return [(lat, lon)]
     else:
