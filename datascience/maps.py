@@ -180,6 +180,9 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         values -- a sequence of values or a table of keys and values
         ids -- an ID for each value; if none are provided, indices are used
         key_on -- attribute of each feature to match to ids
+        palette -- one of the following color brewer palettes:
+            'BuGn', 'BuPu', 'GnBu', 'OrRd', 'PuBu', 'PuBuGn', 'PuRd', 'RdPu',
+            'YlGn', 'YlGnBu', 'YlOrBr', and 'YlOrRd'.
 
         Defaults from Folium:
 
@@ -187,11 +190,6 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
             Data range for D3 threshold scale. Defaults to the following range
             of quantiles: [0, 0.5, 0.75, 0.85, 0.9], rounded to the nearest
             order-of-magnitude integer. Ex: 270 rounds to 200, 5600 to 6000.
-        fill_color: string, default 'blue'
-            Area fill color. Can pass a hex code, color name, or if you are
-            binding data, one of the following color brewer palettes:
-            'BuGn', 'BuPu', 'GnBu', 'OrRd', 'PuBu', 'PuBuGn', 'PuRd', 'RdPu',
-            'YlGn', 'YlGnBu', 'YlOrBr', and 'YlOrRd'.
         fill_opacity: float, default 0.6
             Area fill opacity, range 0-1.
         line_color: string, default 'black'
@@ -203,17 +201,20 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         legend_name: string, default None
             Title for data legend. If not passed, defaults to columns[1].
         """
+        # TODO Unfortunately, this method doesn't work inside a notebook.
+        # See: https://github.com/python-visualization/folium/issues/176
+
         # Set values and ids to both be simple sequences by inspecting values
         id_name, value_name = 'IDs', 'values'
         if isinstance(values, collections.abc.Mapping):
             assert not ids, 'IDs and a map cannot both be used together'
             if hasattr(values, 'columns') and len(values.columns) == 2:
-                # Use column labels from a Table
-                ids, values = values.columns
-                id_name, value_name = values.column_labels
+                table = values
+                ids, values = table.columns
+                id_name, value_name = table.column_labels
             else:
-                # Use items from a dict
-                ids, values = list(values.keys()), list(values.values())
+                dictionary = values
+                ids, values = list(dictionary.keys()), list(dictionary.values())
         if len(ids) != len(values):
             assert len(ids) == 0
             # Use indices as IDs
@@ -221,13 +222,15 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
 
         m = self._create_map()
         data = pandas.DataFrame({id_name: ids, value_name: values})
-        m.geo_json(
-            geo_str=json.dumps(self.geojson()),
-            data=data,
-            columns=[id_name, value_name],
-            key_on=key_on,
-            fill_color=palette,
-            **kwargs)
+        attrs = {
+            'geo_str': json.dumps(self.geojson()),
+            'data': data,
+            'columns': [id_name, value_name],
+            'key_on': key_on,
+            'fill_color': palette,
+        }
+        kwargs.update(attrs)
+        m.geo_json(**kwargs)
         colored = self.format()
         colored._folium_map = m
         return colored

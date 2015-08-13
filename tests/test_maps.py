@@ -69,9 +69,9 @@ def test_marker_map():
     assert isinstance(map_html, HTML)
 
 
-#############
-# MapRegion #
-#############
+##########
+# Region #
+##########
 
 
 def test_region_html(states):
@@ -80,15 +80,15 @@ def test_region_html(states):
 
 
 def test_geojson(states):
-    """ Tests that geojson returns the correct data """
+    """ Tests that geojson returns the original US States data """
     data = json.load(open('tests/us-states.json', 'r'))
     geo = states.geojson()
     assert data == geo, '{}\n{}'.format(data, geo)
 
 
-###############
-# TEST BOUNDS #
-###############
+##########
+# Bounds #
+##########
 
 
 def test_bounds():
@@ -103,10 +103,35 @@ def test_bounds():
 
 def test_bounds_limits():
     """ Tests that too-large lats and lons are truncated to real bounds. """
-
     points = [Marker(0, 0), Marker(-190, 280), Marker(190, -280)]
     bounds = Map(points)._autobounds()
     assert bounds['max_lat'] == 90
     assert bounds['min_lat'] == -90
     assert bounds['max_lon'] == 180
     assert bounds['min_lon'] == -180
+
+
+#########
+# Color #
+#########
+
+
+def test_color_table(states):
+    """ Tests that color can take a Table. """
+    data = Table.read_table('tests/us-unemployment.csv')
+    map_html = states.color(data).show()
+    assert isinstance(map_html, HTML)
+
+
+def test_color_dict(states):
+    """ Tests that color can take a dict. """
+    data = Table.read_table('tests/us-unemployment.csv')
+    map_html = states.color(dict(zip(*data.columns))).show()
+    assert isinstance(map_html, HTML)
+
+
+def test_color_values_and_ids(states):
+    """ Tests that color can take values and ids. """
+    data = Table.read_table('tests/us-unemployment.csv')
+    map_html = states.color(data['Unemployment'], data['State']).show()
+    assert isinstance(map_html, HTML)
