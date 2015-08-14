@@ -16,7 +16,7 @@ import datascience.maps as _maps
 import datascience.formats as _formats
 from .util import *
 
-class Table(collections.abc.Mapping):
+class Table(collections.abc.MutableMapping):
     """A sequence of labeled columns.
 
     >>> letters = ['a', 'b', 'c', 'z']
@@ -454,6 +454,7 @@ class Table(collections.abc.Mapping):
         """
         percentiles = [percentile(p, self[column_name]) for column_name in self]
         return Table(percentiles, self.column_labels)
+
     ##################
     # Export/Display #
     ##################
@@ -471,7 +472,8 @@ class Table(collections.abc.Mapping):
         return self.as_html(self.max_str_rows)
 
     def show(self, max_rows=0):
-        return IPython.display.HTML(self.as_html(max_rows))
+        """Display the table."""
+        IPython.display.display(IPython.display.HTML(self.as_html(max_rows)))
 
     max_str_rows = 10
 

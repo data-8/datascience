@@ -2,37 +2,13 @@ from datascience import *
 from unittest.mock import MagicMock, patch
 import pytest
 import copy
-
-#########
-# Utils #
-#########
+from IPython.display import HTML
 
 
 @pytest.fixture(scope='function')
-def locations():
-    # locations are a list of list of lat-long pairs, for regions with multiple polygons (i.e., Alaska)
-    locations1 = [[(51.5135015, -0.1358392), (51.5137, -0.1358392), (51.5132, -0.138)],
-                  [(51.514, -0.1361), (51.5143, -0.1361), (51.5145, -0.1383)]]
-    return copy.deepcopy(locations1)
-
-
-@pytest.fixture(scope='function')
-def points():
-    # points are just a list of lat-long pairs
-    locations2 = [(51.514, -0.132), (51.5143, -0.132), (51.5145, -0.135)]
-    return locations2[:]
-
-
-@pytest.fixture(scope='function')
-def region1(locations):
-    region1 = MapRegion(locations=locations, geo_formatted=True)
-    return region1
-
-
-@pytest.fixture(scope='function')
-def region2(points):
-    region2 = MapRegion(points=points, geo_formatted=True)
-    return region2
+def states():
+    """Read a map of US states."""
+    return Map.read_geojson('tests/us-states.json')
 
 
 ############
@@ -40,177 +16,141 @@ def region2(points):
 ############
 
 
-def test_draw_map():
+def test_draw_map(states):
     """ Tests that draw_map returns HTML """
-    region = MapRegion(geo_path='us-states.json')
-    map_html = draw_map((40, -90), regions=[region], zoom_start=4)
-    assert isinstance(map_html, HTML)
+    states.show()
 
 
 def test_setup_map():
-    """ Tests that to_html() returns HTML """
-    center = [45.5244, -122.6699]
+    """ Tests that passing kwargs doesn't error. """
     kwargs = {
         'tiles': 'Stamen Toner',
         'zoom_start': 17,
         'width': 960,
         'height': 500,
-        'points': [],
-        'regions': []
+        'features': [],
     }
-    map_html = Map(location=center, **kwargs).map().to_html()
-    assert isinstance(map_html, HTML)
+    Map(**kwargs).show()
 
 
-def test_draw_map_arg(region1):
-    """ Tests that draw_map accepts a MapRegion or MapPoint as the first arg """
-    map_html = draw_map(region1)
-    assert isinstance(map_html, HTML)
-
-    point = MapPoint((51.5135015, -0.1358392))
-    map_html = draw_map(point)
-    assert isinstance(map_html, HTML)
-
-
-############
-# MapPoint #
-############
+def test_map_marker_and_region(states):
+    """ Tests that a Map can contain a Marker and/or Region. """
+    marker = Marker(51.514, -0.132)
+    Map(marker).show()
+    Map([marker]).show()
+    region = states['CA']
+    Map(region).show()
+    Map([region]).show()
+    Map([marker, region]).show()
 
 
-def test_draw_marker():
-    """ Tests that draw_map returns HTML """
-    points = [MapPoint((51.5135015, -0.1358392))]
-    map_html = draw_map((51.5135015, -0.1362392), points=points)
-    assert isinstance(map_html, HTML)
+##########
+# Marker #
+##########
 
 
-def test_point_init():
-    """ Tests that you can pass in a collection of coordinates or two coordinates"""
-    points = [MapPoint((51.5135015, -0.1358392)), MapPoint(51.5135015, -0.1358392)]
-    map_html = draw_map((51.5135015, -0.1362392), points=points)
-    assert isinstance(map_html, HTML)
+def test_marker_html():
+    """ Tests that a Marker can be rendered. """
+    Marker(51.514, -0.132).show()
 
 
-#############
-# MapRegion #
-#############
+def test_marker_map():
+    """ Tests that Marker.map generates a map """
+    lats = [51, 52, 53]
+    lons = [-1, -2, -3]
+    labels = ['A', 'B', 'C']
+    colors = ['blue', 'red', 'green']
+    Marker.map(lats, lons).show()
+    Marker.map(lats, lons, labels).show()
+    Marker.map(lats, lons, labels, colors).show()
+    Marker.map(lats, lons, colors=colors).show()
 
 
-def test_map_geo_str(region1, region2):
-    map_html = draw_map((51.5135015, -0.1362392), regions=[region1, region2])
-    assert isinstance(map_html, HTML)
+def test_marker_map_table():
+    """ Tests that Marker.map_table generates a map """
+    lats = [51, 52, 53]
+    lons = [-1, -2, -3]
+    labels = ['A', 'B', 'C']
+    t = Table([lats, lons, labels], ['A', 'B', 'C'])
+    Marker.map_table(t).show()
+    colors = ['red', 'green', 'yellow']
+    t['colors'] = colors
+    Marker.map_table(t).show()
 
 
-def test_group_recursive_jsons(region1, region2):
-    """ Tests that recurisve _to_json returns a flat layer of geoJSONs """
-    papaRegion = MapRegion(regions=[region1, region2])
-    grandpaRegion = MapRegion(regions=[papaRegion])
-
-    grandpaRegion['composite'] = MapRegion.GROUP
-    papaRegion['composite'] = MapRegion.GROUP
-    json_data = grandpaRegion.to_feature()
-    assert isinstance(json_data, list)
-    assert len(json_data) == 2
-
-    json_data = grandpaRegion.to_polygon()
-    assert isinstance(json_data, list)
-    assert len(json_data) == 3
+def test_circle_html():
+    """ Tests that a Circle can be rendered. """
+    Circle(51.514, -0.132).show()
 
 
-def test_group_to_json(region1, region2, locations, points):
-    """ Tests that _to_json returns the correct data """
-
-    grab_locations = lambda json_data: json_data['features'][0]['geometry']['coordinates']
-
-    json_data = region1._to_json()
-    data = grab_locations(json_data)
-    assert data == locations
-
-    json_data = region2._to_json()
-    data = grab_locations(json_data)
-    assert data == [points]
+def test_circle_map():
+    """ Tests that Circle.map generates a map """
+    lats = [51, 52, 53]
+    lons = [-1, -2, -3]
+    labels = ['A', 'B', 'C']
+    Circle.map(lats, lons).show()
+    Circle.map(lats, lons, labels).show()
 
 
-def test_long_lat_flip(locations, points):
-    """ Tests that MapRegion undoes geo_format to comply with EPSG standard, by default """
-    region1 = MapRegion(locations=locations)
-    region2 = MapRegion(points=points)
-
-    grab_locations = lambda json_data: json_data['features'][0]['geometry']['coordinates']
-
-    json_data = region1._to_json()
-    data = grab_locations(json_data)
-    assert data == [[(y, x) for x, y in location] for location in locations]
-
-    json_data = region2._to_json()
-    data = grab_locations(json_data)
-    assert data == [[(y, x) for x, y in points]]
+##########
+# Region #
+##########
 
 
-############
-# Features #
-############
+def test_region_html(states):
+    states['CA'].show()
 
 
-def test_map_autofit_points():
-    """ Test that autofit doesn't break with points """
-    points = [MapPoint((51.5135015, -0.1358392))]
-    map_html = draw_map(points=points)
-    assert isinstance(map_html, HTML)
+def test_geojson(states):
+    """ Tests that geojson returns the original US States data """
+    data = json.load(open('tests/us-states.json', 'r'))
+    geo = states.geojson()
+    assert data == geo, '{}\n{}'.format(data, geo)
 
 
-def test_map_autofit_regions(region1):
-    """ Test that autofit doesn't break with regions """
-    map_html = draw_map(regions=[region1])
-    assert isinstance(map_html, HTML)
-
-
-def test_map_autofit_mix(region1):
-    """ Test that autofit doesn't break with a mix of both regions and points """
-    points = [MapPoint((51.5135015, -0.1358392))]
-    map_html = draw_map(points=points, regions=[region1])
-    assert isinstance(map_html, HTML)
-
-
-###############
-# TEST BOUNDS #
-###############
+##########
+# Bounds #
+##########
 
 
 def test_bounds():
     """ Tests that generated bounds are correct """
-    points = [MapPoint(0, 0), MapPoint((180, -90)),
-              MapPoint(90, -180, geo_formatted=True)]
-    bounds = Map(points=points)._autobounds()
+    points = [Marker(0, 0), Marker(-89.9, 180), Marker(90, -180)]
+    bounds = Map(points)._autobounds()
     assert bounds['max_lat'] == 90
-    assert bounds['min_lat'] == -90
-    assert bounds['max_long'] == 180
-    assert bounds['min_long'] == -180
+    assert bounds['min_lat'] == -89.9
+    assert bounds['max_lon'] == 180
+    assert bounds['min_lon'] == -180
 
 
 def test_bounds_limits():
-    """
-    Tests that randomly large lats and lots are truncated to
-    the correct max, min values """
-
-    points = [MapPoint(0, 0),
-              MapPoint(-100, 200, geo_formatted=True), 
-              MapPoint(90, -180, geo_formatted=True)]
-    bounds = Map(points=points)._autobounds()
+    """ Tests that too-large lats and lons are truncated to real bounds. """
+    points = [Marker(0, 0), Marker(-190, 280), Marker(190, -280)]
+    bounds = Map(points)._autobounds()
     assert bounds['max_lat'] == 90
     assert bounds['min_lat'] == -90
-    assert bounds['max_long'] == 180
-    assert bounds['min_long'] == -180
+    assert bounds['max_lon'] == 180
+    assert bounds['min_lon'] == -180
 
 
-def test_bounds_floats():
-	"""Tests that bounds with floats work (should, in theory)"""
-	points = [MapPoint(51.5135015, -0.1358392, geo_formatted=True), 
-	          MapPoint(51.5137, -0.1358392, geo_formatted=True), 
-	          MapPoint(51.5132, -0.138, geo_formatted=True), 
-	          MapPoint(51.5143, -0.135, geo_formatted=True)]
-	bounds = Map(points=points)._autobounds()
-	assert bounds['max_lat'] == 51.5143
-	assert bounds['min_lat'] == 51.5132
-	assert bounds['max_long'] == -0.135
-	assert bounds['min_long'] == -0.138
+#########
+# Color #
+#########
+
+
+def test_color_table(states):
+    """ Tests that color can take a Table. """
+    data = Table.read_table('tests/us-unemployment.csv')
+    states.color(data).show()
+
+
+def test_color_dict(states):
+    """ Tests that color can take a dict. """
+    data = Table.read_table('tests/us-unemployment.csv')
+    states.color(dict(zip(*data.columns))).show()
+
+
+def test_color_values_and_ids(states):
+    """ Tests that color can take values and ids. """
+    data = Table.read_table('tests/us-unemployment.csv')
+    states.color(data['Unemployment'], data['State']).show()
