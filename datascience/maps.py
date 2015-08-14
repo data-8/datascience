@@ -74,6 +74,8 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
             else:
                 assert len(ids) == 0
                 features = dict(enumerate(features))
+        elif isinstance(features, _MapFeature):
+            features = {0: features}
         assert isinstance(features, dict)
         self._features = features
         self._attrs = {

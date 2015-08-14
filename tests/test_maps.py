@@ -33,16 +33,15 @@ def test_setup_map():
     Map(**kwargs).show()
 
 
-def test_map_marker():
-    """ Tests that a Map can contain a Marker. """
+def test_map_marker_and_region(states):
+    """ Tests that a Map can contain a Marker and/or Region. """
     marker = Marker(51.514, -0.132)
+    Map(marker).show()
     Map([marker]).show()
-
-
-def test_map_region(states):
-    """ Tests that a Map can contain a Region. """
     region = states['CA']
+    Map(region).show()
     Map([region]).show()
+    Map([marker, region]).show()
 
 
 ##########
@@ -60,8 +59,11 @@ def test_marker_map():
     lats = [51, 52, 53]
     lons = [-1, -2, -3]
     labels = ['A', 'B', 'C']
+    colors = ['blue', 'red', 'green']
     Marker.map(lats, lons).show()
     Marker.map(lats, lons, labels).show()
+    Marker.map(lats, lons, labels, colors).show()
+    Marker.map(lats, lons, colors=colors).show()
 
 
 def test_marker_map_table():
@@ -70,6 +72,9 @@ def test_marker_map_table():
     lons = [-1, -2, -3]
     labels = ['A', 'B', 'C']
     t = Table([lats, lons, labels], ['A', 'B', 'C'])
+    Marker.map_table(t).show()
+    colors = ['red', 'green', 'yellow']
+    t['colors'] = colors
     Marker.map_table(t).show()
 
 
