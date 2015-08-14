@@ -274,7 +274,7 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
             if feature_type == 'FeatureCollection':
                 _read_geojson_features(feature, features, prefix + '.' + key)
             elif feature_type == 'Point':
-                value = _convert_point(feature)
+                value = Circle._convert_point(feature)
             else:
                 value = Region(feature)
             features[key] = value
