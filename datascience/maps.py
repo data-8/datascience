@@ -76,7 +76,7 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
                 features = dict(enumerate(features))
         elif isinstance(features, _MapFeature):
             features = {0: features}
-        assert isinstance(features, dict)
+        assert isinstance(features, dict), 'Map takes a list or dict of features'
         self._features = features
         self._attrs = {
             'tiles': 'Stamen Toner',
