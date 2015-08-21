@@ -387,14 +387,12 @@ class Table(collections.abc.MutableMapping):
         self_rows = self.index_by(column_label)
         other_rows = other.index_by(other_label)
 
-        # build set of rows from rows that have values in both tables
+        # Gather joined rows from self_rows that have join values in other_rows
         joined_rows = []
         for label, rows in self_rows.items():
-            for row in rows:
-                other_row = other_rows[label][0]\
-                    if label in other_rows\
-                    else tuple([None]*other.num_rows)
-                joined_rows.append(row + other_row)
+            if label in other_rows:
+                other_row = other_rows[label][0]
+                joined_rows += [row + other_row for row in rows]
         if not joined_rows:
             return None
 
@@ -671,27 +669,6 @@ class Table(collections.abc.MutableMapping):
             for axis, label, color in zip(axes, self.column_labels, colors):
                 axis.hist(self[label], color=color, **vargs)
                 axis.set_xlabel(label, fontsize=16)
-
-    def points(self, column__lat, column__long,
-            radii=None, labels=None, colors=None, **kwargs) :
-        latitudes = self._get_column(column__lat)
-        longitudes = self._get_column(column__long)
-        if labels is None : labels = [''] * self.num_rows
-        else : labels = self._get_column(labels)
-        if colors is None : colors = ['#3186cc'] * self.num_rows
-        else : colors = self._get_column(colors)
-        if radii is None : radii = [5] * self.num_rows
-        else : radii = self._get_column(radii)
-        points = [_maps.MapPoint((lat,long),radius=radius,
-                           popup=label,
-                           fill_color = color,
-                           line_color = color,
-                           **kwargs)
-                  for lat,long,label,color,radius in zip(latitudes,longitudes,
-                                                         labels,colors,radii)]
-        center_lat = sum(latitudes)/len(latitudes)
-        center_long = sum(longitudes)/len(longitudes)
-        return _maps.draw_map((center_lat,center_long), points = points)
 
 
     ###########

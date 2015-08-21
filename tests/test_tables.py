@@ -61,7 +61,7 @@ def assert_equal(string1, string2):
 
 def test_basic(t):
     """Tests that t works"""
-    assert_equal(t, """\
+    assert_equal(t, """
     letter | count | points
     a      | 9     | 1
     b      | 3     | 2
@@ -82,7 +82,7 @@ def test_basic_rows(t):
 
 def test_select(t):
     test = t.select(['points', 'count']).cumsum()
-    assert_equal(test, """\
+    assert_equal(test, """
     points | count
     1      | 9
     3      | 12
@@ -93,7 +93,7 @@ def test_select(t):
 
 def test_take(t):
     test = t.take([1, 2])
-    assert_equal(test, """\
+    assert_equal(test, """
     letter | count | points
     b      | 3     | 2
     c      | 3     | 2
@@ -102,7 +102,7 @@ def test_take(t):
 
 def test_stats(t):
     test = t.stats()
-    assert_equal(test, """\
+    assert_equal(test, """
     statistic | letter | count | points
     min       | a      | 1     | 1
     max       | z      | 9     | 10
@@ -113,7 +113,7 @@ def test_stats(t):
 
 def test_stats_with_numpy(t):
     test = t.stats([np.mean, np.std, np.var])
-    assert_equal(test, """\
+    assert_equal(test, """
     statistic | letter | count | points
     mean      |        | 4     | 3.75
     std       |        | 3     | 3.63146
@@ -122,7 +122,7 @@ def test_stats_with_numpy(t):
 
 def test_where(t):
     test = t.where('points', 2)
-    assert_equal(test, """\
+    assert_equal(test, """
     letter | count | points
     b      | 3     | 2
     c      | 3     | 2
@@ -132,7 +132,7 @@ def test_where(t):
 def test_where_conditions(t):
     t['totals'] = t['points'] * t['count']
     test = t.where(t['totals'] > 8)
-    assert_equal(test, """\
+    assert_equal(test, """
     letter | count | points | totals
     a      | 9     | 1      | 9
     z      | 1     | 10     | 10
@@ -141,7 +141,7 @@ def test_where_conditions(t):
 
 def test_sort(t):
     test = t.sort('points')
-    assert_equal(test, """\
+    assert_equal(test, """
     letter | count | points | totals
     a      | 9     | 1      | 9
     b      | 3     | 2      | 6
@@ -152,7 +152,7 @@ def test_sort(t):
 
 def test_sort_args(t):
     test = t.sort('points', descending=True, distinct=True)
-    assert_equal(test, """\
+    assert_equal(test, """
     letter | count | points | totals
     z      | 1     | 10     | 10
     b      | 3     | 2      | 6
@@ -162,7 +162,7 @@ def test_sort_args(t):
 
 def test_sort_syntax(t):
     test = t.sort(-t['totals'])
-    assert_equal(test, """\
+    assert_equal(test, """
     letter | count | points | totals
     z      | 1     | 10     | 10
     a      | 9     | 1      | 9
@@ -173,7 +173,7 @@ def test_sort_syntax(t):
 
 def test_group(t):
     test = t.group('points')
-    assert_equal(test, """\
+    assert_equal(test, """
     points | letter    | count | totals
     1      | ['a']     | [9]   | [9]
     2      | ['b' 'c'] | [3 3] | [6 6]
@@ -183,7 +183,7 @@ def test_group(t):
 
 def test_group_with_func(t):
     test = t.group('points', sum)
-    assert_equal(test, """\
+    assert_equal(test, """
     points | letter sum | count sum | totals sum
     1      |            | 9         | 9
     2      |            | 6         | 12
@@ -196,7 +196,7 @@ def test_groups(t):
     t.append(('e', 12, 1, 12))
     t['early'] = t['letter'] < 'd'
     test = t.groups(['points', 'early'])
-    assert_equal(test, """\
+    assert_equal(test, """
     points | early | letter    | count | totals
     1      | False | ['e']     | [12]  | [12]
     1      | True  | ['a']     | [9]   | [9]
@@ -210,7 +210,7 @@ def test_groups_collect(t):
     t.append(('e', 12, 1, 12))
     t['early'] = t['letter'] < 'd'
     test = t.select(['points', 'early', 'count']).groups(['points', 'early'], sum)
-    assert_equal(test, """\
+    assert_equal(test, """
     points | early | count sum
     1      | False | 12
     1      | True  | 9
@@ -222,21 +222,19 @@ def test_groups_collect(t):
 def test_join(t, u):
     """Tests that join works, not destructive"""
     test = t.join('points', u)
-    assert_equal(test, """\
+    assert_equal(test, """
     points | letter | count | totals | names
     1      | a      | 9     | 9      | one
     2      | b      | 3     | 6      | two
     2      | c      | 3     | 6      | two
-    10     | z      | 1     | 10     | None
-
     """)
-    assert_equal(u, """\
+    assert_equal(u, """
     points  | names
     1       | one
     2       | two
     3       | three
     """)
-    assert_equal(t, """\
+    assert_equal(t, """
     letter | count | points | totals
     a      | 9     | 1      | 9
     b      | 3     | 2      | 6
@@ -251,7 +249,7 @@ def test_pivot(t):
     t['early'] = t['letter'] < 'd'
     t['exists'] = 1
     test = t.pivot('points', 'early', 'exists')
-    assert_equal(test, """\
+    assert_equal(test, """
     early | 1 exists | 2 exists | 10 exists
     False | [1]      | None     | [1]
     True  | [1]      | [1 1]    | None
@@ -265,7 +263,7 @@ def test_pivot_multiple_rows(t):
     t['late'] = t['letter'] > 'c'
     t['exists'] = 1
     test = t.pivot('points', ['early', 'late'], 'exists')
-    assert_equal(test, """\
+    assert_equal(test, """
     early | late  | 1 exists | 2 exists | 10 exists
     False | True  | [1]      | None     | [1]
     True  | False | [1]      | [1 1]    | None
@@ -278,7 +276,7 @@ def test_pivot_sum(t):
     t['early'] = t['letter'] < 'd'
     t['exists'] = 1
     test = t.pivot('points', 'early', 'exists', sum)
-    assert_equal(test, """\
+    assert_equal(test, """
     early | 1 exists | 2 exists | 10 exists
     False | 1        | 0        | 1
     True  | 1        | 2        | 0
@@ -529,7 +527,6 @@ def test_join_basic(table, table2):
     1      | a      | 9     | 9      | one
     2      | b      | 3     | 6      | two
     2      | c      | 3     | 6      | two
-    10     | z      | 1     | 10     | None
     """)
 
 

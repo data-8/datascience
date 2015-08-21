@@ -417,6 +417,7 @@ class Marker(_MapFeature):
         """Return markers from the colums of a table."""
         return cls.map(*table.columns, **kwargs)
 
+
 class Circle(Marker):
     """A marker displayed with Folium's circle_marker method.
 
