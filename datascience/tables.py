@@ -428,6 +428,8 @@ class Table(collections.abc.MutableMapping):
         c = column_or_label
         if isinstance(c, collections.Hashable) and c in self.column_labels:
             return self[c]
+        elif isinstance(c, str):
+            assert c in self.column_labels, 'label "{}" not in labels {}'.format(c, self.column_labels)
         else:
             assert len(c) == self.num_rows, 'column length mismatch'
             return c
@@ -669,6 +671,27 @@ class Table(collections.abc.MutableMapping):
             for axis, label, color in zip(axes, self.column_labels, colors):
                 axis.hist(self[label], color=color, **vargs)
                 axis.set_xlabel(label, fontsize=16)
+
+    def points(self, column__lat, column__long,
+            radii=None, labels=None, colors=None, **kwargs) :
+        latitudes = self._get_column(column__lat)
+        longitudes = self._get_column(column__long)
+        if labels is None : labels = [''] * self.num_rows
+        else : labels = self._get_column(labels)
+        if colors is None : colors = ['#3186cc'] * self.num_rows
+        else : colors = self._get_column(colors)
+        if radii is None : radii = [5] * self.num_rows
+        else : radii = self._get_column(radii)
+        points = [_maps.MapPoint((lat,long),radius=radius,
+                           popup=label,
+                           fill_color = color,
+                           line_color = color,
+                           **kwargs)
+                  for lat,long,label,color,radius in zip(latitudes,longitudes,
+                                                         labels,colors,radii)]
+        center_lat = sum(latitudes)/len(latitudes)
+        center_long = sum(longitudes)/len(longitudes)
+        return _maps.draw_map((center_lat,center_long), points = points)
 
 
     ###########
