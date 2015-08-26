@@ -428,6 +428,8 @@ class Table(collections.abc.MutableMapping):
         c = column_or_label
         if isinstance(c, collections.Hashable) and c in self.column_labels:
             return self[c]
+        elif isinstance(c, str):
+            assert c in self.column_labels, 'label "{}" not in labels {}'.format(c, self.column_labels)
         else:
             assert len(c) == self.num_rows, 'column length mismatch'
             return c
@@ -564,17 +566,25 @@ class Table(collections.abc.MutableMapping):
         '#4C3C37',
     )
 
+    default_options = {
+        'alpha': 0.8,
+    }
+
     def plot(self, column_for_xticks=None, overlay=False, **vargs):
         """Plot contents as lines."""
+        options = self.default_options.copy()
+        options.update(vargs)
         xticks, labels = self._split(column_for_xticks)
         def draw(axis, label, color):
-            axis.plot(self[label], color=color, **vargs)
+            axis.plot(self[label], color=color, **options)
         def annotate(axis, ticks):
             axis.set_xticklabels(ticks, rotation='vertical')
         self._visualize(labels, xticks, overlay, draw, annotate)
 
     def barh(self, column_for_categories, overlay=False, **vargs):
         """Plot contents as a horizontal bar chart."""
+        options = self.default_options.copy()
+        options.update(vargs)
         yticks, labels = self._split(column_for_categories)
         index = np.arange(self.num_rows)
         margin = 0.1
@@ -586,12 +596,14 @@ class Table(collections.abc.MutableMapping):
                 ypos = index + margin + (1-2*margin)*labels.index(label)/len(labels)
             else:
                 ypos = index
-            axis.barh(ypos, self[label], width, alpha=0.8, color=color, **vargs)
+            axis.barh(ypos, self[label], width,  color=color, **options)
         def annotate(axis, ticks):
             axis.set_yticks(index+0.5) # Center labels on bars
             axis.set_yticklabels(ticks, stretch='ultra-condensed')
         height = max(4, len(index)/2)
-        self._visualize(labels, yticks, overlay, draw, annotate, height)
+        if 'height' in vargs:
+            height = vargs.pop('height')
+        self._visualize(labels, yticks, overlay, draw, annotate, height=height)
 
     def _visualize(self, labels, ticks, overlay, draw, annotate, width=6, height=4):
         """Generic visualization that overlays or separates the draw function."""
@@ -605,7 +617,7 @@ class Table(collections.abc.MutableMapping):
                 annotate(axis, ticks)
             axis.legend(labels, bbox_to_anchor=(1.5, 1.0))
         else:
-            _, axes = plt.subplots(n, 1, figsize=(width, height * n))
+            fig, axes = plt.subplots(n, 1, figsize=(width, height * n))
             if not isinstance(axes, collections.Iterable):
                 axes=[axes]
             for axis, label, color in zip(axes, labels, colors):
@@ -669,6 +681,27 @@ class Table(collections.abc.MutableMapping):
             for axis, label, color in zip(axes, self.column_labels, colors):
                 axis.hist(self[label], color=color, **vargs)
                 axis.set_xlabel(label, fontsize=16)
+
+    def points(self, column__lat, column__long,
+            radii=None, labels=None, colors=None, **kwargs) :
+        latitudes = self._get_column(column__lat)
+        longitudes = self._get_column(column__long)
+        if labels is None : labels = [''] * self.num_rows
+        else : labels = self._get_column(labels)
+        if colors is None : colors = ['#3186cc'] * self.num_rows
+        else : colors = self._get_column(colors)
+        if radii is None : radii = [5] * self.num_rows
+        else : radii = self._get_column(radii)
+        points = [_maps.MapPoint((lat,long),radius=radius,
+                           popup=label,
+                           fill_color = color,
+                           line_color = color,
+                           **kwargs)
+                  for lat,long,label,color,radius in zip(latitudes,longitudes,
+                                                         labels,colors,radii)]
+        center_lat = sum(latitudes)/len(latitudes)
+        center_long = sum(longitudes)/len(longitudes)
+        return _maps.draw_map((center_lat,center_long), points = points)
 
 
     ###########
