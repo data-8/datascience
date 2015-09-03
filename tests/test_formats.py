@@ -3,6 +3,7 @@ import pytest
 import re
 from datascience import *
 
+
 def assert_equal(string1, string2):
     string1, string2 = str(string1), str(string2)
     whitespace = re.compile('\s')
@@ -33,7 +34,6 @@ def test_number_format():
         1,000  | 1,000.00
         12,000 | 12,000.35
         """)
-
 
 
 def test_currency_format():
