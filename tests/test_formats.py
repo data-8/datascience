@@ -48,3 +48,16 @@ def test_date_format():
     t = Table([vs], ['time'])
     t.set_format('time', DateFormatter("%Y-%m-%d %H:%M:%S.%f"))
     assert_equal(t['time'][0], 1435815584.9)  # values are timestamps
+
+
+def test_percent_formatter():
+    vs = [0.1, 0.11111, 0.199999, 10]
+    t = Table([vs], ['percent'])
+    t.set_format('percent', PercentFormatter(1))
+    assert_equal(t, """
+    percent
+    10.0%
+    11.1%
+    20.0%
+    1000.0%
+    """)

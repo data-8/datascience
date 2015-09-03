@@ -104,3 +104,18 @@ class DateFormatter(Formatter):
     def format_value(self, value):
         """Format timestamp as a string."""
         return datetime.fromtimestamp(value).strftime(self.format)
+
+
+class PercentFormatter(Formatter):
+    """Format a number as a percentage."""
+
+    converts_values = False
+
+    def __init__(self, decimals=2, *args, **vargs):
+        assert isinstance(decimals, int)
+        self.decimals = decimals
+
+    def format_value(self, value):
+        """Format number as percentage."""
+        return ('{:.' + str(self.decimals) + '%}').format(value)
+
