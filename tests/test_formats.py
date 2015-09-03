@@ -22,6 +22,18 @@ def test_default_format():
     assert_equal(fmt((1, 2)), '(1, 2)')
 
 
+def test_number_format():
+    us = ['1,000', '12,000']
+    vs = ['1,000', '12,000.346']
+    t = Table([us, vs], ['u', 'v'])
+    t.set_format(['u', 'v'], NumberFormatter(2))
+    assert_equal(t, """
+    u      | v
+    1,000  | 1,000.00
+    12,000 | 12,000.35
+    """)
+
+
 def test_currency_format():
     vs = ['$60', '$162.5']
     t = Table([vs, vs, vs], ['num1', 'num2', 'str'])

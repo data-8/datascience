@@ -66,6 +66,34 @@ class Formatter:
 default_formatter = Formatter()
 
 
+class NumberFormatter(Formatter):
+    """Format numbers that may have delimiters."""
+
+    converts_values = True
+
+    def __init__(self, decimals=2, decimal_point='.', separator=','):
+        self.decimals = decimals
+        self.decimal_point = decimal_point
+        self.separator = separator
+
+    def convert(self, value):
+        """Convert string 93,000.00 to float 93000.0."""
+        if isinstance(value, str):
+            value = value.replace(self.separator, '')
+            if self.decimal_point not in value:
+                return int(value)
+            else:
+                return float(value.replace(self.decimal_point, '.'))
+        else:
+            return value
+
+    def format_value(self, value):
+        if isinstance(value, (int, np.integer)):
+            return ('{:' + self.separator + 'd}').format(value)
+        else:
+            return ('{:' + self.separator + '.' + str(self.decimals) + 'f}').format(value)
+
+
 class CurrencyFormatter(Formatter):
     """Format currency and convert to float."""
 
