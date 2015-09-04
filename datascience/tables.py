@@ -667,7 +667,35 @@ class Table(collections.abc.MutableMapping):
         return t
 
     def hist(self, overlay=False, **vargs):
-        """Draw histograms of all columns."""
+        """Requires all columns in the table to contain numerical values only.
+        If the columns contain other types, a ValueError is raised.
+
+        Draw one histogram per column. If the overlay argument is True, a legend
+        containing the column name is shown on each histogram.
+
+        See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.hist
+        for additional arguments that can be passed into vargs. These include:
+            bins, range, normed, cumulative, and orientation, to name a few.
+
+        >>> table
+        count | points
+        9     | 1
+        3     | 2
+        3     | 2
+        1     | 10
+
+        >>> table.hist()
+        <histogram of values in count>
+        <histogram of values in points>
+        """
+        # Check for non-numerical values and raise a ValueError if any found
+        # TODO(sam): Is a ValueError the right thing to raise?
+        for col in self:
+            if any(isinstance(cell, np.flexible) for cell in self[col]):
+                raise ValueError("The column '{0}' contains non-numerical "
+                    "values. A histogram cannot be drawn for this table."
+                    .format(col))
+
         n = len(self)
         colors = list(itertools.islice(itertools.cycle(('b', 'g', 'r')), n))
         if overlay:
