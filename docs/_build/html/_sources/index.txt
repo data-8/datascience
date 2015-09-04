@@ -1,32 +1,37 @@
-.. datascience documentation master file, created by
-   sphinx-quickstart on Thu Sep  3 21:52:53 2015.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 Welcome to datascience's documentation!
 =======================================
 
-Contents:
+The ``datascience`` package was written for use in Berkeley's DS 8 course and
+contains useful functions for investigating and graphically displaying data.
 
-.. toctree::
-   :maxdepth: 2
+datascience.tables
+-------------------------
 
-.. autoclass:: datascience.Table
-  :members:
+.. automodule:: datascience.tables
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
-.. automodule:: datascience.util
-  :members:
-
-.. automodule:: datascience.maps
-  :members:
+datascience.formats
+--------------------------
 
 .. automodule:: datascience.formats
-  :members:
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
-Indices and tables
-==================
+datascience.maps
+-----------------------
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+.. automodule:: datascience.maps
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
+datascience.util
+-----------------------
+
+.. automodule:: datascience.util
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,8 +1,5 @@
-Welcome to datascience's documentation!
-=======================================
-
-The ``datascience`` package was written for use in Berkeley's DS 8 course and
-contains useful functions for investigating and graphically displaying data.
+datascience package
+===================
 
 datascience.tables
 -------------------------
