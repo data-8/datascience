@@ -745,8 +745,10 @@ class Table(collections.abc.MutableMapping):
         If the columns contain other types, a ValueError is raised.
 
         Kwargs:
-            overlay (bool): If True, adds a legend to each of the plots showing
-                the column name being plotted.
+            overlay (bool): If True, plots 1 chart with all the histograms
+                overlaid on top of each other (instead of the default behavior of
+                one histogram for each column in the table). Also adds a legend
+                that matches each bar color to its column.
 
             vargs: Additional arguments that get passed into :func:plt.hist.
                 See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.hist
