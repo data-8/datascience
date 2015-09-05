@@ -617,7 +617,7 @@ class Table(collections.abc.MutableMapping):
             None
 
         Raises:
-            ValueError: The Table contained non-numerical values in columns
+            ValueError: The Table contains non-numerical values in columns
             other than `column_for_categories`
 
         >>> furniture_table
@@ -739,15 +739,26 @@ class Table(collections.abc.MutableMapping):
         return t
 
     def hist(self, overlay=False, **vargs):
-        """Requires all columns in the table to contain numerical values only.
+        """Plots one histogram for each column in the table.
+
+        Requires all columns in the table to contain numerical values only.
         If the columns contain other types, a ValueError is raised.
 
-        Draw one histogram per column. If the overlay argument is True, a legend
-        containing the column name is shown on each histogram.
+        Kwargs:
+            overlay (bool): If True, adds a legend to each of the plots showing
+                the column name being plotted.
 
-        See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.hist
-        for additional arguments that can be passed into vargs. These include:
-        bins, range, normed, cumulative, and orientation, to name a few.
+            vargs: Additional arguments that get passed into :func:plt.hist.
+                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.hist
+                for additional arguments that can be passed into vargs. These
+                include: `bins`, `range`, `normed`, `cumulative`, and
+                `orientation`, to name a few.
+
+        Returns:
+            None
+
+        Raises:
+            ValueError: The Table contains non-numerical values
 
         >>> table
         count | points
