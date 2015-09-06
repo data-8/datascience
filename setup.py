@@ -37,7 +37,7 @@ class PyTest(TestCommand):
         sys.exit(errno)
 
 
-VERSION = '0.3.3'
+VERSION = '0.3.4'
 
 setup(
     name = 'datascience',
