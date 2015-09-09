@@ -347,7 +347,7 @@ all column names and col. 2 of all associated data.</p>
 
 <dl class="method">
 <dt id="datascience.tables.Table.stats">
-<code class="descclassname">Table.</code><code class="descname">stats</code><span class="sig-paren">(</span><em>ops=(&lt;built-in function min&gt;</em>, <em>&lt;built-in function max&gt;</em>, <em>&lt;function median at 0x1048152f0&gt;</em>, <em>&lt;built-in function sum&gt;)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.stats" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">Table.</code><code class="descname">stats</code><span class="sig-paren">(</span><em>ops=(&lt;built-in function min&gt;</em>, <em>&lt;built-in function max&gt;</em>, <em>&lt;function median at 0x10480e2f0&gt;</em>, <em>&lt;built-in function sum&gt;)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.stats" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute statistics for each column and place them in a table.</p>
 </dd></dl>
 
@@ -460,6 +460,47 @@ all column names and col. 2 of all associated data.</p>
 <dt id="datascience.formats.Formatter.min_width">
 <code class="descname">min_width</code><em class="property"> = 4</em><a class="headerlink" href="#datascience.formats.Formatter.min_width" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="datascience.formats.NumberFormatter">
+<em class="property">class </em><code class="descclassname">datascience.formats.</code><code class="descname">NumberFormatter</code><span class="sig-paren">(</span><em>decimals=2</em>, <em>decimal_point='.'</em>, <em>separator='</em>, <em>'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#NumberFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.NumberFormatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#datascience.formats.Formatter" title="datascience.formats.Formatter"><code class="xref py py-class docutils literal"><span class="pre">datascience.formats.Formatter</span></code></a></p>
+<p>Format numbers that may have delimiters.</p>
+<dl class="method">
+<dt id="datascience.formats.NumberFormatter.convert">
+<code class="descname">convert</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#NumberFormatter.convert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.NumberFormatter.convert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert string 93,000.00 to float 93000.0.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="datascience.formats.NumberFormatter.converts_values">
+<code class="descname">converts_values</code><em class="property"> = True</em><a class="headerlink" href="#datascience.formats.NumberFormatter.converts_values" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="datascience.formats.NumberFormatter.format_value">
+<code class="descname">format_value</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#NumberFormatter.format_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.NumberFormatter.format_value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="datascience.formats.PercentFormatter">
+<em class="property">class </em><code class="descclassname">datascience.formats.</code><code class="descname">PercentFormatter</code><span class="sig-paren">(</span><em>decimals=2</em>, <em>*args</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#PercentFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.PercentFormatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#datascience.formats.Formatter" title="datascience.formats.Formatter"><code class="xref py py-class docutils literal"><span class="pre">datascience.formats.Formatter</span></code></a></p>
+<p>Format a number as a percentage.</p>
+<dl class="attribute">
+<dt id="datascience.formats.PercentFormatter.converts_values">
+<code class="descname">converts_values</code><em class="property"> = False</em><a class="headerlink" href="#datascience.formats.PercentFormatter.converts_values" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="datascience.formats.PercentFormatter.format_value">
+<code class="descname">format_value</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#PercentFormatter.format_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.PercentFormatter.format_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Format number as percentage.</p>
+</dd></dl>
 
 </dd></dl>
 
