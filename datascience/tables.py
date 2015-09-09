@@ -598,7 +598,7 @@ class Table(collections.abc.MutableMapping):
         with the labels in that order.
 
         Requires every column except for `column_for_categories` to be
-        numberical. If the columns contain other types, a `ValueError` is
+        numerical. If the columns contain other types, a `ValueError` is
         raised.
 
         Args:
