@@ -1,6 +1,7 @@
 import sys
 from setuptools import setup
 from setuptools.command.test import test as TestCommand
+from version import VERSION
 
 install_requires = [
     'numpy',
@@ -36,8 +37,6 @@ class PyTest(TestCommand):
         errno = pytest.main(self.pytest_args)
         sys.exit(errno)
 
-
-VERSION = '0.3.4'
 
 setup(
     name = 'datascience',
