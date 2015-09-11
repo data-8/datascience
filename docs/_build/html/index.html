@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Welcome to datascience’s documentation! &mdash; datascience 0.3.3 documentation</title>
+    <title>Welcome to datascience’s documentation! &mdash; datascience 0.3.4 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.3.3',
+        VERSION:     '0.3.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.3.3 documentation" href="#" /> 
+    <link rel="top" title="datascience 0.3.4 documentation" href="#" /> 
   </head>
   <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">datascience 0.3.3 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="#">datascience 0.3.4 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -115,7 +115,77 @@ columns of self.</p>
 <dl class="method">
 <dt id="datascience.tables.Table.barh">
 <code class="descclassname">Table.</code><code class="descname">barh</code><span class="sig-paren">(</span><em>column_for_categories</em>, <em>overlay=False</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.barh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.barh" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot contents as a horizontal bar chart.</p>
+<dd><p>Plots horizontal bar charts for the table.</p>
+<p>Each chart is categorized using the values in <cite>column_for_categories</cite>
+and one chart is produced for every other column in the table.
+A total of n - 1 charts are created where n is the number of columns
+in the table.</p>
+<p>Note that the order of the categories in the table is not guaranteed to
+be preserved in the bar graph. Ex. <cite>barh</cite> on a table with &#8220;a&#8221;, &#8220;b&#8221;, &#8220;c&#8221;
+as the rows in the <cite>column_for_categories</cite> may not output a bar graph
+with the labels in that order.</p>
+<p>Requires every column except for <cite>column_for_categories</cite> to be
+numerical. If the columns contain other types, a <cite>ValueError</cite> is
+raised.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>column_for_categories (str): The name to use for the bar chart</dt>
+<dd>categories</dd>
+</dl>
+</dd>
+<dt>Kwargs:</dt>
+<dd><dl class="first last docutils">
+<dt>overlay (bool): If True, creates one chart with n - 1 bars for each</dt>
+<dd>category, one for each column other than <cite>column_for_categories</cite>
+(instead of the default behavior of creating n - 1 charts).
+Also adds a legend that matches each bar color to its column.</dd>
+<dt>vargs: Additional arguments that get passed into :func:plt.barh.</dt>
+<dd>See <a class="reference external" href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.barh">http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.barh</a>
+for additional arguments that can be passed into vargs. These
+include: <cite>linewidth</cite>, <cite>xerr</cite>, <cite>yerr</cite>, and <cite>log</cite>, to name a few.</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>None</dd>
+<dt>Raises:</dt>
+<dd>ValueError: The Table contains non-numerical values in columns
+other than <cite>column_for_categories</cite></dd>
+</dl>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">furniture_table</span>
+<span class="go">Type of furniture | Count</span>
+<span class="go">chairs            | 6</span>
+<span class="go">tables            | 1</span>
+<span class="go">desks             | 2</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">furniture_table</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="s">&#39;Type of furniture&#39;</span><span class="p">)</span>
+<span class="go">&lt;bar graph with chairs, tables, desks as the categories and bars of</span>
+<span class="go">length 6, 1, 2, respectively&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">furniture_table</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="s">&#39;Count&#39;</span><span class="p">)</span>
+<span class="go">ValueError: The column &#39;Type of furniture&#39; contains non-numerical</span>
+<span class="go">values. A bar graph cannot be drawn for this table.</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">foo_table</span>
+<span class="go">Type of furniture | Count | Other col</span>
+<span class="go">chairs            | 6     | 10</span>
+<span class="go">tables            | 1     | 20</span>
+<span class="go">desks             | 2     | 30</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">foo_table</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="s">&#39;Type of furniture&#39;</span><span class="p">)</span>
+<span class="go">&lt;bar graph with Type of furniture as categories and Count values&gt;</span>
+<span class="go">&lt;bar graph with Type of furniture as categories and Other col values&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">foo_table</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="s">&#39;Type of furniture&#39;</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="go">&lt;bar graph with Type of furniture as categories and Count + Other col as</span>
+<span class="go">the two bars for each category&gt;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="attribute">
@@ -186,7 +256,41 @@ columns of self.</p>
 <dl class="method">
 <dt id="datascience.tables.Table.hist">
 <code class="descclassname">Table.</code><code class="descname">hist</code><span class="sig-paren">(</span><em>overlay=False</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.hist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.hist" title="Permalink to this definition">¶</a></dt>
-<dd><p>Draw histograms of all columns.</p>
+<dd><p>Plots one histogram for each column in the table.</p>
+<p>Requires all columns in the table to contain numerical values only.
+If the columns contain other types, a ValueError is raised.</p>
+<dl class="docutils">
+<dt>Kwargs:</dt>
+<dd><dl class="first last docutils">
+<dt>overlay (bool): If True, plots 1 chart with all the histograms</dt>
+<dd>overlaid on top of each other (instead of the default behavior of
+one histogram for each column in the table). Also adds a legend
+that matches each bar color to its column.</dd>
+<dt>vargs: Additional arguments that get passed into :func:plt.hist.</dt>
+<dd>See <a class="reference external" href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.hist">http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.hist</a>
+for additional arguments that can be passed into vargs. These
+include: <cite>bins</cite>, <cite>range</cite>, <cite>normed</cite>, <cite>cumulative</cite>, and
+<cite>orientation</cite>, to name a few.</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>None</dd>
+<dt>Raises:</dt>
+<dd>ValueError: The Table contains non-numerical values</dd>
+</dl>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span>
+<span class="go">count | points</span>
+<span class="go">9     | 1</span>
+<span class="go">3     | 2</span>
+<span class="go">3     | 2</span>
+<span class="go">1     | 10</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">hist</span><span class="p">()</span>
+<span class="go">&lt;histogram of values in count&gt;</span>
+<span class="go">&lt;histogram of values in points&gt;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -347,7 +451,7 @@ all column names and col. 2 of all associated data.</p>
 
 <dl class="method">
 <dt id="datascience.tables.Table.stats">
-<code class="descclassname">Table.</code><code class="descname">stats</code><span class="sig-paren">(</span><em>ops=(&lt;built-in function min&gt;</em>, <em>&lt;built-in function max&gt;</em>, <em>&lt;function median at 0x10480e2f0&gt;</em>, <em>&lt;built-in function sum&gt;)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.stats" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">Table.</code><code class="descname">stats</code><span class="sig-paren">(</span><em>ops=(&lt;built-in function min&gt;</em>, <em>&lt;built-in function max&gt;</em>, <em>&lt;function median at 0x104715158&gt;</em>, <em>&lt;built-in function sum&gt;)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.stats" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute statistics for each column and place them in a table.</p>
 </dd></dl>
 
@@ -739,7 +843,7 @@ least as great as p% of the values in the array)</p>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">datascience 0.3.3 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="#">datascience 0.3.4 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

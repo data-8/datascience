@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>datascience.tables &mdash; datascience 0.3.3 documentation</title>
+    <title>datascience.tables &mdash; datascience 0.3.4 documentation</title>
     
     <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.3.3',
+        VERSION:     '0.3.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.3.3 documentation" href="../../index.html" />
+    <link rel="top" title="datascience 0.3.4 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body role="document">
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.3.3 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.3.4 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -321,7 +321,7 @@
         <span class="k">if</span> <span class="n">distinct</span><span class="p">:</span>
             <span class="n">_</span><span class="p">,</span> <span class="n">row_numbers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">return_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">row_numbers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">row_numbers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s">&#39;mergesort&#39;</span><span class="p">)</span>
         <span class="k">assert</span> <span class="p">(</span><span class="n">row_numbers</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_rows</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span> <span class="n">row_numbers</span>
         <span class="k">if</span> <span class="n">descending</span><span class="p">:</span>
             <span class="n">row_numbers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">row_numbers</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
@@ -459,7 +459,7 @@
         <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">op</span><span class="o">.</span><span class="n">__name__</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">ops</span><span class="p">]</span>
         <span class="n">ops</span> <span class="o">=</span> <span class="p">[</span><span class="n">_zero_on_type_error</span><span class="p">(</span><span class="n">op</span><span class="p">)</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">ops</span><span class="p">]</span>
         <span class="n">columns</span> <span class="o">=</span> <span class="p">[[</span><span class="n">op</span><span class="p">(</span><span class="n">column</span><span class="p">)</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">ops</span><span class="p">]</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
-        <span class="n">table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_columns</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_labels</span><span class="p">)</span>
         <span class="n">stats</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">_unused_label</span><span class="p">(</span><span class="s">&#39;statistic&#39;</span><span class="p">)</span>
         <span class="n">table</span><span class="p">[</span><span class="n">stats</span><span class="p">]</span> <span class="o">=</span> <span class="n">names</span>
         <span class="n">table</span><span class="o">.</span><span class="n">move_to_start</span><span class="p">(</span><span class="n">stats</span><span class="p">)</span>
@@ -634,10 +634,82 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_visualize</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">xticks</span><span class="p">,</span> <span class="n">overlay</span><span class="p">,</span> <span class="n">draw</span><span class="p">,</span> <span class="n">annotate</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="Table.barh"><a class="viewcode-back" href="../../index.html#datascience.tables.Table.barh">[docs]</a>    <span class="k">def</span> <span class="nf">barh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_for_categories</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Plot contents as a horizontal bar chart.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Plots horizontal bar charts for the table.</span>
+
+<span class="sd">        Each chart is categorized using the values in `column_for_categories`</span>
+<span class="sd">        and one chart is produced for every other column in the table.</span>
+<span class="sd">        A total of n - 1 charts are created where n is the number of columns</span>
+<span class="sd">        in the table.</span>
+
+<span class="sd">        Note that the order of the categories in the table is not guaranteed to</span>
+<span class="sd">        be preserved in the bar graph. Ex. `barh` on a table with &quot;a&quot;, &quot;b&quot;, &quot;c&quot;</span>
+<span class="sd">        as the rows in the `column_for_categories` may not output a bar graph</span>
+<span class="sd">        with the labels in that order.</span>
+
+<span class="sd">        Requires every column except for `column_for_categories` to be</span>
+<span class="sd">        numerical. If the columns contain other types, a `ValueError` is</span>
+<span class="sd">        raised.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            column_for_categories (str): The name to use for the bar chart</span>
+<span class="sd">                categories</span>
+
+<span class="sd">        Kwargs:</span>
+<span class="sd">            overlay (bool): If True, creates one chart with n - 1 bars for each</span>
+<span class="sd">                category, one for each column other than `column_for_categories`</span>
+<span class="sd">                (instead of the default behavior of creating n - 1 charts).</span>
+<span class="sd">                Also adds a legend that matches each bar color to its column.</span>
+
+<span class="sd">            vargs: Additional arguments that get passed into :func:plt.barh.</span>
+<span class="sd">                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.barh</span>
+<span class="sd">                for additional arguments that can be passed into vargs. These</span>
+<span class="sd">                include: `linewidth`, `xerr`, `yerr`, and `log`, to name a few.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: The Table contains non-numerical values in columns</span>
+<span class="sd">            other than `column_for_categories`</span>
+
+<span class="sd">        &gt;&gt;&gt; furniture_table</span>
+<span class="sd">        Type of furniture | Count</span>
+<span class="sd">        chairs            | 6</span>
+<span class="sd">        tables            | 1</span>
+<span class="sd">        desks             | 2</span>
+
+<span class="sd">        &gt;&gt;&gt; furniture_table.barh(&#39;Type of furniture&#39;)</span>
+<span class="sd">        &lt;bar graph with chairs, tables, desks as the categories and bars of</span>
+<span class="sd">        length 6, 1, 2, respectively&gt;</span>
+
+<span class="sd">        &gt;&gt;&gt; furniture_table.barh(&#39;Count&#39;)</span>
+<span class="sd">        ValueError: The column &#39;Type of furniture&#39; contains non-numerical</span>
+<span class="sd">        values. A bar graph cannot be drawn for this table.</span>
+
+<span class="sd">        &gt;&gt;&gt; foo_table</span>
+<span class="sd">        Type of furniture | Count | Other col</span>
+<span class="sd">        chairs            | 6     | 10</span>
+<span class="sd">        tables            | 1     | 20</span>
+<span class="sd">        desks             | 2     | 30</span>
+
+<span class="sd">        &gt;&gt;&gt; foo_table.barh(&#39;Type of furniture&#39;)</span>
+<span class="sd">        &lt;bar graph with Type of furniture as categories and Count values&gt;</span>
+<span class="sd">        &lt;bar graph with Type of furniture as categories and Other col values&gt;</span>
+
+<span class="sd">        &gt;&gt;&gt; foo_table.barh(&#39;Type of furniture&#39;, overlay=True)</span>
+<span class="sd">        &lt;bar graph with Type of furniture as categories and Count + Other col as</span>
+<span class="sd">        the two bars for each category&gt;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_options</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">options</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">vargs</span><span class="p">)</span>
+
         <span class="n">yticks</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split</span><span class="p">(</span><span class="n">column_for_categories</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">flexible</span><span class="p">)</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">[</span><span class="n">label</span><span class="p">]):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The column &#39;{0}&#39; contains non-numerical &quot;</span>
+                    <span class="s">&quot;values. A bar graph cannot be drawn for this table.&quot;</span>
+                    <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label</span><span class="p">))</span>
+
         <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_rows</span><span class="p">)</span>
         <span class="n">margin</span> <span class="o">=</span> <span class="mf">0.1</span>
         <span class="n">width</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">margin</span>
@@ -719,7 +791,48 @@
         <span class="k">return</span> <span class="n">t</span>
 </div>
 <div class="viewcode-block" id="Table.hist"><a class="viewcode-back" href="../../index.html#datascience.tables.Table.hist">[docs]</a>    <span class="k">def</span> <span class="nf">hist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Draw histograms of all columns.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Plots one histogram for each column in the table.</span>
+
+<span class="sd">        Requires all columns in the table to contain numerical values only.</span>
+<span class="sd">        If the columns contain other types, a ValueError is raised.</span>
+
+<span class="sd">        Kwargs:</span>
+<span class="sd">            overlay (bool): If True, plots 1 chart with all the histograms</span>
+<span class="sd">                overlaid on top of each other (instead of the default behavior of</span>
+<span class="sd">                one histogram for each column in the table). Also adds a legend</span>
+<span class="sd">                that matches each bar color to its column.</span>
+
+<span class="sd">            vargs: Additional arguments that get passed into :func:plt.hist.</span>
+<span class="sd">                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.hist</span>
+<span class="sd">                for additional arguments that can be passed into vargs. These</span>
+<span class="sd">                include: `bins`, `range`, `normed`, `cumulative`, and</span>
+<span class="sd">                `orientation`, to name a few.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: The Table contains non-numerical values</span>
+
+<span class="sd">        &gt;&gt;&gt; table</span>
+<span class="sd">        count | points</span>
+<span class="sd">        9     | 1</span>
+<span class="sd">        3     | 2</span>
+<span class="sd">        3     | 2</span>
+<span class="sd">        1     | 10</span>
+
+<span class="sd">        &gt;&gt;&gt; table.hist()</span>
+<span class="sd">        &lt;histogram of values in count&gt;</span>
+<span class="sd">        &lt;histogram of values in points&gt;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Check for non-numerical values and raise a ValueError if any found</span>
+        <span class="c"># TODO(sam): Is a ValueError the right thing to raise?</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">flexible</span><span class="p">)</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">[</span><span class="n">col</span><span class="p">]):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The column &#39;{0}&#39; contains non-numerical &quot;</span>
+                    <span class="s">&quot;values. A histogram cannot be drawn for this table.&quot;</span>
+                    <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">col</span><span class="p">))</span>
+
         <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">colors</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">islice</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">((</span><span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="s">&#39;g&#39;</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)),</span> <span class="n">n</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">overlay</span><span class="p">:</span>
@@ -907,7 +1020,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.3.3 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.3.4 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
