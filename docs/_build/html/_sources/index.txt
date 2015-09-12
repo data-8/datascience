@@ -1,37 +1,24 @@
 Welcome to datascience's documentation!
 =======================================
 
+:Release: |release|
+:Date: |today|
+
 The ``datascience`` package was written for use in Berkeley's DS 8 course and
-contains useful functions for investigating and graphically displaying data.
+contains useful functionality for investigating and graphically displaying data.
 
-datascience.tables
--------------------------
+.. toctree::
+    :maxdepth: 2
 
-.. automodule:: datascience.tables
-    :members:
-    :undoc-members:
-    :show-inheritance:
+    tutorial
 
-datascience.formats
---------------------------
+Reference
+---------
 
-.. automodule:: datascience.formats
-    :members:
-    :undoc-members:
-    :show-inheritance:
+.. toctree::
+    :maxdepth: 1
 
-datascience.maps
------------------------
-
-.. automodule:: datascience.maps
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-datascience.util
------------------------
-
-.. automodule:: datascience.util
-    :members:
-    :undoc-members:
-    :show-inheritance:
+    tables
+    maps
+    formats
+    util

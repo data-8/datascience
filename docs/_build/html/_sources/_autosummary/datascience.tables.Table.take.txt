@@ -1,0 +1,6 @@
+datascience.tables.Table.take
+=============================
+
+.. currentmodule:: datascience.tables
+
+.. automethod:: Table.take

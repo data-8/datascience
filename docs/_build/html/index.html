@@ -23,7 +23,8 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.3.4 documentation" href="#" /> 
+    <link rel="top" title="datascience 0.3.4 documentation" href="#" />
+    <link rel="next" title="Start Here: datascience Tutorial" href="tutorial.html" /> 
   </head>
   <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
@@ -35,6 +36,9 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
+        <li class="right" >
+          <a href="tutorial.html" title="Start Here: datascience Tutorial"
+             accesskey="N">next</a> |</li>
         <li class="nav-item nav-item-0"><a href="#">datascience 0.3.4 documentation</a> &raquo;</li> 
       </ul>
     </div>  
@@ -46,750 +50,39 @@
             
   <div class="section" id="welcome-to-datascience-s-documentation">
 <h1>Welcome to datascience&#8217;s documentation!<a class="headerlink" href="#welcome-to-datascience-s-documentation" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Release:</th><td class="field-body">0.3.4</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Date:</th><td class="field-body">September 11, 2015</td>
+</tr>
+</tbody>
+</table>
 <p>The <code class="docutils literal"><span class="pre">datascience</span></code> package was written for use in Berkeley&#8217;s DS 8 course and
-contains useful functions for investigating and graphically displaying data.</p>
-<div class="section" id="module-datascience.tables">
-<span id="datascience-tables"></span><h2>datascience.tables<a class="headerlink" href="#module-datascience.tables" title="Permalink to this headline">¶</a></h2>
-<p>Tables as ordered dictionaries of Numpy arrays.</p>
-<dl class="class">
-<dt id="datascience.tables.Q">
-<em class="property">class </em><code class="descclassname">datascience.tables.</code><code class="descname">Q</code><span class="sig-paren">(</span><em>array</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Q"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Q" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>Query manager for Tables.</p>
-<dl class="attribute">
-<dt id="datascience.tables.Q.array">
-<code class="descname">array</code><em class="property"> = None</em><a class="headerlink" href="#datascience.tables.Q.array" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="datascience.tables.Table">
-<em class="property">class </em><code class="descclassname">datascience.tables.</code><code class="descname">Table</code><span class="sig-paren">(</span><em>columns=None</em>, <em>labels=None</em>, <em>formatter=&lt;datascience.formats.Formatter object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">collections.abc.MutableMapping</span></code></p>
-<p>A sequence of labeled columns.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">letters</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="s">&#39;c&#39;</span><span class="p">,</span> <span class="s">&#39;z&#39;</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">counts</span> <span class="o">=</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">points</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">([</span><span class="n">letters</span><span class="p">,</span> <span class="n">counts</span><span class="p">,</span> <span class="n">points</span><span class="p">],</span> <span class="p">[</span><span class="s">&#39;letter&#39;</span><span class="p">,</span> <span class="s">&#39;count&#39;</span><span class="p">,</span> <span class="s">&#39;points&#39;</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-<span class="go">letter | count | points</span>
-<span class="go">a      | 9     | 1</span>
-<span class="go">b      | 3     | 2</span>
-<span class="go">c      | 3     | 2</span>
-<span class="go">z      | 1     | 10</span>
-</pre></div>
+contains useful functionality for investigating and graphically displaying data.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Start Here: <code class="docutils literal"><span class="pre">datascience</span></code> Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#basic-table-usage">Basic Table Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#more-advanced-table-usage">More Advanced Table Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#drawing-maps">Drawing Maps</a></li>
+</ul>
+</li>
+</ul>
 </div>
-<dl class="class">
-<dt id="datascience.tables.Table.Rows">
-<em class="property">class </em><code class="descname">Rows</code><span class="sig-paren">(</span><em>table</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.Rows"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.Rows" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">collections.abc.Sequence</span></code></p>
-<p>An iterable view over the rows in a table.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="datascience.tables.Table.append">
-<code class="descclassname">Table.</code><code class="descname">append</code><span class="sig-paren">(</span><em>row_or_table</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.append"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.append" title="Permalink to this definition">¶</a></dt>
-<dd><p>Append a row or all rows of a table. An appended table must have all
-columns of self.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="datascience.tables.Table.apply">
-<code class="descclassname">Table.</code><code class="descname">apply</code><span class="sig-paren">(</span><em>fn</em>, <em>column_label</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.apply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.apply" title="Permalink to this definition">¶</a></dt>
-<dd><p>Apply a function to each element of a column.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="datascience.tables.Table.as_html">
-<code class="descclassname">Table.</code><code class="descname">as_html</code><span class="sig-paren">(</span><em>max_rows=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.as_html"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.as_html" title="Permalink to this definition">¶</a></dt>
-<dd><p>Format table as HTML.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="datascience.tables.Table.as_text">
-<code class="descclassname">Table.</code><code class="descname">as_text</code><span class="sig-paren">(</span><em>max_rows=0</em>, <em>sep=' | '</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.as_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.as_text" title="Permalink to this definition">¶</a></dt>
-<dd><p>Format table as text.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="datascience.tables.Table.barh">
-<code class="descclassname">Table.</code><code class="descname">barh</code><span class="sig-paren">(</span><em>column_for_categories</em>, <em>overlay=False</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.barh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.barh" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plots horizontal bar charts for the table.</p>
-<p>Each chart is categorized using the values in <cite>column_for_categories</cite>
-and one chart is produced for every other column in the table.
-A total of n - 1 charts are created where n is the number of columns
-in the table.</p>
-<p>Note that the order of the categories in the table is not guaranteed to
-be preserved in the bar graph. Ex. <cite>barh</cite> on a table with &#8220;a&#8221;, &#8220;b&#8221;, &#8220;c&#8221;
-as the rows in the <cite>column_for_categories</cite> may not output a bar graph
-with the labels in that order.</p>
-<p>Requires every column except for <cite>column_for_categories</cite> to be
-numerical. If the columns contain other types, a <cite>ValueError</cite> is
-raised.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><dl class="first last docutils">
-<dt>column_for_categories (str): The name to use for the bar chart</dt>
-<dd>categories</dd>
-</dl>
-</dd>
-<dt>Kwargs:</dt>
-<dd><dl class="first last docutils">
-<dt>overlay (bool): If True, creates one chart with n - 1 bars for each</dt>
-<dd>category, one for each column other than <cite>column_for_categories</cite>
-(instead of the default behavior of creating n - 1 charts).
-Also adds a legend that matches each bar color to its column.</dd>
-<dt>vargs: Additional arguments that get passed into :func:plt.barh.</dt>
-<dd>See <a class="reference external" href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.barh">http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.barh</a>
-for additional arguments that can be passed into vargs. These
-include: <cite>linewidth</cite>, <cite>xerr</cite>, <cite>yerr</cite>, and <cite>log</cite>, to name a few.</dd>
-</dl>
-</dd>
-<dt>Returns:</dt>
-<dd>None</dd>
-<dt>Raises:</dt>
-<dd>ValueError: The Table contains non-numerical values in columns
-other than <cite>column_for_categories</cite></dd>
-</dl>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">furniture_table</span>
-<span class="go">Type of furniture | Count</span>
-<span class="go">chairs            | 6</span>
-<span class="go">tables            | 1</span>
-<span class="go">desks             | 2</span>
-</pre></div>
+<div class="section" id="reference">
+<h2>Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tables.html">Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="maps.html">Maps (<code class="docutils literal"><span class="pre">datascience.maps</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formats.html">Formats (<code class="docutils literal"><span class="pre">datascience.formats</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="util.html">Utility Functions (<code class="docutils literal"><span class="pre">datascience.util</span></code>)</a></li>
+</ul>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">furniture_table</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="s">&#39;Type of furniture&#39;</span><span class="p">)</span>
-<span class="go">&lt;bar graph with chairs, tables, desks as the categories and bars of</span>
-<span class="go">length 6, 1, 2, respectively&gt;</span>
-</pre></div>
-</div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">furniture_table</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="s">&#39;Count&#39;</span><span class="p">)</span>
-<span class="go">ValueError: The column &#39;Type of furniture&#39; contains non-numerical</span>
-<span class="go">values. A bar graph cannot be drawn for this table.</span>
-</pre></div>
-</div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">foo_table</span>
-<span class="go">Type of furniture | Count | Other col</span>
-<span class="go">chairs            | 6     | 10</span>
-<span class="go">tables            | 1     | 20</span>
-<span class="go">desks             | 2     | 30</span>
-</pre></div>
-</div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">foo_table</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="s">&#39;Type of furniture&#39;</span><span class="p">)</span>
-<span class="go">&lt;bar graph with Type of furniture as categories and Count values&gt;</span>
-<span class="go">&lt;bar graph with Type of furniture as categories and Other col values&gt;</span>
-</pre></div>
-</div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">foo_table</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="s">&#39;Type of furniture&#39;</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="go">&lt;bar graph with Type of furniture as categories and Count + Other col as</span>
-<span class="go">the two bars for each category&gt;</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="datascience.tables.Table.chart_colors">
-<code class="descclassname">Table.</code><code class="descname">chart_colors</code><em class="property"> = ('#001A44', '#FFC800', '#576884', '#B39C4D', '#768948', '#067BC2', '#FB5012', '#19381F', '#4C3C37')</em><a class="headerlink" href="#datascience.tables.Table.chart_colors" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="datascience.tables.Table.column_index">
-<code class="descclassname">Table.</code><code class="descname">column_index</code><span class="sig-paren">(</span><em>column_label</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.column_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.column_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the index of a column.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="datascience.tables.Table.column_labels">
-<code class="descclassname">Table.</code><code class="descname">column_labels</code><a class="headerlink" href="#datascience.tables.Table.column_labels" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a tuple of column labels.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="datascience.tables.Table.columns">
-<code class="descclassname">Table.</code><code class="descname">columns</code><a class="headerlink" href="#datascience.tables.Table.columns" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="datascience.tables.Table.copy">
-<code class="descclassname">Table.</code><code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.copy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a copy of a Table.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="datascience.tables.Table.default_options">
-<code class="descclassname">Table.</code><code class="descname">default_options</code><em class="property"> = {'alpha': 0.8}</em><a class="headerlink" href="#datascience.tables.Table.default_options" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="datascience.tables.Table.drop">
-<code class="descclassname">Table.</code><code class="descname">drop</code><span class="sig-paren">(</span><em>column_label_or_labels</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.drop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.drop" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a Table with only columns other than selected label or labels.</p>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="datascience.tables.Table.from_records">
-<em class="property">classmethod </em><code class="descclassname">Table.</code><code class="descname">from_records</code><span class="sig-paren">(</span><em>records</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.from_records"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.from_records" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a table from a sequence of records (dicts with fixed keys).</p>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="datascience.tables.Table.from_rows">
-<em class="property">classmethod </em><code class="descclassname">Table.</code><code class="descname">from_rows</code><span class="sig-paren">(</span><em>rows</em>, <em>column_labels</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.from_rows"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.from_rows" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a table from a sequence of rows (fixed-length sequences).</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="datascience.tables.Table.group">
-<code class="descclassname">Table.</code><code class="descname">group</code><span class="sig-paren">(</span><em>column_or_label</em>, <em>collect=&lt;function Table.&lt;lambda&gt;&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.group" title="Permalink to this definition">¶</a></dt>
-<dd><p>Group rows by unique values in column_label, aggregating values.</p>
-<p>collect &#8211; an optional function applied to the values for each group.</p>
-<p>The grouped column will appear first in the result table.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="datascience.tables.Table.groups">
-<code class="descclassname">Table.</code><code class="descname">groups</code><span class="sig-paren">(</span><em>column_labels</em>, <em>collect=&lt;function Table.&lt;lambda&gt;&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.groups" title="Permalink to this definition">¶</a></dt>
-<dd><p>Group rows by multiple columns, aggregating values.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="datascience.tables.Table.hist">
-<code class="descclassname">Table.</code><code class="descname">hist</code><span class="sig-paren">(</span><em>overlay=False</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.hist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.hist" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plots one histogram for each column in the table.</p>
-<p>Requires all columns in the table to contain numerical values only.
-If the columns contain other types, a ValueError is raised.</p>
-<dl class="docutils">
-<dt>Kwargs:</dt>
-<dd><dl class="first last docutils">
-<dt>overlay (bool): If True, plots 1 chart with all the histograms</dt>
-<dd>overlaid on top of each other (instead of the default behavior of
-one histogram for each column in the table). Also adds a legend
-that matches each bar color to its column.</dd>
-<dt>vargs: Additional arguments that get passed into :func:plt.hist.</dt>
-<dd>See <a class="reference external" href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.hist">http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.hist</a>
-for additional arguments that can be passed into vargs. These
-include: <cite>bins</cite>, <cite>range</cite>, <cite>normed</cite>, <cite>cumulative</cite>, and
-<cite>orientation</cite>, to name a few.</dd>
-</dl>
-</dd>
-<dt>Returns:</dt>
-<dd>None</dd>
-<dt>Raises:</dt>
-<dd>ValueError: The Table contains non-numerical values</dd>
-</dl>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span>
-<span class="go">count | points</span>
-<span class="go">9     | 1</span>
-<span class="go">3     | 2</span>
-<span class="go">3     | 2</span>
-<span class="go">1     | 10</span>
-</pre></div>
-</div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">hist</span><span class="p">()</span>
-<span class="go">&lt;histogram of values in count&gt;</span>
-<span class="go">&lt;histogram of values in points&gt;</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="datascience.tables.Table.index_by">
-<code class="descclassname">Table.</code><code class="descname">index_by</code><span class="sig-paren">(</span><em>column_or_label</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.index_by"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.index_by" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a dict keyed by values in a column that contains lists of
-rows corresponding to each value.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="datascience.tables.Table.join">
-<code class="descclassname">Table.</code><code class="descname">join</code><span class="sig-paren">(</span><em>column_label</em>, <em>other</em>, <em>other_label=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.join" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate a table with the columns of self and other, containing rows
-for all values of a column that appear in both tables.
-If a join value appears more than once in self, each row will be used,
-but in the other table, only the first of each will be used.</p>
-<p>If the result is empty, return None.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="datascience.tables.Table.matrix">
-<code class="descclassname">Table.</code><code class="descname">matrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.matrix" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a 2-D array with the contents of the table.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="datascience.tables.Table.max_str_rows">
-<code class="descclassname">Table.</code><code class="descname">max_str_rows</code><em class="property"> = 10</em><a class="headerlink" href="#datascience.tables.Table.max_str_rows" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="datascience.tables.Table.move_to_end">
-<code class="descclassname">Table.</code><code class="descname">move_to_end</code><span class="sig-paren">(</span><em>column_label</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.move_to_end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.move_to_end" title="Permalink to this definition">¶</a></dt>
-<dd><p>Move a column to the last in order.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="datascience.tables.Table.move_to_start">
-<code class="descclassname">Table.</code><code class="descname">move_to_start</code><span class="sig-paren">(</span><em>column_label</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.move_to_start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.move_to_start" title="Permalink to this definition">¶</a></dt>
-<dd><p>Move a column to the first in order.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="datascience.tables.Table.num_rows">
-<code class="descclassname">Table.</code><code class="descname">num_rows</code><a class="headerlink" href="#datascience.tables.Table.num_rows" title="Permalink to this definition">¶</a></dt>
-<dd><p>Number of rows.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="datascience.tables.Table.percentile">
-<code class="descclassname">Table.</code><code class="descname">percentile</code><span class="sig-paren">(</span><em>p</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.percentile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.percentile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Assumes that each column only contains one type of value.</p>
-<p>Returns a new table with one row and the same column labels.
-The row contains the pth percentile of the original column, where the
-pth percentile of a column is the smallest value that at at least as
-large as the p% of numbers in the column.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-<span class="go">count | points</span>
-<span class="go">9     | 1</span>
-<span class="go">3     | 2</span>
-<span class="go">3     | 2</span>
-<span class="go">1     | 10</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="mi">67</span><span class="p">)</span>
-<span class="go">count | points</span>
-<span class="go">9     | 10</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="datascience.tables.Table.pivot">
-<code class="descclassname">Table.</code><code class="descname">pivot</code><span class="sig-paren">(</span><em>columns</em>, <em>rows</em>, <em>values</em>, <em>collect=&lt;function Table.&lt;lambda&gt;&gt;</em>, <em>zero=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.pivot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.pivot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate a table with a column for rows (or a column for each row
-in rows list) and a column for each unique value in columns. Each row
-aggregates over the values that match both row and column.</p>
-<p>columns, values &#8211; column labels in self
-rows &#8211; column label or a list of column labels
-collect &#8211; aggregation function over values
-zero &#8211; zero value for non-existent row-column combinations</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="datascience.tables.Table.pivot_hist">
-<code class="descclassname">Table.</code><code class="descname">pivot_hist</code><span class="sig-paren">(</span><em>pivot_column_label</em>, <em>value_column_label</em>, <em>overlay=False</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.pivot_hist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.pivot_hist" title="Permalink to this definition">¶</a></dt>
-<dd><p>Draw histograms of each category in a column.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="datascience.tables.Table.plot">
-<code class="descclassname">Table.</code><code class="descname">plot</code><span class="sig-paren">(</span><em>column_for_xticks=None</em>, <em>overlay=False</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot contents as lines.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="datascience.tables.Table.points">
-<code class="descclassname">Table.</code><code class="descname">points</code><span class="sig-paren">(</span><em>column__lat</em>, <em>column__long</em>, <em>radii=None</em>, <em>labels=None</em>, <em>colors=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.points" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="classmethod">
-<dt id="datascience.tables.Table.read_table">
-<em class="property">classmethod </em><code class="descclassname">Table.</code><code class="descname">read_table</code><span class="sig-paren">(</span><em>filepath_or_buffer</em>, <em>*args</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.read_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.read_table" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read a table from a file or web address.</p>
-<dl class="docutils">
-<dt>filepath_or_buffer &#8211; string or file handle / StringIO; The string</dt>
-<dd>could be a URL. Valid URL schemes include http,
-ftp, s3, and file.</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="datascience.tables.Table.relabel">
-<code class="descclassname">Table.</code><code class="descname">relabel</code><span class="sig-paren">(</span><em>column_label</em>, <em>new_label</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.relabel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.relabel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Change the label of a column.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="datascience.tables.Table.rows">
-<code class="descclassname">Table.</code><code class="descname">rows</code><a class="headerlink" href="#datascience.tables.Table.rows" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a view of all rows.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="datascience.tables.Table.sample">
-<code class="descclassname">Table.</code><code class="descname">sample</code><span class="sig-paren">(</span><em>k=None</em>, <em>with_replacement=False</em>, <em>weights=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.sample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.sample" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a new table</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="datascience.tables.Table.select">
-<code class="descclassname">Table.</code><code class="descname">select</code><span class="sig-paren">(</span><em>column_label_or_labels</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.select" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a Table with selected column or columns by label.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="datascience.tables.Table.set_format">
-<code class="descclassname">Table.</code><code class="descname">set_format</code><span class="sig-paren">(</span><em>column_label_or_labels</em>, <em>formatter</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.set_format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.set_format" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the format of a column.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="datascience.tables.Table.show">
-<code class="descclassname">Table.</code><code class="descname">show</code><span class="sig-paren">(</span><em>max_rows=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.show"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.show" title="Permalink to this definition">¶</a></dt>
-<dd><p>Display the table.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="datascience.tables.Table.sort">
-<code class="descclassname">Table.</code><code class="descname">sort</code><span class="sig-paren">(</span><em>column_or_label</em>, <em>descending=False</em>, <em>distinct=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.sort"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.sort" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a Table of sorted rows by the values in a column.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="datascience.tables.Table.stack">
-<code class="descclassname">Table.</code><code class="descname">stack</code><span class="sig-paren">(</span><em>key</em>, <em>column_labels=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.stack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.stack" title="Permalink to this definition">¶</a></dt>
-<dd><p>Takes k original columns and returns two columns, with col. 1 of
-all column names and col. 2 of all associated data.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="datascience.tables.Table.stats">
-<code class="descclassname">Table.</code><code class="descname">stats</code><span class="sig-paren">(</span><em>ops=(&lt;built-in function min&gt;</em>, <em>&lt;built-in function max&gt;</em>, <em>&lt;function median at 0x104711158&gt;</em>, <em>&lt;built-in function sum&gt;)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.stats" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute statistics for each column and place them in a table.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="datascience.tables.Table.take">
-<code class="descclassname">Table.</code><code class="descname">take</code><span class="sig-paren">(</span><em>row_numbers</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.take"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.take" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a Table of a sequence of rows taken by number.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="datascience.tables.Table.where">
-<code class="descclassname">Table.</code><code class="descname">where</code><span class="sig-paren">(</span><em>column_or_label</em>, <em>value=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/tables.html#Table.where"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.where" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a Table of rows for which the column is value or a non-zero value.</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-datascience.formats">
-<span id="datascience-formats"></span><h2>datascience.formats<a class="headerlink" href="#module-datascience.formats" title="Permalink to this headline">¶</a></h2>
-<p>String formatting for table entries.</p>
-<dl class="class">
-<dt id="datascience.formats.CurrencyFormatter">
-<em class="property">class </em><code class="descclassname">datascience.formats.</code><code class="descname">CurrencyFormatter</code><span class="sig-paren">(</span><em>symbol='$'</em>, <em>*args</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#CurrencyFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.CurrencyFormatter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#datascience.formats.Formatter" title="datascience.formats.Formatter"><code class="xref py py-class docutils literal"><span class="pre">datascience.formats.Formatter</span></code></a></p>
-<p>Format currency and convert to float.</p>
-<dl class="method">
-<dt id="datascience.formats.CurrencyFormatter.convert">
-<code class="descname">convert</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#CurrencyFormatter.convert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.CurrencyFormatter.convert" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert string $1.25 to float 1.25.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="datascience.formats.CurrencyFormatter.converts_values">
-<code class="descname">converts_values</code><em class="property"> = True</em><a class="headerlink" href="#datascience.formats.CurrencyFormatter.converts_values" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="datascience.formats.CurrencyFormatter.format_value">
-<code class="descname">format_value</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#CurrencyFormatter.format_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.CurrencyFormatter.format_value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Format currency.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="datascience.formats.DateFormatter">
-<em class="property">class </em><code class="descclassname">datascience.formats.</code><code class="descname">DateFormatter</code><span class="sig-paren">(</span><em>format='%Y-%m-%d %H:%M:%S.%f'</em>, <em>*args</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#DateFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.DateFormatter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#datascience.formats.Formatter" title="datascience.formats.Formatter"><code class="xref py py-class docutils literal"><span class="pre">datascience.formats.Formatter</span></code></a></p>
-<p>Format date &amp; time and convert to UNIX timestamp.</p>
-<dl class="method">
-<dt id="datascience.formats.DateFormatter.convert">
-<code class="descname">convert</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#DateFormatter.convert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.DateFormatter.convert" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert 2015-08-03 to a Unix timestamp int.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="datascience.formats.DateFormatter.converts_values">
-<code class="descname">converts_values</code><em class="property"> = True</em><a class="headerlink" href="#datascience.formats.DateFormatter.converts_values" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="datascience.formats.DateFormatter.format_value">
-<code class="descname">format_value</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#DateFormatter.format_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.DateFormatter.format_value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Format timestamp as a string.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="datascience.formats.Formatter">
-<em class="property">class </em><code class="descclassname">datascience.formats.</code><code class="descname">Formatter</code><span class="sig-paren">(</span><em>min_width=None</em>, <em>max_width=None</em>, <em>etc=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#Formatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.Formatter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>String formatter that truncates long values.</p>
-<dl class="staticmethod">
-<dt id="datascience.formats.Formatter.convert">
-<em class="property">static </em><code class="descname">convert</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#Formatter.convert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.Formatter.convert" title="Permalink to this definition">¶</a></dt>
-<dd><p>Identity conversion (override to convert values).</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="datascience.formats.Formatter.converts_values">
-<code class="descname">converts_values</code><a class="headerlink" href="#datascience.formats.Formatter.converts_values" title="Permalink to this definition">¶</a></dt>
-<dd><p>Whether this Formatter also converts values.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="datascience.formats.Formatter.etc">
-<code class="descname">etc</code><em class="property"> = ' ...'</em><a class="headerlink" href="#datascience.formats.Formatter.etc" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="datascience.formats.Formatter.format_column">
-<code class="descname">format_column</code><span class="sig-paren">(</span><em>label</em>, <em>column</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#Formatter.format_column"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.Formatter.format_column" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a formatting function that pads &amp; truncates values.</p>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="datascience.formats.Formatter.format_value">
-<em class="property">static </em><code class="descname">format_value</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#Formatter.format_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.Formatter.format_value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Pretty-print an arbitrary value.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="datascience.formats.Formatter.max_width">
-<code class="descname">max_width</code><em class="property"> = 60</em><a class="headerlink" href="#datascience.formats.Formatter.max_width" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="datascience.formats.Formatter.min_width">
-<code class="descname">min_width</code><em class="property"> = 4</em><a class="headerlink" href="#datascience.formats.Formatter.min_width" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="datascience.formats.NumberFormatter">
-<em class="property">class </em><code class="descclassname">datascience.formats.</code><code class="descname">NumberFormatter</code><span class="sig-paren">(</span><em>decimals=2</em>, <em>decimal_point='.'</em>, <em>separator='</em>, <em>'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#NumberFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.NumberFormatter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#datascience.formats.Formatter" title="datascience.formats.Formatter"><code class="xref py py-class docutils literal"><span class="pre">datascience.formats.Formatter</span></code></a></p>
-<p>Format numbers that may have delimiters.</p>
-<dl class="method">
-<dt id="datascience.formats.NumberFormatter.convert">
-<code class="descname">convert</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#NumberFormatter.convert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.NumberFormatter.convert" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert string 93,000.00 to float 93000.0.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="datascience.formats.NumberFormatter.converts_values">
-<code class="descname">converts_values</code><em class="property"> = True</em><a class="headerlink" href="#datascience.formats.NumberFormatter.converts_values" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="datascience.formats.NumberFormatter.format_value">
-<code class="descname">format_value</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#NumberFormatter.format_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.NumberFormatter.format_value" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="datascience.formats.PercentFormatter">
-<em class="property">class </em><code class="descclassname">datascience.formats.</code><code class="descname">PercentFormatter</code><span class="sig-paren">(</span><em>decimals=2</em>, <em>*args</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#PercentFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.PercentFormatter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#datascience.formats.Formatter" title="datascience.formats.Formatter"><code class="xref py py-class docutils literal"><span class="pre">datascience.formats.Formatter</span></code></a></p>
-<p>Format a number as a percentage.</p>
-<dl class="attribute">
-<dt id="datascience.formats.PercentFormatter.converts_values">
-<code class="descname">converts_values</code><em class="property"> = False</em><a class="headerlink" href="#datascience.formats.PercentFormatter.converts_values" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="datascience.formats.PercentFormatter.format_value">
-<code class="descname">format_value</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#PercentFormatter.format_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.PercentFormatter.format_value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Format number as percentage.</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-datascience.maps">
-<span id="datascience-maps"></span><h2>datascience.maps<a class="headerlink" href="#module-datascience.maps" title="Permalink to this headline">¶</a></h2>
-<p>Draw maps using folium.</p>
-<dl class="class">
-<dt id="datascience.maps.Circle">
-<em class="property">class </em><code class="descclassname">datascience.maps.</code><code class="descname">Circle</code><span class="sig-paren">(</span><em>lat</em>, <em>lon</em>, <em>popup=''</em>, <em>color='blue'</em>, <em>radius=10</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Circle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Circle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#datascience.maps.Marker" title="datascience.maps.Marker"><code class="xref py py-class docutils literal"><span class="pre">datascience.maps.Marker</span></code></a></p>
-<p>A marker displayed with Folium&#8217;s circle_marker method.</p>
-<p>popup &#8211; text that pops up when marker is clicked
-color &#8211; fill color
-radius &#8211; pixel radius of the circle</p>
-<p>Defaults from Folium:</p>
-<dl class="docutils">
-<dt>fill_opacity: float, default 0.6</dt>
-<dd>Circle fill opacity</dd>
-</dl>
-</dd></dl>
-
-<dl class="class">
-<dt id="datascience.maps.Map">
-<em class="property">class </em><code class="descclassname">datascience.maps.</code><code class="descname">Map</code><span class="sig-paren">(</span><em>features=()</em>, <em>ids=()</em>, <em>width=960</em>, <em>height=500</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Map" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">datascience.maps._FoliumWrapper</span></code>, <code class="xref py py-class docutils literal"><span class="pre">collections.abc.Mapping</span></code></p>
-<p>A map from IDs to features. Keyword args are forwarded to folium.</p>
-<dl class="method">
-<dt id="datascience.maps.Map.color">
-<code class="descname">color</code><span class="sig-paren">(</span><em>values</em>, <em>ids=()</em>, <em>key_on='feature.id'</em>, <em>palette='YlOrBr'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map.color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Map.color" title="Permalink to this definition">¶</a></dt>
-<dd><p>Color map features by binning values.</p>
-<p>values &#8211; a sequence of values or a table of keys and values
-ids &#8211; an ID for each value; if none are provided, indices are used
-key_on &#8211; attribute of each feature to match to ids
-palette &#8211; one of the following color brewer palettes:</p>
-<blockquote>
-<div>&#8216;BuGn&#8217;, &#8216;BuPu&#8217;, &#8216;GnBu&#8217;, &#8216;OrRd&#8217;, &#8216;PuBu&#8217;, &#8216;PuBuGn&#8217;, &#8216;PuRd&#8217;, &#8216;RdPu&#8217;,
-&#8216;YlGn&#8217;, &#8216;YlGnBu&#8217;, &#8216;YlOrBr&#8217;, and &#8216;YlOrRd&#8217;.</div></blockquote>
-<p>Defaults from Folium:</p>
-<dl class="docutils">
-<dt>threshold_scale: list, default None</dt>
-<dd>Data range for D3 threshold scale. Defaults to the following range
-of quantiles: [0, 0.5, 0.75, 0.85, 0.9], rounded to the nearest
-order-of-magnitude integer. Ex: 270 rounds to 200, 5600 to 6000.</dd>
-<dt>fill_opacity: float, default 0.6</dt>
-<dd>Area fill opacity, range 0-1.</dd>
-<dt>line_color: string, default &#8216;black&#8217;</dt>
-<dd>GeoJSON geopath line color.</dd>
-<dt>line_weight: int, default 1</dt>
-<dd>GeoJSON geopath line weight.</dd>
-<dt>line_opacity: float, default 1</dt>
-<dd>GeoJSON geopath line opacity, range 0-1.</dd>
-<dt>legend_name: string, default None</dt>
-<dd>Title for data legend. If not passed, defaults to columns[1].</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="datascience.maps.Map.format">
-<code class="descname">format</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map.format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Map.format" title="Permalink to this definition">¶</a></dt>
-<dd><p>Apply formatting.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="datascience.maps.Map.geojson">
-<code class="descname">geojson</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map.geojson"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Map.geojson" title="Permalink to this definition">¶</a></dt>
-<dd><p>Render features as a FeatureCollection.</p>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="datascience.maps.Map.read_geojson">
-<em class="property">classmethod </em><code class="descname">read_geojson</code><span class="sig-paren">(</span><em>path_or_json_or_string</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map.read_geojson"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Map.read_geojson" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read a geoJSON string, object, or file. Return a dict of features keyed by ID.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="datascience.maps.Marker">
-<em class="property">class </em><code class="descclassname">datascience.maps.</code><code class="descname">Marker</code><span class="sig-paren">(</span><em>lat</em>, <em>lon</em>, <em>popup=''</em>, <em>color='blue'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Marker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Marker" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">datascience.maps._MapFeature</span></code></p>
-<p>A marker displayed with Folium&#8217;s simple_marker method.</p>
-<p>popup &#8211; text that pops up when marker is clicked
-color &#8211; fill color</p>
-<p>Defaults from Folium:</p>
-<dl class="docutils">
-<dt>marker_icon: string, default &#8216;info-sign&#8217;</dt>
-<dd>icon from (<a class="reference external" href="http://getbootstrap.com/components/">http://getbootstrap.com/components/</a>) you want on the
-marker</dd>
-<dt>clustered_marker: boolean, default False</dt>
-<dd>boolean of whether or not you want the marker clustered with
-other markers</dd>
-<dt>icon_angle: int, default 0</dt>
-<dd>angle of icon</dd>
-<dt>popup_width: int, default 300</dt>
-<dd>width of popup</dd>
-</dl>
-<dl class="method">
-<dt id="datascience.maps.Marker.copy">
-<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Marker.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Marker.copy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a deep copy</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="datascience.maps.Marker.format">
-<code class="descname">format</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Marker.format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Marker.format" title="Permalink to this definition">¶</a></dt>
-<dd><p>Apply formatting.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="datascience.maps.Marker.geojson">
-<code class="descname">geojson</code><span class="sig-paren">(</span><em>feature_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Marker.geojson"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Marker.geojson" title="Permalink to this definition">¶</a></dt>
-<dd><p>GeoJSON representation of the marker as a point.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="datascience.maps.Marker.lat_lons">
-<code class="descname">lat_lons</code><a class="headerlink" href="#datascience.maps.Marker.lat_lons" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="classmethod">
-<dt id="datascience.maps.Marker.map">
-<em class="property">classmethod </em><code class="descname">map</code><span class="sig-paren">(</span><em>latitudes</em>, <em>longitudes</em>, <em>labels=None</em>, <em>colors=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Marker.map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Marker.map" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return markers from columns of coordinates, labels, &amp; colors.</p>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="datascience.maps.Marker.map_table">
-<em class="property">classmethod </em><code class="descname">map_table</code><span class="sig-paren">(</span><em>table</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Marker.map_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Marker.map_table" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return markers from the colums of a table.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="datascience.maps.Region">
-<em class="property">class </em><code class="descclassname">datascience.maps.</code><code class="descname">Region</code><span class="sig-paren">(</span><em>geojson</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Region"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Region" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">datascience.maps._MapFeature</span></code></p>
-<p>A GeoJSON feature displayed with Folium&#8217;s geo_json method.</p>
-<dl class="method">
-<dt id="datascience.maps.Region.copy">
-<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Region.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Region.copy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a deep copy</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="datascience.maps.Region.format">
-<code class="descname">format</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Region.format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Region.format" title="Permalink to this definition">¶</a></dt>
-<dd><p>Apply formatting.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="datascience.maps.Region.geojson">
-<code class="descname">geojson</code><span class="sig-paren">(</span><em>feature_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Region.geojson"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Region.geojson" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return GeoJSON with ID substituted.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="datascience.maps.Region.lat_lons">
-<code class="descname">lat_lons</code><a class="headerlink" href="#datascience.maps.Region.lat_lons" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-datascience.util">
-<span id="datascience-util"></span><h2>datascience.util<a class="headerlink" href="#module-datascience.util" title="Permalink to this headline">¶</a></h2>
-<p>Utility functions</p>
-<dl class="function">
-<dt id="datascience.util.percentile">
-<code class="descclassname">datascience.util.</code><code class="descname">percentile</code><span class="sig-paren">(</span><em>p</em>, <em>arr=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#percentile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.util.percentile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the pth percentile of the input array (the value that is at
-least as great as p% of the values in the array)</p>
-<p>If arr is not provided, percentile returns itself curried with p</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">percentile</span><span class="p">(</span><span class="mi">67</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
-<span class="go">9</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">percentile</span><span class="p">(</span><span class="mi">66</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
-<span class="go">5</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">percentile</span><span class="p">(</span><span class="mi">66</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
-<span class="go">5</span>
-</pre></div>
-</div>
-</dd></dl>
-
 </div>
 </div>
 
@@ -802,14 +95,14 @@ least as great as p% of the values in the array)</p>
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Welcome to datascience&#8217;s documentation!</a><ul>
-<li><a class="reference internal" href="#module-datascience.tables">datascience.tables</a></li>
-<li><a class="reference internal" href="#module-datascience.formats">datascience.formats</a></li>
-<li><a class="reference internal" href="#module-datascience.maps">datascience.maps</a></li>
-<li><a class="reference internal" href="#module-datascience.util">datascience.util</a></li>
+<li><a class="reference internal" href="#reference">Reference</a></li>
 </ul>
 </li>
 </ul>
 
+  <h4>Next topic</h4>
+  <p class="topless"><a href="tutorial.html"
+                        title="next chapter">Start Here: <code class="docutils literal"><span class="pre">datascience</span></code> Tutorial</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -843,6 +136,9 @@ least as great as p% of the values in the array)</p>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
+        <li class="right" >
+          <a href="tutorial.html" title="Start Here: datascience Tutorial"
+             >next</a> |</li>
         <li class="nav-item nav-item-0"><a href="#">datascience 0.3.4 documentation</a> &raquo;</li> 
       </ul>
     </div>
