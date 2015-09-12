@@ -1,6 +1,7 @@
 .PHONY: help docs serve_docs install test deploy_docs
 
 DOCS_DIR = docs
+GH_REMOTE = origin
 
 help:
 	@echo "Please use 'make <target>' where <target> is one of:"
@@ -29,5 +30,5 @@ serve_docs:
 deploy_docs:
 	git checkout master
 	git subtree split --prefix $(DOCS_DIR)/_build/html -b gh-pages
-	git push -f origin gh-pages:gh-pages
+	git push -f $(GH_REMOTE) gh-pages:gh-pages
 	git branch -D gh-pages
