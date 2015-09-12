@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# This script is used by Travis to automatically push the docs to the gh-pages
-# branch of the datascience repo.
+# This script is used by Travis to automatically build and push the docs to the
+# gh-pages branch of the datascience repo.
 
 set -e # exit with nonzero exit code if anything fails
 
 # Only build docs on master branch
-if [ $(git rev-parse --abbrev-ref HEAD) != master ]; then
+if [[ $TRAVIS_BRANCH != 'master' ]]; then
   echo "Not building docs since we're not on the master branch."
   exit 0
 fi
