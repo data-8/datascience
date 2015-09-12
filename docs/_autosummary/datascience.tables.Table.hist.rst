@@ -1,0 +1,6 @@
+datascience.tables.Table.hist
+=============================
+
+.. currentmodule:: datascience.tables
+
+.. automethod:: Table.hist
