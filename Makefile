@@ -28,7 +28,6 @@ serve_docs:
 	cd $(DOCS_DIR)/_build/html ; python -m http.server
 
 deploy_docs:
-	git checkout master
 	git subtree split --prefix $(DOCS_DIR)/_build/html -b gh-pages
 	git push -f $(GH_REMOTE) gh-pages:gh-pages
 	git branch -D gh-pages

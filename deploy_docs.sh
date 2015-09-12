@@ -5,6 +5,12 @@
 
 set -e # exit with nonzero exit code if anything fails
 
+# Only build docs on master branch
+if [ $(git rev-parse --abbrev-ref HEAD) != master ]; then
+  echo "Not building docs since we're not on the master branch."
+  exit 0
+fi
+
 git config user.name "Travis CI"
 git config user.email "travis@travis.com"
 
