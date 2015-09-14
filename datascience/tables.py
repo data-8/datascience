@@ -459,6 +459,59 @@ class Table(collections.abc.MutableMapping):
         percentiles = [percentile(p, self[column_name]) for column_name in self]
         return Table(percentiles, self.column_labels)
 
+    def sample(self, k=None, with_replacement=False, weights=None):
+        """Returns a new table where k rows are randomly sampled from the
+        original table.
+
+        Kwargs:
+            k (int or None): If None (default), all the rows in the table are
+                sampled. If an integer, k rows from the original table are
+                sampled.
+
+            with_replacement (bool): If False (default), samples the rows
+                without replacement. If True, samples the rows with replacement.
+
+            weights (list/array or None): If None (default), samples the rows
+                using a uniform random distribution. If a list/array is passed
+                in, it must be the same length as the number of rows in the
+                table and the values must sum to 1. The rows will then be
+                sampled according the the probability distribution in
+                ``weights``.
+
+        Returns:
+            A new instance of ``Table``.
+
+        >>> foo_table
+        job  | wage
+        a    | 10
+        b    | 20
+        c    | 15
+        d    | 8
+
+        >>> foo_table.sample()
+        job  | wage
+        b    | 20
+        c    | 15
+        a    | 10
+        d    | 8
+
+        >>> foo_table.sample(k = 2)
+        job  | wage
+        b    | 20
+        c    | 15
+
+        >>> foo_table.sample(k = 2, with_replacement = True,
+        ...     weights = [0.5, 0.5, 0, 0])
+        job  | wage
+        a    | 10
+        a    | 10
+
+        """
+        n = self.num_rows
+        rows = [self.rows[index] for index in
+            np.random.choice(n, k or n, replace=with_replacement, p=weights)]
+        return Table.from_rows(rows, self.column_labels)
+
     ##################
     # Export/Display #
     ##################
@@ -541,19 +594,6 @@ class Table(collections.abc.MutableMapping):
             index.setdefault(key, []).append(row)
         return index
 
-    def _sample(self, k, with_replacement, weights):
-        """Returns list of sampled rows"""
-        n = self.num_rows
-        indices = np.random.choice(
-            n, k or n, replace=with_replacement, p=weights)
-        return [self.rows[i] for i in indices]
-
-    def sample(self, k=None, with_replacement=False, weights=None):
-        """Returns a new table"""
-        return Table.from_rows(
-            self._sample(k, with_replacement, weights),
-            self.column_labels)
-
     #############
     # Visualize #
     #############
@@ -612,7 +652,7 @@ class Table(collections.abc.MutableMapping):
                 (instead of the default behavior of creating n - 1 charts).
                 Also adds a legend that matches each bar color to its column.
 
-            vargs: Additional arguments that get passed into :func:plt.barh.
+            vargs: Additional arguments that get passed into `plt.barh`.
                 See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.barh
                 for additional arguments that can be passed into vargs. These
                 include: `linewidth`, `xerr`, `yerr`, and `log`, to name a few.
