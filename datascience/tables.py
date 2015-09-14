@@ -126,8 +126,9 @@ class Table(collections.abc.MutableMapping):
         return self.column_labels.index(column_label)
 
     def apply(self, fn, column_label):
-        """Apply a function to each element of a column."""
-        return [fn(v) for v in self[column_label]]
+        """Returns an array where fn is applied to each element
+        of a specified column."""
+        return np.array([fn(v) for v in self[column_label]])
 
     ##########
     # Modify #
