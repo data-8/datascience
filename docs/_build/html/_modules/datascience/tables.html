@@ -66,7 +66,7 @@
 <span class="kn">import</span> <span class="nn">datascience.formats</span> <span class="kn">as</span> <span class="nn">_formats</span>
 <span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="o">*</span>
 
-<div class="viewcode-block" id="Table"><a class="viewcode-back" href="../../tables.html#datascience.tables.Table">[docs]</a><span class="k">class</span> <span class="nc">Table</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">):</span>
+<div class="viewcode-block" id="Table"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.html#datascience.tables.Table">[docs]</a><span class="k">class</span> <span class="nc">Table</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A sequence of labeled columns.</span>
 
 <span class="sd">    &gt;&gt;&gt; letters = [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;z&#39;]</span>
@@ -175,8 +175,9 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_labels</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">column_label</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="Table.apply"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.apply.html#datascience.tables.Table.apply">[docs]</a>    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">column_label</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Apply a function to each element of a column.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">fn</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">[</span><span class="n">column_label</span><span class="p">]]</span>
+        <span class="sd">&quot;&quot;&quot;Returns an array where fn is applied to each element</span>
+<span class="sd">        of a specified column.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">fn</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">[</span><span class="n">column_label</span><span class="p">]])</span>
 
     <span class="c">##########</span>
     <span class="c"># Modify #</span>
@@ -506,6 +507,59 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">percentiles</span> <span class="o">=</span> <span class="p">[</span><span class="n">percentile</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="bp">self</span><span class="p">[</span><span class="n">column_name</span><span class="p">])</span> <span class="k">for</span> <span class="n">column_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">Table</span><span class="p">(</span><span class="n">percentiles</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_labels</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Table.sample"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.sample.html#datascience.tables.Table.sample">[docs]</a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">with_replacement</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a new table where k rows are randomly sampled from the</span>
+<span class="sd">        original table.</span>
+
+<span class="sd">        Kwargs:</span>
+<span class="sd">            k (int or None): If None (default), all the rows in the table are</span>
+<span class="sd">                sampled. If an integer, k rows from the original table are</span>
+<span class="sd">                sampled.</span>
+
+<span class="sd">            with_replacement (bool): If False (default), samples the rows</span>
+<span class="sd">                without replacement. If True, samples the rows with replacement.</span>
+
+<span class="sd">            weights (list/array or None): If None (default), samples the rows</span>
+<span class="sd">                using a uniform random distribution. If a list/array is passed</span>
+<span class="sd">                in, it must be the same length as the number of rows in the</span>
+<span class="sd">                table and the values must sum to 1. The rows will then be</span>
+<span class="sd">                sampled according the the probability distribution in</span>
+<span class="sd">                ``weights``.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A new instance of ``Table``.</span>
+
+<span class="sd">        &gt;&gt;&gt; foo_table</span>
+<span class="sd">        job  | wage</span>
+<span class="sd">        a    | 10</span>
+<span class="sd">        b    | 20</span>
+<span class="sd">        c    | 15</span>
+<span class="sd">        d    | 8</span>
+
+<span class="sd">        &gt;&gt;&gt; foo_table.sample()</span>
+<span class="sd">        job  | wage</span>
+<span class="sd">        b    | 20</span>
+<span class="sd">        c    | 15</span>
+<span class="sd">        a    | 10</span>
+<span class="sd">        d    | 8</span>
+
+<span class="sd">        &gt;&gt;&gt; foo_table.sample(k = 2)</span>
+<span class="sd">        job  | wage</span>
+<span class="sd">        b    | 20</span>
+<span class="sd">        c    | 15</span>
+
+<span class="sd">        &gt;&gt;&gt; foo_table.sample(k = 2, with_replacement = True,</span>
+<span class="sd">        ...     weights = [0.5, 0.5, 0, 0])</span>
+<span class="sd">        job  | wage</span>
+<span class="sd">        a    | 10</span>
+<span class="sd">        a    | 10</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_rows</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span> <span class="ow">or</span> <span class="n">n</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="n">with_replacement</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">weights</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">Table</span><span class="o">.</span><span class="n">from_rows</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_labels</span><span class="p">)</span>
 
     <span class="c">##################</span>
     <span class="c"># Export/Display #</span>
@@ -588,19 +642,6 @@
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">):</span>
             <span class="n">index</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">index</span>
-</div>
-    <span class="k">def</span> <span class="nf">_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">with_replacement</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns list of sampled rows&quot;&quot;&quot;</span>
-        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_rows</span>
-        <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span>
-            <span class="n">n</span><span class="p">,</span> <span class="n">k</span> <span class="ow">or</span> <span class="n">n</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="n">with_replacement</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">]</span>
-
-<div class="viewcode-block" id="Table.sample"><a class="viewcode-back" href="../../tables.html#datascience.tables.Table.sample">[docs]</a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">with_replacement</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns a new table&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Table</span><span class="o">.</span><span class="n">from_rows</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">with_replacement</span><span class="p">,</span> <span class="n">weights</span><span class="p">),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">column_labels</span><span class="p">)</span>
 
     <span class="c">#############</span>
     <span class="c"># Visualize #</span>
@@ -660,7 +701,7 @@
 <span class="sd">                (instead of the default behavior of creating n - 1 charts).</span>
 <span class="sd">                Also adds a legend that matches each bar color to its column.</span>
 
-<span class="sd">            vargs: Additional arguments that get passed into :func:plt.barh.</span>
+<span class="sd">            vargs: Additional arguments that get passed into `plt.barh`.</span>
 <span class="sd">                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.barh</span>
 <span class="sd">                for additional arguments that can be passed into vargs. These</span>
 <span class="sd">                include: `linewidth`, `xerr`, `yerr`, and `log`, to name a few.</span>
@@ -873,7 +914,7 @@
     <span class="c"># Support #</span>
     <span class="c">###########</span>
 </div>
-<div class="viewcode-block" id="Table.Rows"><a class="viewcode-back" href="../../tables.html#datascience.tables.Table.Rows">[docs]</a>    <span class="k">class</span> <span class="nc">Rows</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Sequence</span><span class="p">):</span>
+    <span class="k">class</span> <span class="nc">Rows</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Sequence</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;An iterable view over the rows in a table.&quot;&quot;&quot;</span>
         <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_table</span> <span class="o">=</span> <span class="n">table</span>
@@ -894,8 +935,8 @@
         <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">return</span> <span class="s">&#39;{0}({1})&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">))</span>
 
-</div></div>
-<div class="viewcode-block" id="Q"><a class="viewcode-back" href="../../tables.html#datascience.tables.Q">[docs]</a><span class="k">class</span> <span class="nc">Q</span><span class="p">:</span>
+</div>
+<span class="k">class</span> <span class="nc">Q</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Query manager for Tables.&quot;&quot;&quot;</span>
     <span class="n">array</span> <span class="o">=</span> <span class="bp">None</span>
 
@@ -910,7 +951,7 @@
     <span class="k">def</span> <span class="nf">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">array</span><span class="p">)</span>
 
-</div>
+
 <span class="k">def</span> <span class="nf">_zero_on_type_error</span><span class="p">(</span><span class="n">column_fn</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Wrap a function on an np.ndarray to return 0 on a type error.&quot;&quot;&quot;</span>
     <span class="nd">@functools.wraps</span><span class="p">(</span><span class="n">column_fn</span><span class="p">)</span>
