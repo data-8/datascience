@@ -1,6 +1,0 @@
-datascience.tables.Table.percentile
-===================================
-
-.. currentmodule:: datascience.tables
-
-.. automethod:: Table.percentile
