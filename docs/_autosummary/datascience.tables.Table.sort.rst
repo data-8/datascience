@@ -1,0 +1,6 @@
+datascience.tables.Table.sort
+=============================
+
+.. currentmodule:: datascience.tables
+
+.. automethod:: Table.sort

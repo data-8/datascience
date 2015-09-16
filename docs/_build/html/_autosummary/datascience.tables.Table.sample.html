@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>datascience.tables.Table.sample &mdash; datascience 0.3.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.3.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="datascience 0.3.4 documentation" href="../index.html" />
+    <link rel="up" title="Tables (datascience.tables)" href="../tables.html" />
+    <link rel="next" title="datascience.tables.Table.plot" href="datascience.tables.Table.plot.html" />
+    <link rel="prev" title="datascience.tables.Table.index_by" href="datascience.tables.Table.index_by.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="datascience.tables.Table.plot.html" title="datascience.tables.Table.plot"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="datascience.tables.Table.index_by.html" title="datascience.tables.Table.index_by"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.3.4 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../tables.html" accesskey="U">Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="datascience-tables-table-sample">
+<h1>datascience.tables.Table.sample<a class="headerlink" href="#datascience-tables-table-sample" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="datascience.tables.Table.sample">
+<code class="descclassname">Table.</code><code class="descname">sample</code><span class="sig-paren">(</span><em>k=None</em>, <em>with_replacement=False</em>, <em>weights=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.sample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.sample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a new table where k rows are randomly sampled from the
+original table.</p>
+<dl class="docutils">
+<dt>Kwargs:</dt>
+<dd><dl class="first last docutils">
+<dt>k (int or None): If None (default), all the rows in the table are</dt>
+<dd>sampled. If an integer, k rows from the original table are
+sampled.</dd>
+<dt>with_replacement (bool): If False (default), samples the rows</dt>
+<dd>without replacement. If True, samples the rows with replacement.</dd>
+<dt>weights (list/array or None): If None (default), samples the rows</dt>
+<dd>using a uniform random distribution. If a list/array is passed
+in, it must be the same length as the number of rows in the
+table and the values must sum to 1. The rows will then be
+sampled according the the probability distribution in
+<code class="docutils literal"><span class="pre">weights</span></code>.</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>A new instance of <code class="docutils literal"><span class="pre">Table</span></code>.</dd>
+</dl>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">foo_table</span>
+<span class="go">job  | wage</span>
+<span class="go">a    | 10</span>
+<span class="go">b    | 20</span>
+<span class="go">c    | 15</span>
+<span class="go">d    | 8</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">foo_table</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
+<span class="go">job  | wage</span>
+<span class="go">b    | 20</span>
+<span class="go">c    | 15</span>
+<span class="go">a    | 10</span>
+<span class="go">d    | 8</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">foo_table</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">k</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">job  | wage</span>
+<span class="go">b    | 20</span>
+<span class="go">c    | 15</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">foo_table</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">k</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">with_replacement</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">weights</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="go">job  | wage</span>
+<span class="go">a    | 10</span>
+<span class="go">a    | 10</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="datascience.tables.Table.index_by.html"
+                        title="previous chapter">datascience.tables.Table.index_by</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="datascience.tables.Table.plot.html"
+                        title="next chapter">datascience.tables.Table.plot</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/_autosummary/datascience.tables.Table.sample.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="datascience.tables.Table.plot.html" title="datascience.tables.Table.plot"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="datascience.tables.Table.index_by.html" title="datascience.tables.Table.index_by"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.3.4 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../tables.html" >Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>
