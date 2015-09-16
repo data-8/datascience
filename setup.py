@@ -1,6 +1,7 @@
 import sys
 from setuptools import setup
 from setuptools.command.test import test as TestCommand
+from version import VERSION
 
 install_requires = [
     'numpy',
@@ -40,7 +41,8 @@ class PyTest(TestCommand):
 setup(
     name = 'datascience',
     packages = ['datascience'],
-    version = '0.3.6',
+    py_modules = ['version']
+    version = VERSION,
     install_requires = install_requires + tests_requires,
     tests_require = tests_requires,
     cmdclass = {'test': PyTest},
