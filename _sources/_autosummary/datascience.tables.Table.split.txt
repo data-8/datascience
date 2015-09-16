@@ -1,0 +1,6 @@
+datascience.tables.Table.split
+==============================
+
+.. currentmodule:: datascience.tables
+
+.. automethod:: Table.split

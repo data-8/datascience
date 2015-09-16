@@ -488,7 +488,10 @@
             <span class="k">return</span> <span class="n">c</span>
 
 <div class="viewcode-block" id="Table.percentile"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.percentile.html#datascience.tables.Table.percentile">[docs]</a>    <span class="k">def</span> <span class="nf">percentile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Assumes that each column only contains one type of value.</span>
+        <span class="sd">&quot;&quot;&quot;Returns a new table with one row containing the pth percentile for</span>
+<span class="sd">        each column.</span>
+
+<span class="sd">        Assumes that each column only contains one type of value.</span>
 
 <span class="sd">        Returns a new table with one row and the same column labels.</span>
 <span class="sd">        The row contains the pth percentile of the original column, where the</span>
@@ -560,6 +563,46 @@
         <span class="n">rows</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span>
             <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span> <span class="ow">or</span> <span class="n">n</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="n">with_replacement</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">weights</span><span class="p">)]</span>
         <span class="k">return</span> <span class="n">Table</span><span class="o">.</span><span class="n">from_rows</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_labels</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Table.split"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.split.html#datascience.tables.Table.split">[docs]</a>    <span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a tuple of two tables where the first table contains</span>
+<span class="sd">        ``k`` rows randomly sampled and the second contains the remaining rows.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ``k`` (int): The number of rows randomly sampled into the first</span>
+<span class="sd">                table. ``k`` must be between 1 and ``num_rows - 1``.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ``ValueError``: ``k`` is not between 1 and ``num_rows - 1``.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A tuple containing two instances of ``Table``.</span>
+
+<span class="sd">        &gt;&gt;&gt; foo_table</span>
+<span class="sd">        job  | wage</span>
+<span class="sd">        a    | 10</span>
+<span class="sd">        b    | 20</span>
+<span class="sd">        c    | 15</span>
+<span class="sd">        d    | 8</span>
+
+<span class="sd">        &gt;&gt;&gt; sample, rest = foo_table.split(3)</span>
+<span class="sd">        &gt;&gt;&gt; sample</span>
+<span class="sd">        job  | wage</span>
+<span class="sd">        c    | 15</span>
+<span class="sd">        a    | 10</span>
+<span class="sd">        b    | 20</span>
+<span class="sd">        &gt;&gt;&gt; rest</span>
+<span class="sd">        job  | wage</span>
+<span class="sd">        d    | 8</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">k</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_rows</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Invalid value of k. k must be between 1 and the&quot;</span>
+                <span class="s">&quot;number of rows - 1&quot;</span><span class="p">)</span>
+
+        <span class="n">rows</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_rows</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">Table</span><span class="o">.</span><span class="n">from_rows</span><span class="p">(</span><span class="n">rows</span><span class="p">[:</span><span class="n">k</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_labels</span><span class="p">),</span> \
+               <span class="n">Table</span><span class="o">.</span><span class="n">from_rows</span><span class="p">(</span><span class="n">rows</span><span class="p">[</span><span class="n">k</span><span class="p">:],</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_labels</span><span class="p">)</span>
 
     <span class="c">##################</span>
     <span class="c"># Export/Display #</span>
@@ -667,7 +710,7 @@
         <span class="sd">&quot;&quot;&quot;Plot contents as lines.&quot;&quot;&quot;</span>
         <span class="n">options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_options</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">options</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">vargs</span><span class="p">)</span>
-        <span class="n">xticks</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split</span><span class="p">(</span><span class="n">column_for_xticks</span><span class="p">)</span>
+        <span class="n">xticks</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_by_column</span><span class="p">(</span><span class="n">column_for_xticks</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
             <span class="n">axis</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">label</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">annotate</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">ticks</span><span class="p">):</span>
@@ -744,7 +787,7 @@
         <span class="n">options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_options</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">options</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">vargs</span><span class="p">)</span>
 
-        <span class="n">yticks</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split</span><span class="p">(</span><span class="n">column_for_categories</span><span class="p">)</span>
+        <span class="n">yticks</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_by_column</span><span class="p">(</span><span class="n">column_for_categories</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">flexible</span><span class="p">)</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">[</span><span class="n">label</span><span class="p">]):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The column &#39;{0}&#39; contains non-numerical &quot;</span>
@@ -791,7 +834,7 @@
                 <span class="k">if</span> <span class="n">ticks</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
                     <span class="n">annotate</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">ticks</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_or_label</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_split_by_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_or_label</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the specified column and labels of other columns.&quot;&quot;&quot;</span>
         <span class="n">labels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column_labels</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">column_or_label</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>

@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="datascience 0.3.4 documentation" href="../index.html" />
     <link rel="up" title="Tables (datascience.tables)" href="../tables.html" />
-    <link rel="next" title="datascience.tables.Table.show" href="datascience.tables.Table.show.html" />
+    <link rel="next" title="datascience.tables.Table.sample" href="datascience.tables.Table.sample.html" />
     <link rel="prev" title="datascience.tables.Table.stats" href="datascience.tables.Table.stats.html" /> 
   </head>
   <body role="document">
@@ -39,7 +39,7 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="datascience.tables.Table.show.html" title="datascience.tables.Table.show"
+          <a href="datascience.tables.Table.sample.html" title="datascience.tables.Table.sample"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="datascience.tables.Table.stats.html" title="datascience.tables.Table.stats"
@@ -59,7 +59,9 @@
 <dl class="method">
 <dt id="datascience.tables.Table.percentile">
 <code class="descclassname">Table.</code><code class="descname">percentile</code><span class="sig-paren">(</span><em>p</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.percentile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.percentile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Assumes that each column only contains one type of value.</p>
+<dd><p>Returns a new table with one row containing the pth percentile for
+each column.</p>
+<p>Assumes that each column only contains one type of value.</p>
 <p>Returns a new table with one row and the same column labels.
 The row contains the pth percentile of the original column, where the
 pth percentile of a column is the smallest value that at at least as
@@ -89,8 +91,8 @@ large as the p% of numbers in the column.</p>
   <p class="topless"><a href="datascience.tables.Table.stats.html"
                         title="previous chapter">datascience.tables.Table.stats</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="datascience.tables.Table.show.html"
-                        title="next chapter">datascience.tables.Table.show</a></p>
+  <p class="topless"><a href="datascience.tables.Table.sample.html"
+                        title="next chapter">datascience.tables.Table.sample</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -125,7 +127,7 @@ large as the p% of numbers in the column.</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="datascience.tables.Table.show.html" title="datascience.tables.Table.show"
+          <a href="datascience.tables.Table.sample.html" title="datascience.tables.Table.sample"
              >next</a> |</li>
         <li class="right" >
           <a href="datascience.tables.Table.stats.html" title="datascience.tables.Table.stats"

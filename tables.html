@@ -175,10 +175,13 @@ complicated methods (mostly visualizations).</p>
 <td>Compute statistics for each column and place them in a table.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.percentile.html#datascience.tables.Table.percentile" title="datascience.tables.Table.percentile"><code class="xref py py-obj docutils literal"><span class="pre">Table.percentile</span></code></a>(p)</td>
-<td>Assumes that each column only contains one type of value.</td>
+<td>Returns a new table with one row containing the pth percentile for each column.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.sample.html#datascience.tables.Table.sample" title="datascience.tables.Table.sample"><code class="xref py py-obj docutils literal"><span class="pre">Table.sample</span></code></a>([k,&nbsp;with_replacement,&nbsp;weights])</td>
 <td>Returns a new table where k rows are randomly sampled from the original table.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.split.html#datascience.tables.Table.split" title="datascience.tables.Table.split"><code class="xref py py-obj docutils literal"><span class="pre">Table.split</span></code></a>(k)</td>
+<td>Returns a tuple of two tables where the first table contains <code class="docutils literal"><span class="pre">k</span></code> rows randomly sampled and the second contains the remaining rows.</td>
 </tr>
 </tbody>
 </table>
