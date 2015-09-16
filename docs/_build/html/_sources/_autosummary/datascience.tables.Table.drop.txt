@@ -1,6 +1,0 @@
-datascience.tables.Table.drop
-=============================
-
-.. currentmodule:: datascience.tables
-
-.. automethod:: Table.drop
