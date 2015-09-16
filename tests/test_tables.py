@@ -663,6 +663,23 @@ def test_sample_weights_with_none_k(table):
         assert len(set(u.rows)) == len(u.rows)
         i += 1
 
+def test_split_basic(table):
+    """Test that table.split works."""
+    table.split(3)
+
+def test_split_lengths(table):
+    """Test that table.split outputs tables with the right number of rows."""
+    sampled, rest = table.split(3)
+    assert sampled.num_rows == 3
+    assert rest.num_rows == table.num_rows - 3
+
+def test_split_k_vals(table):
+    """Test that invalid k values for table.split raises an error."""
+    with pytest.raises(ValueError):
+        table.split(0)
+    with pytest.raises(ValueError):
+        table.split(table.num_rows)
+
 #############
 # Visualize #
 #############

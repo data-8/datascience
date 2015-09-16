@@ -65,6 +65,7 @@ Transformation (creates a new table)
     Table.stats
     Table.percentile
     Table.sample
+    Table.split
 
 Exporting / Displaying
 
