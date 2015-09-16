@@ -41,7 +41,7 @@ class PyTest(TestCommand):
 setup(
     name = 'datascience',
     packages = ['datascience'],
-    py_modules = ['version']
+    py_modules = ['version'],
     version = VERSION,
     install_requires = install_requires + tests_requires,
     tests_require = tests_requires,
