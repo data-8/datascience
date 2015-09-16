@@ -1,0 +1,6 @@
+datascience.tables.Table.sample
+===============================
+
+.. currentmodule:: datascience.tables
+
+.. automethod:: Table.sample
