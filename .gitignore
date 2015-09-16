@@ -58,3 +58,5 @@ target/
 cache/
 *.ipynb_checkpoints/
 .DS_Store
+
+docs/
