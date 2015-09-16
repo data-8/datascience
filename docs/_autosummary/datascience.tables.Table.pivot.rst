@@ -1,6 +1,0 @@
-datascience.tables.Table.pivot
-==============================
-
-.. currentmodule:: datascience.tables
-
-.. automethod:: Table.pivot
