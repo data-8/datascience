@@ -351,7 +351,6 @@ class Marker(_MapFeature):
         self.lat_lon = (lat, lon)
         self._attrs = {
             'popup': popup,
-            'popup_on': bool(popup),
             self._color_param: color,
         }
         self._attrs.update(kwargs)

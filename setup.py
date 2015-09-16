@@ -7,7 +7,7 @@ install_requires = [
     'numpy',
     'matplotlib',
     'pandas',
-    'folium',
+    'folium == 0.1.5',
     'IPython',
     'jinja2',  # folium dependency
 ]
