@@ -439,7 +439,10 @@ class Table(collections.abc.MutableMapping):
             return c
 
     def percentile(self, p):
-        """Assumes that each column only contains one type of value.
+        """Returns a new table with one row containing the pth percentile for
+        each column.
+
+        Assumes that each column only contains one type of value.
 
         Returns a new table with one row and the same column labels.
         The row contains the pth percentile of the original column, where the
@@ -511,6 +514,46 @@ class Table(collections.abc.MutableMapping):
         rows = [self.rows[index] for index in
             np.random.choice(n, k or n, replace=with_replacement, p=weights)]
         return Table.from_rows(rows, self.column_labels)
+
+    def split(self, k):
+        """Returns a tuple of two tables where the first table contains
+        ``k`` rows randomly sampled and the second contains the remaining rows.
+
+        Args:
+            ``k`` (int): The number of rows randomly sampled into the first
+                table. ``k`` must be between 1 and ``num_rows - 1``.
+
+        Raises:
+            ``ValueError``: ``k`` is not between 1 and ``num_rows - 1``.
+
+        Returns:
+            A tuple containing two instances of ``Table``.
+
+        >>> foo_table
+        job  | wage
+        a    | 10
+        b    | 20
+        c    | 15
+        d    | 8
+
+        >>> sample, rest = foo_table.split(3)
+        >>> sample
+        job  | wage
+        c    | 15
+        a    | 10
+        b    | 20
+        >>> rest
+        job  | wage
+        d    | 8
+        """
+        if not 1 <= k <= self.num_rows - 1:
+            raise ValueError("Invalid value of k. k must be between 1 and the"
+                "number of rows - 1")
+
+        rows = [self.rows[index] for index in
+            np.random.permutation(self.num_rows)]
+        return Table.from_rows(rows[:k], self.column_labels), \
+               Table.from_rows(rows[k:], self.column_labels)
 
     ##################
     # Export/Display #
@@ -618,7 +661,7 @@ class Table(collections.abc.MutableMapping):
         """Plot contents as lines."""
         options = self.default_options.copy()
         options.update(vargs)
-        xticks, labels = self._split(column_for_xticks)
+        xticks, labels = self._split_by_column(column_for_xticks)
         def draw(axis, label, color):
             axis.plot(self[label], color=color, **options)
         def annotate(axis, ticks):
@@ -695,7 +738,7 @@ class Table(collections.abc.MutableMapping):
         options = self.default_options.copy()
         options.update(vargs)
 
-        yticks, labels = self._split(column_for_categories)
+        yticks, labels = self._split_by_column(column_for_categories)
         for label in labels:
             if any(isinstance(cell, np.flexible) for cell in self[label]):
                 raise ValueError("The column '{0}' contains non-numerical "
@@ -742,7 +785,7 @@ class Table(collections.abc.MutableMapping):
                 if ticks is not None:
                     annotate(axis, ticks)
 
-    def _split(self, column_or_label):
+    def _split_by_column(self, column_or_label):
         """Return the specified column and labels of other columns."""
         labels = list(self.column_labels)
         if column_or_label is None:
