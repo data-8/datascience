@@ -79,7 +79,7 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         assert isinstance(features, dict), 'Map takes a list or dict of features'
         self._features = features
         self._attrs = {
-            'tiles': 'Stamen Toner',
+            'tiles': 'OpenStreetMap',
             'max_zoom': 17,
             'min_zoom': 10,
         }
