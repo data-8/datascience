@@ -7,6 +7,7 @@ import inspect
 import itertools
 import operator
 import random
+import urllib.parse
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -212,8 +213,16 @@ class Table(collections.abc.MutableMapping):
                               could be a URL. Valid URL schemes include http,
                               ftp, s3, and file.
         """
-        if filepath_or_buffer.endswith('.csv') and 'sep' not in vargs:
-            vargs['sep'] = ','
+        # Look for .csv at the end of the path; use "," as a separator if found
+        try:
+            path = urllib.parse.urlparse(filepath_or_buffer).path
+        except AttributeError:
+            path = filepath_or_buffer
+        try:
+            if 'sep' not in vargs and path.endswith('.csv'):
+                vargs['sep'] = ','
+        except AttributeError:
+            pass
         df = pandas.read_table(filepath_or_buffer, *args, **vargs)
         labels = df.columns
         return Table([df[label].values for label in labels], labels)
