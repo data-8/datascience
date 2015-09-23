@@ -887,7 +887,7 @@ class Table(collections.abc.MutableMapping):
 
         if bins is not None:
             if isinstance(bins, collections.Hashable) and bins in self.column_labels:
-                bins = self[bins]
+                bins = np.unique(self[bins])
             vargs['bins'] = bins
         if counts is not None:
             vargs['weights'] = self._get_column(counts)
