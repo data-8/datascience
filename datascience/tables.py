@@ -897,6 +897,7 @@ class Table(collections.abc.MutableMapping):
         n = len(columns)
         colors = list(itertools.islice(itertools.cycle(self.chart_colors), n))
         if overlay:
+            # vargs.setdefault('histtype', 'stepfilled')
             plt.figure(figsize=(6, 4))
             plt.hist(columns.values(), color=colors, **vargs)
             plt.legend(columns.keys())
