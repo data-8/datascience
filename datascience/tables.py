@@ -18,6 +18,7 @@ import datascience.maps as _maps
 import datascience.formats as _formats
 from .util import *
 
+
 class Table(collections.abc.MutableMapping):
     """A sequence of labeled columns.
 
@@ -834,7 +835,7 @@ class Table(collections.abc.MutableMapping):
             t[label] = column
         return t
 
-    def hist(self, overlay=False, **vargs):
+    def hist(self, overlay=False, bins=None, counts=None, **vargs):
         """Plots one histogram for each column in the table.
 
         Requires all columns in the table to contain numerical values only.
@@ -846,11 +847,17 @@ class Table(collections.abc.MutableMapping):
                 one histogram for each column in the table). Also adds a legend
                 that matches each bar color to its column.
 
+            bins (column name or list): Lower bound for each bin in the
+                histogram. If None, bins will be chosen automatically.
+
+            counts (column name or column): Counts for each row value in the
+                plotted columns. If None, each row is assigned a count of 1.
+
             vargs: Additional arguments that get passed into :func:plt.hist.
                 See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.hist
                 for additional arguments that can be passed into vargs. These
-                include: `bins`, `range`, `normed`, `cumulative`, and
-                `orientation`, to name a few.
+                include: `range`, `normed`, `cumulative`, and `orientation`,
+                to name a few.
 
         Returns:
             None
@@ -870,25 +877,35 @@ class Table(collections.abc.MutableMapping):
         <histogram of values in points>
         """
         # Check for non-numerical values and raise a ValueError if any found
-        # TODO(sam): Is a ValueError the right thing to raise?
         for col in self:
             if any(isinstance(cell, np.flexible) for cell in self[col]):
                 raise ValueError("The column '{0}' contains non-numerical "
                     "values. A histogram cannot be drawn for this table."
                     .format(col))
 
-        n = len(self)
-        colors = list(itertools.islice(itertools.cycle(('b', 'g', 'r')), n))
+        columns = self._columns.copy()
+
+        if bins is not None:
+            if isinstance(bins, collections.Hashable) and bins in self.column_labels:
+                bins = self[bins]
+            vargs['bins'] = bins
+        if counts is not None:
+            vargs['weights'] = self._get_column(counts)
+            if isinstance(counts, collections.Hashable) and counts in self.column_labels:
+                columns.pop(counts)
+
+        n = len(columns)
+        colors = list(itertools.islice(itertools.cycle(self.chart_colors), n))
         if overlay:
             plt.figure(figsize=(6, 4))
-            plt.hist(self.columns, color=colors, **vargs)
-            plt.legend(self.column_labels)
+            plt.hist(columns.values(), color=colors, **vargs)
+            plt.legend(columns.keys())
         else:
             _, axes = plt.subplots(n, 1, figsize=(6, 4 * n))
             if n == 1:
                 axes = [axes]
-            for axis, label, color in zip(axes, self.column_labels, colors):
-                axis.hist(self[label], color=color, **vargs)
+            for axis, label, color in zip(axes, columns.keys(), colors):
+                axis.hist(columns[label], color=color, **vargs)
                 axis.set_xlabel(label, fontsize=16)
 
     def points(self, column__lat, column__long,
