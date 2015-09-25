@@ -5,10 +5,34 @@ Tables (``datascience.tables``)
 
 **Summary of methods for Table. Click a method to see its documentation.**
 
+One note about reading the method signatures for this page: each method is
+listed with its arguments. However, optional arguments are specified in
+brackets. That is, a method that's documented like
+
+``Table.foo`` (first_arg, second_arg[, some_other_arg, fourth_arg])
+
+means that the ``Table.foo`` method must be called with first_arg and second_arg
+and optionally some_other_arg and fourth_arg. That means the following are valid
+ways to call ``Table.foo``::
+
+    some_table.foo(1, 2)
+    some_table.foo(1, 2, 'hello')
+    some_table.foo(1, 2, 'hello', 'world')
+    some_table.foo(1, 2, some_other_arg='hello')
+
+But these are not valid::
+
+    some_table.foo(1) # Missing arg
+    some_table.foo(1, 2[, 'hi']) # SyntaxError
+    some_table.foo(1, 2[, 'hello', 'world']) # SyntaxError
+
+If that syntax is confusing, you can click the method name itself to get to the
+details page for that method. That page will have a more straightforward syntax.
+
 At the time of this writing, most methods only have one or two sentences of
 documentation, so what you see here is all that you'll get for the time being.
-We are actively working on documentation, prioritizing the most
-complicated methods (mostly visualizations).
+We are actively working on documentation, prioritizing the most complicated
+methods (mostly visualizations).
 
 Creation
 
