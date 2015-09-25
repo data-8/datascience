@@ -15,7 +15,7 @@ Creation
 .. autosummary::
     :toctree: _autosummary
 
-    Table
+    Table.__init__
     Table.from_rows
     Table.from_records
     Table.read_table
