@@ -10,7 +10,8 @@ python:
 
 install:
   - pip install pip --upgrade
-  - pip install sphinx --upgrade
+  # TODO(sam): Add --upgrade flag when it works again
+  - pip install sphinx
   - python3 setup.py install
 
 script:
