@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>datascience.tables &mdash; datascience 0.3.4 documentation</title>
+    <title>datascience.tables &mdash; datascience 0.3.7 documentation</title>
     
     <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.3.4',
+        VERSION:     '0.3.7',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.3.4 documentation" href="../../index.html" />
+    <link rel="top" title="datascience 0.3.7 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body role="document">
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.3.4 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.3.7 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -56,6 +56,7 @@
 <span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">import</span> <span class="nn">operator</span>
 <span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">urllib.parse</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
@@ -66,27 +67,55 @@
 <span class="kn">import</span> <span class="nn">datascience.formats</span> <span class="kn">as</span> <span class="nn">_formats</span>
 <span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="o">*</span>
 
-<div class="viewcode-block" id="Table"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.html#datascience.tables.Table">[docs]</a><span class="k">class</span> <span class="nc">Table</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A sequence of labeled columns.</span>
 
-<span class="sd">    &gt;&gt;&gt; letters = [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;z&#39;]</span>
-<span class="sd">    &gt;&gt;&gt; counts = [9, 3, 3, 1]</span>
-<span class="sd">    &gt;&gt;&gt; points = [1, 2, 2, 10]</span>
-<span class="sd">    &gt;&gt;&gt; t = Table([letters, counts, points], [&#39;letter&#39;, &#39;count&#39;, &#39;points&#39;])</span>
-<span class="sd">    &gt;&gt;&gt; print(t)</span>
-<span class="sd">    letter | count | points</span>
-<span class="sd">    a      | 9     | 1</span>
-<span class="sd">    b      | 3     | 2</span>
-<span class="sd">    c      | 3     | 2</span>
-<span class="sd">    z      | 1     | 10</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Table"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.html#datascience.tables.Table">[docs]</a><span class="k">class</span> <span class="nc">Table</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A sequence of labeled columns.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Table.__init__"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.__init__.html#datascience.tables.Table.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">formatter</span><span class="o">=</span><span class="n">_formats</span><span class="o">.</span><span class="n">default_formatter</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create a table from a list or dictionary of sequences.</span>
+        <span class="sd">&quot;&quot;&quot;Create a table from a list of column values or dictionary of</span>
+<span class="sd">        sequences.</span>
 
-<span class="sd">        columns -- a dictionary of sequences keyed by label [labels == None] OR</span>
-<span class="sd">                   a sequence of sequences [labels != None]</span>
-<span class="sd">        labels  -- a sequence of labels; columns must not contain labels</span>
+<span class="sd">        &gt;&gt;&gt; letters = [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;z&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; counts = [9, 3, 3, 1]</span>
+<span class="sd">        &gt;&gt;&gt; points = [1, 2, 2, 10]</span>
+<span class="sd">        &gt;&gt;&gt; t = Table([letters, counts, points], [&#39;letter&#39;, &#39;count&#39;, &#39;points&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; print(t)</span>
+<span class="sd">        letter | count | points</span>
+<span class="sd">        a      | 9     | 1</span>
+<span class="sd">        b      | 3     | 2</span>
+<span class="sd">        c      | 3     | 2</span>
+<span class="sd">        z      | 1     | 10</span>
+
+<span class="sd">        For other ways to initialize a table, see :func:`Table.from_rows`,</span>
+<span class="sd">        :func:`Table.from_records`, and :func:`Table.read_table`.</span>
+
+<span class="sd">        Kwargs:</span>
+<span class="sd">            columns (None, list, or dict): If ``None``, an empty table is</span>
+<span class="sd">                created.</span>
+
+<span class="sd">                If a list, each element in ``columns`` is another list</span>
+<span class="sd">                containing the values for a column in the order the columns</span>
+<span class="sd">                appear in ``labels``.</span>
+
+<span class="sd">                If a dict, each key is a label of a column; each values is the</span>
+<span class="sd">                column&#39;s values as a list.</span>
+
+<span class="sd">            labels (list): A list of column labels. Must be specified if</span>
+<span class="sd">                ``columns`` is a list, and must be ``None`` if ``columns`` is a</span>
+<span class="sd">                dict.</span>
+
+<span class="sd">            formatter (Formatter): An instance of :class:`Formatter` that</span>
+<span class="sd">                formats the columns&#39; values.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A new instance of ``Table``.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            AssertionError: ``labels`` is specified but ``columns`` is not.</span>
+<span class="sd">                ``columns`` is a dict but ``labels`` are specified.</span>
+<span class="sd">                ``columns`` is a list but ``labels`` are not specified.</span>
+<span class="sd">                The length of ``labels`` and the length of ``columns`` are</span>
+<span class="sd">                unequal.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_columns</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_formats</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
@@ -261,8 +290,16 @@
 <span class="sd">                              could be a URL. Valid URL schemes include http,</span>
 <span class="sd">                              ftp, s3, and file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">filepath_or_buffer</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;.csv&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="s">&#39;sep&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">vargs</span><span class="p">:</span>
-            <span class="n">vargs</span><span class="p">[</span><span class="s">&#39;sep&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;,&#39;</span>
+        <span class="c"># Look for .csv at the end of the path; use &quot;,&quot; as a separator if found</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">urlparse</span><span class="p">(</span><span class="n">filepath_or_buffer</span><span class="p">)</span><span class="o">.</span><span class="n">path</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">filepath_or_buffer</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s">&#39;sep&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">vargs</span> <span class="ow">and</span> <span class="n">path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;.csv&#39;</span><span class="p">):</span>
+                <span class="n">vargs</span><span class="p">[</span><span class="s">&#39;sep&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;,&#39;</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="n">filepath_or_buffer</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">)</span>
         <span class="n">labels</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span>
         <span class="k">return</span> <span class="n">Table</span><span class="p">([</span><span class="n">df</span><span class="p">[</span><span class="n">label</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">],</span> <span class="n">labels</span><span class="p">)</span>
@@ -874,7 +911,7 @@
             <span class="n">t</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span>
         <span class="k">return</span> <span class="n">t</span>
 </div>
-<div class="viewcode-block" id="Table.hist"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.hist.html#datascience.tables.Table.hist">[docs]</a>    <span class="k">def</span> <span class="nf">hist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Table.hist"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.hist.html#datascience.tables.Table.hist">[docs]</a>    <span class="k">def</span> <span class="nf">hist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">counts</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Plots one histogram for each column in the table.</span>
 
 <span class="sd">        Requires all columns in the table to contain numerical values only.</span>
@@ -886,11 +923,17 @@
 <span class="sd">                one histogram for each column in the table). Also adds a legend</span>
 <span class="sd">                that matches each bar color to its column.</span>
 
+<span class="sd">            bins (column name or list): Lower bound for each bin in the</span>
+<span class="sd">                histogram. If None, bins will be chosen automatically.</span>
+
+<span class="sd">            counts (column name or column): Counts for each row value in the</span>
+<span class="sd">                plotted columns. If None, each row is assigned a count of 1.</span>
+
 <span class="sd">            vargs: Additional arguments that get passed into :func:plt.hist.</span>
 <span class="sd">                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.hist</span>
 <span class="sd">                for additional arguments that can be passed into vargs. These</span>
-<span class="sd">                include: `bins`, `range`, `normed`, `cumulative`, and</span>
-<span class="sd">                `orientation`, to name a few.</span>
+<span class="sd">                include: `range`, `normed`, `cumulative`, and `orientation`,</span>
+<span class="sd">                to name a few.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            None</span>
@@ -910,25 +953,36 @@
 <span class="sd">        &lt;histogram of values in points&gt;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c"># Check for non-numerical values and raise a ValueError if any found</span>
-        <span class="c"># TODO(sam): Is a ValueError the right thing to raise?</span>
         <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">flexible</span><span class="p">)</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">[</span><span class="n">col</span><span class="p">]):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The column &#39;{0}&#39; contains non-numerical &quot;</span>
                     <span class="s">&quot;values. A histogram cannot be drawn for this table.&quot;</span>
                     <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">col</span><span class="p">))</span>
 
-        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">colors</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">islice</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">((</span><span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="s">&#39;g&#39;</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)),</span> <span class="n">n</span><span class="p">))</span>
+        <span class="n">columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_columns</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">bins</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Hashable</span><span class="p">)</span> <span class="ow">and</span> <span class="n">bins</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_labels</span><span class="p">:</span>
+                <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">bins</span><span class="p">])</span>
+            <span class="n">vargs</span><span class="p">[</span><span class="s">&#39;bins&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bins</span>
+        <span class="k">if</span> <span class="n">counts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">vargs</span><span class="p">[</span><span class="s">&#39;weights&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_column</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Hashable</span><span class="p">)</span> <span class="ow">and</span> <span class="n">counts</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_labels</span><span class="p">:</span>
+                <span class="n">columns</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
+
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span>
+        <span class="n">colors</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">islice</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chart_colors</span><span class="p">),</span> <span class="n">n</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">overlay</span><span class="p">:</span>
+            <span class="c"># vargs.setdefault(&#39;histtype&#39;, &#39;stepfilled&#39;)</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">)</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column_labels</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">columns</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">_</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">n</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="n">axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">axes</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">axis</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_labels</span><span class="p">,</span> <span class="n">colors</span><span class="p">):</span>
-                <span class="n">axis</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">label</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">axis</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">columns</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">colors</span><span class="p">):</span>
+                <span class="n">axis</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">columns</span><span class="p">[</span><span class="n">label</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">)</span>
                 <span class="n">axis</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="Table.points"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.points.html#datascience.tables.Table.points">[docs]</a>    <span class="k">def</span> <span class="nf">points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column__lat</span><span class="p">,</span> <span class="n">column__long</span><span class="p">,</span>
@@ -1104,7 +1158,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.3.4 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.3.7 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
