@@ -9,7 +9,8 @@ python:
   - "3.4.2"
 
 install:
-  - pip install pip sphinx --upgrade
+  - pip install pip --upgrade
+  - pip install sphinx --upgrade
   - python3 setup.py install
 
 script:
