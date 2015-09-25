@@ -20,26 +20,53 @@ from .util import *
 
 
 class Table(collections.abc.MutableMapping):
-    """A sequence of labeled columns.
-
-    >>> letters = ['a', 'b', 'c', 'z']
-    >>> counts = [9, 3, 3, 1]
-    >>> points = [1, 2, 2, 10]
-    >>> t = Table([letters, counts, points], ['letter', 'count', 'points'])
-    >>> print(t)
-    letter | count | points
-    a      | 9     | 1
-    b      | 3     | 2
-    c      | 3     | 2
-    z      | 1     | 10
-    """
+    """A sequence of labeled columns."""
 
     def __init__(self, columns=None, labels=None, formatter=_formats.default_formatter):
-        """Create a table from a list or dictionary of sequences.
+        """Create a table from a list of column values or dictionary of
+        sequences.
 
-        columns -- a dictionary of sequences keyed by label [labels == None] OR
-                   a sequence of sequences [labels != None]
-        labels  -- a sequence of labels; columns must not contain labels
+        >>> letters = ['a', 'b', 'c', 'z']
+        >>> counts = [9, 3, 3, 1]
+        >>> points = [1, 2, 2, 10]
+        >>> t = Table([letters, counts, points], ['letter', 'count', 'points'])
+        >>> print(t)
+        letter | count | points
+        a      | 9     | 1
+        b      | 3     | 2
+        c      | 3     | 2
+        z      | 1     | 10
+
+        For other ways to initialize a table, see :func:`Table.from_rows`,
+        :func:`Table.from_records`, and :func:`Table.read_table`.
+
+        Kwargs:
+            columns (None, list, or dict): If ``None``, an empty table is
+                created.
+
+                If a list, each element in ``columns`` is another list
+                containing the values for a column in the order the columns
+                appear in ``labels``.
+
+                If a dict, each key is a label of a column; each values is the
+                column's values as a list.
+
+            labels (list): A list of column labels. Must be specified if
+                ``columns`` is a list, and must be ``None`` if ``columns`` is a
+                dict.
+
+            formatter (Formatter): An instance of :class:`Formatter` that
+                formats the columns' values.
+
+        Returns:
+            A new instance of ``Table``.
+
+        Raises:
+            AssertionError: ``labels`` is specified but ``columns`` is not.
+                ``columns`` is a dict but ``labels`` are specified.
+                ``columns`` is a list but ``labels`` are not specified.
+                The length of ``labels`` and the length of ``columns`` are
+                unequal.
         """
         self._columns = collections.OrderedDict()
         self._formats = dict()
