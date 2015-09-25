@@ -55,10 +55,31 @@
   <div class="section" id="tables-datascience-tables">
 <h1>Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)<a class="headerlink" href="#tables-datascience-tables" title="Permalink to this headline">¶</a></h1>
 <p><strong>Summary of methods for Table. Click a method to see its documentation.</strong></p>
+<p>One note about reading the method signatures for this page: each method is
+listed with its arguments. However, optional arguments are specified in
+brackets. That is, a method that&#8217;s documented like</p>
+<p><code class="docutils literal"><span class="pre">Table.foo</span></code> (first_arg, second_arg[, some_other_arg, fourth_arg])</p>
+<p>means that the <code class="docutils literal"><span class="pre">Table.foo</span></code> method must be called with first_arg and second_arg
+and optionally some_other_arg and fourth_arg. That means the following are valid
+ways to call <code class="docutils literal"><span class="pre">Table.foo</span></code>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">some_table</span><span class="o">.</span><span class="n">foo</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">some_table</span><span class="o">.</span><span class="n">foo</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s">&#39;hello&#39;</span><span class="p">)</span>
+<span class="n">some_table</span><span class="o">.</span><span class="n">foo</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s">&#39;hello&#39;</span><span class="p">,</span> <span class="s">&#39;world&#39;</span><span class="p">)</span>
+<span class="n">some_table</span><span class="o">.</span><span class="n">foo</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">some_other_arg</span><span class="o">=</span><span class="s">&#39;hello&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>But these are not valid:</p>
+<div class="highlight-python"><div class="highlight"><pre>some_table.foo(1) # Missing arg
+some_table.foo(1, 2[, &#39;hi&#39;]) # SyntaxError
+some_table.foo(1, 2[, &#39;hello&#39;, &#39;world&#39;]) # SyntaxError
+</pre></div>
+</div>
+<p>If that syntax is confusing, you can click the method name itself to get to the
+details page for that method. That page will have a more straightforward syntax.</p>
 <p>At the time of this writing, most methods only have one or two sentences of
 documentation, so what you see here is all that you&#8217;ll get for the time being.
-We are actively working on documentation, prioritizing the most
-complicated methods (mostly visualizations).</p>
+We are actively working on documentation, prioritizing the most complicated
+methods (mostly visualizations).</p>
 <p>Creation</p>
 <table border="1" class="longtable docutils">
 <colgroup>
