@@ -926,15 +926,26 @@ class Table(collections.abc.MutableMapping):
         if overlay:
             # vargs.setdefault('histtype', 'stepfilled')
             plt.figure(figsize=(6, 4))
-            plt.hist(list(columns.values()), color=colors, **vargs)
+            (vals,rbins,patches) = plt.hist(list(columns.values()), color=colors, **vargs)
             plt.legend(columns.keys())
+            t = Table()
+            bin_label = self._unused_label('bins')
+            t[bin_label] = rbins[0:-1]
+            for label,val in zip(columns.keys(),vals) :
+                t[label] = val
+            return t
         else:
             _, axes = plt.subplots(n, 1, figsize=(6, 4 * n))
             if n == 1:
                 axes = [axes]
+            t = Table()
+            bin_label = self._unused_label('bins')
             for axis, label, color in zip(axes, columns.keys(), colors):
-                axis.hist(columns[label], color=color, **vargs)
+                (vals,rbins,patches) = axis.hist(columns[label], color=color, **vargs)
+                t[bin_label] = rbins[0:-1]
+                t[label] = vals
                 axis.set_xlabel(label, fontsize=16)
+            return t
 
     def points(self, column__lat, column__long, labels=None, colors=None, **kwargs) :
         latitudes = self._get_column(column__lat)
