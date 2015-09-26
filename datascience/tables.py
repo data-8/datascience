@@ -936,27 +936,12 @@ class Table(collections.abc.MutableMapping):
                 axis.hist(columns[label], color=color, **vargs)
                 axis.set_xlabel(label, fontsize=16)
 
-    def points(self, column__lat, column__long,
-            radii=None, labels=None, colors=None, **kwargs) :
+    def points(self, column__lat, column__long, labels=None, colors=None, **kwargs) :
         latitudes = self._get_column(column__lat)
         longitudes = self._get_column(column__long)
-        if labels is None : labels = [''] * self.num_rows
-        else : labels = self._get_column(labels)
-        if colors is None : colors = ['#3186cc'] * self.num_rows
-        else : colors = self._get_column(colors)
-        if radii is None : radii = [5] * self.num_rows
-        else : radii = self._get_column(radii)
-        points = [_maps.MapPoint((lat,long),radius=radius,
-                           popup=label,
-                           fill_color = color,
-                           line_color = color,
-                           **kwargs)
-                  for lat,long,label,color,radius in zip(latitudes,longitudes,
-                                                         labels,colors,radii)]
-        center_lat = sum(latitudes)/len(latitudes)
-        center_long = sum(longitudes)/len(longitudes)
-        return _maps.draw_map((center_lat,center_long), points = points)
-
+        if labels is not None : labels = self._get_column(labels)
+        if colors is not None : colors = self._get_column(colors)
+        return _maps.Circle.map(latitudes, longitudes, labels=labels, colors=colors, **kwargs) 
 
     ###########
     # Support #
