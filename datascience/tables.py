@@ -926,7 +926,7 @@ class Table(collections.abc.MutableMapping):
         if overlay:
             # vargs.setdefault('histtype', 'stepfilled')
             plt.figure(figsize=(6, 4))
-            plt.hist(columns.values(), color=colors, **vargs)
+            plt.hist(list(columns.values()), color=colors, **vargs)
             plt.legend(columns.keys())
         else:
             _, axes = plt.subplots(n, 1, figsize=(6, 4 * n))
