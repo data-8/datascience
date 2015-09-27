@@ -678,17 +678,20 @@ class Table(collections.abc.MutableMapping):
     # Visualize #
     #############
 
+    # As RGB tuples
     chart_colors = (
-        '#001A44',
-        '#FFC800',
-        '#576884',
-        '#B39C4D',
-        '#768948',
-        '#067BC2',
-        '#FB5012',
-        '#19381F',
-        '#4C3C37',
+        (0.0, 0.102, 0.267),
+        (1.0, 0.784, 0.0),
+        (0.341, 0.408, 0.518),
+        (0.702, 0.612, 0.302),
+        (0.463, 0.537, 0.282),
+        (0.024, 0.482, 0.761),
+        (0.984, 0.314, 0.071),
+        (0.098, 0.22, 0.122),
+        (0.298, 0.235, 0.216),
     )
+
+    default_hist_alpha = 0.7
 
     default_options = {
         'alpha': 0.8,
@@ -870,9 +873,9 @@ class Table(collections.abc.MutableMapping):
 
         Kwargs:
             overlay (bool): If True, plots 1 chart with all the histograms
-                overlaid on top of each other (instead of the default behavior of
-                one histogram for each column in the table). Also adds a legend
-                that matches each bar color to its column.
+                overlaid on top of each other (instead of the default behavior
+                of one histogram for each column in the table). Also adds a
+                legend that matches each bar color to its column.
 
             bins (column name or list): Lower bound for each bin in the
                 histogram. If None, bins will be chosen automatically.
@@ -922,11 +925,12 @@ class Table(collections.abc.MutableMapping):
                 columns.pop(counts)
 
         n = len(columns)
-        colors = list(itertools.islice(itertools.cycle(self.chart_colors), n))
+        colors = [rgb_color + (self.default_hist_alpha,) for rgb_color in
+            itertools.islice(itertools.cycle(self.chart_colors), n)]
         if overlay:
-            # vargs.setdefault('histtype', 'stepfilled')
+            vargs.setdefault('histtype', 'stepfilled')
             plt.figure(figsize=(6, 4))
-            plt.hist(columns.values(), color=colors, **vargs)
+            plt.hist(list(columns.values()), color=colors, **vargs)
             plt.legend(columns.keys())
         else:
             _, axes = plt.subplots(n, 1, figsize=(6, 4 * n))
@@ -941,7 +945,7 @@ class Table(collections.abc.MutableMapping):
         longitudes = self._get_column(column__long)
         if labels is not None : labels = self._get_column(labels)
         if colors is not None : colors = self._get_column(colors)
-        return _maps.Circle.map(latitudes, longitudes, labels=labels, colors=colors, **kwargs) 
+        return _maps.Circle.map(latitudes, longitudes, labels=labels, colors=colors, **kwargs)
 
     ###########
     # Support #
