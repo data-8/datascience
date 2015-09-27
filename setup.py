@@ -1,7 +1,7 @@
 import sys
 from setuptools import setup
 from setuptools.command.test import test as TestCommand
-from version import VERSION
+from version import __version__
 
 install_requires = [
     'numpy',
@@ -42,7 +42,7 @@ setup(
     name = 'datascience',
     packages = ['datascience'],
     py_modules = ['version'],
-    version = VERSION,
+    version = __version__,
     install_requires = install_requires + tests_requires,
     tests_require = tests_requires,
     cmdclass = {'test': PyTest},
@@ -50,7 +50,7 @@ setup(
     author = 'John DeNero, David Culler, Alvin Wan, Sam Lau',
     author_email = 'ds8-instructors@berkeley.edu',
     url = 'https://github.com/dsten/datascience',
-    download_url = 'https://github.com/dsten/datascience/archive/%s.zip' % VERSION,
+    download_url = 'https://github.com/dsten/datascience/archive/%s.zip' % __version__,
     keywords = ['data', 'tools', 'berkeley'],
     classifiers = []
 )

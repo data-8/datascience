@@ -20,26 +20,53 @@ from .util import *
 
 
 class Table(collections.abc.MutableMapping):
-    """A sequence of labeled columns.
-
-    >>> letters = ['a', 'b', 'c', 'z']
-    >>> counts = [9, 3, 3, 1]
-    >>> points = [1, 2, 2, 10]
-    >>> t = Table([letters, counts, points], ['letter', 'count', 'points'])
-    >>> print(t)
-    letter | count | points
-    a      | 9     | 1
-    b      | 3     | 2
-    c      | 3     | 2
-    z      | 1     | 10
-    """
+    """A sequence of labeled columns."""
 
     def __init__(self, columns=None, labels=None, formatter=_formats.default_formatter):
-        """Create a table from a list or dictionary of sequences.
+        """Create a table from a list of column values or dictionary of
+        sequences.
 
-        columns -- a dictionary of sequences keyed by label [labels == None] OR
-                   a sequence of sequences [labels != None]
-        labels  -- a sequence of labels; columns must not contain labels
+        >>> letters = ['a', 'b', 'c', 'z']
+        >>> counts = [9, 3, 3, 1]
+        >>> points = [1, 2, 2, 10]
+        >>> t = Table([letters, counts, points], ['letter', 'count', 'points'])
+        >>> print(t)
+        letter | count | points
+        a      | 9     | 1
+        b      | 3     | 2
+        c      | 3     | 2
+        z      | 1     | 10
+
+        For other ways to initialize a table, see :func:`Table.from_rows`,
+        :func:`Table.from_records`, and :func:`Table.read_table`.
+
+        Kwargs:
+            columns (None, list, or dict): If ``None``, an empty table is
+                created.
+
+                If a list, each element in ``columns`` is another list
+                containing the values for a column in the order the columns
+                appear in ``labels``.
+
+                If a dict, each key is a label of a column; each values is the
+                column's values as a list.
+
+            labels (list): A list of column labels. Must be specified if
+                ``columns`` is a list, and must be ``None`` if ``columns`` is a
+                dict.
+
+            formatter (Formatter): An instance of :class:`Formatter` that
+                formats the columns' values.
+
+        Returns:
+            A new instance of ``Table``.
+
+        Raises:
+            AssertionError: ``labels`` is specified but ``columns`` is not.
+                ``columns`` is a dict but ``labels`` are specified.
+                ``columns`` is a list but ``labels`` are not specified.
+                The length of ``labels`` and the length of ``columns`` are
+                unequal.
         """
         self._columns = collections.OrderedDict()
         self._formats = dict()
@@ -651,17 +678,20 @@ class Table(collections.abc.MutableMapping):
     # Visualize #
     #############
 
+    # As RGB tuples
     chart_colors = (
-        '#001A44',
-        '#FFC800',
-        '#576884',
-        '#B39C4D',
-        '#768948',
-        '#067BC2',
-        '#FB5012',
-        '#19381F',
-        '#4C3C37',
+        (0.0, 0.102, 0.267),
+        (1.0, 0.784, 0.0),
+        (0.341, 0.408, 0.518),
+        (0.702, 0.612, 0.302),
+        (0.463, 0.537, 0.282),
+        (0.024, 0.482, 0.761),
+        (0.984, 0.314, 0.071),
+        (0.098, 0.22, 0.122),
+        (0.298, 0.235, 0.216),
     )
+
+    default_hist_alpha = 0.7
 
     default_options = {
         'alpha': 0.8,
@@ -843,9 +873,9 @@ class Table(collections.abc.MutableMapping):
 
         Kwargs:
             overlay (bool): If True, plots 1 chart with all the histograms
-                overlaid on top of each other (instead of the default behavior of
-                one histogram for each column in the table). Also adds a legend
-                that matches each bar color to its column.
+                overlaid on top of each other (instead of the default behavior
+                of one histogram for each column in the table). Also adds a
+                legend that matches each bar color to its column.
 
             bins (column name or list): Lower bound for each bin in the
                 histogram. If None, bins will be chosen automatically.
@@ -895,11 +925,12 @@ class Table(collections.abc.MutableMapping):
                 columns.pop(counts)
 
         n = len(columns)
-        colors = list(itertools.islice(itertools.cycle(self.chart_colors), n))
+        colors = [rgb_color + (self.default_hist_alpha,) for rgb_color in
+            itertools.islice(itertools.cycle(self.chart_colors), n)]
         if overlay:
-            # vargs.setdefault('histtype', 'stepfilled')
+            vargs.setdefault('histtype', 'stepfilled')
             plt.figure(figsize=(6, 4))
-            plt.hist(columns.values(), color=colors, **vargs)
+            plt.hist(list(columns.values()), color=colors, **vargs)
             plt.legend(columns.keys())
         else:
             _, axes = plt.subplots(n, 1, figsize=(6, 4 * n))
@@ -909,27 +940,12 @@ class Table(collections.abc.MutableMapping):
                 axis.hist(columns[label], color=color, **vargs)
                 axis.set_xlabel(label, fontsize=16)
 
-    def points(self, column__lat, column__long,
-            radii=None, labels=None, colors=None, **kwargs) :
+    def points(self, column__lat, column__long, labels=None, colors=None, **kwargs) :
         latitudes = self._get_column(column__lat)
         longitudes = self._get_column(column__long)
-        if labels is None : labels = [''] * self.num_rows
-        else : labels = self._get_column(labels)
-        if colors is None : colors = ['#3186cc'] * self.num_rows
-        else : colors = self._get_column(colors)
-        if radii is None : radii = [5] * self.num_rows
-        else : radii = self._get_column(radii)
-        points = [_maps.MapPoint((lat,long),radius=radius,
-                           popup=label,
-                           fill_color = color,
-                           line_color = color,
-                           **kwargs)
-                  for lat,long,label,color,radius in zip(latitudes,longitudes,
-                                                         labels,colors,radii)]
-        center_lat = sum(latitudes)/len(latitudes)
-        center_long = sum(longitudes)/len(longitudes)
-        return _maps.draw_map((center_lat,center_long), points = points)
-
+        if labels is not None : labels = self._get_column(labels)
+        if colors is not None : colors = self._get_column(colors)
+        return _maps.Circle.map(latitudes, longitudes, labels=labels, colors=colors, **kwargs)
 
     ###########
     # Support #
