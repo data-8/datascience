@@ -880,8 +880,9 @@ class Table(collections.abc.MutableMapping):
             bins (column name or list): Lower bound for each bin in the
                 histogram. If None, bins will be chosen automatically.
 
-            counts (column name or column): Counts for each row value in the
-                plotted columns. If None, each row is assigned a count of 1.
+            counts (column name or column): A column of counted values.
+                All other columns are treated as counts of these values.
+                If None, each value in each row is assigned a count of 1.
 
             vargs: Additional arguments that get passed into :func:plt.hist.
                 See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.hist
@@ -919,8 +920,10 @@ class Table(collections.abc.MutableMapping):
             if isinstance(bins, collections.Hashable) and bins in self.column_labels:
                 bins = np.unique(self[bins])
             vargs['bins'] = bins
+
+        counted_values = None
         if counts is not None:
-            vargs['weights'] = self._get_column(counts)
+            counted_values = self._get_column(counts)
             if isinstance(counts, collections.Hashable) and counts in self.column_labels:
                 columns.pop(counts)
 
@@ -928,16 +931,28 @@ class Table(collections.abc.MutableMapping):
         colors = [rgb_color + (self.default_hist_alpha,) for rgb_color in
             itertools.islice(itertools.cycle(self.chart_colors), n)]
         if overlay:
+            if counted_values is None:
+                values = list(columns.values())
+            else:
+                values = np.repeat(counted_values, n).reshape(-1,n)
+                vargs['weights'] = list(columns.values())
             vargs.setdefault('histtype', 'stepfilled')
+            print(values)
+            print(vargs)
             plt.figure(figsize=(6, 4))
-            plt.hist(list(columns.values()), color=colors, **vargs)
+            plt.hist(values, color=colors, **vargs)
             plt.legend(columns.keys())
         else:
             _, axes = plt.subplots(n, 1, figsize=(6, 4 * n))
             if n == 1:
                 axes = [axes]
             for axis, label, color in zip(axes, columns.keys(), colors):
-                axis.hist(columns[label], color=color, **vargs)
+                if counted_values is None:
+                    values = columns[label]
+                else:
+                    values = counted_values
+                    vargs['weights'] = columns[label]
+                axis.hist(values, color=color, **vargs)
                 axis.set_xlabel(label, fontsize=16)
 
     def points(self, column__lat, column__long, labels=None, colors=None, **kwargs) :
