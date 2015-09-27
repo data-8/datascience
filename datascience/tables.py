@@ -691,7 +691,7 @@ class Table(collections.abc.MutableMapping):
         (0.298, 0.235, 0.216),
     )
 
-    default_hist_alpha = 0.6
+    default_hist_alpha = 0.7
 
     default_options = {
         'alpha': 0.8,
@@ -925,11 +925,12 @@ class Table(collections.abc.MutableMapping):
                 columns.pop(counts)
 
         n = len(columns)
-        colors = list(itertools.islice(itertools.cycle(self.chart_colors), n))
+        colors = [rgb_color + (self.default_hist_alpha,) for rgb_color in
+            itertools.islice(itertools.cycle(self.chart_colors), n)]
         if overlay:
-            # vargs.setdefault('histtype', 'stepfilled')
+            vargs.setdefault('histtype', 'stepfilled')
             plt.figure(figsize=(6, 4))
-            plt.hist(columns.values(), color=colors, **vargs)
+            plt.hist(list(columns.values()), color=colors, **vargs)
             plt.legend(columns.keys())
         else:
             _, axes = plt.subplots(n, 1, figsize=(6, 4 * n))
