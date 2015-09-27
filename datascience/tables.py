@@ -937,8 +937,6 @@ class Table(collections.abc.MutableMapping):
                 values = np.repeat(counted_values, n).reshape(-1,n)
                 vargs['weights'] = list(columns.values())
             vargs.setdefault('histtype', 'stepfilled')
-            print(values)
-            print(vargs)
             plt.figure(figsize=(6, 4))
             plt.hist(values, color=colors, **vargs)
             plt.legend(columns.keys())
