@@ -592,6 +592,46 @@ class Table(collections.abc.MutableMapping):
         return Table.from_rows(rows[:k], self.column_labels), \
                Table.from_rows(rows[k:], self.column_labels)
 
+    def bin(self, **vargs):
+        """Group values by bin and compute counts per bin by column.
+
+        By default, bins are chosen to contain all values in all columns. The
+        following named arguments from numpy.histogram can be applied to
+        specialize bin widths:
+
+        If the original table has n columns, the resulting binned table has
+        n+1 columns, where column 0 contains the lower bound of each bin.
+
+        Args:
+            ``bins`` (int or sequence of scalars): If bins is an int,
+                it defines the number of equal-width bins in the given range
+                (10, by default). If bins is a sequence, it defines the bin
+                edges, including the rightmost edge, allowing for non-uniform
+                bin widths.
+
+            ``range`` ((float, float)): The lower and upper range of
+                the bins. If not provided, range contains all values in the
+                table. Values outside the range are ignored.
+
+            ``density`` (bool): If False, the result will contain the number of
+                samples in each bin. If True, the result is the value of the
+                probability density function at the bin, normalized such that
+                the integral over the range is 1. Note that the sum of the
+                histogram values will not be equal to 1 unless bins of unity
+                width are chosen; it is not a probability mass function.
+        """
+        if 'normed' in vargs:
+            vargs.setdefault('density', vargs.pop('normed'))
+        density = vargs.get('density', False)
+        tag = 'density' if density else 'count'
+        _, bins = np.histogram(self.matrix(), **vargs)
+
+        binned = Table([bins[:-1]], ['bin'])
+        for label in self.column_labels:
+            counts, _ = np.histogram(self[label], bins=bins, density=density)
+            binned[label + ' ' + tag] = counts
+        return binned
+
     ##################
     # Export/Display #
     ##################
@@ -880,8 +920,9 @@ class Table(collections.abc.MutableMapping):
             bins (column name or list): Lower bound for each bin in the
                 histogram. If None, bins will be chosen automatically.
 
-            counts (column name or column): Counts for each row value in the
-                plotted columns. If None, each row is assigned a count of 1.
+            counts (column name or column): A column of counted values.
+                All other columns are treated as counts of these values.
+                If None, each value in each row is assigned a count of 1.
 
             vargs: Additional arguments that get passed into :func:plt.hist.
                 See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.hist
@@ -919,8 +960,10 @@ class Table(collections.abc.MutableMapping):
             if isinstance(bins, collections.Hashable) and bins in self.column_labels:
                 bins = np.unique(self[bins])
             vargs['bins'] = bins
+
+        counted_values = None
         if counts is not None:
-            vargs['weights'] = self._get_column(counts)
+            counted_values = self._get_column(counts)
             if isinstance(counts, collections.Hashable) and counts in self.column_labels:
                 columns.pop(counts)
 
@@ -928,16 +971,26 @@ class Table(collections.abc.MutableMapping):
         colors = [rgb_color + (self.default_hist_alpha,) for rgb_color in
             itertools.islice(itertools.cycle(self.chart_colors), n)]
         if overlay:
+            if counted_values is None:
+                values = list(columns.values())[::-1] # Reverse to match legend
+            else:
+                values = np.repeat(counted_values, n).reshape(-1,n)
+                vargs['weights'] = list(columns.values()) [::-1] # Reverse to match legend
             vargs.setdefault('histtype', 'stepfilled')
             plt.figure(figsize=(6, 4))
-            plt.hist(list(columns.values()), color=colors, **vargs)
+            plt.hist(values, color=colors, **vargs)
             plt.legend(columns.keys())
         else:
             _, axes = plt.subplots(n, 1, figsize=(6, 4 * n))
             if n == 1:
                 axes = [axes]
             for axis, label, color in zip(axes, columns.keys(), colors):
-                axis.hist(columns[label], color=color, **vargs)
+                if counted_values is None:
+                    values = columns[label]
+                else:
+                    values = counted_values
+                    vargs['weights'] = columns[label]
+                axis.hist(values, color=color, **vargs)
                 axis.set_xlabel(label, fontsize=16)
 
     def points(self, column__lat, column__long, labels=None, colors=None, **kwargs) :
