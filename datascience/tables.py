@@ -639,12 +639,12 @@ class Table(collections.abc.MutableMapping):
             binned[label + ' ' + tag] = np.append(counts, 0)
         return binned
 
-    ##################
-    # Export/Display #
-    ##################
+    ##########################
+    # Exporting / Displaying #
+    ##########################
 
     def __repr__(self):
-        return '<{0}({1} rows): | {3} |>'.format(
+        return '<{0}({1} cols, {2} rows): | {3} |>'.format(
             type(self).__name__,
             len(self),self.num_rows,
             " | ".join(map(str, self.column_labels)))
