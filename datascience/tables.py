@@ -626,10 +626,10 @@ class Table(collections.abc.MutableMapping):
         tag = 'density' if density else 'count'
         _, bins = np.histogram(self.matrix(), **vargs)
 
-        binned = Table([bins[:-1]], ['bin'])
+        binned = Table([bins], ['bin'])
         for label in self.column_labels:
             counts, _ = np.histogram(self[label], bins=bins, density=density)
-            binned[label + ' ' + tag] = counts
+            binned[label + ' ' + tag] = np.append(counts, 0)
         return binned
 
     ##################
@@ -975,7 +975,7 @@ class Table(collections.abc.MutableMapping):
                 values = list(columns.values())[::-1] # Reverse to match legend
             else:
                 values = np.repeat(counted_values, n).reshape(-1,n)
-                vargs['weights'] = list(columns.values()) [::-1] # Reverse to match legend
+                vargs['weights'] = list(columns.values())[::-1] # Reverse to match legend
             vargs.setdefault('histtype', 'stepfilled')
             plt.figure(figsize=(6, 4))
             plt.hist(values, color=colors, **vargs)
