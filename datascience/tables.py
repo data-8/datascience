@@ -550,7 +550,10 @@ class Table(collections.abc.MutableMapping):
         n = self.num_rows
         rows = [self.rows[index] for index in
             np.random.choice(n, k or n, replace=with_replacement, p=weights)]
-        return Table.from_rows(rows, self.column_labels)
+        sample = Table.from_rows(rows, self.column_labels)
+        for column_label in self._formats :
+            sample._formats[column_label] = self._formats[column_label]
+        return sample
 
     def split(self, k):
         """Returns a tuple of two tables where the first table contains
@@ -588,9 +591,13 @@ class Table(collections.abc.MutableMapping):
                 "number of rows - 1")
 
         rows = [self.rows[index] for index in
-            np.random.permutation(self.num_rows)]
-        return Table.from_rows(rows[:k], self.column_labels), \
-               Table.from_rows(rows[k:], self.column_labels)
+                np.random.permutation(self.num_rows)]
+        first = Table.from_rows(rows[:k], self.column_labels)
+        rest = Table.from_rows(rows[k:], self.column_labels)
+        for column_label in self._formats :
+            first._formats[column_label] = self._formats[column_label]
+            rest._formats[column_label] = self._formats[column_label]
+        return first,rest
 
     def bin(self, **vargs):
         """Group values by bin and compute counts per bin by column.
