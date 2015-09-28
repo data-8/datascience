@@ -550,7 +550,11 @@ class Table(collections.abc.MutableMapping):
         n = self.num_rows
         rows = [self.rows[index] for index in
             np.random.choice(n, k or n, replace=with_replacement, p=weights)]
-        return Table.from_rows(rows, self.column_labels)
+        sample = Table.from_rows(rows, self.column_labels)
+        for column_label in self._formats :
+            formatter = self._formats[column_label]
+            sample._formats[column_label] = formatter
+        return sample
 
     def split(self, k):
         """Returns a tuple of two tables where the first table contains
