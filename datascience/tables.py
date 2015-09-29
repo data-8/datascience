@@ -855,7 +855,7 @@ class Table(collections.abc.MutableMapping):
             height = vargs.pop('height')
         self._visualize(labels, yticks, overlay, draw, annotate, height=height)
 
-    def bar(self, column_for_categories, overlay=False, **vargs):
+    def bar(self, column_for_categories=None, overlay=False, **vargs):
         """Plots bar charts for the table.
 
         Each chart is categorized using the values in `column_for_categories`
@@ -943,10 +943,10 @@ class Table(collections.abc.MutableMapping):
             else:
                 xpos = index
             axis.bar(xpos, self[label], 1.0, color=color, **options)
-        # todo: clean up xtick labels, it gets crowded with too many
         def annotate(axis, ticks):
-#            axis.set_xticks(index+0.5) # Center labels on bars
-#            axis.set_xticklabels(ticks, stretch='ultra-condensed')
+            if (xticks is not None) and (len(xticks) < 10) :
+                axis.set_xticks(index+0.5) # Center labels on bars
+                axis.set_xticklabels(xticks, stretch='ultra-condensed')
             return None
         self._visualize(labels, xticks, overlay, draw, annotate)
 
