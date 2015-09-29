@@ -750,10 +750,12 @@ class Table(collections.abc.MutableMapping):
         options.update(vargs)
         xticks, labels = self._split_by_column(column_for_xticks)
         def draw(axis, label, color):
-            axis.plot(self[label], color=color, **options)
-        # TODO: annotate fails when column_for_xticks specified
+            if xticks is None:
+                axis.plot(self[label], color=color, **options)
+            else :
+                axis.plot(xticks, self[label], color=color, **options)
         def annotate(axis, ticks):
-            axis.set_xticklabels(ticks, rotation='vertical')
+#            axis.set_xticklabels(ticks, rotation='vertical')
             return None
         self._visualize(labels, xticks, overlay, draw, annotate)
 
@@ -943,8 +945,9 @@ class Table(collections.abc.MutableMapping):
             axis.bar(xpos, self[label], 1.0, color=color, **options)
         # todo: clean up xtick labels, it gets crowded with too many
         def annotate(axis, ticks):
-            axis.set_xticks(index+0.5) # Center labels on bars
-            axis.set_xticklabels(ticks, stretch='ultra-condensed')
+#            axis.set_xticks(index+0.5) # Center labels on bars
+#            axis.set_xticklabels(ticks, stretch='ultra-condensed')
+            return None
         self._visualize(labels, xticks, overlay, draw, annotate)
 
     def _visualize(self, labels, ticks, overlay, draw, annotate, width=6, height=4):
