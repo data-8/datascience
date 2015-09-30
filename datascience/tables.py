@@ -521,26 +521,26 @@ class Table(collections.abc.MutableMapping):
         Returns:
             A new instance of ``Table``.
 
-        >>> foo_table
+        >>> some_table
         job  | wage
         a    | 10
         b    | 20
         c    | 15
         d    | 8
 
-        >>> foo_table.sample()
+        >>> some_table.sample()
         job  | wage
         b    | 20
         c    | 15
         a    | 10
         d    | 8
 
-        >>> foo_table.sample(k = 2)
+        >>> some_table.sample(k = 2)
         job  | wage
         b    | 20
         c    | 15
 
-        >>> foo_table.sample(k = 2, with_replacement = True,
+        >>> some_table.sample(k = 2, with_replacement = True,
         ...     weights = [0.5, 0.5, 0, 0])
         job  | wage
         a    | 10
@@ -548,11 +548,13 @@ class Table(collections.abc.MutableMapping):
 
         """
         n = self.num_rows
-        rows = [self.rows[index] for index in
-            np.random.choice(n, k or n, replace=with_replacement, p=weights)]
-        sample = Table.from_rows(rows, self.column_labels)
-        for column_label in self._formats :
-            sample._formats[column_label] = self._formats[column_label]
+        if k is None:
+            k = n
+        index = np.random.choice(n, k, replace=with_replacement, p=weights)
+        columns = [np.choose(index, c) for c in self.columns]
+        sample = Table(columns, self.column_labels)
+        for label in self._formats:
+            sample._formats[label] = self._formats[label]
         return sample
 
     def split(self, k):
