@@ -759,6 +759,21 @@ class Table(collections.abc.MutableMapping):
             return None
         self._visualize(labels, xticks, overlay, draw, annotate)
 
+    def scatter(self, column_for_x, overlay=False, fit_line=False, **vargs):
+        """Plot contents as lines."""
+        options = self.default_options.copy()
+        options.update(vargs)
+        xdata, labels =  self._split_by_column(column_for_x)
+        def draw(axis, label, color):
+            axis.scatter(xdata, self[label], color=color, **options)
+            if fit_line:
+                m,b = np.polyfit(xdata, self[label],1)
+                minx, maxx = np.min(xdata),np.max(xdata)
+                axis.plot([minx,maxx],[m*minx+b,m*maxx+b])
+        def annotate(axis, ticks):
+            return None
+        self._visualize(labels, None, overlay, draw, annotate)
+
     def barh(self, column_for_categories, overlay=False, **vargs):
         """Plots horizontal bar charts for the table.
 
