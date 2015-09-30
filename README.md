@@ -39,6 +39,13 @@ Then, run the tests:
 
 After that, go ahead and start hacking!
 
+Documentation is generated from the docstrings in the methods and is pushed online
+at http://data8.org/datascience/ automatically. If you want to preview the docs
+locally, use these commands:
+
+    make docs       # Generates docs inside doc/ folder
+    make serve_docs # Starts a local server to view docs
+
 ## Using Zenhub
 
 We use [Zenhub](https://www.zenhub.io/) to organize development on this library.
