@@ -551,7 +551,7 @@ class Table(collections.abc.MutableMapping):
         if k is None:
             k = n
         index = np.random.choice(n, k, replace=with_replacement, p=weights)
-        columns = [np.choose(index, c) for c in self.columns]
+        columns = [[c[i] for i in index] for c in self.columns]
         sample = Table(columns, self.column_labels)
         for label in self._formats:
             sample._formats[label] = self._formats[label]
