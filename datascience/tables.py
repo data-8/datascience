@@ -16,13 +16,18 @@ import IPython
 
 import datascience.maps as _maps
 import datascience.formats as _formats
-from .util import *
+import datascience.util as _util
 
 
 class Table(collections.abc.MutableMapping):
     """A sequence of labeled columns."""
 
-    def __init__(self, columns=None, labels=None, formatter=_formats.default_formatter):
+    ##########
+    # Create #
+    ##########
+
+    def __init__(self, columns=None, labels=None,
+            formatter=_formats.default_formatter):
         """Create a table from a list of column values or dictionary of
         sequences.
 
@@ -496,7 +501,8 @@ class Table(collections.abc.MutableMapping):
         count | points
         9     | 10
         """
-        percentiles = [percentile(p, self[column_name]) for column_name in self]
+        percentiles = [[_util.percentile(p, self[column_name])]
+                       for column_name in self]
         return Table(percentiles, self.column_labels)
 
     def sample(self, k=None, with_replacement=False, weights=None):
