@@ -280,7 +280,32 @@ class Table(collections.abc.MutableMapping):
         return table
 
     def select(self, column_label_or_labels):
-        """Return a Table with selected column or columns by label."""
+        """Return a Table with selected column or columns by label.
+
+        Args:
+            ``column_label_or_labels`` (string or list of strings): The header
+            names of the columns to be selected. ``column_label_or_labels`` must
+            be an existing header name.
+
+        Returns:
+            An instance of ``Table`` containing only selected columns.
+
+        >>> print(t)
+        burgers       | prices | calories
+        cheeseburger  | 6      | 743
+        hamburger     | 5      | 651
+        veggie burger | 5      | 582
+        >>> print(t.select(['burgers', 'calories']))
+        burgers       | calories
+        cheeseburger  | 743
+        hamburger     | 651
+        veggie burger | 582
+        >>> print(t.select('prices'))
+        prices
+        6
+        5
+        5
+        """
         column_labels = _as_labels(column_label_or_labels)
         table = Table()
         for label in column_labels:
