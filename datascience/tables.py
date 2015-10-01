@@ -305,7 +305,32 @@ class Table(collections.abc.MutableMapping):
         return table
 
     def select(self, column_label_or_labels):
-        """Return a Table with selected column or columns by label."""
+        """Return a Table with selected column or columns by label.
+
+        Args:
+            ``column_label_or_labels`` (string or list of strings): The header
+            names of the columns to be selected. ``column_label_or_labels`` must
+            be an existing header name.
+
+        Returns:
+            An instance of ``Table`` containing only selected columns.
+
+        >>> print(t)
+        burgers       | prices | calories
+        cheeseburger  | 6      | 743
+        hamburger     | 5      | 651
+        veggie burger | 5      | 582
+        >>> print(t.select(['burgers', 'calories']))
+        burgers       | calories
+        cheeseburger  | 743
+        hamburger     | 651
+        veggie burger | 582
+        >>> print(t.select('prices'))
+        prices
+        6
+        5
+        5
+        """
         column_labels = _as_labels(column_label_or_labels)
         table = Table()
         for label in column_labels:
@@ -547,26 +572,26 @@ class Table(collections.abc.MutableMapping):
         Returns:
             A new instance of ``Table``.
 
-        >>> foo_table
+        >>> some_table
         job  | wage
         a    | 10
         b    | 20
         c    | 15
         d    | 8
 
-        >>> foo_table.sample()
+        >>> some_table.sample()
         job  | wage
         b    | 20
         c    | 15
         a    | 10
         d    | 8
 
-        >>> foo_table.sample(k = 2)
+        >>> some_table.sample(k = 2)
         job  | wage
         b    | 20
         c    | 15
 
-        >>> foo_table.sample(k = 2, with_replacement = True,
+        >>> some_table.sample(k = 2, with_replacement = True,
         ...     weights = [0.5, 0.5, 0, 0])
         job  | wage
         a    | 10
@@ -574,11 +599,13 @@ class Table(collections.abc.MutableMapping):
 
         """
         n = self.num_rows
-        rows = [self.rows[index] for index in
-            np.random.choice(n, k or n, replace=with_replacement, p=weights)]
-        sample = Table.from_rows(rows, self.column_labels)
-        for column_label in self._formats :
-            sample._formats[column_label] = self._formats[column_label]
+        if k is None:
+            k = n
+        index = np.random.choice(n, k, replace=with_replacement, p=weights)
+        columns = [[c[i] for i in index] for c in self.columns]
+        sample = Table(columns, self.column_labels)
+        for label in self._formats:
+            sample._formats[label] = self._formats[label]
         return sample
 
     def split(self, k):
@@ -776,10 +803,29 @@ class Table(collections.abc.MutableMapping):
         options.update(vargs)
         xticks, labels = self._split_by_column(column_for_xticks)
         def draw(axis, label, color):
-            axis.plot(self[label], color=color, **options)
+            if xticks is None:
+                axis.plot(self[label], color=color, **options)
+            else :
+                axis.plot(xticks, self[label], color=color, **options)
         def annotate(axis, ticks):
-            axis.set_xticklabels(ticks, rotation='vertical')
+#            axis.set_xticklabels(ticks, rotation='vertical')
+            return None
         self._visualize(labels, xticks, overlay, draw, annotate)
+
+    def scatter(self, column_for_x, overlay=False, fit_line=False, **vargs):
+        """Plot contents as lines."""
+        options = self.default_options.copy()
+        options.update(vargs)
+        xdata, labels =  self._split_by_column(column_for_x)
+        def draw(axis, label, color):
+            axis.scatter(xdata, self[label], color=color, **options)
+            if fit_line:
+                m,b = np.polyfit(xdata, self[label],1)
+                minx, maxx = np.min(xdata),np.max(xdata)
+                axis.plot([minx,maxx],[m*minx+b,m*maxx+b])
+        def annotate(axis, ticks):
+            return None
+        self._visualize(labels, None, overlay, draw, annotate)
 
     def barh(self, column_for_categories, overlay=False, **vargs):
         """Plots horizontal bar charts for the table.
@@ -876,6 +922,101 @@ class Table(collections.abc.MutableMapping):
         if 'height' in vargs:
             height = vargs.pop('height')
         self._visualize(labels, yticks, overlay, draw, annotate, height=height)
+
+    def bar(self, column_for_categories=None, overlay=False, **vargs):
+        """Plots bar charts for the table.
+
+        Each chart is categorized using the values in `column_for_categories`
+        and one chart is produced for every other column in the table.
+        A total of n - 1 charts are created where n is the number of columns
+        in the table.
+
+        Note that the order of the categories in the table is not guaranteed to
+        be preserved in the bar graph. Ex. `bar` on a table with "a", "b", "c"
+        as the rows in the `column_for_categories` may not output a bar graph
+        with the labels in that order.
+
+        Requires every column except for `column_for_categories` to be
+        numerical. If the columns contain other types, a `ValueError` is
+        raised.
+
+        Args:
+            column_for_categories (str): The name to use for the bar chart
+                categories
+
+        Kwargs:
+            overlay (bool): If True, creates one chart with n - 1 bars for each
+                category, one for each column other than `column_for_categories`
+                (instead of the default behavior of creating n - 1 charts).
+                Also adds a legend that matches each bar color to its column.
+
+            vargs: Additional arguments that get passed into `plt.bar`.
+                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.bar
+                for additional arguments that can be passed into vargs. These
+                include: `linewidth`, `xerr`, `yerr`, and `log`, to name a few.
+
+        Returns:
+            None
+
+        Raises:
+            ValueError: The Table contains non-numerical values in columns
+            other than `column_for_categories`
+
+        >>> furniture_table
+        Type of furniture | Count
+        chairs            | 6
+        tables            | 1
+        desks             | 2
+
+        >>> furniture_table.bar('Type of furniture')
+        <bar graph with chairs, tables, desks as the categories and bars of
+        length 6, 1, 2, respectively>
+
+        >>> furniture_table.bar('Count')
+        ValueError: The column 'Type of furniture' contains non-numerical
+        values. A bar graph cannot be drawn for this table.
+
+        >>> foo_table
+        Type of furniture | Count | Other col
+        chairs            | 6     | 10
+        tables            | 1     | 20
+        desks             | 2     | 30
+
+        >>> foo_table.bar('Type of furniture')
+        <bar graph with Type of furniture as categories and Count values>
+        <bar graph with Type of furniture as categories and Other col values>
+
+        >>> foo_table.bar('Type of furniture', overlay=True)
+        <bar graph with Type of furniture as categories and Count + Other col as
+        the two bars for each category>
+        """
+        options = self.default_options.copy()
+        options.update(vargs)
+
+        xticks, labels = self._split_by_column(column_for_categories)
+        for label in labels:
+            if any(isinstance(cell, np.flexible) for cell in self[label]):
+                raise ValueError("The column '{0}' contains non-numerical "
+                    "values. A bar graph cannot be drawn for this table."
+                    .format(label))
+
+        index = np.arange(self.num_rows)
+        margin = 0.1
+        width = 1 - 2 * margin
+        if overlay:
+            width /= len(labels)
+        def draw(axis, label, color):
+            if overlay:
+                xpos = index + margin + (1-2*margin)*labels.index(label)/len(labels)
+            else:
+                xpos = index
+            axis.bar(xpos, self[label], 1.0, color=color, **options)
+        def annotate(axis, ticks):
+            if (xticks is not None) and (len(xticks) < 10) :
+                axis.set_xticks(index+0.5) # Center labels on bars
+                axis.set_xticklabels(xticks, stretch='ultra-condensed')
+            return None
+        self._visualize(labels, xticks, overlay, draw, annotate)
 
     def _visualize(self, labels, ticks, overlay, draw, annotate, width=6, height=4):
         """Generic visualization that overlays or separates the draw function."""

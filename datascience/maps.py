@@ -258,7 +258,13 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         except ValueError:
             pass
         try:
-            data = json.loads(open(path_or_json_or_string, 'r').read())
+            path = path_or_json_or_string
+            if path.endswith('.gz') or path.endswith('.gzip'):
+                import gzip
+                contents = gzip.open(path, 'r').read().decode('utf-8')
+            else:
+                contents = open(path, 'r').read()
+            data = json.loads(contents)
         except FileNotFoundError:
             pass
         # TODO web address

@@ -17,17 +17,34 @@ Use `pip`:
 pip install datascience
 ```
 
-If you clone this repository, you may run tests against `datascience`:
-
-```
-python setup.py test
-```
+## Developing
 
 The recommended environment for installation and tests is the
 [Anaconda Python3 distribution](http://continuum.io/downloads#py34)
 
 If you encounter an `Image not found` error on **Mac OSX**, you may need an
 [XQuartz upgrade](http://xquartz.macosforge.org/landing/).
+
+Start by cloning this repository:
+
+    git clone https://github.com/dsten/datascience
+
+Install it locally with:
+
+    make install
+
+Then, run the tests:
+
+    make test
+
+After that, go ahead and start hacking!
+
+Documentation is generated from the docstrings in the methods and is pushed online
+at http://data8.org/datascience/ automatically. If you want to preview the docs
+locally, use these commands:
+
+    make docs       # Generates docs inside doc/ folder
+    make serve_docs # Starts a local server to view docs
 
 ## Using Zenhub
 
