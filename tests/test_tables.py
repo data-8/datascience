@@ -374,6 +374,8 @@ def test_append_column(table):
 
     with(pytest.raises(ValueError)):
         table.append_column('bad_col', [1, 2])
+    with(pytest.raises(ValueError)):
+        table.append_column(0, [1, 2, 3, 4])
 
 
 def test_append_table(table):

@@ -299,19 +299,22 @@ class Table(collections.abc.MutableMapping):
 
         Args:
             ``label`` (str): The label of the new column.
+                Must be a string.
 
             ``values`` (single value or list/array): If a single value, every
                 value in the new column is ``values``.
 
                 If a list or array, the new column contains the values in
-                    ``values``. ``values`` must be the same length as the table.
+                ``values``. ``values`` must be the same length as the table.
 
         Returns:
             None
 
         Raises:
-            ``ValueError``: ``values`` is a list/array and does not have the
-                same length as the number of rows in the table.
+            ``ValueError``: If
+                - ``label`` is not a string.
+                - ``values`` is a list/array and does not have the same length
+                  as the number of rows in the table.
 
         >>> table
         letter | count | points
@@ -327,7 +330,6 @@ class Table(collections.abc.MutableMapping):
         b      | 3     | 2      | 20
         c      | 3     | 2      | 30
         z      | 1     | 10     | 40
-
         >>> table.append_column('new_col2', 'hello')
         >>> table
         letter | count | points | new_col1 | new_col2
@@ -336,11 +338,17 @@ class Table(collections.abc.MutableMapping):
         c      | 3     | 2      | 30       | hello
         z      | 1     | 10     | 40       | hello
 
+        >>> table.append_column(123, [1, 2, 3, 4])
+        <ValueError raised>
         >>> table.append_column('bad_col', [1, 2])
         <ValueError raised>
         """
         # TODO(sam): Allow append_column to take in a another table, copying
         # over formatter as needed.
+        if not isinstance(label, str):
+            raise ValueError('The column label must be a string, but a '
+                '{} was given'.format(str.__class__.__name__))
+
         if not isinstance(values, np.ndarray):
             # Coerce a single value to a sequence
             if not _is_non_string_iterable(values):
