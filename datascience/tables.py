@@ -396,7 +396,6 @@ class Table(collections.abc.MutableMapping):
             column = [collect(v) for v in grouped[label]]
             del grouped[label]
             grouped[_collected_label(collect, label)] = column
-
         return grouped
 
     def pivot(self, columns, rows, values, collect=lambda s:s, zero=None):
@@ -425,6 +424,47 @@ class Table(collections.abc.MutableMapping):
             pivot = self._unused_label(str(label) + ' ' + values)
             pivoted[pivot] = column
         return pivoted
+
+    def pivot_bin(self, pivot_columns, value_column, bins=None, **vargs) :
+        """Form a table with columns formed by the unique tuples in pivot_columns
+        containing counts per bin of the values associated with each tuple in the value_column.
+
+        By default, bins are chosen to contain all values in the value_column. The
+        following named arguments from numpy.histogram can be applied to
+        specialize bin widths:
+
+        Args:
+            ``bins`` (int or sequence of scalars): If bins is an int,
+                it defines the number of equal-width bins in the given range
+                (10, by default). If bins is a sequence, it defines the bin
+                edges, including the rightmost edge, allowing for non-uniform
+                bin widths.
+
+            ``range`` ((float, float)): The lower and upper range of
+                the bins. If not provided, range contains all values in the
+                table. Values outside the range are ignored.
+
+            ``normed`` (bool): If False, the result will contain the number of
+                samples in each bin. If True, the result is normalized such that
+                the integral over the range is 1. 
+        """
+        pivot_columns = _as_labels(pivot_columns)
+        selected = self.select(pivot_columns + [value_column])
+        grouped=selected.groups(pivot_columns)
+
+        # refine bins by taking a histogram over all the data
+        if bins is not None:
+            vargs['bins'] = bins
+        _,rbins = np.histogram(self[value_column],**vargs)
+        # create a table with these bins a first column and counts for each group
+        vargs['bins'] = rbins
+        binned = Table([rbins],['bin'])
+        for group in grouped.rows:
+            col_label = "-".join(map(str,group[0:-1]))
+            col_vals = group[-1]
+            counts,_ = np.histogram(col_vals,**vargs)
+            binned[col_label] = np.append(counts,0)
+        return binned
 
     def stack(self, key, column_labels=None):
         """
