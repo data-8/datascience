@@ -208,6 +208,31 @@ class Table(collections.abc.MutableMapping):
         return tuple(self._columns.values())
 
     def values(self, label):
+        """Returns the values of a column as an array.
+
+        ``__getitem__`` is aliased to this, so bracket notation can be used:
+
+        >>> t.values('letter') == t['letter']
+        True
+
+        Args:
+            label (str): The name of the column
+
+        Returns:
+            An instance of ``numpy.array``.
+
+        >>> t
+        letter | count | points
+        a      | 9     | 1
+        b      | 3     | 2
+        c      | 3     | 2
+        z      | 1     | 10
+
+        >>> t.values("letter")
+        array(['a', 'b', 'c', 'z'])
+        >>> t.values("count")
+        array([9, 3, 3, 1])
+        """
         return self._columns[label]
 
     def column_index(self, column_label):
@@ -266,6 +291,54 @@ class Table(collections.abc.MutableMapping):
         return self
 
     def append_column(self, label, values):
+        """Appends a column to the table.
+
+        ``__setitem__`` is aliased to this method so
+        ``table.append_column('new_col', [1, 2, 3])`` is equivalent to
+        ``table['new_col'] = [1, 2, 3]``.
+
+        Args:
+            ``label`` (str): The label of the new column.
+
+            ``values`` (single value or list/array): If a single value, every
+                value in the new column is ``values``.
+
+                If a list or array, the new column contains the values in
+                    ``values``. ``values`` must be the same length as the table.
+
+        Returns:
+            None
+
+        Raises:
+            ``ValueError``: ``values`` is a list/array and does not have the
+                same length as the number of rows in the table.
+
+        >>> table
+        letter | count | points
+        a      | 9     | 1
+        b      | 3     | 2
+        c      | 3     | 2
+        z      | 1     | 10
+
+        >>> table.append_column('new_col1', [10, 20, 30, 40])
+        >>> table
+        letter | count | points | new_col1
+        a      | 9     | 1      | 10
+        b      | 3     | 2      | 20
+        c      | 3     | 2      | 30
+        z      | 1     | 10     | 40
+
+        >>> table.append_column('new_col2', 'hello')
+        >>> table
+        letter | count | points | new_col1 | new_col2
+        a      | 9     | 1      | 10       | hello
+        b      | 3     | 2      | 20       | hello
+        c      | 3     | 2      | 30       | hello
+        z      | 1     | 10     | 40       | hello
+
+        >>> table.append_column('bad_col', [1, 2])
+        <ValueError raised>
+        """
         # TODO(sam): Allow append_column to take in a another table, copying
         # over formatter as needed.
         if not isinstance(values, np.ndarray):
@@ -274,8 +347,10 @@ class Table(collections.abc.MutableMapping):
                 values = [values] * max(self.num_rows, 1)
             values = np.array(tuple(values))
 
-        if self.num_rows is not 0:
-            assert len(values) == self.num_rows, 'column length mismatch'
+        if self.num_rows != 0 and len(values) != self.num_rows:
+            raise ValueError('Column length mismatch. The column passed in'
+                'does not have the same length as the number of rows in the'
+                'table.')
         else:
             self._num_rows = len(values)
 
