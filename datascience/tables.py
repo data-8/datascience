@@ -822,7 +822,8 @@ class Table(collections.abc.MutableMapping):
             else :
                 axis.plot(xticks, self[label], color=color, **options)
         def annotate(axis, ticks):
-#            axis.set_xticklabels(ticks, rotation='vertical')
+            tick_labels = [ticks[int(l)] for l in axis.get_xticks() if l<len(ticks)]
+            axis.set_xticklabels(tick_labels, rotation='vertical')
             return None
         self._visualize(labels, xticks, overlay, draw, annotate)
 
