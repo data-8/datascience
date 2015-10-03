@@ -69,6 +69,11 @@ def test_basic(t):
     z      | 1     | 10
     """)
 
+def test_values(table):
+    """Test table.values()"""
+    assert_array_equal(table.values('letter'), np.array(['a', 'b', 'c', 'z']))
+    assert_array_equal(table.values('count'), np.array([9, 3, 3, 1]))
+
 
 def test_basic_points(t):
     assert_array_equal(t['points'], np.array([1, 2, 2, 10]))
@@ -345,6 +350,32 @@ def test_append_row(table):
     z      | 1     | 10
     g      | 2     | 2
     """)
+
+def test_append_column(table):
+    column_1 = [10, 20, 30, 40]
+    column_2 = 'hello'
+    table.append_column('new_col1', column_1)
+    assert_equal(table, """
+    letter | count | points | new_col1
+    a      | 9     | 1      | 10
+    b      | 3     | 2      | 20
+    c      | 3     | 2      | 30
+    z      | 1     | 10     | 40
+    """)
+    table.append_column('new_col2', column_2)
+    print(table)
+    assert_equal(table, """
+    letter | count | points | new_col1 | new_col2
+    a      | 9     | 1      | 10       | hello
+    b      | 3     | 2      | 20       | hello
+    c      | 3     | 2      | 30       | hello
+    z      | 1     | 10     | 40       | hello
+    """)
+
+    with(pytest.raises(ValueError)):
+        table.append_column('bad_col', [1, 2])
+    with(pytest.raises(ValueError)):
+        table.append_column(0, [1, 2, 3, 4])
 
 
 def test_append_table(table):

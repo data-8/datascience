@@ -16,13 +16,18 @@ import IPython
 
 import datascience.maps as _maps
 import datascience.formats as _formats
-from .util import *
+import datascience.util as _util
 
 
 class Table(collections.abc.MutableMapping):
     """A sequence of labeled columns."""
 
-    def __init__(self, columns=None, labels=None, formatter=_formats.default_formatter):
+    ##########
+    # Create #
+    ##########
+
+    def __init__(self, columns=None, labels=None,
+            formatter=_formats.default_formatter):
         """Create a table from a list of column values or dictionary of
         sequences.
 
@@ -62,15 +67,18 @@ class Table(collections.abc.MutableMapping):
             A new instance of ``Table``.
 
         Raises:
-            AssertionError: ``labels`` is specified but ``columns`` is not.
-                ``columns`` is a dict but ``labels`` are specified.
-                ``columns`` is a list but ``labels`` are not specified.
-                The length of ``labels`` and the length of ``columns`` are
-                unequal.
+            AssertionError:
+                - ``labels`` is specified but ``columns`` is not.
+                - ``columns`` is a dict but ``labels`` are specified.
+                - ``columns`` is a list but ``labels`` are not specified.
+                - The length of ``labels`` and the length of ``columns`` are
+                  unequal.
         """
         self._columns = collections.OrderedDict()
         self._formats = dict()
         self.formatter = formatter
+
+        # Ensure inputs are properly formed
         if not columns:
             assert not labels, 'labels but no columns'
             columns, labels = [], []
@@ -79,146 +87,12 @@ class Table(collections.abc.MutableMapping):
             columns, labels = columns.values(), columns.keys()
         assert labels is not None, 'Labels are required'
         assert len(labels) == len(columns), 'label/column number mismatch'
+
+        self._num_rows = 0 if len(columns) is 0 else len(columns[0])
+
+        # Add each column to table
         for column, label in zip(columns, labels):
             self[label] = column
-
-    def __getitem__(self, label):
-        return self._columns[label]
-
-    def __setitem__(self, label, values):
-        if not isinstance(values, np.ndarray):
-            # Coerce a single value to a sequence
-            if not _is_non_string_iterable(values):
-                values = [values] * max(self.num_rows, 1)
-            values = np.array(tuple(values))
-        if hasattr(self, '_num_rows') & self.num_rows > 0:
-            assert len(values) == self.num_rows, 'column length mismatch'
-        else:
-            self._num_rows = len(values)
-        self._columns[label] = values
-
-    def __delitem__(self, label):
-        del self._columns[label]
-        if label in self._formats:
-            del self._formats[label]
-
-    def __len__(self):
-        return len(self._columns)
-
-    def __iter__(self):
-        return iter(self.column_labels)
-
-    def __getattr__(self, attr):
-        """Return a method that applies to all columns or a table of attributes.
-
-        E.g., t.sum() on a Table will return a table with the sum of each column.
-        """
-        if self.columns and all(hasattr(c, attr) for c in self.columns):
-            attrs = [getattr(c, attr) for c in self.columns]
-            if all(callable(attr) for attr in attrs):
-                @functools.wraps(attrs[0])
-                def method(*args, **vargs):
-                    """Create a table from the results of calling attrs."""
-                    columns = [attr(*args, **vargs) for attr in attrs]
-                    return self._with_columns(columns)
-                return method
-            else:
-                return self._with_columns([[attr] for attr in attrs])
-        else:
-            msg = "'{0}' object has no attribute '{1}'".format(type(self).__name__, attr)
-            raise AttributeError(msg)
-
-    @property
-    def num_rows(self):
-        """Number of rows."""
-        if hasattr(self, '_num_rows'):
-            return self._num_rows
-        else:
-            return 0
-
-    @property
-    def rows(self):
-        """Return a view of all rows."""
-        return self.Rows(self)
-
-    @property
-    def column_labels(self):
-        """Return a tuple of column labels."""
-        return tuple(self._columns.keys())
-
-    @property
-    def columns(self):
-        return tuple(self._columns.values())
-
-    def column_index(self, column_label):
-        """Return the index of a column."""
-        return self.column_labels.index(column_label)
-
-    def apply(self, fn, column_label):
-        """Returns an array where fn is applied to each element
-        of a specified column."""
-        return np.array([fn(v) for v in self[column_label]])
-
-    ##########
-    # Modify #
-    ##########
-
-    def set_format(self, column_label_or_labels, formatter):
-        """Set the format of a column."""
-        for label in _as_labels(column_label_or_labels):
-            if inspect.isclass(formatter) and issubclass(formatter, _formats.Formatter):
-                formatter = formatter()
-            if callable(formatter):
-                self._formats[label] = lambda v, label: v if label else str(formatter(v))
-            elif isinstance(formatter, _formats.Formatter):
-                if formatter.converts_values:
-                    self[label] = self.apply(formatter.convert, label)
-                column = self[label]
-                self._formats[label] = formatter.format_column(label, column)
-            else:
-                raise Exception('Expected Formatter or function: ' + str(formatter))
-        return self
-
-    def move_to_start(self, column_label):
-        """Move a column to the first in order."""
-        self._columns.move_to_end(column_label, last=False)
-        return self
-
-    def move_to_end(self, column_label):
-        """Move a column to the last in order."""
-        self._columns.move_to_end(column_label)
-        return self
-
-    def append(self, row_or_table):
-        """Append a row or all rows of a table. An appended table must have all
-        columns of self."""
-        if not row_or_table:
-            return
-        if isinstance(row_or_table, Table):
-            t = row_or_table
-            row = list(t.select(self.column_labels)._columns.values())
-            n = t.num_rows
-        else:
-            row, n = row_or_table, 1
-        for i, column in enumerate(self._columns):
-            self._columns[column] = np.append(self[column], row[i])
-        self._num_rows = self.num_rows + n
-        return self
-
-    def relabel(self, column_label, new_label):
-        """Change the label of a column."""
-        assert column_label in self._columns
-        rewrite = lambda s: new_label if s == column_label else s
-        columns = [(rewrite(s), c) for s, c in self._columns.items()]
-        self._columns = collections.OrderedDict(columns)
-        if column_label in self._formats:
-            formatter = self._formats.pop(column_label)
-            self._formats[new_label] = formatter
-        return self
-
-    ##########
-    # Create #
-    ##########
 
     @classmethod
     def from_rows(cls, rows, column_labels):
@@ -268,9 +142,243 @@ class Table(collections.abc.MutableMapping):
         if label in self._formats:
             table._formats[label] = self._formats[label]
 
-    #############
-    # Transform #
-    #############
+
+    #################
+    # Magic Methods #
+    #################
+
+    def __getitem__(self, label):
+        return self.values(label)
+
+    def __setitem__(self, label, values):
+        self.append_column(label, values)
+
+    def __delitem__(self, label):
+        del self._columns[label]
+        if label in self._formats:
+            del self._formats[label]
+
+    def __len__(self):
+        return len(self._columns)
+
+    def __iter__(self):
+        return iter(self.column_labels)
+
+    def __getattr__(self, attr):
+        """Return a method that applies to all columns or a table of attributes.
+
+        E.g., t.sum() on a Table will return a table with the sum of each column.
+        """
+        if self.columns and all(hasattr(c, attr) for c in self.columns):
+            attrs = [getattr(c, attr) for c in self.columns]
+            if all(callable(attr) for attr in attrs):
+                @functools.wraps(attrs[0])
+                def method(*args, **vargs):
+                    """Create a table from the results of calling attrs."""
+                    columns = [attr(*args, **vargs) for attr in attrs]
+                    return self._with_columns(columns)
+                return method
+            else:
+                return self._with_columns([[attr] for attr in attrs])
+        else:
+            msg = "'{0}' object has no attribute '{1}'".format(type(self).__name__, attr)
+            raise AttributeError(msg)
+
+    ####################
+    # Accessing Values #
+    ####################
+
+    @property
+    def num_rows(self):
+        """Number of rows."""
+        return self._num_rows
+
+    @property
+    def rows(self):
+        """Return a view of all rows."""
+        return self.Rows(self)
+
+    @property
+    def column_labels(self):
+        """Return a tuple of column labels."""
+        return tuple(self._columns.keys())
+
+    @property
+    def columns(self):
+        return tuple(self._columns.values())
+
+    def values(self, label):
+        """Returns the values of a column as an array.
+
+        ``__getitem__`` is aliased to this, so bracket notation can be used:
+
+        >>> t.values('letter') == t['letter']
+        True
+
+        Args:
+            label (str): The name of the column
+
+        Returns:
+            An instance of ``numpy.array``.
+
+        >>> t
+        letter | count | points
+        a      | 9     | 1
+        b      | 3     | 2
+        c      | 3     | 2
+        z      | 1     | 10
+
+        >>> t.values("letter")
+        array(['a', 'b', 'c', 'z'])
+        >>> t.values("count")
+        array([9, 3, 3, 1])
+        """
+        return self._columns[label]
+
+    def column_index(self, column_label):
+        """Return the index of a column."""
+        return self.column_labels.index(column_label)
+
+    def apply(self, fn, column_label):
+        """Returns an array where fn is applied to each element
+        of a specified column."""
+        return np.array([fn(v) for v in self[column_label]])
+
+    ############
+    # Mutation #
+    ############
+
+    def set_format(self, column_label_or_labels, formatter):
+        """Set the format of a column."""
+        for label in _as_labels(column_label_or_labels):
+            if inspect.isclass(formatter) and issubclass(formatter, _formats.Formatter):
+                formatter = formatter()
+            if callable(formatter):
+                self._formats[label] = lambda v, label: v if label else str(formatter(v))
+            elif isinstance(formatter, _formats.Formatter):
+                if formatter.converts_values:
+                    self[label] = self.apply(formatter.convert, label)
+                column = self[label]
+                self._formats[label] = formatter.format_column(label, column)
+            else:
+                raise Exception('Expected Formatter or function: ' + str(formatter))
+        return self
+
+    def move_to_start(self, column_label):
+        """Move a column to the first in order."""
+        self._columns.move_to_end(column_label, last=False)
+        return self
+
+    def move_to_end(self, column_label):
+        """Move a column to the last in order."""
+        self._columns.move_to_end(column_label)
+        return self
+
+    def append(self, row_or_table):
+        """Append a row or all rows of a table. An appended table must have all
+        columns of self."""
+        if not row_or_table:
+            return
+        if isinstance(row_or_table, Table):
+            t = row_or_table
+            row = list(t.select(self.column_labels)._columns.values())
+            n = t.num_rows
+        else:
+            row, n = row_or_table, 1
+        for i, column in enumerate(self._columns):
+            self._columns[column] = np.append(self[column], row[i])
+        self._num_rows += n
+        return self
+
+    def append_column(self, label, values):
+        """Appends a column to the table.
+
+        ``__setitem__`` is aliased to this method so
+        ``table.append_column('new_col', [1, 2, 3])`` is equivalent to
+        ``table['new_col'] = [1, 2, 3]``.
+
+        Args:
+            ``label`` (str): The label of the new column.
+                Must be a string.
+
+            ``values`` (single value or list/array): If a single value, every
+                value in the new column is ``values``.
+
+                If a list or array, the new column contains the values in
+                ``values``. ``values`` must be the same length as the table.
+
+        Returns:
+            None
+
+        Raises:
+            ``ValueError``: If
+                - ``label`` is not a string.
+                - ``values`` is a list/array and does not have the same length
+                  as the number of rows in the table.
+
+        >>> table
+        letter | count | points
+        a      | 9     | 1
+        b      | 3     | 2
+        c      | 3     | 2
+        z      | 1     | 10
+
+        >>> table.append_column('new_col1', [10, 20, 30, 40])
+        >>> table
+        letter | count | points | new_col1
+        a      | 9     | 1      | 10
+        b      | 3     | 2      | 20
+        c      | 3     | 2      | 30
+        z      | 1     | 10     | 40
+        >>> table.append_column('new_col2', 'hello')
+        >>> table
+        letter | count | points | new_col1 | new_col2
+        a      | 9     | 1      | 10       | hello
+        b      | 3     | 2      | 20       | hello
+        c      | 3     | 2      | 30       | hello
+        z      | 1     | 10     | 40       | hello
+
+        >>> table.append_column(123, [1, 2, 3, 4])
+        <ValueError raised>
+        >>> table.append_column('bad_col', [1, 2])
+        <ValueError raised>
+        """
+        # TODO(sam): Allow append_column to take in a another table, copying
+        # over formatter as needed.
+        if not isinstance(label, str):
+            raise ValueError('The column label must be a string, but a '
+                '{} was given'.format(str.__class__.__name__))
+
+        if not isinstance(values, np.ndarray):
+            # Coerce a single value to a sequence
+            if not _is_non_string_iterable(values):
+                values = [values] * max(self.num_rows, 1)
+            values = np.array(tuple(values))
+
+        if self.num_rows != 0 and len(values) != self.num_rows:
+            raise ValueError('Column length mismatch. The column passed in'
+                'does not have the same length as the number of rows in the'
+                'table.')
+        else:
+            self._num_rows = len(values)
+
+        self._columns[label] = values
+        return self
+
+    def relabel(self, column_label, new_label):
+        """Change the label of a column."""
+        assert column_label in self._columns
+        rewrite = lambda s: new_label if s == column_label else s
+        columns = [(rewrite(s), c) for s, c in self._columns.items()]
+        self._columns = collections.OrderedDict(columns)
+        if column_label in self._formats:
+            formatter = self._formats.pop(column_label)
+            self._formats[new_label] = formatter
+        return self
+
+    ##################
+    # Transformation #
+    ##################
 
     def copy(self):
         """Return a copy of a Table."""
@@ -561,7 +669,8 @@ class Table(collections.abc.MutableMapping):
         count | points
         9     | 10
         """
-        percentiles = [percentile(p, self[column_name]) for column_name in self]
+        percentiles = [[_util.percentile(p, self[column_name])]
+                       for column_name in self]
         return Table(percentiles, self.column_labels)
 
     def sample(self, k=None, with_replacement=False, weights=None):
@@ -706,12 +815,12 @@ class Table(collections.abc.MutableMapping):
             binned[label + ' ' + tag] = np.append(counts, 0)
         return binned
 
-    ##################
-    # Export/Display #
-    ##################
+    ##########################
+    # Exporting / Displaying #
+    ##########################
 
     def __repr__(self):
-        return '<{0}({1} rows): | {3} |>'.format(
+        return '<{0}({1} cols, {2} rows): | {3} |>'.format(
             type(self).__name__,
             len(self),self.num_rows,
             " | ".join(map(str, self.column_labels)))
@@ -788,9 +897,9 @@ class Table(collections.abc.MutableMapping):
             index.setdefault(key, []).append(row)
         return index
 
-    #############
-    # Visualize #
-    #############
+    ##################
+    # Visualizations #
+    ##################
 
     # As RGB tuples
     chart_colors = (
