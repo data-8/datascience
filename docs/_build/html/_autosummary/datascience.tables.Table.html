@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>datascience.tables.Table &mdash; datascience 0.3.7 documentation</title>
+    <title>datascience.tables.Table &mdash; datascience 0.3.12 documentation</title>
     
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.3.7',
+        VERSION:     '0.3.12',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.3.7 documentation" href="../index.html" /> 
+    <link rel="top" title="datascience 0.3.12 documentation" href="../index.html" /> 
   </head>
   <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.3.7 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.3.12 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -91,11 +91,15 @@ dict.</dd>
 <dd>A new instance of <code class="docutils literal"><span class="pre">Table</span></code>.</dd>
 <dt>Raises:</dt>
 <dd><dl class="first last docutils">
-<dt>AssertionError: <code class="docutils literal"><span class="pre">labels</span></code> is specified but <code class="docutils literal"><span class="pre">columns</span></code> is not.</dt>
-<dd><code class="docutils literal"><span class="pre">columns</span></code> is a dict but <code class="docutils literal"><span class="pre">labels</span></code> are specified.
-<code class="docutils literal"><span class="pre">columns</span></code> is a list but <code class="docutils literal"><span class="pre">labels</span></code> are not specified.
-The length of <code class="docutils literal"><span class="pre">labels</span></code> and the length of <code class="docutils literal"><span class="pre">columns</span></code> are
-unequal.</dd>
+<dt>AssertionError:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">labels</span></code> is specified but <code class="docutils literal"><span class="pre">columns</span></code> is not.</li>
+<li><code class="docutils literal"><span class="pre">columns</span></code> is a dict but <code class="docutils literal"><span class="pre">labels</span></code> are specified.</li>
+<li><code class="docutils literal"><span class="pre">columns</span></code> is a list but <code class="docutils literal"><span class="pre">labels</span></code> are not specified.</li>
+<li>The length of <code class="docutils literal"><span class="pre">labels</span></code> and the length of <code class="docutils literal"><span class="pre">columns</span></code> are
+unequal.</li>
+</ul>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -177,7 +181,7 @@ unequal.</dd>
 <tr class="row-odd"><td><a class="reference internal" href="datascience.tables.Table.plot.html#datascience.tables.Table.plot" title="datascience.tables.Table.plot"><code class="xref py py-obj docutils literal"><span class="pre">plot</span></code></a>([column_for_xticks,&nbsp;overlay])</td>
 <td>Plot contents as lines.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="datascience.tables.Table.points.html#datascience.tables.Table.points" title="datascience.tables.Table.points"><code class="xref py py-obj docutils literal"><span class="pre">points</span></code></a>(column__lat,&nbsp;column__long[,&nbsp;radii,&nbsp;...])</td>
+<tr class="row-even"><td><a class="reference internal" href="datascience.tables.Table.points.html#datascience.tables.Table.points" title="datascience.tables.Table.points"><code class="xref py py-obj docutils literal"><span class="pre">points</span></code></a>(column__lat,&nbsp;column__long[,&nbsp;labels,&nbsp;...])</td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="datascience.tables.Table.read_table.html#datascience.tables.Table.read_table" title="datascience.tables.Table.read_table"><code class="xref py py-obj docutils literal"><span class="pre">read_table</span></code></a>(filepath_or_buffer,&nbsp;*args,&nbsp;**vargs)</td>
@@ -210,7 +214,10 @@ unequal.</dd>
 <tr class="row-even"><td><a class="reference internal" href="datascience.tables.Table.take.html#datascience.tables.Table.take" title="datascience.tables.Table.take"><code class="xref py py-obj docutils literal"><span class="pre">take</span></code></a>(row_numbers)</td>
 <td>Return a Table of a sequence of rows taken by number.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="datascience.tables.Table.where.html#datascience.tables.Table.where" title="datascience.tables.Table.where"><code class="xref py py-obj docutils literal"><span class="pre">where</span></code></a>(column_or_label[,&nbsp;value])</td>
+<tr class="row-odd"><td><a class="reference internal" href="datascience.tables.Table.values.html#datascience.tables.Table.values" title="datascience.tables.Table.values"><code class="xref py py-obj docutils literal"><span class="pre">values</span></code></a>(label)</td>
+<td>Returns the values of a column as an array.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="datascience.tables.Table.where.html#datascience.tables.Table.where" title="datascience.tables.Table.where"><code class="xref py py-obj docutils literal"><span class="pre">where</span></code></a>(column_or_label[,&nbsp;value])</td>
 <td>Return a Table of rows for which the column is value or a non-zero value.</td>
 </tr>
 </tbody>
@@ -288,7 +295,7 @@ unequal.</dd>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.3.7 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.3.12 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
