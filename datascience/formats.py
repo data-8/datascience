@@ -105,10 +105,14 @@ class CurrencyFormatter(Formatter):
         self.symbol = symbol
 
     def convert(self, value):
-        """Convert string $1.25 to float 1.25."""
-        assert isinstance(value, str), "Currency is not a string"
-        assert value.startswith(self.symbol), "Currency does not start with " + self.symbol
-        return float(value.lstrip(self.symbol))
+        """Convert value to float. If value is a string, ensure that the first
+        character is the same as symbol ie. the value is in the currency this
+        formatter is representing.
+        """
+        if isinstance(value, str):
+            assert value.startswith(self.symbol), "Currency does not start with " + self.symbol
+            return float(value.lstrip(self.symbol))
+        return float(value)
 
     def format_value(self, value):
         """Format currency."""

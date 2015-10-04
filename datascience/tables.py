@@ -250,9 +250,9 @@ class Table(collections.abc.MutableMapping):
 
     def set_format(self, column_label_or_labels, formatter):
         """Set the format of a column."""
+        if inspect.isclass(formatter) and issubclass(formatter, _formats.Formatter):
+            formatter = formatter()
         for label in _as_labels(column_label_or_labels):
-            if inspect.isclass(formatter) and issubclass(formatter, _formats.Formatter):
-                formatter = formatter()
             if callable(formatter):
                 self._formats[label] = lambda v, label: v if label else str(formatter(v))
             elif isinstance(formatter, _formats.Formatter):
