@@ -50,6 +50,7 @@ Accessing values
 .. autosummary::
     :toctree: _autosummary
 
+    Table.values
     Table.num_rows
     Table.rows
     Table.column_labels
@@ -68,6 +69,7 @@ Mutation (modifies table in place)
     Table.move_to_start
     Table.move_to_end
     Table.append
+    Table.append_column
     Table.relabel
 
 Transformation (creates a new table)
