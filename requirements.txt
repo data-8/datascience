@@ -1,0 +1,6 @@
+numpy
+matplotlib
+pandas
+folium==0.1.5
+IPython
+jinja2
