@@ -1,6 +1,0 @@
-datascience.tables.Table.stack
-==============================
-
-.. currentmodule:: datascience.tables
-
-.. automethod:: Table.stack
