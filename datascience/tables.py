@@ -1,5 +1,8 @@
 """Tables as ordered dictionaries of Numpy arrays."""
 
+__all__ = ['Table', 'Q']
+
+
 import collections
 import collections.abc
 import functools

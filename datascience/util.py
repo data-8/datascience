@@ -1,5 +1,8 @@
 """Utility functions"""
 
+__all__ = ['percentile']
+
+
 import numpy as np
 
 def percentile(p, arr=None):
