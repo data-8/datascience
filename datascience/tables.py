@@ -1316,17 +1316,17 @@ class Table(collections.abc.MutableMapping):
                 self._labels = labels
 
                 class Row(tuple):
-                    _table = self._table
+                    __table = self._table
 
                     def __getattr__(self, column_label):
-                        return self[self._table.column_index(column_label)]
+                        return self[self.__table.column_index(column_label)]
 
                     def __repr__(self):
                         return 'Row({})'.format(', '.join('{}={}'.format(
-                            self._table.column_labels[i], v.__repr__()) for i, v in enumerate(self)))
+                            self.__table.column_labels[i], v.__repr__()) for i, v in enumerate(self)))
 
                     def asdict(self):
-                        return collections.OrderedDict(zip(self._table.column_labels, self))
+                        return collections.OrderedDict(zip(self.__table.column_labels, self))
 
                 self._row = Row
 
