@@ -103,6 +103,7 @@ Exporting / Displaying
     Table.as_html
     Table.matrix
     Table.index_by
+    Table.to_df
 
 Visualizations
 
