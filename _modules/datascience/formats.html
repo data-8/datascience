@@ -49,6 +49,10 @@
   <h1>Source code for datascience.formats</h1><div class="highlight"><pre>
 <span class="sd">&quot;&quot;&quot;String formatting for table entries.&quot;&quot;&quot;</span>
 
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;default_formatter&#39;</span><span class="p">,</span> <span class="s">&#39;Formatter&#39;</span><span class="p">,</span> <span class="s">&#39;NumberFormatter&#39;</span><span class="p">,</span>
+           <span class="s">&#39;CurrencyFormatter&#39;</span><span class="p">,</span> <span class="s">&#39;DateFormatter&#39;</span><span class="p">,</span> <span class="s">&#39;PercentFormatter&#39;</span><span class="p">]</span>
+
+
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timezone</span>
@@ -154,10 +158,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">symbol</span> <span class="o">=</span> <span class="n">symbol</span>
 
 <div class="viewcode-block" id="CurrencyFormatter.convert"><a class="viewcode-back" href="../../formats.html#datascience.formats.CurrencyFormatter.convert">[docs]</a>    <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Convert string $1.25 to float 1.25.&quot;&quot;&quot;</span>
-        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> <span class="s">&quot;Currency is not a string&quot;</span>
-        <span class="k">assert</span> <span class="n">value</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">symbol</span><span class="p">),</span> <span class="s">&quot;Currency does not start with &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">symbol</span>
-        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">symbol</span><span class="p">))</span>
+        <span class="sd">&quot;&quot;&quot;Convert value to float. If value is a string, ensure that the first</span>
+<span class="sd">        character is the same as symbol ie. the value is in the currency this</span>
+<span class="sd">        formatter is representing.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">assert</span> <span class="n">value</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">symbol</span><span class="p">),</span> <span class="s">&quot;Currency does not start with &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">symbol</span>
+            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">symbol</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="CurrencyFormatter.format_value"><a class="viewcode-back" href="../../formats.html#datascience.formats.CurrencyFormatter.format_value">[docs]</a>    <span class="k">def</span> <span class="nf">format_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Format currency.&quot;&quot;&quot;</span>

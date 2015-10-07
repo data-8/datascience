@@ -56,20 +56,6 @@
 <h1>Maps (<code class="docutils literal"><span class="pre">datascience.maps</span></code>)<a class="headerlink" href="#maps-datascience-maps" title="Permalink to this headline">¶</a></h1>
 <span class="target" id="module-datascience.maps"></span><p>Draw maps using folium.</p>
 <dl class="class">
-<dt id="datascience.maps.Circle">
-<em class="property">class </em><code class="descclassname">datascience.maps.</code><code class="descname">Circle</code><span class="sig-paren">(</span><em>lat</em>, <em>lon</em>, <em>popup=''</em>, <em>color='blue'</em>, <em>radius=10</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Circle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Circle" title="Permalink to this definition">¶</a></dt>
-<dd><p>A marker displayed with Folium&#8217;s circle_marker method.</p>
-<p>popup &#8211; text that pops up when marker is clicked
-color &#8211; fill color
-radius &#8211; pixel radius of the circle</p>
-<p>Defaults from Folium:</p>
-<dl class="docutils">
-<dt>fill_opacity: float, default 0.6</dt>
-<dd>Circle fill opacity</dd>
-</dl>
-</dd></dl>
-
-<dl class="class">
 <dt id="datascience.maps.Map">
 <em class="property">class </em><code class="descclassname">datascience.maps.</code><code class="descname">Map</code><span class="sig-paren">(</span><em>features=()</em>, <em>ids=()</em>, <em>width=960</em>, <em>height=500</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Map" title="Permalink to this definition">¶</a></dt>
 <dd><p>A map from IDs to features. Keyword args are forwarded to folium.</p>
@@ -177,6 +163,20 @@ other markers</dd>
 <dd><p>Return markers from the colums of a table.</p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="class">
+<dt id="datascience.maps.Circle">
+<em class="property">class </em><code class="descclassname">datascience.maps.</code><code class="descname">Circle</code><span class="sig-paren">(</span><em>lat</em>, <em>lon</em>, <em>popup=''</em>, <em>color='blue'</em>, <em>radius=10</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Circle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Circle" title="Permalink to this definition">¶</a></dt>
+<dd><p>A marker displayed with Folium&#8217;s circle_marker method.</p>
+<p>popup &#8211; text that pops up when marker is clicked
+color &#8211; fill color
+radius &#8211; pixel radius of the circle</p>
+<p>Defaults from Folium:</p>
+<dl class="docutils">
+<dt>fill_opacity: float, default 0.6</dt>
+<dd>Circle fill opacity</dd>
+</dl>
 </dd></dl>
 
 <dl class="class">
