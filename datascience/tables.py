@@ -624,7 +624,7 @@ class Table(collections.abc.MutableMapping):
         """
         rows, column_labels = [], column_labels or self.column_labels
         for row in self.rows:
-            [rows.append((getattr(row, key), k, v)) for k, v in row._asdict().items()
+            [rows.append((getattr(row, key), k, v)) for k, v in row.asdict().items()
              if k != key and k in column_labels]
         return Table.from_rows(rows, [key, 'column', 'value'])
 
@@ -1357,8 +1357,23 @@ class Table(collections.abc.MutableMapping):
             labels = tuple(self._table.column_labels)
             if labels != self._labels:
                 self._labels = labels
-                self._row = collections.namedtuple('Row', labels, rename=True)
-            return self._row(*[c[i] for c in self._table._columns.values()])
+
+                class Row(tuple):
+                    __table = self._table
+
+                    def __getattr__(self, column_label):
+                        return self[self.__table.column_index(column_label)]
+
+                    def __repr__(self):
+                        return 'Row({})'.format(', '.join('{}={}'.format(
+                            self.__table.column_labels[i], v.__repr__()) for i, v in enumerate(self)))
+
+                    def asdict(self):
+                        return collections.OrderedDict(zip(self.__table.column_labels, self))
+
+                self._row = Row
+
+            return self._row([c[i] for c in self._table._columns.values()])
 
         def __len__(self):
             return self._table.num_rows
