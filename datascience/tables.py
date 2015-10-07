@@ -597,7 +597,7 @@ class Table(collections.abc.MutableMapping):
 
             ``normed`` (bool): If False, the result will contain the number of
                 samples in each bin. If True, the result is normalized such that
-                the integral over the range is 1. 
+                the integral over the range is 1.
         """
         pivot_columns = _as_labels(pivot_columns)
         selected = self.select(pivot_columns + [value_column])
@@ -1081,10 +1081,12 @@ class Table(collections.abc.MutableMapping):
                 ypos = index + margin + (1-2*margin)*labels.index(label)/len(labels)
             else:
                 ypos = index
+            #barh plots entries in reverse order from bottom to top
             axis.barh(ypos, self[label][::-1], width,  color=color, **options)
         def annotate(axis, ticks):
             axis.set_yticks(index+0.5) # Center labels on bars
-            axis.set_yticklabels(ticks[::-1], stretch='ultra-condensed')
+            #barh plots entries in reverse order from bottom to top
+            axis.set_yticklabels(ticks[::-1], stretch='ultra-condensed') 
         height = max(4, len(index)/2)
         if 'height' in vargs:
             height = vargs.pop('height')
