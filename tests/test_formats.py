@@ -58,8 +58,8 @@ def test_currency_format():
 
 
 def test_currency_format_int():
-    t = Table([[1., 2., 3.]], ['money'])
-    t.set_format(['money'], CurrencyFormatter)
+    t = ds.Table([[1., 2., 3.]], ['money'])
+    t.set_format(['money'], ds.CurrencyFormatter)
     assert_equal(t, """
     money
     $1.00
