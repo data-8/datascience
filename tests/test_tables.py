@@ -749,3 +749,13 @@ def test_q_chaining(table):
     letter | count | points
     a      | 9     | 1
     """)
+
+def test_row_slicing(table):
+    t = table[:2]
+    assert_equal(t.column_labels, ('letter', 'count', 'points'))
+    assert_array_equal(t.columns[0], ['a', 'b'])
+    assert_array_equal(t.columns[1], [9, 3])
+    assert_array_equal(t.columns[2], [1, 2])
+
+    t_row = table[-1]
+    assert_equal(len(t_row.rows), 1)
