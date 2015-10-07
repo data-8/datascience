@@ -1081,10 +1081,10 @@ class Table(collections.abc.MutableMapping):
                 ypos = index + margin + (1-2*margin)*labels.index(label)/len(labels)
             else:
                 ypos = index
-            axis.barh(ypos, self[label], width,  color=color, **options)
+            axis.barh(ypos, self[label][::-1], width,  color=color, **options)
         def annotate(axis, ticks):
             axis.set_yticks(index+0.5) # Center labels on bars
-            axis.set_yticklabels(ticks, stretch='ultra-condensed')
+            axis.set_yticklabels(ticks[::-1], stretch='ultra-condensed')
         height = max(4, len(index)/2)
         if 'height' in vargs:
             height = vargs.pop('height')
