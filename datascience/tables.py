@@ -426,7 +426,47 @@ class Table(collections.abc.MutableMapping):
         return self.select([c for c in self.column_labels if c not in exclude])
 
     def take(self, row_numbers):
-        """Return a Table of a sequence of rows taken by number."""
+        """Return a Table of a sequence of rows taken by number.
+
+        Args:
+            ``row_numbers`` (integer or list of integers): The list of row numbers to
+            be selected.
+
+        Returns:
+            A ``Table`` containing only the selected rows.
+
+        >>> print(t)
+        letter grade | gpa
+        A+           | 4
+        A            | 4
+        A-           | 3.7
+        B+           | 3.3
+        B            | 3
+        B-           | 2.7
+        >>> print(t.take(0))
+        letter grade | gpa
+        A+           | 4
+        >>> print(t.take(5))
+        letter grade | gpa
+        B-           | 2.7
+        >>> print(t.take(-1))
+        letter grade | gpa
+        B-           | 2.7
+        >>> print(t.take([2,1,0]))
+        letter grade | gpa
+        A-           | 3.7
+        A            | 4
+        A+           | 4
+        >>> print(t.take([1,5]))
+        letter grade | gpa
+        A            | 4
+        B-           | 2.7
+        >>> print(t.take(range(3)))
+        letter grade | gpa
+        A+           | 4
+        A            | 4
+        A-           | 3.7
+        """
         columns = [np.take(column, row_numbers, axis=0) for column in self.columns]
         return self._with_columns(columns)
 
