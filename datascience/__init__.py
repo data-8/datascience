@@ -1,4 +1,4 @@
-from version import __version__
+from .version import __version__
 
 from .tables import *
 from .formats import *
