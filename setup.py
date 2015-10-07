@@ -3,14 +3,9 @@ from setuptools import setup
 from setuptools.command.test import test as TestCommand
 from version import __version__
 
-install_requires = [
-    'numpy',
-    'matplotlib',
-    'pandas',
-    'folium == 0.1.5',
-    'IPython',
-    'jinja2',  # folium dependency
-]
+
+with open('requirements.txt') as fid:
+    install_requires = [l.strip() for l in fid.readlines() if l]
 
 tests_requires = [
     'pytest',
@@ -32,7 +27,7 @@ class PyTest(TestCommand):
         self.test_suite = True
 
     def run_tests(self):
-        #import here, cause outside the eggs aren't loaded
+        # import here, cause outside the eggs aren't loaded
         import pytest
         errno = pytest.main(self.pytest_args)
         sys.exit(errno)
