@@ -202,6 +202,11 @@ class Table(collections.abc.MutableMapping):
         return self.Rows(self)
 
     @property
+    def row(self):
+        assert self.num_rows == 1, 'Table has more than one row.'
+        return self.rows[0]
+
+    @property
     def column_labels(self):
         """Return a tuple of column labels."""
         return tuple(self._columns.keys())
