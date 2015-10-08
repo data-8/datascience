@@ -18,7 +18,6 @@ if [[ $TRAVIS_PULL_REQUEST == false && $TRAVIS_BRANCH == "master" ]] ; then
   git config --global user.name "Travis CI"
   git config --global user.email "travis@travis.com"
 
-  commitMessage=`git log -1 --pretty=%B`
   commitHash=`git rev-parse HEAD`
 
   make deploy_docs \
