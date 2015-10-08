@@ -15,8 +15,8 @@ if [[ $TRAVIS_PULL_REQUEST == false && $TRAVIS_BRANCH == "master" ]] ; then
   echo "-- pushing docs --"
 
 
-  git config user.name "Travis CI"
-  git config user.email "travis@travis.com"
+  git config --global user.name "Travis CI"
+  git config --global user.email "travis@travis.com"
 
   commitMessage=`git log -1 --pretty=%B`
   commitHash=`git rev-parse HEAD`
