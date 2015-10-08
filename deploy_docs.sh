@@ -6,8 +6,7 @@
 set -e # exit with nonzero exit code if anything fails
 
 # Only build docs on master branch
-if [[ $TRAVIS_PULL_REQUEST == false && $TRAVIS_BRANCH == "master" &&
-      $TRAVIS_PYTHON_VERSION == 3.4 ]] ; then
+if [[ $TRAVIS_PULL_REQUEST == false && $TRAVIS_BRANCH == "master" ]] ; then
 
   echo "-- building docs --"
 
