@@ -30,7 +30,7 @@ class Table(collections.abc.MutableMapping):
     ##########
 
     def __init__(self, columns=None, labels=None,
-            formatter=_formats.default_formatter):
+                 formatter=_formats.default_formatter):
         """Create a table from a list of column values or dictionary of
         sequences.
 
@@ -45,23 +45,16 @@ class Table(collections.abc.MutableMapping):
         c      | 3     | 2
         z      | 1     | 10
 
-        For other ways to initialize a table, see :func:`Table.from_rows`,
-        :func:`Table.from_records`, and :func:`Table.read_table`.
+        For other ways to initialize a table, see ;func;`Table.empty`,
+        :func:`Table.from_rows`, :func:`Table.from_records`,
+        :func:`Table.read_table`, and :func:`Table.from_columns_dict`.
 
         Kwargs:
-            columns (None, list, or dict): If ``None``, an empty table is
-                created.
-
-                If a list, each element in ``columns`` is another list
+            columns (list): A list in which each element is another list
                 containing the values for a column in the order the columns
                 appear in ``labels``.
 
-                If a dict, each key is a label of a column; each values is the
-                column's values as a list.
-
-            labels (list): A list of column labels. Must be specified if
-                ``columns`` is a list, and must be ``None`` if ``columns`` is a
-                dict.
+            labels (list): A list of column labels.
 
             formatter (Formatter): An instance of :class:`Formatter` that
                 formats the columns' values.
@@ -82,13 +75,8 @@ class Table(collections.abc.MutableMapping):
         self.formatter = formatter
 
         # Ensure inputs are properly formed
-        if not columns:
-            assert not labels, 'labels but no columns'
-            columns, labels = [], []
-        if isinstance(columns, collections.abc.Mapping):
-            assert labels is None, 'labels must be None if columns has labels'
-            columns, labels = columns.values(), columns.keys()
-        assert labels is not None, 'Labels are required'
+        columns = columns if columns is not None else []
+        labels = labels if labels is not None else []
         assert len(labels) == len(columns), 'label/column number mismatch'
 
         self._num_rows = 0 if len(columns) is 0 else len(columns[0])
@@ -96,6 +84,11 @@ class Table(collections.abc.MutableMapping):
         # Add each column to table
         for column, label in zip(columns, labels):
             self[label] = column
+
+    @classmethod
+    def empty(cls):
+        """Create an empty table."""
+        return cls()
 
     @classmethod
     def from_rows(cls, rows, column_labels):
@@ -109,6 +102,11 @@ class Table(collections.abc.MutableMapping):
             return cls()
         labels = sorted(list(records[0].keys()))
         return cls([[rec[label] for rec in records] for label in labels], labels)
+
+    @classmethod
+    def from_columns_dict(cls, columns):
+        """Create a table from a mapping of column labels to column values."""
+        return cls(columns.values(), columns.keys())
 
     @classmethod
     def read_table(cls, filepath_or_buffer, *args, **vargs):
