@@ -151,7 +151,11 @@ class Table(collections.abc.MutableMapping):
     #################
 
     def __getitem__(self, label):
-        return self.values(label)
+        if isinstance(label, slice) or hasattr(label, '__index__'):
+            return self._with_columns(column[label]
+                                      for column in self._columns.values())
+        else:
+            return self.values(label)
 
     def __setitem__(self, label, values):
         self.append_column(label, values)
