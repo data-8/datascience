@@ -1,7 +1,8 @@
 .PHONY: help docs serve_docs install test deploy_docs
 
 DOCS_DIR = docs
-GH_REMOTE = origin
+GH_REMOTE = https://github.com/dsten/datascience
+DEPLOY_DOCS_MESSAGE = Build docs
 
 help:
 	@echo "Please use 'make <target>' where <target> is one of:"
@@ -28,6 +29,14 @@ serve_docs:
 	cd $(DOCS_DIR)/_build/html ; python -m http.server
 
 deploy_docs:
-	git subtree split --prefix $(DOCS_DIR)/_build/html -b gh-pages
-	git push -f $(GH_REMOTE) gh-pages:gh-pages
-	git branch -D gh-pages
+	rm -rf doc_build
+
+	git clone --quiet --branch=gh-pages $(GH_REMOTE) doc_build
+	cp -r docs/_build/html/* doc_build
+
+	cd doc_build && \
+		git add -A && \
+		git commit -m "$(DEPLOY_DOCS_MESSAGE)" && \
+		git push -f $(GH_REMOTE) gh-pages
+
+	rm -rf doc_build
