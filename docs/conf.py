@@ -17,8 +17,7 @@ import sys
 import os
 import shlex
 
-sys.path.insert(0, '../')
-from version import __version__
+from datascience.version import __version__
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
