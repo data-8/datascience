@@ -1,6 +1,0 @@
-datascience.tables.Table.where
-==============================
-
-.. currentmodule:: datascience.tables
-
-.. automethod:: Table.where
