@@ -99,8 +99,6 @@ Exporting / Displaying
     :toctree: _autosummary
 
     Table.show
-    Table.as_text
-    Table.as_html
     Table.matrix
     Table.index_by
 
