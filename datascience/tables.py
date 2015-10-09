@@ -45,7 +45,7 @@ class Table(collections.abc.MutableMapping):
         c      | 3     | 2
         z      | 1     | 10
 
-        For other ways to initialize a table, see ;func;`Table.empty`,
+        For other ways to initialize a table, see :func:`Table.empty`,
         :func:`Table.from_rows`, :func:`Table.from_records`,
         :func:`Table.read_table`, and :func:`Table.from_columns_dict`.
 
