@@ -53,6 +53,7 @@ Accessing values
     Table.values
     Table.num_rows
     Table.rows
+    Table.row
     Table.column_labels
     Table.columns
 

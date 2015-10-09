@@ -203,6 +203,15 @@ class Table(collections.abc.MutableMapping):
 
     @property
     def row(self):
+        """Returns the only row in single-row tables. This can not not be used
+        when the table contains 0 or more than 1 rows.
+
+        Raises:
+            ``RuntimeError``: table has 0 or more than 1 row
+
+        Returns:
+            The only ``Row`` in the table.
+        """
         assert self.num_rows == 1, 'Table has more than one row.'
         return self.rows[0]
 
