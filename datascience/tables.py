@@ -86,9 +86,12 @@ class Table(collections.abc.MutableMapping):
             self[label] = column
 
     @classmethod
-    def empty(cls):
+    def empty(cls, column_labels=None):
         """Create an empty table."""
-        return cls()
+        if column_labels is None:
+            return cls()
+        values = [[] for label in column_labels]
+        return cls(values, column_labels)
 
     @classmethod
     def from_rows(cls, rows, column_labels):
@@ -106,7 +109,7 @@ class Table(collections.abc.MutableMapping):
     @classmethod
     def from_columns_dict(cls, columns):
         """Create a table from a mapping of column labels to column values."""
-        return cls(columns.values(), columns.keys())
+        return cls(list(columns.values()), columns.keys())
 
     @classmethod
     def read_table(cls, filepath_or_buffer, *args, **vargs):
