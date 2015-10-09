@@ -212,7 +212,8 @@ class Table(collections.abc.MutableMapping):
         Returns:
             The only ``Row`` in the table.
         """
-        assert self.num_rows == 1, 'Table has more than one row.'
+        if not self.num_rows == 1:
+            raise RuntimeError('Table has more than one row.')
         return self.rows[0]
 
     @property

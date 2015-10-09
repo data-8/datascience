@@ -99,7 +99,7 @@ def test_row():
 
 def test_row_when_multiple_rows():
     t = Table([[1, 3], [2, 4]], ['one', 'two'])
-    with pytest.raises(AssertionError):
+    with pytest.raises(RuntimeError):
         _ = t.row
 
 
