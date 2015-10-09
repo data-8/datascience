@@ -40,8 +40,10 @@ Creation
     :toctree: _autosummary
 
     Table.__init__
+    Table.empty
     Table.from_rows
     Table.from_records
+    Table.from_columns_dict
     Table.read_table
 
 
