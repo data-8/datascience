@@ -1355,7 +1355,8 @@ class Table(collections.abc.MutableMapping):
 
         def __getitem__(self, i):
             if isinstance(i, slice):
-                return [self[j] for j in range(*i.indices(len(self)))]
+                return Table.from_rows([self[j] for j in range(*i.indices(len(self)))],
+                                       self._table.column_labels)
             labels = tuple(self._table.column_labels)
             if labels != self._labels:
                 self._labels = labels
