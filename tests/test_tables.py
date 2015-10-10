@@ -86,6 +86,14 @@ def test_basic_rows(t):
         "Row(letter='c', count=3, points=2)")
 
 
+def test_rows_slice(t):
+    assert_equal(
+    t.rows[:2], """
+    letter | count | points
+    a      | 9     | 1
+    b      | 3     | 2""")
+
+
 def test_select(t):
     test = t.select(['points', 'count']).cumsum()
     assert_equal(test, """
