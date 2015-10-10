@@ -869,10 +869,10 @@ class Table(collections.abc.MutableMapping):
             " | ".join(map(str, self.column_labels)))
 
     def __str__(self):
-        return self._as_text(self.max_str_rows)
+        return self.as_text(self.max_str_rows)
 
     def _repr_html_(self):
-        return self._as_html(self.max_str_rows)
+        return self.as_html(self.max_str_rows)
 
     def show(self, max_rows=0):
         """Display the table."""
@@ -880,7 +880,7 @@ class Table(collections.abc.MutableMapping):
 
     max_str_rows = 10
 
-    def _as_text(self, max_rows=0, sep=" | "):
+    def as_text(self, max_rows=0, sep=" | "):
         """Format table as text."""
         if not max_rows or max_rows > self.num_rows:
             max_rows = self.num_rows
@@ -896,7 +896,7 @@ class Table(collections.abc.MutableMapping):
             lines.append('... ({} rows omitted)'.format(omitted))
         return '\n'.join([line.rstrip() for line in lines])
 
-    def _as_html(self, max_rows=0):
+    def as_html(self, max_rows=0):
         """Format table as HTML."""
         if not max_rows or max_rows > self.num_rows:
             max_rows = self.num_rows
