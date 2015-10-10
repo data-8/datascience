@@ -22,6 +22,65 @@ import datascience.formats as _formats
 import datascience.util as _util
 
 
+
+class _Taker:
+    def __init__(self, table):
+        self._table = table
+
+    def __call__(self, row_numbers):
+        """Return a Table of a sequence of rows taken by number.
+
+        Args:
+            ``row_numbers`` (integer or list of integers): The list of row numbers to
+            be selected.
+
+        Returns:
+            A ``Table`` containing only the selected rows.
+
+        >>> print(t)
+        letter grade | gpa
+        A+           | 4
+        A            | 4
+        A-           | 3.7
+        B+           | 3.3
+        B            | 3
+        B-           | 2.7
+        >>> print(t.take(0))
+        letter grade | gpa
+        A+           | 4
+        >>> print(t.take(5))
+        letter grade | gpa
+        B-           | 2.7
+        >>> print(t.take(-1))
+        letter grade | gpa
+        B-           | 2.7
+        >>> print(t.take([2,1,0]))
+        letter grade | gpa
+        A-           | 3.7
+        A            | 4
+        A+           | 4
+        >>> print(t.take([1,5]))
+        letter grade | gpa
+        A            | 4
+        B-           | 2.7
+        >>> print(t.take(range(3)))
+        letter grade | gpa
+        A+           | 4
+        A            | 4
+        A-           | 3.7
+        """
+        columns = [np.take(column, row_numbers, axis=0) for column in self._table.columns]
+        return self._table._with_columns(columns)
+
+    def __getitem__(self, i):
+        rows = self._table.rows[i]
+        cols = self._table._columns.keys()
+        if not isinstance(rows, list):
+            rows = [rows]
+
+        return Table.from_rows(rows, cols)
+
+
 class Table(collections.abc.MutableMapping):
     """A sequence of labeled columns."""
 
@@ -81,6 +140,8 @@ class Table(collections.abc.MutableMapping):
         # Add each column to table
         for column, label in zip(columns, labels):
             self[label] = column
+
+        self.take = _Taker(self)
 
     @classmethod
     def empty(cls, column_labels=None):
@@ -506,55 +567,6 @@ class Table(collections.abc.MutableMapping):
         """Return a Table with only columns other than selected label or labels."""
         exclude = _as_labels(column_label_or_labels)
         return self.select([c for c in self.column_labels if c not in exclude])
-
-    def take(self, row_numbers):
-        """Return a Table of a sequence of rows taken by number.
-
-        Args:
-            ``row_numbers`` (integer or list of integers): The list of row numbers to
-            be selected.
-
-        Returns:
-            A ``Table`` containing only the selected rows.
-
-        >>> grade = ['A+', 'A', 'A-', 'B+', 'B', 'B-']
-        >>> gpa = [4, 4, 3.7, 3.3, 3, 2.7]
-        >>> t = Table([grade, gpa], ['letter grade', 'gpa'])
-        >>> t
-        letter grade | gpa
-        A+           | 4
-        A            | 4
-        A-           | 3.7
-        B+           | 3.3
-        B            | 3
-        B-           | 2.7
-        >>> t.take(0)
-        letter grade | gpa
-        A+           | 4
-        >>> t.take(5)
-        letter grade | gpa
-        B-           | 2.7
-        >>> t.take(-1)
-        letter grade | gpa
-        B-           | 2.7
-        >>> t.take([2,1,0])
-        letter grade | gpa
-        A-           | 3.7
-        A            | 4
-        A+           | 4
-        >>> t.take([1,5])
-        letter grade | gpa
-        A            | 4
-        B-           | 2.7
-        >>> t.take(range(3))
-        letter grade | gpa
-        A+           | 4
-        A            | 4
-        A-           | 3.7
-        """
-        columns = [np.take(column, row_numbers, axis=0) for column in self.columns]
-        return self._with_columns(columns)
-
     def where(self, column_or_label, value=None):
         """Return a Table of rows for which the column is value or a non-zero value."""
         column = self._get_column(column_or_label)
