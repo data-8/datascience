@@ -16,6 +16,7 @@ install:
 
 script:
   - coverage run setup.py test
+  - cd docs && make html-raise-on-warning && cd ..
 
 after_success:
   - coveralls
