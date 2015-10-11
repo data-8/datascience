@@ -101,6 +101,7 @@ Exporting / Displaying
     Table.show
     Table.matrix
     Table.index_by
+    Table.to_df
 
 Visualizations
 
