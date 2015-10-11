@@ -3,6 +3,7 @@ import pytest
 import numpy as np
 from numpy.testing import assert_array_equal
 from datascience import *
+import pandas as pd
 
 
 #########
@@ -750,3 +751,12 @@ def test_q_chaining(table):
     letter | count | points
     a      | 9     | 1
     """)
+
+def test_df_roundtrip(table):
+    df = table.to_df()
+    assert isinstance(df, pd.DataFrame)
+
+    t = Table.from_df(df)
+
+    for (c0, c1) in zip(t.columns, table.columns):
+        assert_equal(c0, c1)

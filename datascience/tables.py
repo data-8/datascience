@@ -129,8 +129,7 @@ class Table(collections.abc.MutableMapping):
         except AttributeError:
             pass
         df = pandas.read_table(filepath_or_buffer, *args, **vargs)
-        labels = df.columns
-        return Table([df[label].values for label in labels], labels)
+        return Table.from_df(df)
 
     def _with_columns(self, columns):
         """Create a table from a sequence of columns, copying column labels."""
@@ -939,6 +938,16 @@ class Table(collections.abc.MutableMapping):
         for key, row in zip(column, self.rows):
             index.setdefault(key, []).append(row)
         return index
+
+    @classmethod
+    def from_df(cls, df):
+        """Convert a DataFrame into a Table."""
+        labels = df.columns
+        return Table([df[label].values for label in labels], labels)
+
+    def to_df(self):
+        """Convert the table to a Pandas DataFrame."""
+        return pandas.DataFrame(self._columns)
 
     ##################
     # Visualizations #
