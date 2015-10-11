@@ -30,9 +30,8 @@ class Table(collections.abc.MutableMapping):
     ##########
 
     def __init__(self, columns=None, labels=None,
-            formatter=_formats.default_formatter):
-        """Create a table from a list of column values or dictionary of
-        sequences.
+                 formatter=_formats.default_formatter):
+        """Create a table from a list of column values.
 
         >>> letters = ['a', 'b', 'c', 'z']
         >>> counts = [9, 3, 3, 1]
@@ -45,25 +44,18 @@ class Table(collections.abc.MutableMapping):
         c      | 3     | 2
         z      | 1     | 10
 
-        For other ways to initialize a table, see :func:`Table.from_rows`,
-        :func:`Table.from_records`, and :func:`Table.read_table`.
+        For other ways to initialize a table, see :func:`Table.empty`,
+        :func:`Table.from_rows`, :func:`Table.from_records`,
+        :func:`Table.read_table`, and :func:`Table.from_columns_dict`.
 
-        Kwargs:
-            columns (None, list, or dict): If ``None``, an empty table is
-                created.
-
-                If a list, each element in ``columns`` is another list
+        Args:
+            ``columns`` (list): A list in which each element is another list
                 containing the values for a column in the order the columns
                 appear in ``labels``.
 
-                If a dict, each key is a label of a column; each values is the
-                column's values as a list.
+            ``labels`` (list): A list of column labels.
 
-            labels (list): A list of column labels. Must be specified if
-                ``columns`` is a list, and must be ``None`` if ``columns`` is a
-                dict.
-
-            formatter (Formatter): An instance of :class:`Formatter` that
+            ``formatter`` (Formatter): An instance of :class:`Formatter` that
                 formats the columns' values.
 
         Returns:
@@ -71,9 +63,7 @@ class Table(collections.abc.MutableMapping):
 
         Raises:
             AssertionError:
-                - ``labels`` is specified but ``columns`` is not.
-                - ``columns`` is a dict but ``labels`` are specified.
-                - ``columns`` is a list but ``labels`` are not specified.
+                - ``labels`` is specified but ``columns`` is not and vice-versa.
                 - The length of ``labels`` and the length of ``columns`` are
                   unequal.
         """
@@ -82,13 +72,8 @@ class Table(collections.abc.MutableMapping):
         self.formatter = formatter
 
         # Ensure inputs are properly formed
-        if not columns:
-            assert not labels, 'labels but no columns'
-            columns, labels = [], []
-        if isinstance(columns, collections.abc.Mapping):
-            assert labels is None, 'labels must be None if columns has labels'
-            columns, labels = columns.values(), columns.keys()
-        assert labels is not None, 'Labels are required'
+        columns = columns if columns is not None else []
+        labels = labels if labels is not None else []
         assert len(labels) == len(columns), 'label/column number mismatch'
 
         self._num_rows = 0 if len(columns) is 0 else len(columns[0])
@@ -96,6 +81,29 @@ class Table(collections.abc.MutableMapping):
         # Add each column to table
         for column, label in zip(columns, labels):
             self[label] = column
+
+    @classmethod
+    def empty(cls, column_labels=None):
+        """Create an empty table. Column labels are optional
+
+        >>> t = Table.empty(['x', 'y'])
+        >>> print(t.append((2, 3)))
+        x    | y
+        2    | 3
+
+        Args:
+            ``column_labels`` (None or list): If ``None``, a table with 0
+                columns is created.
+                If a list, each element is a column label in a table with
+                0 rows.
+
+        Returns:
+            A new instance of ``Table``.
+        """
+        if column_labels is None:
+            return cls()
+        values = [[] for label in column_labels]
+        return cls(values, column_labels)
 
     @classmethod
     def from_rows(cls, rows, column_labels):
@@ -109,6 +117,26 @@ class Table(collections.abc.MutableMapping):
             return cls()
         labels = sorted(list(records[0].keys()))
         return cls([[rec[label] for rec in records] for label in labels], labels)
+
+    @classmethod
+    def from_columns_dict(cls, columns):
+        """Create a table from a mapping of column labels to column values.
+
+        >>> from collections import OrderedDict
+        >>> columns = OrderedDict()
+        >>> columns['letter'] = ['a', 'b', 'c', 'z']
+        >>> columns['count'] = [9, 3, 3, 1]
+        >>> columns['points'] = [1, 2, 2, 10]
+        >>> t = Table.from_columns_dict(columns)
+        >>> print(t)
+        letter | count | points
+        a      | 9     | 1
+        b      | 3     | 2
+        c      | 3     | 2
+        z      | 1     | 10
+
+        """
+        return cls(list(columns.values()), columns.keys())
 
     @classmethod
     def read_table(cls, filepath_or_buffer, *args, **vargs):

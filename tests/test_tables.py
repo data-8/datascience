@@ -396,11 +396,8 @@ def test_append_table(table):
 
 
 def test_append_different_table(table, u):
-    try:
+    with pytest.raises(KeyError):
         table.append(u)
-        assert False, 'KeyError expected'
-    except KeyError:
-        pass
 
 
 def test_append_different_order(table, table3):
@@ -452,6 +449,17 @@ def test_relabel_with_chars(table):
 ##########
 
 
+def test_empty():
+    t = Table.empty(['letter', 'count', 'points'])
+    assert_equal(t, """
+    letter | count | points
+    """)
+
+def test_empty_without_labels():
+    t = Table.empty()
+    assert_equal(t, '')
+
+
 def test_from_rows():
     letters = [('a', 9, 1), ('b', 3, 2), ('c', 3, 2), ('z', 1, 10)]
     t = Table.from_rows(letters, ['letter', 'count', 'points'])
@@ -484,6 +492,22 @@ def test_from_records():
         },
     ]
     t = Table.from_records(letters)
+    assert_equal(t.select(['letter', 'count', 'points']), """
+    letter | count | points
+    a      | 9     | 1
+    b      | 3     | 2
+    c      | 3     | 2
+    z      | 1     | 10
+    """)
+
+
+def test_from_columns_dict():
+    columns_dict = {
+        'letter': ['a', 'b', 'c', 'z'],
+        'count': [9, 3, 3, 1],
+        'points': [1, 2, 2, 10]
+    }
+    t = Table.from_columns_dict(columns_dict)
     assert_equal(t.select(['letter', 'count', 'points']), """
     letter | count | points
     a      | 9     | 1
