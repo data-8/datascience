@@ -475,6 +475,10 @@ class Table(collections.abc.MutableMapping):
         Returns:
             An instance of ``Table`` containing only selected columns.
 
+        >>> burgers = ['cheeseburger', 'hamburger', 'veggie burger']
+        >>> prices = [6, 5, 5]
+        >>> calories = [743, 651, 582]
+        >>> t = Table([burgers, prices, calories], ['burgers', 'prices', 'calories'])
         >>> print(t)
         burgers       | prices | calories
         cheeseburger  | 6      | 743
@@ -1218,31 +1222,35 @@ class Table(collections.abc.MutableMapping):
             ValueError: The Table contains non-numerical values in columns
             other than `column_for_categories`
 
-        >>> furniture_table
+        >>> furniture_type = ['chairs', 'tables', 'desks']
+        >>> count = [6, 1, 2]
+        >>> furniture_table = Table([furniture_type, count], ['Type of furniture', 'Count'])
+        >>> print(furniture_table)
         Type of furniture | Count
         chairs            | 6
         tables            | 1
         desks             | 2
-
-        >>> furniture_table.barh('Type of furniture')
+        >>> furniture_table.barh('Type of furniture') # doctest: +SKIP
         <bar graph with chairs, tables, desks as the categories and bars of
         length 6, 1, 2, respectively>
-
         >>> furniture_table.barh('Count')
-        ValueError: The column 'Type of furniture' contains non-numerical
-        values. A bar graph cannot be drawn for this table.
+        Traceback (most recent call last):
+            ...
+        ValueError: The column 'Type of furniture' contains non-numerical values. A bar graph cannot be drawn for this table.
 
-        >>> foo_table
+        >>> other_col = [10, 20, 30]
+        >>> foo_table = Table([furniture_type, count, other_col], ['Type of furniture', 'Count', 'Other col'])
+        >>> print(foo_table)
         Type of furniture | Count | Other col
         chairs            | 6     | 10
         tables            | 1     | 20
         desks             | 2     | 30
 
-        >>> foo_table.barh('Type of furniture')
+        >>> foo_table.barh('Type of furniture') # doctest: +SKIP
         <bar graph with Type of furniture as categories and Count values>
         <bar graph with Type of furniture as categories and Other col values>
 
-        >>> foo_table.barh('Type of furniture', overlay=True)
+        >>> foo_table.barh('Type of furniture', overlay=True) # doctest: +SKIP
         <bar graph with Type of furniture as categories and Count + Other col as
         the two bars for each category>
         """
@@ -1316,31 +1324,33 @@ class Table(collections.abc.MutableMapping):
             ValueError: The Table contains non-numerical values in columns
             other than `column_for_categories`
 
-        >>> furniture_table
+        >>> furniture_type = ['chairs', 'tables', 'desks']
+        >>> count = [6, 1, 2]
+        >>> furniture_table = Table([furniture_type, count], ['Type of furniture', 'Count'])
+        >>> print(furniture_table)
         Type of furniture | Count
         chairs            | 6
         tables            | 1
         desks             | 2
-
-        >>> furniture_table.bar('Type of furniture')
+        >>> furniture_table.bar('Type of furniture') # doctest: +SKIP
         <bar graph with chairs, tables, desks as the categories and bars of
         length 6, 1, 2, respectively>
+        >>> furniture_table.bar('Count') # doctest: +SKIP
+        Traceback (most recent call last):
+            ...
+        ValueError: The column 'Type of furniture' contains non-numerical values. A bar graph cannot be drawn for this table.
 
-        >>> furniture_table.bar('Count')
-        ValueError: The column 'Type of furniture' contains non-numerical
-        values. A bar graph cannot be drawn for this table.
-
-        >>> foo_table
+        >>> other_col = [10, 20, 30]
+        >>> foo_table = Table([furniture_type, count, other_col], ['Type of furniture', 'Count', 'Other col'])
+        >>> print(foo_table)
         Type of furniture | Count | Other col
         chairs            | 6     | 10
         tables            | 1     | 20
         desks             | 2     | 30
-
-        >>> foo_table.bar('Type of furniture')
+        >>> foo_table.bar('Type of furniture') # doctest: +SKIP
         <bar graph with Type of furniture as categories and Count values>
         <bar graph with Type of furniture as categories and Other col values>
-
-        >>> foo_table.bar('Type of furniture', overlay=True)
+        >>> foo_table.bar('Type of furniture', overlay=True) # doctest: +SKIP
         <bar graph with Type of furniture as categories and Count + Other col as
         the two bars for each category>
         """
