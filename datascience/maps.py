@@ -493,11 +493,6 @@ class Region(_MapFeature):
                 polygon in polygons]
 
     @property
-    def area(self):
-        """The area of the region."""
-
-
-    @property
     def properties(self):
         return self._geojson.get('properties', {})
 
