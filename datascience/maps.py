@@ -287,8 +287,11 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
                 _read_geojson_features(feature, features, prefix + '.' + key)
             elif feature_type == 'Point':
                 value = Circle._convert_point(feature)
-            else:
+            elif feature_type in ['Polygon', 'MultiPolygon']:
                 value = Region(feature)
+            else:
+                # TODO Support all http://geojson.org/geojson-spec.html#geometry-objects
+                value = None
             features[key] = value
         return features
 
@@ -455,12 +458,44 @@ class Region(_MapFeature):
     def __init__(self, geojson, **kwargs):
         assert 'type' in geojson
         assert geojson['type'] == 'Feature'
+        assert 'geometry' in geojson
+        assert 'type' in geojson['geometry']
+        assert geojson['geometry']['type'] in ['Polygon', 'MultiPolygon']
         self._geojson = geojson
         self._attrs = kwargs
 
     @property
     def lat_lons(self):
+        """A flat list of (lat, lon) pairs."""
         return _lat_lons_from_geojson(self._geojson['geometry']['coordinates'])
+
+    @property
+    def type(self):
+        """The GEOJSON type of the regions: Polygon or MultiPolygon."""
+        return self._geojson['geometry']['type']
+
+    @property
+    def polygons(self):
+        """Return a list of polygons describing the region.
+
+        - Each polygon is a list of linear rings, where the first describes the
+          exterior and the rest describe interior holes.
+        - Each linear ring is a list of positions where the last is a repeat of
+          the first.
+        - Each position is a (lat, lon) pair.
+        """
+        if self.type == 'Polygon':
+            polygons = [self._geojson['geometry']['coordinates']]
+        elif self.type == 'MultiPolygon':
+            polygons = self._geojson['geometry']['coordinates']
+        return [   [   [_lat_lons_from_geojson(s) for
+                        s in ring  ]              for
+                    ring in polygon]              for
+                polygon in polygons]
+
+    @property
+    def properties(self):
+        return self._geojson.get('properties', {})
 
     def copy(self):
         """Return a deep copy"""
