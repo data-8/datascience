@@ -88,13 +88,19 @@ methods (mostly visualizations).</p>
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.__init__.html#datascience.tables.Table.__init__" title="datascience.tables.Table.__init__"><code class="xref py py-obj docutils literal"><span class="pre">Table.__init__</span></code></a>([columns,&nbsp;labels,&nbsp;formatter])</td>
-<td>Create a table from a list of column values or dictionary of sequences.</td>
+<td>Create a table from a list of column values.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.from_rows.html#datascience.tables.Table.from_rows" title="datascience.tables.Table.from_rows"><code class="xref py py-obj docutils literal"><span class="pre">Table.from_rows</span></code></a>(rows,&nbsp;column_labels)</td>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.empty.html#datascience.tables.Table.empty" title="datascience.tables.Table.empty"><code class="xref py py-obj docutils literal"><span class="pre">Table.empty</span></code></a>([column_labels])</td>
+<td>Create an empty table.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.from_rows.html#datascience.tables.Table.from_rows" title="datascience.tables.Table.from_rows"><code class="xref py py-obj docutils literal"><span class="pre">Table.from_rows</span></code></a>(rows,&nbsp;column_labels)</td>
 <td>Create a table from a sequence of rows (fixed-length sequences).</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.from_records.html#datascience.tables.Table.from_records" title="datascience.tables.Table.from_records"><code class="xref py py-obj docutils literal"><span class="pre">Table.from_records</span></code></a>(records)</td>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.from_records.html#datascience.tables.Table.from_records" title="datascience.tables.Table.from_records"><code class="xref py py-obj docutils literal"><span class="pre">Table.from_records</span></code></a>(records)</td>
 <td>Create a table from a sequence of records (dicts with fixed keys).</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.from_columns_dict.html#datascience.tables.Table.from_columns_dict" title="datascience.tables.Table.from_columns_dict"><code class="xref py py-obj docutils literal"><span class="pre">Table.from_columns_dict</span></code></a>(columns)</td>
+<td>Create a table from a mapping of column labels to column values.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.read_table.html#datascience.tables.Table.read_table" title="datascience.tables.Table.read_table"><code class="xref py py-obj docutils literal"><span class="pre">Table.read_table</span></code></a>(filepath_or_buffer,&nbsp;*args,&nbsp;...)</td>
 <td>Read a table from a file or web address.</td>

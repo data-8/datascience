@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="datascience 0.3.dev15 documentation" href="../index.html" />
     <link rel="up" title="Tables (datascience.tables)" href="../tables.html" />
-    <link rel="next" title="datascience.tables.Table.from_rows" href="datascience.tables.Table.from_rows.html" />
+    <link rel="next" title="datascience.tables.Table.empty" href="datascience.tables.Table.empty.html" />
     <link rel="prev" title="datascience.tables.Table.points" href="datascience.tables.Table.points.html" /> 
   </head>
   <body role="document">
@@ -39,7 +39,7 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="datascience.tables.Table.from_rows.html" title="datascience.tables.Table.from_rows"
+          <a href="datascience.tables.Table.empty.html" title="datascience.tables.Table.empty"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="datascience.tables.Table.points.html" title="datascience.tables.Table.points"
@@ -59,8 +59,7 @@
 <dl class="method">
 <dt id="datascience.tables.Table.__init__">
 <code class="descclassname">Table.</code><code class="descname">__init__</code><span class="sig-paren">(</span><em>columns=None</em>, <em>labels=None</em>, <em>formatter=&lt;datascience.formats.Formatter object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a table from a list of column values or dictionary of
-sequences.</p>
+<dd><p>Create a table from a list of column values.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">letters</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="s">&#39;c&#39;</span><span class="p">,</span> <span class="s">&#39;z&#39;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">counts</span> <span class="o">=</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">points</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
@@ -73,23 +72,19 @@ sequences.</p>
 <span class="go">z      | 1     | 10</span>
 </pre></div>
 </div>
-<p>For other ways to initialize a table, see <a class="reference internal" href="datascience.tables.Table.from_rows.html#datascience.tables.Table.from_rows" title="datascience.tables.Table.from_rows"><code class="xref py py-func docutils literal"><span class="pre">Table.from_rows()</span></code></a>,
-<a class="reference internal" href="datascience.tables.Table.from_records.html#datascience.tables.Table.from_records" title="datascience.tables.Table.from_records"><code class="xref py py-func docutils literal"><span class="pre">Table.from_records()</span></code></a>, and <a class="reference internal" href="datascience.tables.Table.read_table.html#datascience.tables.Table.read_table" title="datascience.tables.Table.read_table"><code class="xref py py-func docutils literal"><span class="pre">Table.read_table()</span></code></a>.</p>
+<p>For other ways to initialize a table, see <a class="reference internal" href="datascience.tables.Table.empty.html#datascience.tables.Table.empty" title="datascience.tables.Table.empty"><code class="xref py py-func docutils literal"><span class="pre">Table.empty()</span></code></a>,
+<a class="reference internal" href="datascience.tables.Table.from_rows.html#datascience.tables.Table.from_rows" title="datascience.tables.Table.from_rows"><code class="xref py py-func docutils literal"><span class="pre">Table.from_rows()</span></code></a>, <a class="reference internal" href="datascience.tables.Table.from_records.html#datascience.tables.Table.from_records" title="datascience.tables.Table.from_records"><code class="xref py py-func docutils literal"><span class="pre">Table.from_records()</span></code></a>,
+<a class="reference internal" href="datascience.tables.Table.read_table.html#datascience.tables.Table.read_table" title="datascience.tables.Table.read_table"><code class="xref py py-func docutils literal"><span class="pre">Table.read_table()</span></code></a>, and <a class="reference internal" href="datascience.tables.Table.from_columns_dict.html#datascience.tables.Table.from_columns_dict" title="datascience.tables.Table.from_columns_dict"><code class="xref py py-func docutils literal"><span class="pre">Table.from_columns_dict()</span></code></a>.</p>
 <dl class="docutils">
-<dt>Kwargs:</dt>
-<dd><dl class="first last docutils">
-<dt>columns (None, list, or dict): If <code class="docutils literal"><span class="pre">None</span></code>, an empty table is</dt>
-<dd><p class="first">created.</p>
-<p>If a list, each element in <code class="docutils literal"><span class="pre">columns</span></code> is another list
-containing the values for a column in the order the columns
-appear in <code class="docutils literal"><span class="pre">labels</span></code>.</p>
-<p class="last">If a dict, each key is a label of a column; each values is the
-column&#8217;s values as a list.</p>
-</dd>
-<dt>labels (list): A list of column labels. Must be specified if</dt>
-<dd><code class="docutils literal"><span class="pre">columns</span></code> is a list, and must be <code class="docutils literal"><span class="pre">None</span></code> if <code class="docutils literal"><span class="pre">columns</span></code> is a
-dict.</dd>
-<dt>formatter (Formatter): An instance of <code class="xref py py-class docutils literal"><span class="pre">Formatter</span></code> that</dt>
+<dt>Args:</dt>
+<dd><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">columns</span></code> (list): A list in which each element is another list</dt>
+<dd>containing the values for a column in the order the columns
+appear in <code class="docutils literal"><span class="pre">labels</span></code>.</dd>
+</dl>
+<p><code class="docutils literal"><span class="pre">labels</span></code> (list): A list of column labels.</p>
+<dl class="last docutils">
+<dt><code class="docutils literal"><span class="pre">formatter</span></code> (Formatter): An instance of <code class="xref py py-class docutils literal"><span class="pre">Formatter</span></code> that</dt>
 <dd>formats the columns&#8217; values.</dd>
 </dl>
 </dd>
@@ -99,9 +94,7 @@ dict.</dd>
 <dd><dl class="first last docutils">
 <dt>AssertionError:</dt>
 <dd><ul class="first last simple">
-<li><code class="docutils literal"><span class="pre">labels</span></code> is specified but <code class="docutils literal"><span class="pre">columns</span></code> is not.</li>
-<li><code class="docutils literal"><span class="pre">columns</span></code> is a dict but <code class="docutils literal"><span class="pre">labels</span></code> are specified.</li>
-<li><code class="docutils literal"><span class="pre">columns</span></code> is a list but <code class="docutils literal"><span class="pre">labels</span></code> are not specified.</li>
+<li><code class="docutils literal"><span class="pre">labels</span></code> is specified but <code class="docutils literal"><span class="pre">columns</span></code> is not and vice-versa.</li>
 <li>The length of <code class="docutils literal"><span class="pre">labels</span></code> and the length of <code class="docutils literal"><span class="pre">columns</span></code> are
 unequal.</li>
 </ul>
@@ -123,8 +116,8 @@ unequal.</li>
   <p class="topless"><a href="datascience.tables.Table.points.html"
                         title="previous chapter">datascience.tables.Table.points</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="datascience.tables.Table.from_rows.html"
-                        title="next chapter">datascience.tables.Table.from_rows</a></p>
+  <p class="topless"><a href="datascience.tables.Table.empty.html"
+                        title="next chapter">datascience.tables.Table.empty</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -159,7 +152,7 @@ unequal.</li>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="datascience.tables.Table.from_rows.html" title="datascience.tables.Table.from_rows"
+          <a href="datascience.tables.Table.empty.html" title="datascience.tables.Table.empty"
              >next</a> |</li>
         <li class="right" >
           <a href="datascience.tables.Table.points.html" title="datascience.tables.Table.points"

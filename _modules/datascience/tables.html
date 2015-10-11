@@ -79,9 +79,8 @@
     <span class="c">##########</span>
 
 <div class="viewcode-block" id="Table.__init__"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.__init__.html#datascience.tables.Table.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-            <span class="n">formatter</span><span class="o">=</span><span class="n">_formats</span><span class="o">.</span><span class="n">default_formatter</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create a table from a list of column values or dictionary of</span>
-<span class="sd">        sequences.</span>
+                 <span class="n">formatter</span><span class="o">=</span><span class="n">_formats</span><span class="o">.</span><span class="n">default_formatter</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a table from a list of column values.</span>
 
 <span class="sd">        &gt;&gt;&gt; letters = [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;z&#39;]</span>
 <span class="sd">        &gt;&gt;&gt; counts = [9, 3, 3, 1]</span>
@@ -94,25 +93,18 @@
 <span class="sd">        c      | 3     | 2</span>
 <span class="sd">        z      | 1     | 10</span>
 
-<span class="sd">        For other ways to initialize a table, see :func:`Table.from_rows`,</span>
-<span class="sd">        :func:`Table.from_records`, and :func:`Table.read_table`.</span>
+<span class="sd">        For other ways to initialize a table, see :func:`Table.empty`,</span>
+<span class="sd">        :func:`Table.from_rows`, :func:`Table.from_records`,</span>
+<span class="sd">        :func:`Table.read_table`, and :func:`Table.from_columns_dict`.</span>
 
-<span class="sd">        Kwargs:</span>
-<span class="sd">            columns (None, list, or dict): If ``None``, an empty table is</span>
-<span class="sd">                created.</span>
-
-<span class="sd">                If a list, each element in ``columns`` is another list</span>
+<span class="sd">        Args:</span>
+<span class="sd">            ``columns`` (list): A list in which each element is another list</span>
 <span class="sd">                containing the values for a column in the order the columns</span>
 <span class="sd">                appear in ``labels``.</span>
 
-<span class="sd">                If a dict, each key is a label of a column; each values is the</span>
-<span class="sd">                column&#39;s values as a list.</span>
+<span class="sd">            ``labels`` (list): A list of column labels.</span>
 
-<span class="sd">            labels (list): A list of column labels. Must be specified if</span>
-<span class="sd">                ``columns`` is a list, and must be ``None`` if ``columns`` is a</span>
-<span class="sd">                dict.</span>
-
-<span class="sd">            formatter (Formatter): An instance of :class:`Formatter` that</span>
+<span class="sd">            ``formatter`` (Formatter): An instance of :class:`Formatter` that</span>
 <span class="sd">                formats the columns&#39; values.</span>
 
 <span class="sd">        Returns:</span>
@@ -120,9 +112,7 @@
 
 <span class="sd">        Raises:</span>
 <span class="sd">            AssertionError:</span>
-<span class="sd">                - ``labels`` is specified but ``columns`` is not.</span>
-<span class="sd">                - ``columns`` is a dict but ``labels`` are specified.</span>
-<span class="sd">                - ``columns`` is a list but ``labels`` are not specified.</span>
+<span class="sd">                - ``labels`` is specified but ``columns`` is not and vice-versa.</span>
 <span class="sd">                - The length of ``labels`` and the length of ``columns`` are</span>
 <span class="sd">                  unequal.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -131,13 +121,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">formatter</span> <span class="o">=</span> <span class="n">formatter</span>
 
         <span class="c"># Ensure inputs are properly formed</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">columns</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="ow">not</span> <span class="n">labels</span><span class="p">,</span> <span class="s">&#39;labels but no columns&#39;</span>
-            <span class="n">columns</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Mapping</span><span class="p">):</span>
-            <span class="k">assert</span> <span class="n">labels</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&#39;labels must be None if columns has labels&#39;</span>
-            <span class="n">columns</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">columns</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-        <span class="k">assert</span> <span class="n">labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&#39;Labels are required&#39;</span>
+        <span class="n">columns</span> <span class="o">=</span> <span class="n">columns</span> <span class="k">if</span> <span class="n">columns</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="k">else</span> <span class="p">[]</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span> <span class="k">if</span> <span class="n">labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="k">else</span> <span class="p">[]</span>
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">),</span> <span class="s">&#39;label/column number mismatch&#39;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_num_rows</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span> <span class="ow">is</span> <span class="mi">0</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -145,6 +130,29 @@
         <span class="c"># Add each column to table</span>
         <span class="k">for</span> <span class="n">column</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
             <span class="bp">self</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Table.empty"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.empty.html#datascience.tables.Table.empty">[docs]</a>    <span class="k">def</span> <span class="nf">empty</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">column_labels</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create an empty table. Column labels are optional</span>
+
+<span class="sd">        &gt;&gt;&gt; t = Table.empty([&#39;x&#39;, &#39;y&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; print(t.append((2, 3)))</span>
+<span class="sd">        x    | y</span>
+<span class="sd">        2    | 3</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ``column_labels`` (None or list): If ``None``, a table with 0</span>
+<span class="sd">                columns is created.</span>
+<span class="sd">                If a list, each element is a column label in a table with</span>
+<span class="sd">                0 rows.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A new instance of ``Table``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">column_labels</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">cls</span><span class="p">()</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">column_labels</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">column_labels</span><span class="p">)</span>
 </div>
     <span class="nd">@classmethod</span>
 <div class="viewcode-block" id="Table.from_rows"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.from_rows.html#datascience.tables.Table.from_rows">[docs]</a>    <span class="k">def</span> <span class="nf">from_rows</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">column_labels</span><span class="p">):</span>
@@ -158,6 +166,26 @@
             <span class="k">return</span> <span class="n">cls</span><span class="p">()</span>
         <span class="n">labels</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">records</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
         <span class="k">return</span> <span class="n">cls</span><span class="p">([[</span><span class="n">rec</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="k">for</span> <span class="n">rec</span> <span class="ow">in</span> <span class="n">records</span><span class="p">]</span> <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">],</span> <span class="n">labels</span><span class="p">)</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Table.from_columns_dict"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.from_columns_dict.html#datascience.tables.Table.from_columns_dict">[docs]</a>    <span class="k">def</span> <span class="nf">from_columns_dict</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">columns</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a table from a mapping of column labels to column values.</span>
+
+<span class="sd">        &gt;&gt;&gt; from collections import OrderedDict</span>
+<span class="sd">        &gt;&gt;&gt; columns = OrderedDict()</span>
+<span class="sd">        &gt;&gt;&gt; columns[&#39;letter&#39;] = [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;z&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; columns[&#39;count&#39;] = [9, 3, 3, 1]</span>
+<span class="sd">        &gt;&gt;&gt; columns[&#39;points&#39;] = [1, 2, 2, 10]</span>
+<span class="sd">        &gt;&gt;&gt; t = Table.from_columns_dict(columns)</span>
+<span class="sd">        &gt;&gt;&gt; print(t)</span>
+<span class="sd">        letter | count | points</span>
+<span class="sd">        a      | 9     | 1</span>
+<span class="sd">        b      | 3     | 2</span>
+<span class="sd">        c      | 3     | 2</span>
+<span class="sd">        z      | 1     | 10</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span> <span class="n">columns</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 </div>
     <span class="nd">@classmethod</span>
 <div class="viewcode-block" id="Table.read_table"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.read_table.html#datascience.tables.Table.read_table">[docs]</a>    <span class="k">def</span> <span class="nf">read_table</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">filepath_or_buffer</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
