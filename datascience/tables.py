@@ -874,7 +874,7 @@ class Table(collections.abc.MutableMapping):
         Returns:
             A tuple containing two instances of ``Table``.
 
-                >>> job = ['a', 'b', 'c', 'd']
+        >>> job = ['a', 'b', 'c', 'd']
         >>> wage = [10, 20, 15, 8]
         >>> foo_table = Table([job, wage], ['job', 'wage'])
         >>> print(foo_table)
