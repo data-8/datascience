@@ -1,5 +1,5 @@
 Formats (``datascience.formats``)
-========
+=================================
 
 .. automodule:: datascience.formats
     :members:

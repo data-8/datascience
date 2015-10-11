@@ -195,6 +195,7 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         ids -- an ID for each value; if none are provided, indices are used
         key_on -- attribute of each feature to match to ids
         palette -- one of the following color brewer palettes:
+
             'BuGn', 'BuPu', 'GnBu', 'OrRd', 'PuBu', 'PuBuGn', 'PuRd', 'RdPu',
             'YlGn', 'YlGnBu', 'YlOrBr', and 'YlOrRd'.
 
