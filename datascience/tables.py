@@ -346,38 +346,44 @@ class Table(collections.abc.MutableMapping):
                 - ``values`` is a list/array and does not have the same length
                   as the number of rows in the table.
 
-        >>> table
+        >>> letter = ['a', 'b', 'c', 'z']
+        >>> count = [9, 3, 3, 1]
+        >>> points = [1, 2, 2, 10]
+        >>> table = Table([letter, count, points], ['letter', 'count', 'points'])
+        >>> print(table)
         letter | count | points
         a      | 9     | 1
         b      | 3     | 2
         c      | 3     | 2
         z      | 1     | 10
-
         >>> table.append_column('new_col1', [10, 20, 30, 40])
-        >>> table
+        >>> print(table)
         letter | count | points | new_col1
         a      | 9     | 1      | 10
         b      | 3     | 2      | 20
         c      | 3     | 2      | 30
         z      | 1     | 10     | 40
         >>> table.append_column('new_col2', 'hello')
-        >>> table
+        >>> print(table)
         letter | count | points | new_col1 | new_col2
         a      | 9     | 1      | 10       | hello
         b      | 3     | 2      | 20       | hello
         c      | 3     | 2      | 30       | hello
         z      | 1     | 10     | 40       | hello
-
         >>> table.append_column(123, [1, 2, 3, 4])
-        <ValueError raised>
+        Traceback (most recent call last):
+            ...
+        ValueError: The column label must be a string, but a int was given
         >>> table.append_column('bad_col', [1, 2])
-        <ValueError raised>
+        Traceback (most recent call last):
+            ...
+        ValueError: Column length mismatch. New column does not have the same number of rows as table.
         """
         # TODO(sam): Allow append_column to take in a another table, copying
         # over formatter as needed.
         if not isinstance(label, str):
             raise ValueError('The column label must be a string, but a '
-                '{} was given'.format(str.__class__.__name__))
+                '{} was given'.format(label.__class__.__name__))
 
         if not isinstance(values, np.ndarray):
             # Coerce a single value to a sequence
@@ -386,14 +392,12 @@ class Table(collections.abc.MutableMapping):
             values = np.array(tuple(values))
 
         if self.num_rows != 0 and len(values) != self.num_rows:
-            raise ValueError('Column length mismatch. The column passed in'
-                'does not have the same length as the number of rows in the'
-                'table.')
+            raise ValueError('Column length mismatch. New column does not have '
+                             'the same number of rows as table.')
         else:
             self._num_rows = len(values)
 
         self._columns[label] = values
-        return self
 
 
     def relabel(self, column_label, new_label):
