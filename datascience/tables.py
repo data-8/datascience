@@ -31,8 +31,7 @@ class Table(collections.abc.MutableMapping):
 
     def __init__(self, columns=None, labels=None,
                  formatter=_formats.default_formatter):
-        """Create a table from a list of column values or dictionary of
-        sequences.
+        """Create a table from a list of column values.
 
         >>> letters = ['a', 'b', 'c', 'z']
         >>> counts = [9, 3, 3, 1]
@@ -49,14 +48,14 @@ class Table(collections.abc.MutableMapping):
         :func:`Table.from_rows`, :func:`Table.from_records`,
         :func:`Table.read_table`, and :func:`Table.from_columns_dict`.
 
-        Kwargs:
-            columns (list): A list in which each element is another list
+        Args:
+            ``columns`` (list): A list in which each element is another list
                 containing the values for a column in the order the columns
                 appear in ``labels``.
 
-            labels (list): A list of column labels.
+            ``labels`` (list): A list of column labels.
 
-            formatter (Formatter): An instance of :class:`Formatter` that
+            ``formatter`` (Formatter): An instance of :class:`Formatter` that
                 formats the columns' values.
 
         Returns:
@@ -64,9 +63,7 @@ class Table(collections.abc.MutableMapping):
 
         Raises:
             AssertionError:
-                - ``labels`` is specified but ``columns`` is not.
-                - ``columns`` is a dict but ``labels`` are specified.
-                - ``columns`` is a list but ``labels`` are not specified.
+                - ``labels`` is specified but ``columns`` is not and vice-versa.
                 - The length of ``labels`` and the length of ``columns`` are
                   unequal.
         """
@@ -87,7 +84,22 @@ class Table(collections.abc.MutableMapping):
 
     @classmethod
     def empty(cls, column_labels=None):
-        """Create an empty table."""
+        """Create an empty table. Column labels are optional
+
+        >>> t = Table.empty(['x', 'y'])
+        >>> print(t.append((2, 3)))
+        x    | y
+        2    | 3
+
+        Args:
+            ``column_labels`` (None or list): If ``None``, a table with 0
+                columns is created.
+                If a list, each element is a column label in a table with
+                0 rows.
+
+        Returns:
+            A new instance of ``Table``.
+        """
         if column_labels is None:
             return cls()
         values = [[] for label in column_labels]
@@ -108,7 +120,22 @@ class Table(collections.abc.MutableMapping):
 
     @classmethod
     def from_columns_dict(cls, columns):
-        """Create a table from a mapping of column labels to column values."""
+        """Create a table from a mapping of column labels to column values.
+
+        >>> from collections import OrderedDict
+        >>> columns = OrderedDict()
+        >>> columns['letter'] = ['a', 'b', 'c', 'z']
+        >>> columns['count'] = [9, 3, 3, 1]
+        >>> columns['points'] = [1, 2, 2, 10]
+        >>> t = Table.from_columns_dict(columns)
+        >>> print(t)
+        letter | count | points
+        a      | 9     | 1
+        b      | 3     | 2
+        c      | 3     | 2
+        z      | 1     | 10
+
+        """
         return cls(list(columns.values()), columns.keys())
 
     @classmethod
