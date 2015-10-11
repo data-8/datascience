@@ -242,26 +242,29 @@ class Table(collections.abc.MutableMapping):
 
         ``__getitem__`` is aliased to this, so bracket notation can be used:
 
+        >>> letter = ['a', 'b', 'c', 'z']
+        >>> count = [9, 3, 3, 1]
+        >>> points = [1, 2, 2, 10]
+        >>> t = Table([letter, count, points], ['letter', 'count', 'points'])
         >>> t.values('letter') == t['letter']
-        True
+        array([ True,  True,  True,  True], dtype=bool)
+
+        >>> print(t)
+        letter | count | points
+        a      | 9     | 1
+        b      | 3     | 2
+        c      | 3     | 2
+        z      | 1     | 10
+        >>> t.values("letter") # doctest: +NORMALIZE_WHITESPACE
+        array(['a', 'b', 'c', 'z'], dtype='<U1')
+        >>> t.values("count")
+        array([9, 3, 3, 1])
 
         Args:
             label (str): The name of the column
 
         Returns:
             An instance of ``numpy.array``.
-
-        >>> t
-        letter | count | points
-        a      | 9     | 1
-        b      | 3     | 2
-        c      | 3     | 2
-        z      | 1     | 10
-
-        >>> t.values("letter")
-        array(['a', 'b', 'c', 'z'])
-        >>> t.values("count")
-        array([9, 3, 3, 1])
         """
         return self._columns[label]
 
@@ -516,6 +519,9 @@ class Table(collections.abc.MutableMapping):
         Returns:
             A ``Table`` containing only the selected rows.
 
+        >>> grade = ['A+', 'A', 'A-', 'B+', 'B', 'B-']
+        >>> gpa = [4, 4, 3.7, 3.3, 3, 2.7]
+        >>> t = Table([grade, gpa], ['letter grade', 'gpa'])
         >>> print(t)
         letter grade | gpa
         A+           | 4
@@ -780,13 +786,16 @@ class Table(collections.abc.MutableMapping):
         pth percentile of a column is the smallest value that at at least as
         large as the p% of numbers in the column.
 
-        >>> print(t)
+        >>> count = [9, 3, 3, 1]
+        >>> points = [1, 2, 2, 10]
+        >>> table = Table([count, points], ['count', 'points'])
+        >>> print(table)
         count | points
         9     | 1
         3     | 2
         3     | 2
         1     | 10
-        >>> t.percentile(67)
+        >>> print(table.percentile(67))
         count | points
         9     | 10
         """
@@ -816,31 +825,30 @@ class Table(collections.abc.MutableMapping):
         Returns:
             A new instance of ``Table``.
 
-        >>> some_table
+        >>> job = ['a', 'b', 'c', 'd']
+        >>> wage = [10, 20, 15, 8]
+        >>> some_table = Table([job, wage], ['job', 'wage'])
+        >>> print(some_table)
         job  | wage
         a    | 10
         b    | 20
         c    | 15
         d    | 8
-
-        >>> some_table.sample()
+        >>> print(some_table.sample()) # doctest: +SKIP
         job  | wage
         b    | 20
         c    | 15
         a    | 10
         d    | 8
-
-        >>> some_table.sample(k = 2)
+        >>> print(some_table.sample(k = 2)) # doctest: +SKIP
         job  | wage
         b    | 20
         c    | 15
-
-        >>> some_table.sample(k = 2, with_replacement = True,
-        ...     weights = [0.5, 0.5, 0, 0])
+        >>> print(some_table.sample(k = 2, with_replacement = True,
+        ...     weights = [0.5, 0.5, 0, 0])) # doctest: +SKIP
         job  | wage
         a    | 10
         a    | 10
-
         """
         n = self.num_rows
         if k is None:
@@ -866,7 +874,10 @@ class Table(collections.abc.MutableMapping):
         Returns:
             A tuple containing two instances of ``Table``.
 
-        >>> foo_table
+                >>> job = ['a', 'b', 'c', 'd']
+        >>> wage = [10, 20, 15, 8]
+        >>> foo_table = Table([job, wage], ['job', 'wage'])
+        >>> print(foo_table)
         job  | wage
         a    | 10
         b    | 20
@@ -874,12 +885,12 @@ class Table(collections.abc.MutableMapping):
         d    | 8
 
         >>> sample, rest = foo_table.split(3)
-        >>> sample
+        >>> print(sample) # doctest: +SKIP
         job  | wage
         c    | 15
         a    | 10
         b    | 20
-        >>> rest
+        >>> print(rest) # doctest: +SKIP
         job  | wage
         d    | 8
         """
@@ -1474,14 +1485,16 @@ class Table(collections.abc.MutableMapping):
         Raises:
             ValueError: The Table contains non-numerical values
 
-        >>> table
+        >>> count = [9, 3, 3, 1]
+        >>> points = [1, 2, 2, 10]
+        >>> table = Table([count, points], ['count', 'points'])
+        >>> print(table)
         count | points
         9     | 1
         3     | 2
         3     | 2
         1     | 10
-
-        >>> table.hist()
+        >>> table.hist() # doctest: +SKIP
         <histogram of values in count>
         <histogram of values in points>
         """
