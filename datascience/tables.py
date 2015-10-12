@@ -31,8 +31,8 @@ class _Taker:
         """Return a Table of a sequence of rows taken by number.
 
         Args:
-            ``row_numbers`` (integer or list of integers): The list of row numbers to
-            be selected.
+            ``row_numbers`` (slice or integer or list of integers):
+            The list of row numbers to be selected.
 
         Returns:
             A ``Table`` containing only the selected rows.
@@ -45,40 +45,47 @@ class _Taker:
         B+           | 3.3
         B            | 3
         B-           | 2.7
-        >>> print(t.take(0))
+        >>> print(t.take[0])
         letter grade | gpa
         A+           | 4
-        >>> print(t.take(5))
+        >>> print(t.take[5])
         letter grade | gpa
         B-           | 2.7
-        >>> print(t.take(-1))
+        >>> print(t.take[-1])
         letter grade | gpa
         B-           | 2.7
-        >>> print(t.take([2,1,0]))
+        >>> print(t.take[2, 1, 0])
         letter grade | gpa
         A-           | 3.7
         A            | 4
         A+           | 4
-        >>> print(t.take([1,5]))
+        >>> print(t.take[1, 5])
         letter grade | gpa
         A            | 4
         B-           | 2.7
-        >>> print(t.take(range(3)))
+        >>> print(t.take[:3])
         letter grade | gpa
         A+           | 4
         A            | 4
         A-           | 3.7
         """
-        columns = [np.take(column, row_numbers, axis=0) for column in self._table.columns]
-        return self._table._with_columns(columns)
+        return self[row_numbers]
 
     def __getitem__(self, i):
-        rows = self._table.rows[i]
-        cols = self._table._columns.keys()
-        if not isinstance(rows, list):
-            rows = [rows]
+        if isinstance(i, collections.Iterable):
+            columns = [np.take(column, i, axis=0)
+                       for column in self._table.columns]
+            return self._table._with_columns(columns)
+        elif isinstance(i, slice):
+            columns = [column[i] for column in self._table._columns.values()]
+            return self._table._with_columns(columns)
+        else:
+            rows = self._table.rows[i]
+            cols = self._table._columns.keys()
+            if not isinstance(rows, list):
+                rows = [rows]
 
-        return Table.from_rows(rows, cols)
+            return Table.from_rows(rows, cols)
 
 
 class Table(collections.abc.MutableMapping):
