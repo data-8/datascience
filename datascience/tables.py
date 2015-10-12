@@ -395,6 +395,13 @@ class Table(collections.abc.MutableMapping):
         self._columns[label] = values
         return self
 
+    def with_column(self, label, values):
+        """Returns a new table with new column included."""
+        new_table = Table(self.columns, self.column_labels)
+        new_table.append_column(label, values)
+        return new_table
+
+
     def relabel(self, column_label, new_label):
         """Change the label of a column."""
         assert column_label in self._columns
@@ -405,6 +412,12 @@ class Table(collections.abc.MutableMapping):
             formatter = self._formats.pop(column_label)
             self._formats[new_label] = formatter
         return self
+
+    def with_relabeling(self, column_label, new_label):
+        """Returns a new table with column_label changed to new_label."""
+        new_table = Table(self.columns, self.column_labels)
+        new_table.relabel(column_label, new_label)
+        return new_table
 
     ##################
     # Transformation #
@@ -1123,7 +1136,7 @@ class Table(collections.abc.MutableMapping):
         def annotate(axis, ticks):
             axis.set_yticks(index+0.5) # Center labels on bars
             #barh plots entries in reverse order from bottom to top
-            axis.set_yticklabels(ticks[::-1], stretch='ultra-condensed') 
+            axis.set_yticklabels(ticks[::-1], stretch='ultra-condensed')
         height = max(4, len(index)/2)
         if 'height' in vargs:
             height = vargs.pop('height')
