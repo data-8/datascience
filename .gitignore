@@ -60,3 +60,4 @@ cache/
 .DS_Store
 
 docs/_build/
+docs/_autosummary/
