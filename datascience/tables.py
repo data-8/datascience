@@ -396,26 +396,152 @@ class Table(collections.abc.MutableMapping):
         return self
 
     def with_column(self, label, values):
-        """Returns a new table with new column included."""
-        new_table = Table(self.columns, self.column_labels)
+        """Returns a separate new table with new column included.
+
+        Args:
+            ``label`` (str): The label of the new column.
+                Must be a string.
+
+            ``values`` (single value or list/array): If a single value, every
+                value in the new column is ``values``.
+
+                If a list or array, the new column contains the values in
+                ``values``. ``values`` must be the same length as the table.
+
+        Returns:
+            A new separate table containing new column specified by ``label``
+            and ``values`` in addition to previous columns.
+
+        Raises:
+            ``ValueError``: If
+                - ``label`` is not a string.
+                - ``values`` is a list/array and does not have the same length
+                  as the number of rows in the table.
+
+        >>> table
+        letter | count | points
+        a      | 9     | 1
+        b      | 3     | 2
+        c      | 3     | 2
+        z      | 1     | 10
+
+        >>> table2 = table.append_column('new_col1', [10, 20, 30, 40])
+        >>> table3 = table2.append_column('new_col2', 'hello')
+        >>> table2
+        letter | count | points | new_col1
+        a      | 9     | 1      | 10
+        b      | 3     | 2      | 20
+        c      | 3     | 2      | 30
+        z      | 1     | 10     | 40
+        >>> table3
+        letter | count | points | new_col1 | new_col2
+        a      | 9     | 1      | 10       | hello
+        b      | 3     | 2      | 20       | hello
+        c      | 3     | 2      | 30       | hello
+        z      | 1     | 10     | 40       | hello
+        >>> table
+        letter | count | points
+        a      | 9     | 1
+        b      | 3     | 2
+        c      | 3     | 2
+        z      | 1     | 10
+
+        >>> table.append_column(123, [1, 2, 3, 4])
+        <ValueError raised>
+        >>> table.append_column('bad_col', [1, 2])
+        <ValueError raised>
+        """
+        new_table = self.copy()
         new_table.append_column(label, values)
         return new_table
 
 
     def relabel(self, column_label, new_label):
-        """Change the label of a column."""
-        assert column_label in self._columns
-        rewrite = lambda s: new_label if s == column_label else s
+        """Change the labels of columns specified by ``column_label`` to
+        labels in ``new_label``.
+
+        Args:
+            ``column_label`` (single str or list/array of str): The label(s) of
+                columns to be changed. Must be str.
+
+            ``new_label`` (single str or list/array of): The new label(s) of
+                columns to be changed. Must be str.
+
+                Number of elements must match number of elements in
+                ``column_label``.
+
+        Returns:
+            None
+
+        >>> table = Table([(1, 2, 3), (12345, 123, 5123)], ['points', 'id'])
+        >>> table.relabel('id', 'yolo')
+        >>> table
+        points | yolo
+        1      | 12345
+        2      | 123
+        3      | 5123
+        >>> table.relabel(['points', 'yolo'], ['red', 'blue'])
+        >>> table
+        red    | blue
+        1      | 12345
+        2      | 123
+        3      | 5123
+        """
+        if isinstance(column_label, str) and isinstance(new_label, str):
+            column_label, new_label = [column_label], [new_label]
+        d = dict(zip(column_label, new_label)) # dictioanry to map old labels to new ones
+        for col in d.keys():
+            assert col in self._columns
+        rewrite = lambda s: d[s] if s in d.keys() else s
         columns = [(rewrite(s), c) for s, c in self._columns.items()]
         self._columns = collections.OrderedDict(columns)
-        if column_label in self._formats:
-            formatter = self._formats.pop(column_label)
-            self._formats[new_label] = formatter
+        for label in self._formats:
+            if label in column_label:
+                formatter = self._formats.pop(label)
+                self._formats[d[label]] = formatter
         return self
 
     def with_relabeling(self, column_label, new_label):
-        """Returns a new table with column_label changed to new_label."""
-        new_table = Table(self.columns, self.column_labels)
+        """Returns a new table with column_label changed to new_label.
+        ``column_label`` and ``new_label`` may be single values or lists
+        specifying column labels to be changed and their new corresponding
+        labels.
+
+        Args:
+            ``column_label`` (single str or list/array of str): The label(s) of
+                columns to be changed. Must be str.
+
+            ``new_label`` (single str or list/array of): The new label(s) of
+                columns to be changed. Must be str.
+
+                Number of elements must match number of elements in
+                ``column_label``.
+
+        Returns:
+            A new separate table containing same data with column headers in
+            ``column_label`` replaced by ``new_label``.
+
+        >>> table
+        letter | count | points
+        a      | 9     | 1
+        b      | 3     | 2
+        c      | 3     | 2
+        z      | 1     | 10
+        >>> table2 = table.with_relabeling('points', 'minions')
+        >>> table2
+        letter | count | minions
+        a      | 9     | 1
+        b      | 3     | 2
+        c      | 3     | 2
+        z      | 1     | 10
+        >>> table
+        letter | count | points
+        a      | 9     | 1
+        b      | 3     | 2
+        c      | 3     | 2
+        z      | 1     | 10
+        """
+        new_table = self.copy()
         new_table.relabel(column_label, new_label)
         return new_table
 

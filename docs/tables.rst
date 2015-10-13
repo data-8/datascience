@@ -74,7 +74,9 @@ Mutation (modifies table in place)
     Table.move_to_end
     Table.append
     Table.append_column
+    Table.with_column
     Table.relabel
+    Table.with_relabeling
 
 Transformation (creates a new table)
 
