@@ -949,10 +949,6 @@ class Table(collections.abc.MutableMapping):
             lines.append((0, '<p>... ({} rows omitted)</p'.format(omitted)))
         return '\n'.join(4 * indent * ' ' + text for indent, text in lines)
 
-    def matrix(self):
-        """Return a 2-D array with the contents of the table."""
-        return np.matrix(list(self._columns.values()))
-
     def index_by(self, column_or_label):
         """Return a dict keyed by values in a column that contains lists of
         rows corresponding to each value.
@@ -965,13 +961,30 @@ class Table(collections.abc.MutableMapping):
 
     @classmethod
     def from_df(cls, df):
-        """Convert a DataFrame into a Table."""
+        """Convert a Pandas DataFrame into a Table."""
         labels = df.columns
         return Table([df[label].values for label in labels], labels)
+
+    @classmethod
+    def from_array(cls, arr):
+        """Convert a structured NumPy array into a Table."""
+        return Table([arr[f] for f in arr.dtype.names],
+                     labels=arr.dtype.names)
 
     def to_df(self):
         """Convert the table to a Pandas DataFrame."""
         return pandas.DataFrame(self._columns)
+
+    def to_array(self):
+        """Convert the table to a NumPy array."""
+        dt = np.dtype(list(zip(self.column_labels,
+                               (c.dtype for c in self.columns))))
+        arr = np.empty_like(self.columns[0], dt)
+
+        for label in self.column_labels:
+            arr[label] = self[label]
+
+        return arr
 
     ##################
     # Visualizations #
