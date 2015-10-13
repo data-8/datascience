@@ -27,12 +27,12 @@ class _Taker:
     def __init__(self, table):
         self._table = table
 
-    def __call__(self, row_numbers):
+    def __call__(self, row_numbers_or_slice):
         """Return a Table of a sequence of rows taken by number.
 
         Args:
-            ``row_numbers`` (slice or integer or list of integers):
-            The list of row numbers to be selected.
+            ``row_numbers_or_slice`` (slice or integer or list of integers):
+            The list of row numbers or a slice to be selected.
 
         Returns:
             A ``Table`` containing only the selected rows.
@@ -69,7 +69,7 @@ class _Taker:
         A            | 4
         A-           | 3.7
         """
-        return self[row_numbers]
+        return self[row_numbers_or_slice]
 
     def __getitem__(self, i):
         if isinstance(i, collections.Iterable):
@@ -149,6 +149,10 @@ class Table(collections.abc.MutableMapping):
             self[label] = column
 
         self.take = _Taker(self)
+
+    # This, along with a snippet below, is necessary for Sphinx to
+    # correctly load the `take` docstring
+    take = _Taker(None)
 
     @classmethod
     def empty(cls, column_labels=None):
@@ -1618,6 +1622,10 @@ class Table(collections.abc.MutableMapping):
 
         def __repr__(self):
             return '{0}({1})'.format(type(self).__name__, repr(self._table))
+
+
+# For Sphinx: grab the docstring from `Taker.__call__`
+Table.take.__doc__ = _Taker.__call__.__doc__
 
 
 class Q:
