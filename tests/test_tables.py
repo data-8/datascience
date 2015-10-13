@@ -463,6 +463,11 @@ def test_relabel():
     2      | 123
     3      | 5123
     """)
+    with(pytest.raises(ValueError)):
+        table.relabel(['red', 'blue'], ['magenta', 'cyan', 'yellow'])
+    with(pytest.raises(ValueError)):
+        table.relabel(['red', 'green'], ['magenta', 'yellow', 'cyan'])
+
 
 
 def test_relabel_with_chars(table):
