@@ -1,6 +1,0 @@
-datascience.tables.Table.empty
-==============================
-
-.. currentmodule:: datascience.tables
-
-.. automethod:: Table.empty

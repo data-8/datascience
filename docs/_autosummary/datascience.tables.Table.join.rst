@@ -1,6 +1,0 @@
-datascience.tables.Table.join
-=============================
-
-.. currentmodule:: datascience.tables
-
-.. automethod:: Table.join
