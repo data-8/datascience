@@ -466,7 +466,7 @@ def test_relabel():
     with(pytest.raises(ValueError)):
         table.relabel(['red', 'blue'], ['magenta', 'cyan', 'yellow'])
     with(pytest.raises(ValueError)):
-        table.relabel(['red', 'green'], ['magenta', 'yellow', 'cyan'])
+        table.relabel(['red', 'green'], ['magenta', 'yellow'])
 
 
 
