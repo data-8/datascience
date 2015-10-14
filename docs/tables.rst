@@ -96,6 +96,8 @@ Transformation (creates a new table)
     Table.percentile
     Table.sample
     Table.split
+    Table.with_column
+    Table.with_relabeling
 
 Exporting / Displaying
 

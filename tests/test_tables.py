@@ -379,6 +379,38 @@ def test_append_column(table):
     with(pytest.raises(ValueError)):
         table.append_column(0, [1, 2, 3, 4])
 
+def test_with_column(table):
+    column_1 = [10, 20, 30, 40]
+    column_2 = 'hello'
+    table2 = table.with_column('new_col1', column_1)
+    table3 = table2.with_column('new_col2', column_2)
+    assert_equal(table, """
+    letter | count | points
+    a      | 9     | 1
+    b      | 3     | 2
+    c      | 3     | 2
+    z      | 1     | 10
+    """)
+    assert_equal(table2, """
+    letter | count | points | new_col1
+    a      | 9     | 1      | 10
+    b      | 3     | 2      | 20
+    c      | 3     | 2      | 30
+    z      | 1     | 10     | 40
+    """)
+    assert_equal(table3, """
+    letter | count | points | new_col1 | new_col2
+    a      | 9     | 1      | 10       | hello
+    b      | 3     | 2      | 20       | hello
+    c      | 3     | 2      | 30       | hello
+    z      | 1     | 10     | 40       | hello
+    """)
+
+    with(pytest.raises(ValueError)):
+        table.append_column('bad_col', [1, 2])
+    with(pytest.raises(ValueError)):
+        table.append_column(0, [1, 2, 3, 4])
+
 
 def test_append_table(table):
     table.append(table)
@@ -424,6 +456,18 @@ def test_relabel():
     2      | 123
     3      | 5123
     """)
+    table.relabel(['points', 'yolo'], ['red', 'blue'])
+    assert_equal(table, """
+    red    | blue
+    1      | 12345
+    2      | 123
+    3      | 5123
+    """)
+    with(pytest.raises(ValueError)):
+        table.relabel(['red', 'blue'], ['magenta', 'cyan', 'yellow'])
+    with(pytest.raises(ValueError)):
+        table.relabel(['red', 'green'], ['magenta', 'yellow'])
+
 
 
 def test_relabel_with_chars(table):
@@ -437,6 +481,31 @@ def test_relabel_with_chars(table):
     table.relabel('points', 'minions')
     assert_equal(table, """
     letter | count | minions
+    a      | 9     | 1
+    b      | 3     | 2
+    c      | 3     | 2
+    z      | 1     | 10
+    """)
+
+def test_with_relabeling(table):
+    table2 = table.with_relabeling('points', 'minions')
+    assert_equal(table2, """
+    letter | count | minions
+    a      | 9     | 1
+    b      | 3     | 2
+    c      | 3     | 2
+    z      | 1     | 10
+    """)
+    table3 = table.with_relabeling(['count', 'points'], ['ducks', 'ducklings'])
+    assert_equal(table3, """
+    letter | ducks | ducklings
+    a      | 9     | 1
+    b      | 3     | 2
+    c      | 3     | 2
+    z      | 1     | 10
+    """)
+    assert_equal(table, """
+    letter | count | points
     a      | 9     | 1
     b      | 3     | 2
     c      | 3     | 2
