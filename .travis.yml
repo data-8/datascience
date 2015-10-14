@@ -20,7 +20,7 @@ script:
 
 after_success:
   - coveralls
-  - bash deploy_docs.sh
+  - bash tools/deploy_docs.sh
 
 sudo: false
 
