@@ -98,6 +98,7 @@ Transformation (creates a new table)
     Table.split
     Table.with_column
     Table.with_relabeling
+    Table.bin
 
 Exporting / Displaying
 
