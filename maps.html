@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Maps (datascience.maps) &mdash; datascience 0.3.dev15 documentation</title>
+    <title>Maps (datascience.maps) &mdash; datascience 0.3.dev16 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.3.dev15',
+        VERSION:     '0.3.dev16',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.3.dev15 documentation" href="index.html" />
+    <link rel="top" title="datascience 0.3.dev16 documentation" href="index.html" />
     <link rel="next" title="Formats (datascience.formats)" href="formats.html" />
     <link rel="prev" title="datascience.tables.Table.points" href="_autosummary/datascience.tables.Table.points.html" /> 
   </head>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="_autosummary/datascience.tables.Table.points.html" title="datascience.tables.Table.points"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.3.dev15 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.3.dev16 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -52,9 +52,9 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="maps-datascience-maps">
-<h1>Maps (<code class="docutils literal"><span class="pre">datascience.maps</span></code>)<a class="headerlink" href="#maps-datascience-maps" title="Permalink to this headline">¶</a></h1>
-<span class="target" id="module-datascience.maps"></span><p>Draw maps using folium.</p>
+  <div class="section" id="module-datascience.maps">
+<span id="maps-datascience-maps"></span><h1>Maps (<code class="docutils literal"><span class="pre">datascience.maps</span></code>)<a class="headerlink" href="#module-datascience.maps" title="Permalink to this headline">¶</a></h1>
+<p>Draw maps using folium.</p>
 <dl class="class">
 <dt id="datascience.maps.Map">
 <em class="property">class </em><code class="descclassname">datascience.maps.</code><code class="descname">Map</code><span class="sig-paren">(</span><em>features=()</em>, <em>ids=()</em>, <em>width=960</em>, <em>height=500</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Map" title="Permalink to this definition">¶</a></dt>
@@ -204,7 +204,32 @@ radius &#8211; pixel radius of the circle</p>
 <dl class="attribute">
 <dt id="datascience.maps.Region.lat_lons">
 <code class="descname">lat_lons</code><a class="headerlink" href="#datascience.maps.Region.lat_lons" title="Permalink to this definition">¶</a></dt>
+<dd><p>A flat list of (lat, lon) pairs.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="datascience.maps.Region.polygons">
+<code class="descname">polygons</code><a class="headerlink" href="#datascience.maps.Region.polygons" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of polygons describing the region.</p>
+<ul class="simple">
+<li>Each polygon is a list of linear rings, where the first describes the
+exterior and the rest describe interior holes.</li>
+<li>Each linear ring is a list of positions where the last is a repeat of
+the first.</li>
+<li>Each position is a (lat, lon) pair.</li>
+</ul>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="datascience.maps.Region.properties">
+<code class="descname">properties</code><a class="headerlink" href="#datascience.maps.Region.properties" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="attribute">
+<dt id="datascience.maps.Region.type">
+<code class="descname">type</code><a class="headerlink" href="#datascience.maps.Region.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>The GEOJSON type of the regions: Polygon or MultiPolygon.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -261,7 +286,7 @@ radius &#8211; pixel radius of the circle</p>
         <li class="right" >
           <a href="_autosummary/datascience.tables.Table.points.html" title="datascience.tables.Table.points"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.3.dev15 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.3.dev16 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>datascience.maps &mdash; datascience 0.3.dev15 documentation</title>
+    <title>datascience.maps &mdash; datascience 0.3.dev16 documentation</title>
     
     <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.3.dev15',
+        VERSION:     '0.3.dev16',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.3.dev15 documentation" href="../../index.html" />
+    <link rel="top" title="datascience 0.3.dev16 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body role="document">
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.3.dev15 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.3.dev16 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -244,6 +244,7 @@
 <span class="sd">        ids -- an ID for each value; if none are provided, indices are used</span>
 <span class="sd">        key_on -- attribute of each feature to match to ids</span>
 <span class="sd">        palette -- one of the following color brewer palettes:</span>
+
 <span class="sd">            &#39;BuGn&#39;, &#39;BuPu&#39;, &#39;GnBu&#39;, &#39;OrRd&#39;, &#39;PuBu&#39;, &#39;PuBuGn&#39;, &#39;PuRd&#39;, &#39;RdPu&#39;,</span>
 <span class="sd">            &#39;YlGn&#39;, &#39;YlGnBu&#39;, &#39;YlOrBr&#39;, and &#39;YlOrRd&#39;.</span>
 
@@ -335,8 +336,11 @@
                 <span class="n">_read_geojson_features</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s">&#39;.&#39;</span> <span class="o">+</span> <span class="n">key</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">feature_type</span> <span class="o">==</span> <span class="s">&#39;Point&#39;</span><span class="p">:</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="n">Circle</span><span class="o">.</span><span class="n">_convert_point</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">feature_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;Polygon&#39;</span><span class="p">,</span> <span class="s">&#39;MultiPolygon&#39;</span><span class="p">]:</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="n">Region</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c"># TODO Support all http://geojson.org/geojson-spec.html#geometry-objects</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="bp">None</span>
             <span class="n">features</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">return</span> <span class="n">features</span>
 
@@ -503,12 +507,44 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geojson</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">assert</span> <span class="s">&#39;type&#39;</span> <span class="ow">in</span> <span class="n">geojson</span>
         <span class="k">assert</span> <span class="n">geojson</span><span class="p">[</span><span class="s">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;Feature&#39;</span>
+        <span class="k">assert</span> <span class="s">&#39;geometry&#39;</span> <span class="ow">in</span> <span class="n">geojson</span>
+        <span class="k">assert</span> <span class="s">&#39;type&#39;</span> <span class="ow">in</span> <span class="n">geojson</span><span class="p">[</span><span class="s">&#39;geometry&#39;</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="n">geojson</span><span class="p">[</span><span class="s">&#39;geometry&#39;</span><span class="p">][</span><span class="s">&#39;type&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;Polygon&#39;</span><span class="p">,</span> <span class="s">&#39;MultiPolygon&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span> <span class="o">=</span> <span class="n">geojson</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span> <span class="o">=</span> <span class="n">kwargs</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">lat_lons</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A flat list of (lat, lon) pairs.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">_lat_lons_from_geojson</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span><span class="p">[</span><span class="s">&#39;geometry&#39;</span><span class="p">][</span><span class="s">&#39;coordinates&#39;</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The GEOJSON type of the regions: Polygon or MultiPolygon.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span><span class="p">[</span><span class="s">&#39;geometry&#39;</span><span class="p">][</span><span class="s">&#39;type&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">polygons</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a list of polygons describing the region.</span>
+
+<span class="sd">        - Each polygon is a list of linear rings, where the first describes the</span>
+<span class="sd">          exterior and the rest describe interior holes.</span>
+<span class="sd">        - Each linear ring is a list of positions where the last is a repeat of</span>
+<span class="sd">          the first.</span>
+<span class="sd">        - Each position is a (lat, lon) pair.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s">&#39;Polygon&#39;</span><span class="p">:</span>
+            <span class="n">polygons</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span><span class="p">[</span><span class="s">&#39;geometry&#39;</span><span class="p">][</span><span class="s">&#39;coordinates&#39;</span><span class="p">]]</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s">&#39;MultiPolygon&#39;</span><span class="p">:</span>
+            <span class="n">polygons</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span><span class="p">[</span><span class="s">&#39;geometry&#39;</span><span class="p">][</span><span class="s">&#39;coordinates&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span>   <span class="p">[</span>   <span class="p">[</span><span class="n">_lat_lons_from_geojson</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span>
+                        <span class="n">s</span> <span class="ow">in</span> <span class="n">ring</span>  <span class="p">]</span>              <span class="k">for</span>
+                    <span class="n">ring</span> <span class="ow">in</span> <span class="n">polygon</span><span class="p">]</span>              <span class="k">for</span>
+                <span class="n">polygon</span> <span class="ow">in</span> <span class="n">polygons</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">properties</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;properties&#39;</span><span class="p">,</span> <span class="p">{})</span>
 
 <div class="viewcode-block" id="Region.copy"><a class="viewcode-back" href="../../maps.html#datascience.maps.Region.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a deep copy&quot;&quot;&quot;</span>
@@ -579,7 +615,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.3.dev15 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.3.dev16 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

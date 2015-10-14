@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Tables (datascience.tables) &mdash; datascience 0.3.dev15 documentation</title>
+    <title>Tables (datascience.tables) &mdash; datascience 0.3.dev16 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.3.dev15',
+        VERSION:     '0.3.dev16',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.3.dev15 documentation" href="index.html" />
+    <link rel="top" title="datascience 0.3.dev16 documentation" href="index.html" />
     <link rel="next" title="datascience.tables.Table.__init__" href="_autosummary/datascience.tables.Table.__init__.html" />
     <link rel="prev" title="Start Here: datascience Tutorial" href="tutorial.html" /> 
   </head>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="tutorial.html" title="Start Here: datascience Tutorial"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.3.dev15 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.3.dev16 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -53,7 +53,7 @@
           <div class="body" role="main">
             
   <div class="section" id="tables-datascience-tables">
-<h1>Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)<a class="headerlink" href="#tables-datascience-tables" title="Permalink to this headline">¶</a></h1>
+<span id="tables-overview"></span><h1>Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)<a class="headerlink" href="#tables-datascience-tables" title="Permalink to this headline">¶</a></h1>
 <p><strong>Summary of methods for Table. Click a method to see its documentation.</strong></p>
 <p>One note about reading the method signatures for this page: each method is
 listed with its arguments. However, optional arguments are specified in
@@ -160,7 +160,7 @@ methods (mostly visualizations).</p>
 <td>Appends a column to the table.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.relabel.html#datascience.tables.Table.relabel" title="datascience.tables.Table.relabel"><code class="xref py py-obj docutils literal"><span class="pre">Table.relabel</span></code></a>(column_label,&nbsp;new_label)</td>
-<td>Change the label of a column.</td>
+<td>Change the labels of columns specified by <code class="docutils literal"><span class="pre">column_label</span></code> to labels in <code class="docutils literal"><span class="pre">new_label</span></code>.</td>
 </tr>
 </tbody>
 </table>
@@ -216,6 +216,12 @@ methods (mostly visualizations).</p>
 <tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.split.html#datascience.tables.Table.split" title="datascience.tables.Table.split"><code class="xref py py-obj docutils literal"><span class="pre">Table.split</span></code></a>(k)</td>
 <td>Returns a tuple of two tables where the first table contains <code class="docutils literal"><span class="pre">k</span></code> rows randomly sampled and the second contains the remaining rows.</td>
 </tr>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.with_column.html#datascience.tables.Table.with_column" title="datascience.tables.Table.with_column"><code class="xref py py-obj docutils literal"><span class="pre">Table.with_column</span></code></a>(label,&nbsp;values)</td>
+<td>Returns a new table with new column included.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.with_relabeling.html#datascience.tables.Table.with_relabeling" title="datascience.tables.Table.with_relabeling"><code class="xref py py-obj docutils literal"><span class="pre">Table.with_relabeling</span></code></a>(column_label,&nbsp;new_label)</td>
+<td>Returns a new table with column_label changed to new_label.</td>
+</tr>
 </tbody>
 </table>
 <p>Exporting / Displaying</p>
@@ -227,6 +233,12 @@ methods (mostly visualizations).</p>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.show.html#datascience.tables.Table.show" title="datascience.tables.Table.show"><code class="xref py py-obj docutils literal"><span class="pre">Table.show</span></code></a>([max_rows])</td>
 <td>Display the table.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.as_text.html#datascience.tables.Table.as_text" title="datascience.tables.Table.as_text"><code class="xref py py-obj docutils literal"><span class="pre">Table.as_text</span></code></a>([max_rows,&nbsp;sep])</td>
+<td>Format table as text.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.as_html.html#datascience.tables.Table.as_html" title="datascience.tables.Table.as_html"><code class="xref py py-obj docutils literal"><span class="pre">Table.as_html</span></code></a>([max_rows])</td>
+<td>Format table as HTML.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.matrix.html#datascience.tables.Table.matrix" title="datascience.tables.Table.matrix"><code class="xref py py-obj docutils literal"><span class="pre">Table.matrix</span></code></a>()</td>
 <td>Return a 2-D array with the contents of the table.</td>
@@ -316,7 +328,7 @@ methods (mostly visualizations).</p>
         <li class="right" >
           <a href="tutorial.html" title="Start Here: datascience Tutorial"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.3.dev15 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.3.dev16 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
