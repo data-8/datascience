@@ -37,7 +37,7 @@ class Table(collections.abc.MutableMapping):
         >>> counts = [9, 3, 3, 1]
         >>> points = [1, 2, 2, 10]
         >>> t = Table([letters, counts, points], ['letter', 'count', 'points'])
-        >>> print(t)
+        >>> t
         letter | count | points
         a      | 9     | 1
         b      | 3     | 2
@@ -87,7 +87,7 @@ class Table(collections.abc.MutableMapping):
         """Create an empty table. Column labels are optional
 
         >>> t = Table.empty(['x', 'y'])
-        >>> print(t.append((2, 3)))
+        >>> t.append((2, 3))
         x    | y
         2    | 3
 
@@ -128,7 +128,7 @@ class Table(collections.abc.MutableMapping):
         >>> columns['count'] = [9, 3, 3, 1]
         >>> columns['points'] = [1, 2, 2, 10]
         >>> t = Table.from_columns_dict(columns)
-        >>> print(t)
+        >>> t
         letter | count | points
         a      | 9     | 1
         b      | 3     | 2
@@ -247,7 +247,7 @@ class Table(collections.abc.MutableMapping):
         >>> count = [9, 3, 3, 1]
         >>> points = [1, 2, 2, 10]
         >>> t = Table([letter, count, points], ['letter', 'count', 'points'])
-        >>> print(t)
+        >>> t
         letter | count | points
         a      | 9     | 1
         b      | 3     | 2
@@ -351,21 +351,21 @@ class Table(collections.abc.MutableMapping):
         >>> count = [9, 3, 3, 1]
         >>> points = [1, 2, 2, 10]
         >>> table = Table([letter, count, points], ['letter', 'count', 'points'])
-        >>> print(table)
+        >>> table
         letter | count | points
         a      | 9     | 1
         b      | 3     | 2
         c      | 3     | 2
         z      | 1     | 10
         >>> table.append_column('new_col1', [10, 20, 30, 40])
-        >>> print(table)
+        >>> table
         letter | count | points | new_col1
         a      | 9     | 1      | 10
         b      | 3     | 2      | 20
         c      | 3     | 2      | 30
         z      | 1     | 10     | 40
         >>> table.append_column('new_col2', 'hello')
-        >>> print(table)
+        >>> table
         letter | count | points | new_col1 | new_col2
         a      | 9     | 1      | 10       | hello
         b      | 3     | 2      | 20       | hello
@@ -480,17 +480,17 @@ class Table(collections.abc.MutableMapping):
         >>> prices = [6, 5, 5]
         >>> calories = [743, 651, 582]
         >>> t = Table([burgers, prices, calories], ['burgers', 'prices', 'calories'])
-        >>> print(t)
+        >>> t
         burgers       | prices | calories
         cheeseburger  | 6      | 743
         hamburger     | 5      | 651
         veggie burger | 5      | 582
-        >>> print(t.select(['burgers', 'calories']))
+        >>> t.select(['burgers', 'calories'])
         burgers       | calories
         cheeseburger  | 743
         hamburger     | 651
         veggie burger | 582
-        >>> print(t.select('prices'))
+        >>> t.select('prices')
         prices
         6
         5
@@ -520,7 +520,7 @@ class Table(collections.abc.MutableMapping):
         >>> grade = ['A+', 'A', 'A-', 'B+', 'B', 'B-']
         >>> gpa = [4, 4, 3.7, 3.3, 3, 2.7]
         >>> t = Table([grade, gpa], ['letter grade', 'gpa'])
-        >>> print(t)
+        >>> t
         letter grade | gpa
         A+           | 4
         A            | 4
@@ -528,25 +528,25 @@ class Table(collections.abc.MutableMapping):
         B+           | 3.3
         B            | 3
         B-           | 2.7
-        >>> print(t.take(0))
+        >>> t.take(0)
         letter grade | gpa
         A+           | 4
-        >>> print(t.take(5))
+        >>> t.take(5)
         letter grade | gpa
         B-           | 2.7
-        >>> print(t.take(-1))
+        >>> t.take(-1)
         letter grade | gpa
         B-           | 2.7
-        >>> print(t.take([2,1,0]))
+        >>> t.take([2,1,0])
         letter grade | gpa
         A-           | 3.7
         A            | 4
         A+           | 4
-        >>> print(t.take([1,5]))
+        >>> t.take([1,5])
         letter grade | gpa
         A            | 4
         B-           | 2.7
-        >>> print(t.take(range(3)))
+        >>> t.take(range(3))
         letter grade | gpa
         A+           | 4
         A            | 4
@@ -787,13 +787,13 @@ class Table(collections.abc.MutableMapping):
         >>> count = [9, 3, 3, 1]
         >>> points = [1, 2, 2, 10]
         >>> table = Table([count, points], ['count', 'points'])
-        >>> print(table)
+        >>> table
         count | points
         9     | 1
         3     | 2
         3     | 2
         1     | 10
-        >>> print(table.percentile(67))
+        >>> table.percentile(67)
         count | points
         9     | 10
         """
@@ -826,24 +826,24 @@ class Table(collections.abc.MutableMapping):
         >>> job = ['a', 'b', 'c', 'd']
         >>> wage = [10, 20, 15, 8]
         >>> some_table = Table([job, wage], ['job', 'wage'])
-        >>> print(some_table)
+        >>> some_table
         job  | wage
         a    | 10
         b    | 20
         c    | 15
         d    | 8
-        >>> print(some_table.sample()) # doctest: +SKIP
+        >>> some_table.sample() # doctest: +SKIP
         job  | wage
         b    | 20
         c    | 15
         a    | 10
         d    | 8
-        >>> print(some_table.sample(k = 2)) # doctest: +SKIP
+        >>> some_table.sample(k = 2) # doctest: +SKIP
         job  | wage
         b    | 20
         c    | 15
-        >>> print(some_table.sample(k = 2, with_replacement = True,
-        ...     weights = [0.5, 0.5, 0, 0])) # doctest: +SKIP
+        >>> some_table.sample(k = 2, with_replacement = True,
+        ...     weights = [0.5, 0.5, 0, 0]) # doctest: +SKIP
         job  | wage
         a    | 10
         a    | 10
@@ -875,19 +875,19 @@ class Table(collections.abc.MutableMapping):
         >>> job = ['a', 'b', 'c', 'd']
         >>> wage = [10, 20, 15, 8]
         >>> foo_table = Table([job, wage], ['job', 'wage'])
-        >>> print(foo_table)
+        >>> foo_table
         job  | wage
         a    | 10
         b    | 20
         c    | 15
         d    | 8
         >>> sample, rest = foo_table.split(3)
-        >>> print(sample) # doctest: +SKIP
+        >>> sample # doctest: +SKIP
         job  | wage
         c    | 15
         a    | 10
         b    | 20
-        >>> print(rest) # doctest: +SKIP
+        >>> rest # doctest: +SKIP
         job  | wage
         d    | 8
         """
@@ -1245,7 +1245,7 @@ class Table(collections.abc.MutableMapping):
         >>> furniture_type = ['chairs', 'tables', 'desks']
         >>> count = [6, 1, 2]
         >>> furniture_table = Table([furniture_type, count], ['Type of furniture', 'Count'])
-        >>> print(furniture_table)
+        >>> furniture_table
         Type of furniture | Count
         chairs            | 6
         tables            | 1
@@ -1260,7 +1260,7 @@ class Table(collections.abc.MutableMapping):
 
         >>> other_col = [10, 20, 30]
         >>> foo_table = Table([furniture_type, count, other_col], ['Type of furniture', 'Count', 'Other col'])
-        >>> print(foo_table)
+        >>> foo_table
         Type of furniture | Count | Other col
         chairs            | 6     | 10
         tables            | 1     | 20
@@ -1347,7 +1347,7 @@ class Table(collections.abc.MutableMapping):
         >>> furniture_type = ['chairs', 'tables', 'desks']
         >>> count = [6, 1, 2]
         >>> furniture_table = Table([furniture_type, count], ['Type of furniture', 'Count'])
-        >>> print(furniture_table)
+        >>> furniture_table
         Type of furniture | Count
         chairs            | 6
         tables            | 1
@@ -1362,7 +1362,7 @@ class Table(collections.abc.MutableMapping):
 
         >>> other_col = [10, 20, 30]
         >>> foo_table = Table([furniture_type, count, other_col], ['Type of furniture', 'Count', 'Other col'])
-        >>> print(foo_table)
+        >>> foo_table
         Type of furniture | Count | Other col
         chairs            | 6     | 10
         tables            | 1     | 20
@@ -1497,7 +1497,7 @@ class Table(collections.abc.MutableMapping):
         >>> count = [9, 3, 3, 1]
         >>> points = [1, 2, 2, 10]
         >>> table = Table([count, points], ['count', 'points'])
-        >>> print(table)
+        >>> table
         count | points
         9     | 1
         3     | 2
