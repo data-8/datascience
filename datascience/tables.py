@@ -420,30 +420,30 @@ class Table(collections.abc.MutableMapping):
 
         >>> table = Table([(1, 2, 3), (12345, 123, 5123)], ['points', 'id'])
         >>> table.relabel('id', 'yolo')
-        >>> table
         points | yolo
         1      | 12345
         2      | 123
         3      | 5123
         >>> table.relabel(['points', 'yolo'], ['red', 'blue'])
-        >>> table
-        red    | blue
-        1      | 12345
-        2      | 123
-        3      | 5123
+        red  | blue
+        1    | 12345
+        2    | 123
+        3    | 5123
         >>> table.relabel(['red', 'green', 'blue'], ['cyan', 'magenta', 'yellow', 'key'])
-        <ValueError raised>
+        Traceback (most recent call last):
+            ...
+        ValueError: Invalid arguments. column_label and new_label must be of equal length.
         """
         if isinstance(column_label, str) and isinstance(new_label, str):
             column_label, new_label = [column_label], [new_label]
         if len(column_label) != len(new_label):
-            raise ValueError("Invalid arguments. column_label and new_label"
-                "must be of equal length.")
+            raise ValueError('Invalid arguments. column_label and new_label '
+                'must be of equal length.')
         old_to_new = dict(zip(column_label, new_label)) # dictionary to map old labels to new ones
         for col in old_to_new:
             if not (col in self._columns):
-                raise ValueError("Invalid column_labels. column labels must"
-                "already exist in table in order to be replaced.")
+                raise ValueError('Invalid column_labels. Column labels must '
+                'already exist in table in order to be replaced.')
         rewrite = lambda s: old_to_new[s] if s in old_to_new else s
         columns = [(rewrite(s), c) for s, c in self._columns.items()]
         self._columns = collections.OrderedDict(columns)
@@ -927,6 +927,10 @@ class Table(collections.abc.MutableMapping):
                 - ``values`` is a list/array and does not have the same length
                   as the number of rows in the table.
 
+        >>> letter = ['a', 'b', 'c', 'z']
+        >>> count = [9, 3, 3, 1]
+        >>> points = [1, 2, 2, 10]
+        >>> table = Table([letter, count, points], ['letter', 'count', 'points'])
         >>> table
         letter | count | points
         a      | 9     | 1
@@ -956,9 +960,13 @@ class Table(collections.abc.MutableMapping):
         z      | 1     | 10
 
         >>> table.with_column(123, [1, 2, 3, 4])
-        <ValueError raised>
+        Traceback (most recent call last):
+            ...
+        ValueError: The column label must be a string, but a int was given
         >>> table.with_column('bad_col', [1, 2])
-        <ValueError raised>
+        Traceback (most recent call last):
+            ...
+        ValueError: Column length mismatch. New column does not have the same number of rows as table.
         """
         new_table = self.copy()
         new_table.append_column(label, values)
@@ -985,6 +993,10 @@ class Table(collections.abc.MutableMapping):
             A new separate table containing same data with column headers in
             ``column_label`` replaced by ``new_label``.
 
+        >>> letter = ['a', 'b', 'c', 'z']
+        >>> count = [9, 3, 3, 1]
+        >>> points = [1, 2, 2, 10]
+        >>> table = Table([letter, count, points], ['letter', 'count', 'points'])
         >>> table
         letter | count | points
         a      | 9     | 1
