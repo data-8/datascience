@@ -1,16 +1,25 @@
-from unittest.mock import MagicMock, patch
-import pytest
-import copy
+import doctest
 import json
-from IPython.display import HTML
+import pytest
 
 import datascience as ds
+from datascience import maps
 
 
 @pytest.fixture(scope='function')
 def states():
     """Read a map of US states."""
     return ds.Map.read_geojson('tests/us-states.json')
+
+
+############
+# Doctests #
+############
+
+
+def test_doctests():
+    results = doctest.testmod(maps)
+    assert results.failed == 0
 
 
 ############

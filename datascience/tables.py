@@ -37,7 +37,7 @@ class Table(collections.abc.MutableMapping):
         >>> counts = [9, 3, 3, 1]
         >>> points = [1, 2, 2, 10]
         >>> t = Table([letters, counts, points], ['letter', 'count', 'points'])
-        >>> print(t)
+        >>> t
         letter | count | points
         a      | 9     | 1
         b      | 3     | 2
@@ -87,7 +87,7 @@ class Table(collections.abc.MutableMapping):
         """Create an empty table. Column labels are optional
 
         >>> t = Table.empty(['x', 'y'])
-        >>> print(t.append((2, 3)))
+        >>> t.append((2, 3))
         x    | y
         2    | 3
 
@@ -128,7 +128,7 @@ class Table(collections.abc.MutableMapping):
         >>> columns['count'] = [9, 3, 3, 1]
         >>> columns['points'] = [1, 2, 2, 10]
         >>> t = Table.from_columns_dict(columns)
-        >>> print(t)
+        >>> t
         letter | count | points
         a      | 9     | 1
         b      | 3     | 2
@@ -240,28 +240,29 @@ class Table(collections.abc.MutableMapping):
     def values(self, label):
         """Returns the values of a column as an array.
 
-        ``__getitem__`` is aliased to this, so bracket notation can be used:
+        ``__getitem__`` is aliased to this, so bracket notation can be used
+        ie. table.values(label) is equivalent to table[label].
 
-        >>> t.values('letter') == t['letter']
-        True
-
-        Args:
-            label (str): The name of the column
-
-        Returns:
-            An instance of ``numpy.array``.
-
+        >>> letter = ['a', 'b', 'c', 'z']
+        >>> count = [9, 3, 3, 1]
+        >>> points = [1, 2, 2, 10]
+        >>> t = Table([letter, count, points], ['letter', 'count', 'points'])
         >>> t
         letter | count | points
         a      | 9     | 1
         b      | 3     | 2
         c      | 3     | 2
         z      | 1     | 10
-
-        >>> t.values("letter")
-        array(['a', 'b', 'c', 'z'])
+        >>> t.values("letter") # doctest: +NORMALIZE_WHITESPACE
+        array(['a', 'b', 'c', 'z'], dtype='<U1')
         >>> t.values("count")
         array([9, 3, 3, 1])
+
+        Args:
+            label (str): The name of the column
+
+        Returns:
+            An instance of ``numpy.array``.
         """
         return self._columns[label]
 
@@ -346,13 +347,16 @@ class Table(collections.abc.MutableMapping):
                 - ``values`` is a list/array and does not have the same length
                   as the number of rows in the table.
 
+        >>> letter = ['a', 'b', 'c', 'z']
+        >>> count = [9, 3, 3, 1]
+        >>> points = [1, 2, 2, 10]
+        >>> table = Table([letter, count, points], ['letter', 'count', 'points'])
         >>> table
         letter | count | points
         a      | 9     | 1
         b      | 3     | 2
         c      | 3     | 2
         z      | 1     | 10
-
         >>> table.append_column('new_col1', [10, 20, 30, 40])
         >>> table
         letter | count | points | new_col1
@@ -367,17 +371,20 @@ class Table(collections.abc.MutableMapping):
         b      | 3     | 2      | 20       | hello
         c      | 3     | 2      | 30       | hello
         z      | 1     | 10     | 40       | hello
-
         >>> table.append_column(123, [1, 2, 3, 4])
-        <ValueError raised>
+        Traceback (most recent call last):
+            ...
+        ValueError: The column label must be a string, but a int was given
         >>> table.append_column('bad_col', [1, 2])
-        <ValueError raised>
+        Traceback (most recent call last):
+            ...
+        ValueError: Column length mismatch. New column does not have the same number of rows as table.
         """
         # TODO(sam): Allow append_column to take in a another table, copying
         # over formatter as needed.
         if not isinstance(label, str):
             raise ValueError('The column label must be a string, but a '
-                '{} was given'.format(str.__class__.__name__))
+                '{} was given'.format(label.__class__.__name__))
 
         if not isinstance(values, np.ndarray):
             # Coerce a single value to a sequence
@@ -386,14 +393,12 @@ class Table(collections.abc.MutableMapping):
             values = np.array(tuple(values))
 
         if self.num_rows != 0 and len(values) != self.num_rows:
-            raise ValueError('Column length mismatch. The column passed in'
-                'does not have the same length as the number of rows in the'
-                'table.')
+            raise ValueError('Column length mismatch. New column does not have '
+                             'the same number of rows as table.')
         else:
             self._num_rows = len(values)
 
         self._columns[label] = values
-        return self
 
 
     def relabel(self, column_label, new_label):
@@ -415,30 +420,30 @@ class Table(collections.abc.MutableMapping):
 
         >>> table = Table([(1, 2, 3), (12345, 123, 5123)], ['points', 'id'])
         >>> table.relabel('id', 'yolo')
-        >>> table
         points | yolo
         1      | 12345
         2      | 123
         3      | 5123
         >>> table.relabel(['points', 'yolo'], ['red', 'blue'])
-        >>> table
-        red    | blue
-        1      | 12345
-        2      | 123
-        3      | 5123
+        red  | blue
+        1    | 12345
+        2    | 123
+        3    | 5123
         >>> table.relabel(['red', 'green', 'blue'], ['cyan', 'magenta', 'yellow', 'key'])
-        <ValueError raised>
+        Traceback (most recent call last):
+            ...
+        ValueError: Invalid arguments. column_label and new_label must be of equal length.
         """
         if isinstance(column_label, str) and isinstance(new_label, str):
             column_label, new_label = [column_label], [new_label]
         if len(column_label) != len(new_label):
-            raise ValueError("Invalid arguments. column_label and new_label"
-                "must be of equal length.")
+            raise ValueError('Invalid arguments. column_label and new_label '
+                'must be of equal length.')
         old_to_new = dict(zip(column_label, new_label)) # dictionary to map old labels to new ones
         for col in old_to_new:
             if not (col in self._columns):
-                raise ValueError("Invalid column_labels. column labels must"
-                "already exist in table in order to be replaced.")
+                raise ValueError('Invalid column_labels. Column labels must '
+                'already exist in table in order to be replaced.')
         rewrite = lambda s: old_to_new[s] if s in old_to_new else s
         columns = [(rewrite(s), c) for s, c in self._columns.items()]
         self._columns = collections.OrderedDict(columns)
@@ -471,17 +476,21 @@ class Table(collections.abc.MutableMapping):
         Returns:
             An instance of ``Table`` containing only selected columns.
 
-        >>> print(t)
+        >>> burgers = ['cheeseburger', 'hamburger', 'veggie burger']
+        >>> prices = [6, 5, 5]
+        >>> calories = [743, 651, 582]
+        >>> t = Table([burgers, prices, calories], ['burgers', 'prices', 'calories'])
+        >>> t
         burgers       | prices | calories
         cheeseburger  | 6      | 743
         hamburger     | 5      | 651
         veggie burger | 5      | 582
-        >>> print(t.select(['burgers', 'calories']))
+        >>> t.select(['burgers', 'calories'])
         burgers       | calories
         cheeseburger  | 743
         hamburger     | 651
         veggie burger | 582
-        >>> print(t.select('prices'))
+        >>> t.select('prices')
         prices
         6
         5
@@ -508,7 +517,10 @@ class Table(collections.abc.MutableMapping):
         Returns:
             A ``Table`` containing only the selected rows.
 
-        >>> print(t)
+        >>> grade = ['A+', 'A', 'A-', 'B+', 'B', 'B-']
+        >>> gpa = [4, 4, 3.7, 3.3, 3, 2.7]
+        >>> t = Table([grade, gpa], ['letter grade', 'gpa'])
+        >>> t
         letter grade | gpa
         A+           | 4
         A            | 4
@@ -516,25 +528,25 @@ class Table(collections.abc.MutableMapping):
         B+           | 3.3
         B            | 3
         B-           | 2.7
-        >>> print(t.take(0))
+        >>> t.take(0)
         letter grade | gpa
         A+           | 4
-        >>> print(t.take(5))
+        >>> t.take(5)
         letter grade | gpa
         B-           | 2.7
-        >>> print(t.take(-1))
+        >>> t.take(-1)
         letter grade | gpa
         B-           | 2.7
-        >>> print(t.take([2,1,0]))
+        >>> t.take([2,1,0])
         letter grade | gpa
         A-           | 3.7
         A            | 4
         A+           | 4
-        >>> print(t.take([1,5]))
+        >>> t.take([1,5])
         letter grade | gpa
         A            | 4
         B-           | 2.7
-        >>> print(t.take(range(3)))
+        >>> t.take(range(3))
         letter grade | gpa
         A+           | 4
         A            | 4
@@ -772,13 +784,16 @@ class Table(collections.abc.MutableMapping):
         pth percentile of a column is the smallest value that at at least as
         large as the p% of numbers in the column.
 
-        >>> print(t)
+        >>> count = [9, 3, 3, 1]
+        >>> points = [1, 2, 2, 10]
+        >>> table = Table([count, points], ['count', 'points'])
+        >>> table
         count | points
         9     | 1
         3     | 2
         3     | 2
         1     | 10
-        >>> t.percentile(67)
+        >>> table.percentile(67)
         count | points
         9     | 10
         """
@@ -808,31 +823,30 @@ class Table(collections.abc.MutableMapping):
         Returns:
             A new instance of ``Table``.
 
+        >>> job = ['a', 'b', 'c', 'd']
+        >>> wage = [10, 20, 15, 8]
+        >>> some_table = Table([job, wage], ['job', 'wage'])
         >>> some_table
         job  | wage
         a    | 10
         b    | 20
         c    | 15
         d    | 8
-
-        >>> some_table.sample()
+        >>> some_table.sample() # doctest: +SKIP
         job  | wage
         b    | 20
         c    | 15
         a    | 10
         d    | 8
-
-        >>> some_table.sample(k = 2)
+        >>> some_table.sample(k = 2) # doctest: +SKIP
         job  | wage
         b    | 20
         c    | 15
-
         >>> some_table.sample(k = 2, with_replacement = True,
-        ...     weights = [0.5, 0.5, 0, 0])
+        ...     weights = [0.5, 0.5, 0, 0]) # doctest: +SKIP
         job  | wage
         a    | 10
         a    | 10
-
         """
         n = self.num_rows
         if k is None:
@@ -858,20 +872,22 @@ class Table(collections.abc.MutableMapping):
         Returns:
             A tuple containing two instances of ``Table``.
 
+        >>> job = ['a', 'b', 'c', 'd']
+        >>> wage = [10, 20, 15, 8]
+        >>> foo_table = Table([job, wage], ['job', 'wage'])
         >>> foo_table
         job  | wage
         a    | 10
         b    | 20
         c    | 15
         d    | 8
-
         >>> sample, rest = foo_table.split(3)
-        >>> sample
+        >>> sample # doctest: +SKIP
         job  | wage
         c    | 15
         a    | 10
         b    | 20
-        >>> rest
+        >>> rest # doctest: +SKIP
         job  | wage
         d    | 8
         """
@@ -911,6 +927,10 @@ class Table(collections.abc.MutableMapping):
                 - ``values`` is a list/array and does not have the same length
                   as the number of rows in the table.
 
+        >>> letter = ['a', 'b', 'c', 'z']
+        >>> count = [9, 3, 3, 1]
+        >>> points = [1, 2, 2, 10]
+        >>> table = Table([letter, count, points], ['letter', 'count', 'points'])
         >>> table
         letter | count | points
         a      | 9     | 1
@@ -940,9 +960,13 @@ class Table(collections.abc.MutableMapping):
         z      | 1     | 10
 
         >>> table.with_column(123, [1, 2, 3, 4])
-        <ValueError raised>
+        Traceback (most recent call last):
+            ...
+        ValueError: The column label must be a string, but a int was given
         >>> table.with_column('bad_col', [1, 2])
-        <ValueError raised>
+        Traceback (most recent call last):
+            ...
+        ValueError: Column length mismatch. New column does not have the same number of rows as table.
         """
         new_table = self.copy()
         new_table.append_column(label, values)
@@ -969,6 +993,10 @@ class Table(collections.abc.MutableMapping):
             A new separate table containing same data with column headers in
             ``column_label`` replaced by ``new_label``.
 
+        >>> letter = ['a', 'b', 'c', 'z']
+        >>> count = [9, 3, 3, 1]
+        >>> points = [1, 2, 2, 10]
+        >>> table = Table([letter, count, points], ['letter', 'count', 'points'])
         >>> table
         letter | count | points
         a      | 9     | 1
@@ -1214,31 +1242,35 @@ class Table(collections.abc.MutableMapping):
             ValueError: The Table contains non-numerical values in columns
             other than `column_for_categories`
 
+        >>> furniture_type = ['chairs', 'tables', 'desks']
+        >>> count = [6, 1, 2]
+        >>> furniture_table = Table([furniture_type, count], ['Type of furniture', 'Count'])
         >>> furniture_table
         Type of furniture | Count
         chairs            | 6
         tables            | 1
         desks             | 2
-
-        >>> furniture_table.barh('Type of furniture')
+        >>> furniture_table.barh('Type of furniture') # doctest: +SKIP
         <bar graph with chairs, tables, desks as the categories and bars of
         length 6, 1, 2, respectively>
-
         >>> furniture_table.barh('Count')
-        ValueError: The column 'Type of furniture' contains non-numerical
-        values. A bar graph cannot be drawn for this table.
+        Traceback (most recent call last):
+            ...
+        ValueError: The column 'Type of furniture' contains non-numerical values. A bar graph cannot be drawn for this table.
 
+        >>> other_col = [10, 20, 30]
+        >>> foo_table = Table([furniture_type, count, other_col], ['Type of furniture', 'Count', 'Other col'])
         >>> foo_table
         Type of furniture | Count | Other col
         chairs            | 6     | 10
         tables            | 1     | 20
         desks             | 2     | 30
 
-        >>> foo_table.barh('Type of furniture')
+        >>> foo_table.barh('Type of furniture') # doctest: +SKIP
         <bar graph with Type of furniture as categories and Count values>
         <bar graph with Type of furniture as categories and Other col values>
 
-        >>> foo_table.barh('Type of furniture', overlay=True)
+        >>> foo_table.barh('Type of furniture', overlay=True) # doctest: +SKIP
         <bar graph with Type of furniture as categories and Count + Other col as
         the two bars for each category>
         """
@@ -1312,31 +1344,33 @@ class Table(collections.abc.MutableMapping):
             ValueError: The Table contains non-numerical values in columns
             other than `column_for_categories`
 
+        >>> furniture_type = ['chairs', 'tables', 'desks']
+        >>> count = [6, 1, 2]
+        >>> furniture_table = Table([furniture_type, count], ['Type of furniture', 'Count'])
         >>> furniture_table
         Type of furniture | Count
         chairs            | 6
         tables            | 1
         desks             | 2
-
-        >>> furniture_table.bar('Type of furniture')
+        >>> furniture_table.bar('Type of furniture') # doctest: +SKIP
         <bar graph with chairs, tables, desks as the categories and bars of
         length 6, 1, 2, respectively>
+        >>> furniture_table.bar('Count') # doctest: +SKIP
+        Traceback (most recent call last):
+            ...
+        ValueError: The column 'Type of furniture' contains non-numerical values. A bar graph cannot be drawn for this table.
 
-        >>> furniture_table.bar('Count')
-        ValueError: The column 'Type of furniture' contains non-numerical
-        values. A bar graph cannot be drawn for this table.
-
+        >>> other_col = [10, 20, 30]
+        >>> foo_table = Table([furniture_type, count, other_col], ['Type of furniture', 'Count', 'Other col'])
         >>> foo_table
         Type of furniture | Count | Other col
         chairs            | 6     | 10
         tables            | 1     | 20
         desks             | 2     | 30
-
-        >>> foo_table.bar('Type of furniture')
+        >>> foo_table.bar('Type of furniture') # doctest: +SKIP
         <bar graph with Type of furniture as categories and Count values>
         <bar graph with Type of furniture as categories and Other col values>
-
-        >>> foo_table.bar('Type of furniture', overlay=True)
+        >>> foo_table.bar('Type of furniture', overlay=True) # doctest: +SKIP
         <bar graph with Type of furniture as categories and Count + Other col as
         the two bars for each category>
         """
@@ -1460,14 +1494,16 @@ class Table(collections.abc.MutableMapping):
         Raises:
             ValueError: The Table contains non-numerical values
 
+        >>> count = [9, 3, 3, 1]
+        >>> points = [1, 2, 2, 10]
+        >>> table = Table([count, points], ['count', 'points'])
         >>> table
         count | points
         9     | 1
         3     | 2
         3     | 2
         1     | 10
-
-        >>> table.hist()
+        >>> table.hist() # doctest: +SKIP
         <histogram of values in count>
         <histogram of values in points>
         """

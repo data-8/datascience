@@ -1,6 +1,13 @@
-import pytest
+import doctest
 
 import datascience as ds
+from datascience import util
+
+
+
+def test_doctests():
+    results = doctest.testmod(util)
+    assert results.failed == 0
 
 
 def test_percentile():
