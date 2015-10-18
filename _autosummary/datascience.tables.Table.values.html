@@ -60,9 +60,22 @@
 <dt id="datascience.tables.Table.values">
 <code class="descclassname">Table.</code><code class="descname">values</code><span class="sig-paren">(</span><em>label</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the values of a column as an array.</p>
-<p><code class="docutils literal"><span class="pre">__getitem__</span></code> is aliased to this, so bracket notation can be used:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="s">&#39;letter&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">t</span><span class="p">[</span><span class="s">&#39;letter&#39;</span><span class="p">]</span>
-<span class="go">True</span>
+<p><code class="docutils literal"><span class="pre">__getitem__</span></code> is aliased to this, so bracket notation can be used
+ie. table.values(label) is equivalent to table[label].</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">letter</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="s">&#39;c&#39;</span><span class="p">,</span> <span class="s">&#39;z&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">count</span> <span class="o">=</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">points</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">([</span><span class="n">letter</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">points</span><span class="p">],</span> <span class="p">[</span><span class="s">&#39;letter&#39;</span><span class="p">,</span> <span class="s">&#39;count&#39;</span><span class="p">,</span> <span class="s">&#39;points&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span>
+<span class="go">letter | count | points</span>
+<span class="go">a      | 9     | 1</span>
+<span class="go">b      | 3     | 2</span>
+<span class="go">c      | 3     | 2</span>
+<span class="go">z      | 1     | 10</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="s">&quot;letter&quot;</span><span class="p">)</span> 
+<span class="go">array([&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;z&#39;], dtype=&#39;&lt;U1&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="s">&quot;count&quot;</span><span class="p">)</span>
+<span class="go">array([9, 3, 3, 1])</span>
 </pre></div>
 </div>
 <dl class="docutils">
@@ -71,20 +84,6 @@
 <dt>Returns:</dt>
 <dd>An instance of <code class="docutils literal"><span class="pre">numpy.array</span></code>.</dd>
 </dl>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span>
-<span class="go">letter | count | points</span>
-<span class="go">a      | 9     | 1</span>
-<span class="go">b      | 3     | 2</span>
-<span class="go">c      | 3     | 2</span>
-<span class="go">z      | 1     | 10</span>
-</pre></div>
-</div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="s">&quot;letter&quot;</span><span class="p">)</span>
-<span class="go">array([&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;z&#39;])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="s">&quot;count&quot;</span><span class="p">)</span>
-<span class="go">array([9, 3, 3, 1])</span>
-</pre></div>
-</div>
 </dd></dl>
 
 </div>

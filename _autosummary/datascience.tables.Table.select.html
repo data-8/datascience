@@ -68,17 +68,21 @@ be an existing header name.</dd>
 <dt>Returns:</dt>
 <dd>An instance of <code class="docutils literal"><span class="pre">Table</span></code> containing only selected columns.</dd>
 </dl>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">burgers</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;cheeseburger&#39;</span><span class="p">,</span> <span class="s">&#39;hamburger&#39;</span><span class="p">,</span> <span class="s">&#39;veggie burger&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">prices</span> <span class="o">=</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">calories</span> <span class="o">=</span> <span class="p">[</span><span class="mi">743</span><span class="p">,</span> <span class="mi">651</span><span class="p">,</span> <span class="mi">582</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">([</span><span class="n">burgers</span><span class="p">,</span> <span class="n">prices</span><span class="p">,</span> <span class="n">calories</span><span class="p">],</span> <span class="p">[</span><span class="s">&#39;burgers&#39;</span><span class="p">,</span> <span class="s">&#39;prices&#39;</span><span class="p">,</span> <span class="s">&#39;calories&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span>
 <span class="go">burgers       | prices | calories</span>
 <span class="go">cheeseburger  | 6      | 743</span>
 <span class="go">hamburger     | 5      | 651</span>
 <span class="go">veggie burger | 5      | 582</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s">&#39;burgers&#39;</span><span class="p">,</span> <span class="s">&#39;calories&#39;</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s">&#39;burgers&#39;</span><span class="p">,</span> <span class="s">&#39;calories&#39;</span><span class="p">])</span>
 <span class="go">burgers       | calories</span>
 <span class="go">cheeseburger  | 743</span>
 <span class="go">hamburger     | 651</span>
 <span class="go">veggie burger | 582</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s">&#39;prices&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s">&#39;prices&#39;</span><span class="p">)</span>
 <span class="go">prices</span>
 <span class="go">6</span>
 <span class="go">5</span>

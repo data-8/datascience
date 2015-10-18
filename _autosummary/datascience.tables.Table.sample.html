@@ -80,30 +80,27 @@ sampled according the the probability distribution in
 <dt>Returns:</dt>
 <dd>A new instance of <code class="docutils literal"><span class="pre">Table</span></code>.</dd>
 </dl>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">some_table</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">job</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="s">&#39;c&#39;</span><span class="p">,</span> <span class="s">&#39;d&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">wage</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">some_table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">([</span><span class="n">job</span><span class="p">,</span> <span class="n">wage</span><span class="p">],</span> <span class="p">[</span><span class="s">&#39;job&#39;</span><span class="p">,</span> <span class="s">&#39;wage&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">some_table</span>
 <span class="go">job  | wage</span>
 <span class="go">a    | 10</span>
 <span class="go">b    | 20</span>
 <span class="go">c    | 15</span>
 <span class="go">d    | 8</span>
-</pre></div>
-</div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">some_table</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">some_table</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span> 
 <span class="go">job  | wage</span>
 <span class="go">b    | 20</span>
 <span class="go">c    | 15</span>
 <span class="go">a    | 10</span>
 <span class="go">d    | 8</span>
-</pre></div>
-</div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">some_table</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">k</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">some_table</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">k</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span> 
 <span class="go">job  | wage</span>
 <span class="go">b    | 20</span>
 <span class="go">c    | 15</span>
-</pre></div>
-</div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">some_table</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">k</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">with_replacement</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">weights</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">some_table</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">k</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">with_replacement</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">weights</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span> 
 <span class="go">job  | wage</span>
 <span class="go">a    | 10</span>
 <span class="go">a    | 10</span>
