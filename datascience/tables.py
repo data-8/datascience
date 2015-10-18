@@ -240,15 +240,13 @@ class Table(collections.abc.MutableMapping):
     def values(self, label):
         """Returns the values of a column as an array.
 
-        ``__getitem__`` is aliased to this, so bracket notation can be used:
+        ``__getitem__`` is aliased to this, so bracket notation can be used
+        ie. table.values(label) is equivalent to table[label].
 
         >>> letter = ['a', 'b', 'c', 'z']
         >>> count = [9, 3, 3, 1]
         >>> points = [1, 2, 2, 10]
         >>> t = Table([letter, count, points], ['letter', 'count', 'points'])
-        >>> t.values('letter') == t['letter']
-        array([ True,  True,  True,  True], dtype=bool)
-
         >>> print(t)
         letter | count | points
         a      | 9     | 1
@@ -883,7 +881,6 @@ class Table(collections.abc.MutableMapping):
         b    | 20
         c    | 15
         d    | 8
-
         >>> sample, rest = foo_table.split(3)
         >>> print(sample) # doctest: +SKIP
         job  | wage
