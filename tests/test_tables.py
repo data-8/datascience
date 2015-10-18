@@ -1,3 +1,4 @@
+import doctest
 import re
 import pytest
 import numpy as np
@@ -54,6 +55,16 @@ def assert_equal(string1, string2):
     whitespace = re.compile('\s')
     purify = lambda s: whitespace.sub('', s)
     assert purify(string1) == purify(string2), "\n%s\n!=\n%s" % (string1, string2)
+
+
+############
+# Doctests #
+############
+
+
+def test_doctests():
+    results = doctest.testmod(tables)
+    assert results.failed == 0
 
 
 ############

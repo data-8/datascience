@@ -1,7 +1,7 @@
-import collections.abc
-import pytest
+import doctest
 import re
 import datascience as ds
+from datascience import formats
 
 
 def assert_equal(string1, string2):
@@ -9,6 +9,11 @@ def assert_equal(string1, string2):
     whitespace = re.compile('\s')
     purify = lambda s: whitespace.sub('', s)
     assert purify(string1) == purify(string2), "\n%s\n!=\n%s" % (string1, string2)
+
+
+def test_doctests():
+    results = doctest.testmod(formats)
+    assert results.failed == 0
 
 
 def test_default_format():
