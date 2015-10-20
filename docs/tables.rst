@@ -47,7 +47,8 @@ Creation
     Table.from_records
     Table.from_columns_dict
     Table.read_table
-
+    Table.from_df
+    Table.from_array
 
 Accessing values
 
@@ -108,8 +109,8 @@ Exporting / Displaying
     Table.show
     Table.as_text
     Table.as_html
-    Table.matrix
     Table.index_by
+    Table.to_array
     Table.to_df
 
 Visualizations

@@ -890,3 +890,12 @@ def test_df_roundtrip(table):
 
     for (c0, c1) in zip(t.columns, table.columns):
         assert_equal(c0, c1)
+
+def test_array_roundtrip(table):
+    arr = table.to_array()
+    assert isinstance(arr, np.ndarray)
+
+    t = Table.from_array(arr)
+
+    for (c0, c1) in zip(t.columns, table.columns):
+        assert_equal(c0, c1)
