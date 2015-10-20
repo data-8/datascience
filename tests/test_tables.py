@@ -118,6 +118,32 @@ def test_take(t):
     """)
 
 
+def test_take_slice(t):
+    test = t.take[1:3]
+    assert_equal(test, """
+    letter | count | points
+    b      | 3     | 2
+    c      | 3     | 2
+    """)
+
+
+def test_take_slice_single(t):
+    test = t.take[1]
+    assert_equal(test, """
+    letter | count | points
+    b      | 3     | 2
+    """)
+
+
+def test_take_iterable(t):
+    test = t.take[0, 2]
+    assert_equal(test, """
+    letter | count | points
+    a      | 9     | 1
+    c      | 3     | 2
+    """)
+
+
 def test_stats(t):
     test = t.stats()
     assert_equal(test, """
