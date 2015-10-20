@@ -89,7 +89,7 @@ class _Taker:
     def __getitem__(self, i):
         if isinstance(i, collections.Iterable):
             columns = [np.take(column, i, axis=0)
-                       for column in self._table.columns]
+                       for column in self._table._columns.values()]
             return self._table._with_columns(columns)
         elif isinstance(i, slice):
             columns = [column[i] for column in self._table._columns.values()]
