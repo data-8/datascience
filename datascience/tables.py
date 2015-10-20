@@ -37,7 +37,7 @@ class _Taker:
         Returns:
             A ``Table`` containing only the selected rows.
 
-        >>> print(t)
+        >>> t
         letter grade | gpa
         A+           | 4
         A            | 4
@@ -45,29 +45,44 @@ class _Taker:
         B+           | 3.3
         B            | 3
         B-           | 2.7
-        >>> print(t.take[0])
+        >>> t.take(0)
         letter grade | gpa
         A+           | 4
-        >>> print(t.take[5])
+        >>> t.take(5)
         letter grade | gpa
         B-           | 2.7
-        >>> print(t.take[-1])
+        >>> t.take(-1)
         letter grade | gpa
         B-           | 2.7
-        >>> print(t.take[2, 1, 0])
+        >>> t.take([2, 1, 0])
         letter grade | gpa
         A-           | 3.7
         A            | 4
         A+           | 4
-        >>> print(t.take[1, 5])
+        >>> print(t.take([1, 5]))
         letter grade | gpa
         A            | 4
         B-           | 2.7
-        >>> print(t.take[:3])
+        >>> t.take(range(3))
         letter grade | gpa
         A+           | 4
         A            | 4
         A-           | 3.7
+
+        Note that ``take`` also supports NumPy-like indexing and slicing:
+
+        >>> t.take[:3]
+        letter grade | gpa
+        A+           | 4
+        A            | 4
+        A-           | 3.7
+
+        >>> t.take[2, 1, 0]
+        letter grade | gpa
+        A-           | 3.7
+        A            | 4
+        A+           | 4
+
         """
         return self[row_numbers_or_slice]
 
