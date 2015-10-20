@@ -71,6 +71,91 @@
 <span class="kn">import</span> <span class="nn">datascience.util</span> <span class="kn">as</span> <span class="nn">_util</span>
 
 
+
+<span class="k">class</span> <span class="nc">_Taker</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_table</span> <span class="o">=</span> <span class="n">table</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row_numbers_or_slice</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a Table of a sequence of rows taken by number.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ``row_numbers_or_slice`` (slice or integer or list of integers):</span>
+<span class="sd">            The list of row numbers or a slice to be selected.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A ``Table`` containing only the selected rows.</span>
+
+<span class="sd">        &gt;&gt;&gt; grade = [&#39;A+&#39;, &#39;A&#39;, &#39;A-&#39;, &#39;B+&#39;, &#39;B&#39;, &#39;B-&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; gpa = [4, 4, 3.7, 3.3, 3, 2.7]</span>
+<span class="sd">        &gt;&gt;&gt; t = Table([grade, gpa], [&#39;letter grade&#39;, &#39;gpa&#39;])</span>
+
+<span class="sd">        &gt;&gt;&gt; t</span>
+<span class="sd">        letter grade | gpa</span>
+<span class="sd">        A+           | 4</span>
+<span class="sd">        A            | 4</span>
+<span class="sd">        A-           | 3.7</span>
+<span class="sd">        B+           | 3.3</span>
+<span class="sd">        B            | 3</span>
+<span class="sd">        B-           | 2.7</span>
+<span class="sd">        &gt;&gt;&gt; t.take(0)</span>
+<span class="sd">        letter grade | gpa</span>
+<span class="sd">        A+           | 4</span>
+<span class="sd">        &gt;&gt;&gt; t.take(5)</span>
+<span class="sd">        letter grade | gpa</span>
+<span class="sd">        B-           | 2.7</span>
+<span class="sd">        &gt;&gt;&gt; t.take(-1)</span>
+<span class="sd">        letter grade | gpa</span>
+<span class="sd">        B-           | 2.7</span>
+<span class="sd">        &gt;&gt;&gt; t.take([2, 1, 0])</span>
+<span class="sd">        letter grade | gpa</span>
+<span class="sd">        A-           | 3.7</span>
+<span class="sd">        A            | 4</span>
+<span class="sd">        A+           | 4</span>
+<span class="sd">        &gt;&gt;&gt; print(t.take([1, 5]))</span>
+<span class="sd">        letter grade | gpa</span>
+<span class="sd">        A            | 4</span>
+<span class="sd">        B-           | 2.7</span>
+<span class="sd">        &gt;&gt;&gt; t.take(range(3))</span>
+<span class="sd">        letter grade | gpa</span>
+<span class="sd">        A+           | 4</span>
+<span class="sd">        A            | 4</span>
+<span class="sd">        A-           | 3.7</span>
+
+<span class="sd">        Note that ``take`` also supports NumPy-like indexing and slicing:</span>
+
+<span class="sd">        &gt;&gt;&gt; t.take[:3]</span>
+<span class="sd">        letter grade | gpa</span>
+<span class="sd">        A+           | 4</span>
+<span class="sd">        A            | 4</span>
+<span class="sd">        A-           | 3.7</span>
+
+<span class="sd">        &gt;&gt;&gt; t.take[2, 1, 0]</span>
+<span class="sd">        letter grade | gpa</span>
+<span class="sd">        A-           | 3.7</span>
+<span class="sd">        A            | 4</span>
+<span class="sd">        A+           | 4</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">row_numbers_or_slice</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">):</span>
+            <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                       <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">_columns</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">_with_columns</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
+            <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">column</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">_columns</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">_with_columns</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">rows</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">cols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">_columns</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">rows</span> <span class="o">=</span> <span class="p">[</span><span class="n">rows</span><span class="p">]</span>
+
+            <span class="k">return</span> <span class="n">Table</span><span class="o">.</span><span class="n">from_rows</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">)</span>
+
+
 <span class="k">class</span> <span class="nc">Table</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A sequence of labeled columns.&quot;&quot;&quot;</span>
 
@@ -130,7 +215,13 @@
         <span class="c"># Add each column to table</span>
         <span class="k">for</span> <span class="n">column</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
             <span class="bp">self</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span>
-</div>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">take</span> <span class="o">=</span> <span class="n">_Taker</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="c"># This, along with a snippet below, is necessary for Sphinx to</span>
+    <span class="c"># correctly load the `take` docstring</span></div>
+    <span class="n">take</span> <span class="o">=</span> <span class="n">_Taker</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+
     <span class="nd">@classmethod</span>
 <div class="viewcode-block" id="Table.empty"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.empty.html#datascience.tables.Table.empty">[docs]</a>    <span class="k">def</span> <span class="nf">empty</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">column_labels</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create an empty table. Column labels are optional</span>
@@ -554,56 +645,7 @@
 <div class="viewcode-block" id="Table.drop"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.drop.html#datascience.tables.Table.drop">[docs]</a>    <span class="k">def</span> <span class="nf">drop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_label_or_labels</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a Table with only columns other than selected label or labels.&quot;&quot;&quot;</span>
         <span class="n">exclude</span> <span class="o">=</span> <span class="n">_as_labels</span><span class="p">(</span><span class="n">column_label_or_labels</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_labels</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">exclude</span><span class="p">])</span>
-</div>
-<div class="viewcode-block" id="Table.take"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.take.html#datascience.tables.Table.take">[docs]</a>    <span class="k">def</span> <span class="nf">take</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row_numbers</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return a Table of a sequence of rows taken by number.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            ``row_numbers`` (integer or list of integers): The list of row numbers to</span>
-<span class="sd">            be selected.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            A ``Table`` containing only the selected rows.</span>
-
-<span class="sd">        &gt;&gt;&gt; grade = [&#39;A+&#39;, &#39;A&#39;, &#39;A-&#39;, &#39;B+&#39;, &#39;B&#39;, &#39;B-&#39;]</span>
-<span class="sd">        &gt;&gt;&gt; gpa = [4, 4, 3.7, 3.3, 3, 2.7]</span>
-<span class="sd">        &gt;&gt;&gt; t = Table([grade, gpa], [&#39;letter grade&#39;, &#39;gpa&#39;])</span>
-<span class="sd">        &gt;&gt;&gt; t</span>
-<span class="sd">        letter grade | gpa</span>
-<span class="sd">        A+           | 4</span>
-<span class="sd">        A            | 4</span>
-<span class="sd">        A-           | 3.7</span>
-<span class="sd">        B+           | 3.3</span>
-<span class="sd">        B            | 3</span>
-<span class="sd">        B-           | 2.7</span>
-<span class="sd">        &gt;&gt;&gt; t.take(0)</span>
-<span class="sd">        letter grade | gpa</span>
-<span class="sd">        A+           | 4</span>
-<span class="sd">        &gt;&gt;&gt; t.take(5)</span>
-<span class="sd">        letter grade | gpa</span>
-<span class="sd">        B-           | 2.7</span>
-<span class="sd">        &gt;&gt;&gt; t.take(-1)</span>
-<span class="sd">        letter grade | gpa</span>
-<span class="sd">        B-           | 2.7</span>
-<span class="sd">        &gt;&gt;&gt; t.take([2,1,0])</span>
-<span class="sd">        letter grade | gpa</span>
-<span class="sd">        A-           | 3.7</span>
-<span class="sd">        A            | 4</span>
-<span class="sd">        A+           | 4</span>
-<span class="sd">        &gt;&gt;&gt; t.take([1,5])</span>
-<span class="sd">        letter grade | gpa</span>
-<span class="sd">        A            | 4</span>
-<span class="sd">        B-           | 2.7</span>
-<span class="sd">        &gt;&gt;&gt; t.take(range(3))</span>
-<span class="sd">        letter grade | gpa</span>
-<span class="sd">        A+           | 4</span>
-<span class="sd">        A            | 4</span>
-<span class="sd">        A-           | 3.7</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">row_numbers</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_columns</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span>
-</div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_labels</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">exclude</span><span class="p">])</span></div>
 <div class="viewcode-block" id="Table.where"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.where.html#datascience.tables.Table.where">[docs]</a>    <span class="k">def</span> <span class="nf">where</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_or_label</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a Table of rows for which the column is value or a non-zero value.&quot;&quot;&quot;</span>
         <span class="n">column</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_column</span><span class="p">(</span><span class="n">column_or_label</span><span class="p">)</span>
@@ -1648,6 +1690,10 @@
 
         <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">return</span> <span class="s">&#39;{0}({1})&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">))</span>
+
+
+<span class="c"># For Sphinx: grab the docstring from `Taker.__call__`</span>
+<span class="n">Table</span><span class="o">.</span><span class="n">take</span><span class="o">.</span><span class="n">__doc__</span> <span class="o">=</span> <span class="n">_Taker</span><span class="o">.</span><span class="n">__call__</span><span class="o">.</span><span class="n">__doc__</span>
 
 
 <span class="k">class</span> <span class="nc">Q</span><span class="p">:</span>

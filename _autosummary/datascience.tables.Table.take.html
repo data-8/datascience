@@ -56,54 +56,10 @@
             
   <div class="section" id="datascience-tables-table-take">
 <h1>datascience.tables.Table.take<a class="headerlink" href="#datascience-tables-table-take" title="Permalink to this headline">¶</a></h1>
-<dl class="method">
+<dl class="attribute">
 <dt id="datascience.tables.Table.take">
-<code class="descclassname">Table.</code><code class="descname">take</code><span class="sig-paren">(</span><em>row_numbers</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.take"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.take" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a Table of a sequence of rows taken by number.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><code class="docutils literal"><span class="pre">row_numbers</span></code> (integer or list of integers): The list of row numbers to
-be selected.</dd>
-<dt>Returns:</dt>
-<dd>A <code class="docutils literal"><span class="pre">Table</span></code> containing only the selected rows.</dd>
-</dl>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">grade</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;A+&#39;</span><span class="p">,</span> <span class="s">&#39;A&#39;</span><span class="p">,</span> <span class="s">&#39;A-&#39;</span><span class="p">,</span> <span class="s">&#39;B+&#39;</span><span class="p">,</span> <span class="s">&#39;B&#39;</span><span class="p">,</span> <span class="s">&#39;B-&#39;</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">gpa</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mf">3.7</span><span class="p">,</span> <span class="mf">3.3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">2.7</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">([</span><span class="n">grade</span><span class="p">,</span> <span class="n">gpa</span><span class="p">],</span> <span class="p">[</span><span class="s">&#39;letter grade&#39;</span><span class="p">,</span> <span class="s">&#39;gpa&#39;</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span>
-<span class="go">letter grade | gpa</span>
-<span class="go">A+           | 4</span>
-<span class="go">A            | 4</span>
-<span class="go">A-           | 3.7</span>
-<span class="go">B+           | 3.3</span>
-<span class="go">B            | 3</span>
-<span class="go">B-           | 2.7</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="go">letter grade | gpa</span>
-<span class="go">A+           | 4</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-<span class="go">letter grade | gpa</span>
-<span class="go">B-           | 2.7</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-<span class="go">letter grade | gpa</span>
-<span class="go">B-           | 2.7</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">take</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
-<span class="go">letter grade | gpa</span>
-<span class="go">A-           | 3.7</span>
-<span class="go">A            | 4</span>
-<span class="go">A+           | 4</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">take</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span>
-<span class="go">letter grade | gpa</span>
-<span class="go">A            | 4</span>
-<span class="go">B-           | 2.7</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
-<span class="go">letter grade | gpa</span>
-<span class="go">A+           | 4</span>
-<span class="go">A            | 4</span>
-<span class="go">A-           | 3.7</span>
-</pre></div>
-</div>
-</dd></dl>
+<code class="descclassname">Table.</code><code class="descname">take</code><em class="property"> = &lt;datascience.tables._Taker object&gt;</em><a class="headerlink" href="#datascience.tables.Table.take" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </div>
 
