@@ -105,6 +105,12 @@ methods (mostly visualizations).</p>
 <tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.read_table.html#datascience.tables.Table.read_table" title="datascience.tables.Table.read_table"><code class="xref py py-obj docutils literal"><span class="pre">Table.read_table</span></code></a>(filepath_or_buffer,&nbsp;*args,&nbsp;...)</td>
 <td>Read a table from a file or web address.</td>
 </tr>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.from_df.html#datascience.tables.Table.from_df" title="datascience.tables.Table.from_df"><code class="xref py py-obj docutils literal"><span class="pre">Table.from_df</span></code></a>(df)</td>
+<td>Convert a Pandas DataFrame into a Table.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.from_array.html#datascience.tables.Table.from_array" title="datascience.tables.Table.from_array"><code class="xref py py-obj docutils literal"><span class="pre">Table.from_array</span></code></a>(arr)</td>
+<td>Convert a structured NumPy array into a Table.</td>
+</tr>
 </tbody>
 </table>
 <p>Accessing values</p>
@@ -243,11 +249,11 @@ methods (mostly visualizations).</p>
 <tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.as_html.html#datascience.tables.Table.as_html" title="datascience.tables.Table.as_html"><code class="xref py py-obj docutils literal"><span class="pre">Table.as_html</span></code></a>([max_rows])</td>
 <td>Format table as HTML.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.matrix.html#datascience.tables.Table.matrix" title="datascience.tables.Table.matrix"><code class="xref py py-obj docutils literal"><span class="pre">Table.matrix</span></code></a>()</td>
-<td>Return a 2-D array with the contents of the table.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.index_by.html#datascience.tables.Table.index_by" title="datascience.tables.Table.index_by"><code class="xref py py-obj docutils literal"><span class="pre">Table.index_by</span></code></a>(column_or_label)</td>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.index_by.html#datascience.tables.Table.index_by" title="datascience.tables.Table.index_by"><code class="xref py py-obj docutils literal"><span class="pre">Table.index_by</span></code></a>(column_or_label)</td>
 <td>Return a dict keyed by values in a column that contains lists of rows corresponding to each value.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.to_array.html#datascience.tables.Table.to_array" title="datascience.tables.Table.to_array"><code class="xref py py-obj docutils literal"><span class="pre">Table.to_array</span></code></a>()</td>
+<td>Convert the table to a NumPy array.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.to_df.html#datascience.tables.Table.to_df" title="datascience.tables.Table.to_df"><code class="xref py py-obj docutils literal"><span class="pre">Table.to_df</span></code></a>()</td>
 <td>Convert the table to a Pandas DataFrame.</td>
