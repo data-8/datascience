@@ -37,6 +37,10 @@ class _Taker:
         Returns:
             A ``Table`` containing only the selected rows.
 
+        >>> grade = ['A+', 'A', 'A-', 'B+', 'B', 'B-']
+        >>> gpa = [4, 4, 3.7, 3.3, 3, 2.7]
+        >>> t = Table([grade, gpa], ['letter grade', 'gpa'])
+
         >>> t
         letter grade | gpa
         A+           | 4
