@@ -170,8 +170,10 @@ class Table(collections.abc.MutableMapping):
         self.take = _Taker(self)
 
     # This, along with a snippet below, is necessary for Sphinx to
-    # correctly load the `take` docstring
-    take = _Taker(None)
+    # correctly load the `take` docstring.  The definition will be
+    # over-ridden during class instantiation.
+    def take(cls):
+        raise NotImplementedError()
 
     @classmethod
     def empty(cls, column_labels=None):
