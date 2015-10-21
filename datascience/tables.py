@@ -1097,7 +1097,9 @@ class Table(collections.abc.MutableMapping):
             vargs.setdefault('density', vargs.pop('normed'))
         density = vargs.get('density', False)
         tag = 'density' if density else 'count'
-        _, bins = np.histogram(self.matrix(), **vargs)
+
+        cols = list(self._columns.values())
+        _, bins = np.histogram(cols, **vargs)
 
         binned = Table([bins], ['bin'])
         for label in self.column_labels:
