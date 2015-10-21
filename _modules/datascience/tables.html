@@ -219,9 +219,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">take</span> <span class="o">=</span> <span class="n">_Taker</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="c"># This, along with a snippet below, is necessary for Sphinx to</span>
-    <span class="c"># correctly load the `take` docstring</span></div>
-    <span class="n">take</span> <span class="o">=</span> <span class="n">_Taker</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
-
+    <span class="c"># correctly load the `take` docstring.  The definition will be</span>
+    <span class="c"># over-ridden during class instantiation.</span></div>
+<div class="viewcode-block" id="Table.take"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.take.html#datascience.tables.Table.take">[docs]</a>    <span class="k">def</span> <span class="nf">take</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+</div>
     <span class="nd">@classmethod</span>
 <div class="viewcode-block" id="Table.empty"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.empty.html#datascience.tables.Table.empty">[docs]</a>    <span class="k">def</span> <span class="nf">empty</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">column_labels</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create an empty table. Column labels are optional</span>

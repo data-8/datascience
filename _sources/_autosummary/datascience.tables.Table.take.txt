@@ -3,4 +3,4 @@ datascience.tables.Table.take
 
 .. currentmodule:: datascience.tables
 
-.. autoattribute:: Table.take
+.. automethod:: Table.take
