@@ -1614,6 +1614,12 @@
 <span class="sd">        &gt;&gt;&gt; table.hist() # doctest: +SKIP</span>
 <span class="sd">        &lt;histogram of values in count&gt;</span>
 <span class="sd">        &lt;histogram of values in points&gt;</span>
+
+<span class="sd">        &gt;&gt;&gt; value = [101, 102, 103]</span>
+<span class="sd">        &gt;&gt;&gt; prop = [0.25, 0.5, 0.25]</span>
+<span class="sd">        &gt;&gt;&gt; t = Table([value, prop], [&#39;value&#39;, &#39;proportion&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; t.hist(counts=&#39;value&#39;) # doctest: +SKIP</span>
+<span class="sd">        &lt;histogram of values in prop weighted by corresponding values in value&gt;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c"># Check for non-numerical values and raise a ValueError if any found</span>
         <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
@@ -1629,11 +1635,13 @@
                 <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">bins</span><span class="p">])</span>
             <span class="n">vargs</span><span class="p">[</span><span class="s">&#39;bins&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bins</span>
 
-        <span class="n">counted_values</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">counted_values</span> <span class="o">=</span> <span class="n">counted_label</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">if</span> <span class="n">counts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">counted_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_column</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
+            <span class="n">counted_label</span> <span class="o">=</span> <span class="s">&#39;counts&#39;</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Hashable</span><span class="p">)</span> <span class="ow">and</span> <span class="n">counts</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_labels</span><span class="p">:</span>
                 <span class="n">columns</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
+                <span class="n">counted_label</span> <span class="o">=</span> <span class="n">counts</span>
 
         <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span>
         <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">rgb_color</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_hist_alpha</span><span class="p">,)</span> <span class="k">for</span> <span class="n">rgb_color</span> <span class="ow">in</span>
@@ -1655,11 +1663,12 @@
             <span class="k">for</span> <span class="n">axis</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">columns</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">colors</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">counted_values</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
                     <span class="n">values</span> <span class="o">=</span> <span class="n">columns</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
+                    <span class="n">axis</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">values</span> <span class="o">=</span> <span class="n">counted_values</span>
+                    <span class="n">axis</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">counted_label</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
                     <span class="n">vargs</span><span class="p">[</span><span class="s">&#39;weights&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">columns</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
                 <span class="n">axis</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">)</span>
-                <span class="n">axis</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="Table.points"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.points.html#datascience.tables.Table.points">[docs]</a>    <span class="k">def</span> <span class="nf">points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column__lat</span><span class="p">,</span> <span class="n">column__long</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="p">:</span>
         <span class="n">latitudes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_column</span><span class="p">(</span><span class="n">column__lat</span><span class="p">)</span>

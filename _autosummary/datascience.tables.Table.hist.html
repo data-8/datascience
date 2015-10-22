@@ -100,6 +100,13 @@ to name a few.</dd>
 <span class="go">&lt;histogram of values in points&gt;</span>
 </pre></div>
 </div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">value</span> <span class="o">=</span> <span class="p">[</span><span class="mi">101</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">103</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">prop</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">([</span><span class="n">value</span><span class="p">,</span> <span class="n">prop</span><span class="p">],</span> <span class="p">[</span><span class="s">&#39;value&#39;</span><span class="p">,</span> <span class="s">&#39;proportion&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">counts</span><span class="o">=</span><span class="s">&#39;value&#39;</span><span class="p">)</span> 
+<span class="go">&lt;histogram of values in prop weighted by corresponding values in value&gt;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </div>
