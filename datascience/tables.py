@@ -1565,6 +1565,12 @@ class Table(collections.abc.MutableMapping):
         >>> table.hist() # doctest: +SKIP
         <histogram of values in count>
         <histogram of values in points>
+
+        >>> value = [101, 102, 103]
+        >>> prop = [0.25, 0.5, 0.25]
+        >>> t = Table([value, prop], ['value', 'proportion'])
+        >>> t.hist(counts='value') # doctest: +SKIP
+        <histogram of values in prop weighted by corresponding values in value>
         """
         # Check for non-numerical values and raise a ValueError if any found
         for col in self:
@@ -1580,11 +1586,13 @@ class Table(collections.abc.MutableMapping):
                 bins = np.unique(self[bins])
             vargs['bins'] = bins
 
-        counted_values = None
+        counted_values = counted_label = None
         if counts is not None:
             counted_values = self._get_column(counts)
+            counted_label = 'counts'
             if isinstance(counts, collections.Hashable) and counts in self.column_labels:
                 columns.pop(counts)
+                counted_label = counts
 
         n = len(columns)
         colors = [rgb_color + (self.default_hist_alpha,) for rgb_color in
@@ -1606,11 +1614,12 @@ class Table(collections.abc.MutableMapping):
             for axis, label, color in zip(axes, columns.keys(), colors):
                 if counted_values is None:
                     values = columns[label]
+                    axis.set_xlabel(label, fontsize=16)
                 else:
                     values = counted_values
+                    axis.set_xlabel(counted_label, fontsize=16)
                     vargs['weights'] = columns[label]
                 axis.hist(values, color=color, **vargs)
-                axis.set_xlabel(label, fontsize=16)
 
     def points(self, column__lat, column__long, labels=None, colors=None, **kwargs) :
         latitudes = self._get_column(column__lat)
