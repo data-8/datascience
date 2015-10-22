@@ -1565,6 +1565,12 @@ class Table(collections.abc.MutableMapping):
         >>> table.hist() # doctest: +SKIP
         <histogram of values in count>
         <histogram of values in points>
+
+        >>> value = [101, 102, 103]
+        >>> prop = [0.25, 0.5, 0.25]
+        >>> t = Table([value, prop], ['value', 'proportion'])
+        >>> t.hist(counts='value') # doctest: +SKIP
+        <histogram of values in prop weighted by corresponding values in value>
         """
         # Check for non-numerical values and raise a ValueError if any found
         for col in self:
