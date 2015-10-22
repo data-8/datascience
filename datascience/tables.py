@@ -493,7 +493,6 @@ class Table(collections.abc.MutableMapping):
 
         self._columns[label] = values
 
-
     def relabel(self, column_label, new_label):
         """Change the labels of columns specified by ``column_label`` to
         labels in ``new_label``.
@@ -599,6 +598,7 @@ class Table(collections.abc.MutableMapping):
         """Return a Table with only columns other than selected label or labels."""
         exclude = _as_labels(column_label_or_labels)
         return self.select([c for c in self.column_labels if c not in exclude])
+
     def where(self, column_or_label, value=None):
         """Return a Table of rows for which the column is value or a non-zero value."""
         column = self._get_column(column_or_label)
@@ -732,7 +732,7 @@ class Table(collections.abc.MutableMapping):
         # refine bins by taking a histogram over all the data
         if bins is not None:
             vargs['bins'] = bins
-        _,rbins = np.histogram(self[value_column],**vargs)
+        _, rbins = np.histogram(self[value_column],**vargs)
         # create a table with these bins a first column and counts for each group
         vargs['bins'] = rbins
         binned = Table([rbins],['bin'])
@@ -937,7 +937,7 @@ class Table(collections.abc.MutableMapping):
         """
         if not 1 <= k <= self.num_rows - 1:
             raise ValueError("Invalid value of k. k must be between 1 and the"
-                "number of rows - 1")
+                             "number of rows - 1")
 
         rows = [self.rows[index] for index in
                 np.random.permutation(self.num_rows)]
@@ -946,7 +946,21 @@ class Table(collections.abc.MutableMapping):
         for column_label in self._formats :
             first._formats[column_label] = self._formats[column_label]
             rest._formats[column_label] = self._formats[column_label]
-        return first,rest
+        return first, rest
+
+    def except_rows(self, row_or_row_range):
+        """Return a new table without the specified row or range of rows.
+
+        Args:
+            ``row_or_row_range`` (single value or range): If a single value,
+                only ``row_or_row_range``'th row is removed.
+
+                If a range, rows with indices in this range are removed.
+
+        Returns:
+            A new instance of ``Table``.
+        """
+        pass
 
     def with_column(self, label, values):
         """Returns a new table with new column included.
@@ -1236,11 +1250,13 @@ class Table(collections.abc.MutableMapping):
         options = self.default_options.copy()
         options.update(vargs)
         xticks, labels = self._split_by_column(column_for_xticks)
+
         def draw(axis, label, color):
             if xticks is None:
                 axis.plot(self[label], color=color, **options)
             else :
                 axis.plot(xticks, self[label], color=color, **options)
+
         def annotate(axis, ticks):
             tick_labels = [ticks[int(l)] for l in axis.get_xticks() if l<len(ticks)]
             axis.set_xticklabels(tick_labels, rotation='vertical')
@@ -1252,12 +1268,14 @@ class Table(collections.abc.MutableMapping):
         options = self.default_options.copy()
         options.update(vargs)
         xdata, labels =  self._split_by_column(column_for_x)
+
         def draw(axis, label, color):
             axis.scatter(xdata, self[label], color=color, **options)
             if fit_line:
                 m,b = np.polyfit(xdata, self[label],1)
                 minx, maxx = np.min(xdata),np.max(xdata)
                 axis.plot([minx,maxx],[m*minx+b,m*maxx+b])
+
         def annotate(axis, ticks):
             return None
         self._visualize(labels, None, overlay, draw, annotate)
@@ -1348,16 +1366,18 @@ class Table(collections.abc.MutableMapping):
         width = 1 - 2 * margin
         if overlay:
             width /= len(labels)
+
         def draw(axis, label, color):
             if overlay:
                 ypos = index + margin + (1-2*margin)*labels.index(label)/len(labels)
             else:
                 ypos = index
-            #barh plots entries in reverse order from bottom to top
+            # barh plots entries in reverse order from bottom to top
             axis.barh(ypos, self[label][::-1], width,  color=color, **options)
+
         def annotate(axis, ticks):
             axis.set_yticks(index+0.5) # Center labels on bars
-            #barh plots entries in reverse order from bottom to top
+            # barh plots entries in reverse order from bottom to top
             axis.set_yticklabels(ticks[::-1], stretch='ultra-condensed')
         height = max(4, len(index)/2)
         if 'height' in vargs:
@@ -1448,12 +1468,14 @@ class Table(collections.abc.MutableMapping):
         width = 1 - 2 * margin
         if overlay:
             width /= len(labels)
+
         def draw(axis, label, color):
             if overlay:
                 xpos = index + margin + (1-2*margin)*labels.index(label)/len(labels)
             else:
                 xpos = index
             axis.bar(xpos, self[label], 1.0, color=color, **options)
+
         def annotate(axis, ticks):
             if (xticks is not None) and (len(xticks) < 10) :
                 axis.set_xticks(index+0.5) # Center labels on bars
