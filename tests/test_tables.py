@@ -98,6 +98,23 @@ def test_basic_rows(t):
         "Row(letter='c', count=3, points=2)")
 
 
+def test_rows_slice(t):
+    rows = t.rows[1:]
+    assert_equal(len(rows), 3)
+    assert_equal(rows[0], "Row(letter='b', count=3, points=2)")
+
+
+def test_row():
+    t = Table([[1], [2]], ['one', 'two'])
+    assert_equal(t.row, 'Row(one=1, two=2)')
+
+
+def test_row_when_multiple_rows():
+    t = Table([[1, 3], [2, 4]], ['one', 'two'])
+    with pytest.raises(RuntimeError):
+        _ = t.row
+
+
 def test_select(t):
     test = t.select(['points', 'count']).cumsum()
     assert_equal(test, """
