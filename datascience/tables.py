@@ -1621,6 +1621,33 @@ class Table(collections.abc.MutableMapping):
                     vargs['weights'] = columns[label]
                 axis.hist(values, color=color, **vargs)
 
+    def boxplot(self, **vargs):
+        """Plots a boxplot for the table.
+            
+        Kwargs:
+            vargs: Additional arguments that get passed into `plt.boxplot`.
+                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.boxplot
+                for additional arguments that can be passed into vargs. These include:
+
+        Returns:
+            None
+
+        Raises:
+            ValueError: The Table contains columns with non-numerical values.
+
+        """
+        # Check for non-numerical values and raise a ValueError if any found
+        for col in self:
+            if any(isinstance(cell, np.flexible) for cell in self[col]):
+                raise ValueError("The column '{0}' contains non-numerical "
+                    "values. A histogram cannot be drawn for this table."
+                    .format(col))
+
+        columns = self._columns.copy()
+        vargs['labels'] = columns.keys()
+        values = list(columns.values())
+        plt.boxplot(values, **vargs)
+
     def points(self, column__lat, column__long, labels=None, colors=None, **kwargs) :
         latitudes = self._get_column(column__lat)
         longitudes = self._get_column(column__long)
