@@ -33,9 +33,9 @@ class _RowSelector(metaclass=abc.ABCMeta):
         raise NotImplementedError()
 
 
-class _Withouter(_RowSelector):
+class _Excluder(_RowSelector):
     def __getitem__(self, row_indices_or_slice):
-        """Return a new Table without a sequence of rows taken by number.
+        """Return a new Table excluding a sequence of rows taken by number.
 
         Args:
             ``row_indices_or_slice`` (integer or list of integers or slice):
@@ -194,15 +194,15 @@ class Table(collections.abc.MutableMapping):
             self[label] = column
 
         self.take = _Taker(self)
-        self.without = _Withouter(self)
+        self.exclude = _Excluder(self)
 
     # These, along with a snippet below, are necessary for Sphinx to
-    # correctly load the `take` and `without` docstrings.  The definitions
+    # correctly load the `take` and `exclude` docstrings.  The definitions
     # will be over-ridden during class instantiation.
     def take(self):
         raise NotImplementedError()
 
-    def without(self):
+    def exclude(self):
         raise NotImplementedError()
 
     @classmethod
@@ -1708,7 +1708,7 @@ class Table(collections.abc.MutableMapping):
 
 # For Sphinx: grab the docstrings from `Taker.__getitem__` and `Withouter.__getitem__`
 Table.take.__doc__ = _Taker.__getitem__.__doc__
-Table.without.__doc__ = _Withouter.__getitem__.__doc__
+Table.exclude.__doc__ = _Excluder.__getitem__.__doc__
 
 
 class Q:
