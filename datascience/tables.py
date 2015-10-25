@@ -34,33 +34,39 @@ class _RowSelector(metaclass=abc.ABCMeta):
 
 
 class _Withouter(_RowSelector):
-    def __getitem__(self, i):
+    def __getitem__(self, row_indices_or_slice):
         """Return a new Table without a sequence of rows taken by number.
 
         Args:
-            ``row_numbers_or_slice`` (integer or list of integers or slice):
-                The row number, list of row numbers or slice of row numbers
+            ``row_indices_or_slice`` (integer or list of integers or slice):
+                The row index, list of row indices or a slice of row indices
                 to be excluded.
 
         Returns:
             A new instance of ``Table``.
         """
-        if isinstance(i, collections.Iterable):
-            without_row_indices = set(i)
+        if isinstance(row_indices_or_slice, collections.Iterable):
+            without_row_indices = set(row_indices_or_slice)
             rows = [row for index, row in enumerate(self._table.rows[:])
                     if index not in without_row_indices]
             return Table.from_rows(rows, self._table.column_labels)
 
-        pass
+        row_slice = row_indices_or_slice
+        if not isinstance(row_slice, slice):
+            row_slice = slice(row_slice, row_slice+1)
+        return Table.from_rows(itertools.chain(self._table.rows[:row_slice.start or 0],
+                                               self._table.rows[row_slice.stop:]),
+                               self._table.column_labels)
 
 
 class _Taker(_RowSelector):
-    def __getitem__(self, i):
+    def __getitem__(self, row_indices_or_slice):
         """Return a new Table of a sequence of rows taken by number.
 
         Args:
-            ``row_numbers_or_slice`` (integer or list of integers or slice):
-            The list of row numbers or a slice to be selected.
+            ``row_indices_or_slice`` (integer or list of integers or slice):
+            The row index, list of row indices or a slice of row indices to
+            be selected.
 
         Returns:
             A new instance of ``Table``.
@@ -116,12 +122,12 @@ class _Taker(_RowSelector):
         A+           | 4
 
         """
-        if isinstance(i, collections.Iterable):
-            columns = [np.take(column, i, axis=0)
+        if isinstance(row_indices_or_slice, collections.Iterable):
+            columns = [np.take(column, row_indices_or_slice, axis=0)
                        for column in self._table._columns.values()]
             return self._table._with_columns(columns)
 
-        rows = self._table.rows[i]
+        rows = self._table.rows[row_indices_or_slice]
         if isinstance(rows, Table.Row):
             rows = [rows]
         return Table.from_rows(rows, self._table.column_labels)
