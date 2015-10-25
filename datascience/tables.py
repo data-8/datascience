@@ -9,8 +9,6 @@ import collections.abc
 import functools
 import inspect
 import itertools
-import operator
-import random
 import urllib.parse
 
 import numpy as np
@@ -122,16 +120,11 @@ class _Taker(_RowSelector):
             columns = [np.take(column, i, axis=0)
                        for column in self._table._columns.values()]
             return self._table._with_columns(columns)
-        elif isinstance(i, slice):
-            columns = [column[i] for column in self._table._columns.values()]
-            return self._table._with_columns(columns)
-        else:
-            rows = self._table.rows[i]
-            cols = self._table._columns.keys()
-            if not isinstance(rows, list):
-                rows = [rows]
 
-            return Table.from_rows(rows, cols)
+        rows = self._table.rows[i]
+        if isinstance(rows, Table.Row):
+            rows = [rows]
+        return Table.from_rows(rows, self._table.column_labels)
 
 
 class Table(collections.abc.MutableMapping):
@@ -1671,6 +1664,19 @@ class Table(collections.abc.MutableMapping):
     # Support #
     ###########
 
+    class Row(tuple):
+        _table = None  # Set by subclasses in Rows
+
+        def __getattr__(self, column_label):
+            return self[self._table.column_index(column_label)]
+
+        def __repr__(self):
+            return 'Row({})'.format(', '.join('{}={}'.format(
+                self._table.column_labels[i], v.__repr__()) for i, v in enumerate(self)))
+
+        def asdict(self):
+            return collections.OrderedDict(zip(self._table.column_labels, self))
+
     class Rows(collections.abc.Sequence):
         """An iterable view over the rows in a table."""
         def __init__(self, table):
@@ -1679,26 +1685,12 @@ class Table(collections.abc.MutableMapping):
 
         def __getitem__(self, i):
             if isinstance(i, slice):
-                return [self[j] for j in range(*i.indices(len(self)))]
+                return (self[j] for j in range(*i.indices(len(self))))
+
             labels = tuple(self._table.column_labels)
             if labels != self._labels:
                 self._labels = labels
-
-                class Row(tuple):
-                    __table = self._table
-
-                    def __getattr__(self, column_label):
-                        return self[self.__table.column_index(column_label)]
-
-                    def __repr__(self):
-                        return 'Row({})'.format(', '.join('{}={}'.format(
-                            self.__table.column_labels[i], v.__repr__()) for i, v in enumerate(self)))
-
-                    def asdict(self):
-                        return collections.OrderedDict(zip(self.__table.column_labels, self))
-
-                self._row = Row
-
+                self._row = type('Row', (Table.Row, ), dict(_table=self._table))
             return self._row(c[i] for c in self._table._columns.values())
 
         def __len__(self):
