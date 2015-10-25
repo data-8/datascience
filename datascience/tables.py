@@ -33,7 +33,7 @@ class _RowSelector(metaclass=abc.ABCMeta):
         raise NotImplementedError()
 
 
-class _Taker(_RowSelector):
+class _RowTaker(_RowSelector):
     def __getitem__(self, row_indices_or_slice):
         """Return a new Table of a sequence of rows taken by number.
 
@@ -106,7 +106,7 @@ class _Taker(_RowSelector):
         return Table.from_rows(rows, self._table.column_labels)
 
 
-class _Excluder(_RowSelector):
+class _RowExcluder(_RowSelector):
     def __getitem__(self, row_indices_or_slice):
         """Return a new Table without a sequence of rows excluded by number.
 
@@ -243,8 +243,8 @@ class Table(collections.abc.MutableMapping):
         for column, label in zip(columns, labels):
             self[label] = column
 
-        self.take = _Taker(self)
-        self.exclude = _Excluder(self)
+        self.take = _RowTaker(self)
+        self.exclude = _RowExcluder(self)
 
     # These, along with a snippet below, are necessary for Sphinx to
     # correctly load the `take` and `exclude` docstrings.  The definitions
@@ -1757,8 +1757,8 @@ class Table(collections.abc.MutableMapping):
 
 
 # For Sphinx: grab the docstrings from `Taker.__getitem__` and `Withouter.__getitem__`
-Table.take.__doc__ = _Taker.__getitem__.__doc__
-Table.exclude.__doc__ = _Excluder.__getitem__.__doc__
+Table.take.__doc__ = _RowTaker.__getitem__.__doc__
+Table.exclude.__doc__ = _RowExcluder.__getitem__.__doc__
 
 
 class Q:
