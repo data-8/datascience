@@ -35,7 +35,7 @@ class _RowSelector(metaclass=abc.ABCMeta):
 
 class _Excluder(_RowSelector):
     def __getitem__(self, row_indices_or_slice):
-        """Return a new Table excluding a sequence of rows taken by number.
+        """Return a new Table without a sequence of rows excluded by number.
 
         Args:
             ``row_indices_or_slice`` (integer or list of integers or slice):
@@ -44,6 +44,56 @@ class _Excluder(_RowSelector):
 
         Returns:
             A new instance of ``Table``.
+
+        >>> grade = ['A+', 'A', 'A-', 'B+', 'B', 'B-']
+        >>> gpa = [4, 4, 3.7, 3.3, 3, 2.7]
+        >>> t = Table([grade, gpa], ['letter grade', 'gpa'])
+        >>> t
+        letter grade | gpa
+        A+           | 4
+        A            | 4
+        A-           | 3.7
+        B+           | 3.3
+        B            | 3
+        B-           | 2.7
+        >>> t.exclude(4)
+        letter grade | gpa
+        A+           | 4
+        A            | 4
+        A-           | 3.7
+        B+           | 3.3
+        B-           | 2.7
+        >>> t.exclude(-1)
+        letter grade | gpa
+        A+           | 4
+        A            | 4
+        A-           | 3.7
+        B+           | 3.3
+        B            | 3
+        >>> t.exclude([1, 3, 4])
+        letter grade | gpa
+        A+           | 4
+        A-           | 3.7
+        B-           | 2.7
+        >>> t.exclude(range(3))
+        letter grade | gpa
+        B+           | 3.3
+        B            | 3
+        B-           | 2.7
+
+        Note that ``exclude`` also supports NumPy-like indexing and slicing:
+
+        >>> t.exclude[:3]
+        letter grade | gpa
+        B+           | 3.3
+        B            | 3
+        B-           | 2.7
+
+        >>> t.exclude[1, 3, 4]
+        letter grade | gpa
+        A+           | 4
+        A-           | 3.7
+        B-           | 2.7
         """
         if isinstance(row_indices_or_slice, collections.Iterable):
             without_row_indices = set(row_indices_or_slice)
@@ -53,6 +103,7 @@ class _Excluder(_RowSelector):
 
         row_slice = row_indices_or_slice
         if not isinstance(row_slice, slice):
+            row_slice %= self._table.num_rows
             row_slice = slice(row_slice, row_slice+1)
         return Table.from_rows(itertools.chain(self._table.rows[:row_slice.start or 0],
                                                self._table.rows[row_slice.stop:]),
@@ -74,7 +125,6 @@ class _Taker(_RowSelector):
         >>> grade = ['A+', 'A', 'A-', 'B+', 'B', 'B-']
         >>> gpa = [4, 4, 3.7, 3.3, 3, 2.7]
         >>> t = Table([grade, gpa], ['letter grade', 'gpa'])
-
         >>> t
         letter grade | gpa
         A+           | 4
