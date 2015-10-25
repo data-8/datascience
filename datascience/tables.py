@@ -948,7 +948,7 @@ class Table(collections.abc.MutableMapping):
             rest._formats[column_label] = self._formats[column_label]
         return first, rest
 
-    def except_rows(self, row_or_row_range):
+    def without(self, row_or_row_range):
         """Return a new table without the specified row or range of rows.
 
         Args:
