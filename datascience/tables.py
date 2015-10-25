@@ -35,16 +35,37 @@ class _RowSelector(metaclass=abc.ABCMeta):
         raise NotImplementedError()
 
 
-class _Taker(_RowSelector):
+class _Withouter(_RowSelector):
     def __getitem__(self, i):
-        """Return a Table of a sequence of rows taken by number.
+        """Return a new Table without a sequence of rows taken by number.
 
         Args:
-            ``row_numbers_or_slice`` (slice or integer or list of integers):
+            ``row_numbers_or_slice`` (integer or list of integers or slice):
+                The row number, list of row numbers or slice of row numbers
+                to be excluded.
+
+        Returns:
+            A new instance of ``Table``.
+        """
+        if isinstance(i, collections.Iterable):
+            without_row_indices = set(i)
+            rows = [row for index, row in enumerate(self._table.rows[:])
+                    if index not in without_row_indices]
+            return Table.from_rows(rows, self._table.column_labels)
+
+        pass
+
+
+class _Taker(_RowSelector):
+    def __getitem__(self, i):
+        """Return a new Table of a sequence of rows taken by number.
+
+        Args:
+            ``row_numbers_or_slice`` (integer or list of integers or slice):
             The list of row numbers or a slice to be selected.
 
         Returns:
-            A ``Table`` containing only the selected rows.
+            A new instance of ``Table``.
 
         >>> grade = ['A+', 'A', 'A-', 'B+', 'B', 'B-']
         >>> gpa = [4, 4, 3.7, 3.3, 3, 2.7]
@@ -72,7 +93,7 @@ class _Taker(_RowSelector):
         A-           | 3.7
         A            | 4
         A+           | 4
-        >>> print(t.take([1, 5]))
+        >>> t.take([1, 5])
         letter grade | gpa
         A            | 4
         B-           | 2.7
@@ -174,11 +195,15 @@ class Table(collections.abc.MutableMapping):
             self[label] = column
 
         self.take = _Taker(self)
+        self.without = _Withouter(self)
 
-    # This, along with a snippet below, is necessary for Sphinx to
-    # correctly load the `take` docstring.  The definition will be
-    # over-ridden during class instantiation.
-    def take(cls):
+    # These, along with a snippet below, are necessary for Sphinx to
+    # correctly load the `take` and `without` docstrings.  The definitions
+    # will be over-ridden during class instantiation.
+    def take(self):
+        raise NotImplementedError()
+
+    def without(self):
         raise NotImplementedError()
 
     @classmethod
@@ -1683,7 +1708,7 @@ class Table(collections.abc.MutableMapping):
             return '{0}({1})'.format(type(self).__name__, repr(self._table))
 
 
-# For Sphinx: grab the docstring from `Taker.__call__`
+# For Sphinx: grab the docstrings from `Taker.__getitem__` and `Withouter.__getitem__`
 Table.take.__doc__ = _Taker.__getitem__.__doc__
 Table.without.__doc__ = _Withouter.__getitem__.__doc__
 
