@@ -3,6 +3,7 @@
 __all__ = ['Table', 'Q']
 
 
+import abc
 import collections
 import collections.abc
 import functools
@@ -22,12 +23,20 @@ import datascience.formats as _formats
 import datascience.util as _util
 
 
-
-class _Taker:
+class _RowSelector(metaclass=abc.ABCMeta):
     def __init__(self, table):
         self._table = table
 
     def __call__(self, row_numbers_or_slice):
+        return self[row_numbers_or_slice]
+
+    @abc.abstractmethod
+    def __getitem__(self, item):
+        raise NotImplementedError()
+
+
+class _Taker(_RowSelector):
+    def __getitem__(self, i):
         """Return a Table of a sequence of rows taken by number.
 
         Args:
@@ -88,9 +97,6 @@ class _Taker:
         A+           | 4
 
         """
-        return self[row_numbers_or_slice]
-
-    def __getitem__(self, i):
         if isinstance(i, collections.Iterable):
             columns = [np.take(column, i, axis=0)
                        for column in self._table._columns.values()]
@@ -948,20 +954,6 @@ class Table(collections.abc.MutableMapping):
             rest._formats[column_label] = self._formats[column_label]
         return first, rest
 
-    def without(self, row_or_row_range):
-        """Return a new table without the specified row or range of rows.
-
-        Args:
-            ``row_or_row_range`` (single value or range): If a single value,
-                only ``row_or_row_range``'th row is removed.
-
-                If a range, rows with indices in this range are removed.
-
-        Returns:
-            A new instance of ``Table``.
-        """
-        pass
-
     def with_column(self, label, values):
         """Returns a new table with new column included.
 
@@ -1682,7 +1674,7 @@ class Table(collections.abc.MutableMapping):
 
                 self._row = Row
 
-            return self._row([c[i] for c in self._table._columns.values()])
+            return self._row(c[i] for c in self._table._columns.values())
 
         def __len__(self):
             return self._table.num_rows
@@ -1692,7 +1684,8 @@ class Table(collections.abc.MutableMapping):
 
 
 # For Sphinx: grab the docstring from `Taker.__call__`
-Table.take.__doc__ = _Taker.__call__.__doc__
+Table.take.__doc__ = _Taker.__getitem__.__doc__
+Table.without.__doc__ = _Withouter.__getitem__.__doc__
 
 
 class Q:
