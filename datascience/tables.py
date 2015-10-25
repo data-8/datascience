@@ -33,6 +33,79 @@ class _RowSelector(metaclass=abc.ABCMeta):
         raise NotImplementedError()
 
 
+class _Taker(_RowSelector):
+    def __getitem__(self, row_indices_or_slice):
+        """Return a new Table of a sequence of rows taken by number.
+
+        Args:
+            ``row_indices_or_slice`` (integer or list of integers or slice):
+            The row index, list of row indices or a slice of row indices to
+            be selected.
+
+        Returns:
+            A new instance of ``Table``.
+
+        >>> grade = ['A+', 'A', 'A-', 'B+', 'B', 'B-']
+        >>> gpa = [4, 4, 3.7, 3.3, 3, 2.7]
+        >>> t = Table([grade, gpa], ['letter grade', 'gpa'])
+        >>> t
+        letter grade | gpa
+        A+           | 4
+        A            | 4
+        A-           | 3.7
+        B+           | 3.3
+        B            | 3
+        B-           | 2.7
+        >>> t.take(0)
+        letter grade | gpa
+        A+           | 4
+        >>> t.take(5)
+        letter grade | gpa
+        B-           | 2.7
+        >>> t.take(-1)
+        letter grade | gpa
+        B-           | 2.7
+        >>> t.take([2, 1, 0])
+        letter grade | gpa
+        A-           | 3.7
+        A            | 4
+        A+           | 4
+        >>> t.take([1, 5])
+        letter grade | gpa
+        A            | 4
+        B-           | 2.7
+        >>> t.take(range(3))
+        letter grade | gpa
+        A+           | 4
+        A            | 4
+        A-           | 3.7
+
+        Note that ``take`` also supports NumPy-like indexing and slicing:
+
+        >>> t.take[:3]
+        letter grade | gpa
+        A+           | 4
+        A            | 4
+        A-           | 3.7
+
+        >>> t.take[2, 1, 0]
+        letter grade | gpa
+        A-           | 3.7
+        A            | 4
+        A+           | 4
+
+        """
+        if isinstance(row_indices_or_slice, collections.Iterable):
+            columns = [np.take(column, row_indices_or_slice, axis=0)
+                       for column in self._table._columns.values()]
+            return self._table._with_columns(columns)
+
+        rows = self._table.rows[row_indices_or_slice]
+        if isinstance(rows, Table.Row):
+            rows = [rows]
+        return Table.from_rows(rows, self._table.column_labels)
+
+
 class _Excluder(_RowSelector):
     def __getitem__(self, row_indices_or_slice):
         """Return a new Table without a sequence of rows excluded by number.
@@ -108,79 +181,6 @@ class _Excluder(_RowSelector):
         return Table.from_rows(itertools.chain(self._table.rows[:row_slice.start or 0],
                                                self._table.rows[row_slice.stop:]),
                                self._table.column_labels)
-
-
-class _Taker(_RowSelector):
-    def __getitem__(self, row_indices_or_slice):
-        """Return a new Table of a sequence of rows taken by number.
-
-        Args:
-            ``row_indices_or_slice`` (integer or list of integers or slice):
-            The row index, list of row indices or a slice of row indices to
-            be selected.
-
-        Returns:
-            A new instance of ``Table``.
-
-        >>> grade = ['A+', 'A', 'A-', 'B+', 'B', 'B-']
-        >>> gpa = [4, 4, 3.7, 3.3, 3, 2.7]
-        >>> t = Table([grade, gpa], ['letter grade', 'gpa'])
-        >>> t
-        letter grade | gpa
-        A+           | 4
-        A            | 4
-        A-           | 3.7
-        B+           | 3.3
-        B            | 3
-        B-           | 2.7
-        >>> t.take(0)
-        letter grade | gpa
-        A+           | 4
-        >>> t.take(5)
-        letter grade | gpa
-        B-           | 2.7
-        >>> t.take(-1)
-        letter grade | gpa
-        B-           | 2.7
-        >>> t.take([2, 1, 0])
-        letter grade | gpa
-        A-           | 3.7
-        A            | 4
-        A+           | 4
-        >>> t.take([1, 5])
-        letter grade | gpa
-        A            | 4
-        B-           | 2.7
-        >>> t.take(range(3))
-        letter grade | gpa
-        A+           | 4
-        A            | 4
-        A-           | 3.7
-
-        Note that ``take`` also supports NumPy-like indexing and slicing:
-
-        >>> t.take[:3]
-        letter grade | gpa
-        A+           | 4
-        A            | 4
-        A-           | 3.7
-
-        >>> t.take[2, 1, 0]
-        letter grade | gpa
-        A-           | 3.7
-        A            | 4
-        A+           | 4
-
-        """
-        if isinstance(row_indices_or_slice, collections.Iterable):
-            columns = [np.take(column, row_indices_or_slice, axis=0)
-                       for column in self._table._columns.values()]
-            return self._table._with_columns(columns)
-
-        rows = self._table.rows[row_indices_or_slice]
-        if isinstance(rows, Table.Row):
-            rows = [rows]
-        return Table.from_rows(rows, self._table.column_labels)
 
 
 class Table(collections.abc.MutableMapping):
