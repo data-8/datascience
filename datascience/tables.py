@@ -1372,11 +1372,6 @@ class Table(collections.abc.MutableMapping):
         A total of n - 1 charts are created where n is the number of columns
         in the table.
 
-        Note that the order of the categories in the table is not guaranteed to
-        be preserved in the bar graph. Ex. `bar` on a table with "a", "b", "c"
-        as the rows in the `column_for_categories` may not output a bar graph
-        with the labels in that order.
-
         Requires every column except for `column_for_categories` to be
         numerical. If the columns contain other types, a `ValueError` is
         raised.
@@ -1403,35 +1398,6 @@ class Table(collections.abc.MutableMapping):
             ValueError: The Table contains non-numerical values in columns
             other than `column_for_categories`
 
-        >>> furniture_type = ['chairs', 'tables', 'desks']
-        >>> count = [6, 1, 2]
-        >>> furniture_table = Table([furniture_type, count], ['Type of furniture', 'Count'])
-        >>> furniture_table
-        Type of furniture | Count
-        chairs            | 6
-        tables            | 1
-        desks             | 2
-        >>> furniture_table.bar('Type of furniture') # doctest: +SKIP
-        <bar graph with chairs, tables, desks as the categories and bars of
-        length 6, 1, 2, respectively>
-        >>> furniture_table.bar('Count') # doctest: +SKIP
-        Traceback (most recent call last):
-            ...
-        ValueError: The column 'Type of furniture' contains non-numerical values. A bar graph cannot be drawn for this table.
-
-        >>> other_col = [10, 20, 30]
-        >>> foo_table = Table([furniture_type, count, other_col], ['Type of furniture', 'Count', 'Other col'])
-        >>> foo_table
-        Type of furniture | Count | Other col
-        chairs            | 6     | 10
-        tables            | 1     | 20
-        desks             | 2     | 30
-        >>> foo_table.bar('Type of furniture') # doctest: +SKIP
-        <bar graph with Type of furniture as categories and Count values>
-        <bar graph with Type of furniture as categories and Other col values>
-        >>> foo_table.bar('Type of furniture', overlay=True) # doctest: +SKIP
-        <bar graph with Type of furniture as categories and Count + Other col as
-        the two bars for each category>
         """
         options = self.default_options.copy()
         options.update(vargs)
@@ -1455,9 +1421,9 @@ class Table(collections.abc.MutableMapping):
                 xpos = index
             axis.bar(xpos, self[label], 1.0, color=color, **options)
         def annotate(axis, ticks):
-            if (xticks is not None) and (len(xticks) < 10) :
-                axis.set_xticks(index+0.5) # Center labels on bars
-                axis.set_xticklabels(xticks, stretch='ultra-condensed')
+            if (ticks is not None) :
+                tick_labels = [ticks[int(l)] for l in axis.get_xticks() if l<len(ticks)]
+                axis.set_xticklabels(tick_labels, stretch='ultra-condensed')
             return None
         self._visualize(labels, xticks, overlay, draw, annotate)
 
