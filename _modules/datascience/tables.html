@@ -1421,11 +1421,6 @@
 <span class="sd">        A total of n - 1 charts are created where n is the number of columns</span>
 <span class="sd">        in the table.</span>
 
-<span class="sd">        Note that the order of the categories in the table is not guaranteed to</span>
-<span class="sd">        be preserved in the bar graph. Ex. `bar` on a table with &quot;a&quot;, &quot;b&quot;, &quot;c&quot;</span>
-<span class="sd">        as the rows in the `column_for_categories` may not output a bar graph</span>
-<span class="sd">        with the labels in that order.</span>
-
 <span class="sd">        Requires every column except for `column_for_categories` to be</span>
 <span class="sd">        numerical. If the columns contain other types, a `ValueError` is</span>
 <span class="sd">        raised.</span>
@@ -1452,35 +1447,6 @@
 <span class="sd">            ValueError: The Table contains non-numerical values in columns</span>
 <span class="sd">            other than `column_for_categories`</span>
 
-<span class="sd">        &gt;&gt;&gt; furniture_type = [&#39;chairs&#39;, &#39;tables&#39;, &#39;desks&#39;]</span>
-<span class="sd">        &gt;&gt;&gt; count = [6, 1, 2]</span>
-<span class="sd">        &gt;&gt;&gt; furniture_table = Table([furniture_type, count], [&#39;Type of furniture&#39;, &#39;Count&#39;])</span>
-<span class="sd">        &gt;&gt;&gt; furniture_table</span>
-<span class="sd">        Type of furniture | Count</span>
-<span class="sd">        chairs            | 6</span>
-<span class="sd">        tables            | 1</span>
-<span class="sd">        desks             | 2</span>
-<span class="sd">        &gt;&gt;&gt; furniture_table.bar(&#39;Type of furniture&#39;) # doctest: +SKIP</span>
-<span class="sd">        &lt;bar graph with chairs, tables, desks as the categories and bars of</span>
-<span class="sd">        length 6, 1, 2, respectively&gt;</span>
-<span class="sd">        &gt;&gt;&gt; furniture_table.bar(&#39;Count&#39;) # doctest: +SKIP</span>
-<span class="sd">        Traceback (most recent call last):</span>
-<span class="sd">            ...</span>
-<span class="sd">        ValueError: The column &#39;Type of furniture&#39; contains non-numerical values. A bar graph cannot be drawn for this table.</span>
-
-<span class="sd">        &gt;&gt;&gt; other_col = [10, 20, 30]</span>
-<span class="sd">        &gt;&gt;&gt; foo_table = Table([furniture_type, count, other_col], [&#39;Type of furniture&#39;, &#39;Count&#39;, &#39;Other col&#39;])</span>
-<span class="sd">        &gt;&gt;&gt; foo_table</span>
-<span class="sd">        Type of furniture | Count | Other col</span>
-<span class="sd">        chairs            | 6     | 10</span>
-<span class="sd">        tables            | 1     | 20</span>
-<span class="sd">        desks             | 2     | 30</span>
-<span class="sd">        &gt;&gt;&gt; foo_table.bar(&#39;Type of furniture&#39;) # doctest: +SKIP</span>
-<span class="sd">        &lt;bar graph with Type of furniture as categories and Count values&gt;</span>
-<span class="sd">        &lt;bar graph with Type of furniture as categories and Other col values&gt;</span>
-<span class="sd">        &gt;&gt;&gt; foo_table.bar(&#39;Type of furniture&#39;, overlay=True) # doctest: +SKIP</span>
-<span class="sd">        &lt;bar graph with Type of furniture as categories and Count + Other col as</span>
-<span class="sd">        the two bars for each category&gt;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_options</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">options</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">vargs</span><span class="p">)</span>
@@ -1504,9 +1470,9 @@
                 <span class="n">xpos</span> <span class="o">=</span> <span class="n">index</span>
             <span class="n">axis</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">xpos</span><span class="p">,</span> <span class="bp">self</span><span class="p">[</span><span class="n">label</span><span class="p">],</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">annotate</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">ticks</span><span class="p">):</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">xticks</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xticks</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">)</span> <span class="p">:</span>
-                <span class="n">axis</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">index</span><span class="o">+</span><span class="mf">0.5</span><span class="p">)</span> <span class="c"># Center labels on bars</span>
-                <span class="n">axis</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">xticks</span><span class="p">,</span> <span class="n">stretch</span><span class="o">=</span><span class="s">&#39;ultra-condensed&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">ticks</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">)</span> <span class="p">:</span>
+                <span class="n">tick_labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">ticks</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">l</span><span class="p">)]</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">axis</span><span class="o">.</span><span class="n">get_xticks</span><span class="p">()</span> <span class="k">if</span> <span class="n">l</span><span class="o">&lt;</span><span class="nb">len</span><span class="p">(</span><span class="n">ticks</span><span class="p">)]</span>
+                <span class="n">axis</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">tick_labels</span><span class="p">,</span> <span class="n">stretch</span><span class="o">=</span><span class="s">&#39;ultra-condensed&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_visualize</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">xticks</span><span class="p">,</span> <span class="n">overlay</span><span class="p">,</span> <span class="n">draw</span><span class="p">,</span> <span class="n">annotate</span><span class="p">)</span>
 
