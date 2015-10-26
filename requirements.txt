@@ -1,1 +1,3 @@
 folium==0.1.5
+sphinx
+scipy==0.16.1
