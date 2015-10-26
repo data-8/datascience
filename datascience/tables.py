@@ -1640,17 +1640,17 @@ class Table(collections.abc.MutableMapping):
         >>> test2_scores = [89, 84, 74, 66, 92, 99, 88, 81, 95, 94]
         >>> table = Table([test1_scores, test2_scores], ['test1', 'test2'])
         >>> table
-        test1  | test2
-        92.5   |  89
-        88     |  84
-        72     |  74
-        71     |  66
-        99     |  92
-        100    |  99
-        95     |  88
-        83     |  81
-        94     |  95
-        93     |  94
+        test1 | test2
+        92.5  | 89
+        88    | 84
+        72    | 74
+        71    | 66
+        99    | 92
+        100   | 99
+        95    | 88
+        83    | 81
+        94    | 95
+        93    | 94
         >>> table.boxplot() # doctest: +SKIP
         <boxplot of test1 and boxplot of test2 side-by-side on the same figure>
         """
