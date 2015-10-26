@@ -1627,7 +1627,8 @@ class Table(collections.abc.MutableMapping):
         Kwargs:
             vargs: Additional arguments that get passed into `plt.boxplot`.
                 See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.boxplot
-                for additional arguments that can be passed into vargs. These include:
+                for additional arguments that can be passed into vargs. These include
+                `vert` and `showmeans`.
 
         Returns:
             None
@@ -1635,6 +1636,23 @@ class Table(collections.abc.MutableMapping):
         Raises:
             ValueError: The Table contains columns with non-numerical values.
 
+        >>> test1_scores = [92.5, 88, 72, 71, 99, 100, 95, 83, 94, 93]
+        >>> test2_scores = [89, 84, 74, 66, 92, 99, 88, 81, 95, 94]
+        >>> table = Table([test1_scores, test2_scores], ['test1', 'test2'])
+        >>> table
+        test1  | test2
+        92.5   |  89
+        88     |  84
+        72     |  74
+        71     |  66
+        99     |  92
+        100    |  99
+        95     |  88
+        83     |  81
+        94     |  95
+        93     |  94
+        >>> table.boxplot() # doctest: +SKIP
+        <boxplot of test1 and boxplot of test2 side-by-side on the same figure>
         """
         # Check for non-numerical values and raise a ValueError if any found
         for col in self:
