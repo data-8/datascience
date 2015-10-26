@@ -1,6 +1,6 @@
 """Utility functions"""
 
-__all__ = ['percentile', 'plotCDF']
+__all__ = ['percentile', 'plot_cdf_area']
 
 
 import numpy as np
@@ -25,7 +25,7 @@ def percentile(p, arr=None):
         return lambda arr: percentile(p, arr)
     return np.percentile(arr, p, interpolation='higher')
 
-def plotCDFarea(rbound, lbound=None, mean=0, sd=1):
+def plot_cdf_area(rbound, lbound=None, mean=0, sd=1):
     """Plots a normal curve with specified parameters and area below curve shaded
     between ``lbound`` and ``rbound``.
 
@@ -38,16 +38,18 @@ def plotCDFarea(rbound, lbound=None, mean=0, sd=1):
 
         ``sd`` (numeric): standard deviation of normal distribution
     """
+    INF = 3.5 * sd
     llabel = lbound
     if lbound is None:
-        lbound = sd * -3.5 + mean
+        lbound = -INF + mean
         llabel = "-$\infty$"
-    z = np.arange(sd * -3.5 + mean, sd * 3.5 + mean, 0.1)
-    plt.plot(z, stats.norm.pdf(z, loc=mean, scale=sd), color='k', lw=1)
-    w = np.arange(lbound, rbound + .1, 0.1)
-    plt.fill_between(w, stats.norm.pdf(w, loc=mean, scale=sd), color='gold')
+    pdf_range = np.arange(-INF + mean, INF + mean, 0.1)
+    plt.plot(pdf_range, stats.norm.pdf(pdf_range, loc=mean, scale=sd), color='k', lw=1)
+    cdf_range = np.arange(lbound, rbound + .1, 0.1)
+    plt.fill_between(cdf_range, stats.norm.pdf(cdf_range, loc=mean, scale=sd), color='gold')
     plt.ylim(0, stats.norm.pdf(0, loc=0, scale=sd) * 1.25)
     plt.xlabel('z')
     plt.ylabel('$\phi$(z)', rotation=0)
-    plt.title("Normal Curve ~ ($\mu$ = {0}, $\sigma$ = {1}) {2} < z < {3}".format(mean, sd, llabel, rbound), fontsize=16)
+    plt.title("Normal Curve ~ ($\mu$ = {0}, $\sigma$ = {1}) "
+              "{2} < z < {3}".format(mean, sd, llabel, rbound), fontsize=16)
     plt.show()
