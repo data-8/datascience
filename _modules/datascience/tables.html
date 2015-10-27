@@ -1724,6 +1724,51 @@
                     <span class="n">vargs</span><span class="p">[</span><span class="s">&#39;weights&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">columns</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
                 <span class="n">axis</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">)</span>
 </div>
+    <span class="k">def</span> <span class="nf">boxplot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Plots a boxplot for the table.</span>
+<span class="sd">            </span>
+<span class="sd">        Kwargs:</span>
+<span class="sd">            vargs: Additional arguments that get passed into `plt.boxplot`.</span>
+<span class="sd">                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.boxplot</span>
+<span class="sd">                for additional arguments that can be passed into vargs. These include</span>
+<span class="sd">                `vert` and `showmeans`.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: The Table contains columns with non-numerical values.</span>
+
+<span class="sd">        &gt;&gt;&gt; test1_scores = [92.5, 88, 72, 71, 99, 100, 95, 83, 94, 93]</span>
+<span class="sd">        &gt;&gt;&gt; test2_scores = [89, 84, 74, 66, 92, 99, 88, 81, 95, 94]</span>
+<span class="sd">        &gt;&gt;&gt; table = Table([test1_scores, test2_scores], [&#39;test1&#39;, &#39;test2&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; table</span>
+<span class="sd">        test1 | test2</span>
+<span class="sd">        92.5  | 89</span>
+<span class="sd">        88    | 84</span>
+<span class="sd">        72    | 74</span>
+<span class="sd">        71    | 66</span>
+<span class="sd">        99    | 92</span>
+<span class="sd">        100   | 99</span>
+<span class="sd">        95    | 88</span>
+<span class="sd">        83    | 81</span>
+<span class="sd">        94    | 95</span>
+<span class="sd">        93    | 94</span>
+<span class="sd">        &gt;&gt;&gt; table.boxplot() # doctest: +SKIP</span>
+<span class="sd">        &lt;boxplot of test1 and boxplot of test2 side-by-side on the same figure&gt;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Check for non-numerical values and raise a ValueError if any found</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">flexible</span><span class="p">)</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">[</span><span class="n">col</span><span class="p">]):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The column &#39;{0}&#39; contains non-numerical &quot;</span>
+                    <span class="s">&quot;values. A histogram cannot be drawn for this table.&quot;</span>
+                    <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">col</span><span class="p">))</span>
+
+        <span class="n">columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_columns</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">vargs</span><span class="p">[</span><span class="s">&#39;labels&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">columns</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">)</span>
+
 <div class="viewcode-block" id="Table.points"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.points.html#datascience.tables.Table.points">[docs]</a>    <span class="k">def</span> <span class="nf">points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column__lat</span><span class="p">,</span> <span class="n">column__long</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="p">:</span>
         <span class="n">latitudes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_column</span><span class="p">(</span><span class="n">column__lat</span><span class="p">)</span>
         <span class="n">longitudes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_column</span><span class="p">(</span><span class="n">column__long</span><span class="p">)</span>
