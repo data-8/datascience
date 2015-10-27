@@ -144,6 +144,43 @@ def test_take_iterable(t):
     """)
 
 
+def test_exclude(t):
+    test = t.exclude([1, 3])
+    assert_equal(test, """
+    letter | count | points
+    a      | 9     | 1
+    c      | 3     | 2
+    """)
+
+
+def test_exclude_slice(t):
+    test = t.exclude[1:3]
+    assert_equal(test, """
+    letter | count | points
+    a      | 9     | 1
+    z      | 1     | 10
+    """)
+
+
+def test_exclude_slice_single(t):
+    test = t.exclude[1]
+    assert_equal(test, """
+    letter | count | points
+    a      | 9     | 1
+    c      | 3     | 2
+    z      | 1     | 10
+    """)
+
+
+def test_exclude_iterable(t):
+    test = t.exclude[0, 2]
+    assert_equal(test, """
+    letter | count | points
+    b      | 3     | 2
+    z      | 1     | 10
+    """)
+
+
 def test_stats(t):
     test = t.stats()
     assert_equal(test, """
