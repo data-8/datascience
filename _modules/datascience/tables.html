@@ -1360,22 +1360,26 @@
         <span class="s">&#39;alpha&#39;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span>
     <span class="p">}</span>
 
-<div class="viewcode-block" id="Table.plot"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.plot.html#datascience.tables.Table.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_for_xticks</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Table.plot"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.plot.html#datascience.tables.Table.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_for_xticks</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Plot contents as lines.&quot;&quot;&quot;</span>
         <span class="n">options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_options</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">options</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">vargs</span><span class="p">)</span>
+
+        <span class="c"># Note that the labels here get incorrectly placed on the x-axis even</span>
+        <span class="c"># though the labels describe the y-axis values.</span>
+        <span class="c"># TODO(sam): Allow _visualize to accept options to put labels on both x</span>
+        <span class="c"># and y axes.</span>
         <span class="n">xticks</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_by_column</span><span class="p">(</span><span class="n">column_for_xticks</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">xticks</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
                 <span class="n">axis</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">label</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
-            <span class="k">else</span> <span class="p">:</span>
+            <span class="k">else</span><span class="p">:</span>
                 <span class="n">axis</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xticks</span><span class="p">,</span> <span class="bp">self</span><span class="p">[</span><span class="n">label</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">annotate</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">ticks</span><span class="p">):</span>
-            <span class="n">tick_labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">ticks</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">l</span><span class="p">)]</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">axis</span><span class="o">.</span><span class="n">get_xticks</span><span class="p">()</span> <span class="k">if</span> <span class="n">l</span><span class="o">&lt;</span><span class="nb">len</span><span class="p">(</span><span class="n">ticks</span><span class="p">)]</span>
-            <span class="n">axis</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">tick_labels</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="s">&#39;vertical&#39;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="bp">None</span>
+            <span class="n">axis</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">axis</span><span class="o">.</span><span class="n">get_xticks</span><span class="p">(),</span> <span class="n">rotation</span><span class="o">=</span><span class="s">&#39;vertical&#39;</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_visualize</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">xticks</span><span class="p">,</span> <span class="n">overlay</span><span class="p">,</span> <span class="n">draw</span><span class="p">,</span> <span class="n">annotate</span><span class="p">)</span>
 </div>
     <span class="k">def</span> <span class="nf">scatter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_for_x</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">fit_line</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
@@ -1726,7 +1730,7 @@
 </div>
     <span class="k">def</span> <span class="nf">boxplot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Plots a boxplot for the table.</span>
-<span class="sd">            </span>
+
 <span class="sd">        Kwargs:</span>
 <span class="sd">            vargs: Additional arguments that get passed into `plt.boxplot`.</span>
 <span class="sd">                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.boxplot</span>
