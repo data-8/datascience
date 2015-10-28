@@ -1311,22 +1311,26 @@ class Table(collections.abc.MutableMapping):
         'alpha': 0.8,
     }
 
-    def plot(self, column_for_xticks=None, overlay=False, **vargs):
+    def plot(self, column_for_xticks, overlay=False, **vargs):
         """Plot contents as lines."""
         options = self.default_options.copy()
         options.update(vargs)
+
+        # Note that the labels here get incorrectly placed on the x-axis even
+        # though the labels describe the y-axis values.
+        # TODO(sam): Allow _visualize to accept options to put labels on both x
+        # and y axes.
         xticks, labels = self._split_by_column(column_for_xticks)
 
         def draw(axis, label, color):
             if xticks is None:
                 axis.plot(self[label], color=color, **options)
-            else :
+            else:
                 axis.plot(xticks, self[label], color=color, **options)
 
         def annotate(axis, ticks):
-            tick_labels = [ticks[int(l)] for l in axis.get_xticks() if l<len(ticks)]
-            axis.set_xticklabels(tick_labels, rotation='vertical')
-            return None
+            axis.set_xticklabels(axis.get_xticks(), rotation='vertical')
+
         self._visualize(labels, xticks, overlay, draw, annotate)
 
     def scatter(self, column_for_x, overlay=False, fit_line=False, **vargs):
@@ -1677,7 +1681,7 @@ class Table(collections.abc.MutableMapping):
 
     def boxplot(self, **vargs):
         """Plots a boxplot for the table.
-            
+
         Kwargs:
             vargs: Additional arguments that get passed into `plt.boxplot`.
                 See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.boxplot
