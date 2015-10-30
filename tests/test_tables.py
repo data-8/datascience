@@ -884,7 +884,22 @@ def test_split_k_vals(table):
 # Visualize #
 #############
 
+def test_scatter(numbers_table):
+    """Tests that Table.scatter doesn't raise an error when the table doesn't
+    contains non-numerical values. Not working right now because of TKinter
+    issues on Travis.
 
+    TODO(sam): Fix Travis so this runs
+    """
+
+    # numbers_table.scatter('count')
+
+def test_scatter_error(table):
+    """Tests that Table.scatter raises an error when the table contains
+    non-numerical values."""
+
+    with pytest.raises(ValueError):
+        table.scatter('letter')
 
 ###########
 # Queries #
