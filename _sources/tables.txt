@@ -119,7 +119,9 @@ Visualizations
     :toctree: _autosummary
 
     Table.plot
+    Table.bar
     Table.barh
     Table.pivot_hist
     Table.hist
     Table.points
+    Table.scatter

@@ -1,0 +1,6 @@
+datascience.tables.Table.scatter
+================================
+
+.. currentmodule:: datascience.tables
+
+.. automethod:: Table.scatter

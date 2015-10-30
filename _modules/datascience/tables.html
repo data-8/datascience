@@ -1382,8 +1382,70 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_visualize</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">xticks</span><span class="p">,</span> <span class="n">overlay</span><span class="p">,</span> <span class="n">draw</span><span class="p">,</span> <span class="n">annotate</span><span class="p">)</span>
 </div>
-    <span class="k">def</span> <span class="nf">scatter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_for_x</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">fit_line</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Plot contents as lines.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Table.scatter"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.scatter.html#datascience.tables.Table.scatter">[docs]</a>    <span class="k">def</span> <span class="nf">scatter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_for_x</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">fit_line</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates scatterplots, optionally adding a line of best fit.</span>
+
+<span class="sd">        All scatterplots use the values in ``column_for_x`` as the x-values. A</span>
+<span class="sd">        total of n - 1 scatterplots are created where n is the number of</span>
+<span class="sd">        columns in the table, one for every column other than ``column_for_x``.</span>
+
+<span class="sd">        Requires all columns in the table to contain numerical values only.</span>
+<span class="sd">        If the columns contain other types, a ``ValueError`` is raised.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ``column_for_x`` (str): The name to use for the x-axis values of the</span>
+<span class="sd">                scatter plots.</span>
+
+<span class="sd">        Kwargs:</span>
+<span class="sd">            ``overlay`` (bool): If True, creates one scatterplot with n - 1</span>
+<span class="sd">                y-values plotted, one for each column other than</span>
+<span class="sd">                ``column_for_x`` (instead of the default behavior of creating n</span>
+<span class="sd">                - 1 scatterplots. Also adds a legend that matches each dot</span>
+<span class="sd">                and best-fit line color to its column.</span>
+
+<span class="sd">            ``fit_line`` (bool): If True, draws a line of best fit for each</span>
+<span class="sd">                scatterplot drawn.</span>
+
+<span class="sd">            ``vargs``: Additional arguments that get passed into `plt.scatter`.</span>
+<span class="sd">                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.scatter</span>
+<span class="sd">                for additional arguments that can be passed into vargs. These</span>
+<span class="sd">                include: `marker` and `norm`, to name a couple.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ``ValueError``: The table contains non-numerical values in columns.</span>
+
+<span class="sd">        &gt;&gt;&gt; x = [9, 3, 3, 1]</span>
+<span class="sd">        &gt;&gt;&gt; y = [1, 2, 2, 10]</span>
+<span class="sd">        &gt;&gt;&gt; z = [3, 4, 5, 6]</span>
+<span class="sd">        &gt;&gt;&gt; table = Table([x, y, z], [&#39;x&#39;, &#39;y&#39;, &#39;z&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; table</span>
+<span class="sd">        x    | y    | z</span>
+<span class="sd">        9    | 1    | 3</span>
+<span class="sd">        3    | 2    | 4</span>
+<span class="sd">        3    | 2    | 5</span>
+<span class="sd">        1    | 10   | 6</span>
+<span class="sd">        &gt;&gt;&gt; table.scatter(&#39;x&#39;) # doctest: +SKIP</span>
+<span class="sd">        &lt;scatterplot of values in y on x&gt;</span>
+<span class="sd">        &lt;scatterplot of values in z on x&gt;</span>
+
+<span class="sd">        &gt;&gt;&gt; table.scatter(&#39;x&#39;, overlay = True) # doctest: +SKIP</span>
+<span class="sd">        &lt;scatterplot of values in y and z on x&gt;</span>
+
+<span class="sd">        &gt;&gt;&gt; table.scatter(&#39;x&#39;, fit_line = True) # doctest: +SKIP</span>
+<span class="sd">        &lt;scatterplot of values in y on x with line of best fit&gt;</span>
+<span class="sd">        &lt;scatterplot of values in z on x with line of best fit&gt;</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Check for non-numerical values and raise a ValueError if any found</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">flexible</span><span class="p">)</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">[</span><span class="n">col</span><span class="p">]):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The column &#39;{0}&#39; contains non-numerical &quot;</span>
+                    <span class="s">&quot;values. A histogram cannot be drawn for this table.&quot;</span>
+                    <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">col</span><span class="p">))</span>
+
         <span class="n">options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_options</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">options</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">vargs</span><span class="p">)</span>
         <span class="n">xdata</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">_split_by_column</span><span class="p">(</span><span class="n">column_for_x</span><span class="p">)</span>
@@ -1391,14 +1453,14 @@
         <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
             <span class="n">axis</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="bp">self</span><span class="p">[</span><span class="n">label</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">fit_line</span><span class="p">:</span>
-                <span class="n">m</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="bp">self</span><span class="p">[</span><span class="n">label</span><span class="p">],</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">m</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="bp">self</span><span class="p">[</span><span class="n">label</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
                 <span class="n">minx</span><span class="p">,</span> <span class="n">maxx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">xdata</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">xdata</span><span class="p">)</span>
                 <span class="n">axis</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">minx</span><span class="p">,</span><span class="n">maxx</span><span class="p">],[</span><span class="n">m</span><span class="o">*</span><span class="n">minx</span><span class="o">+</span><span class="n">b</span><span class="p">,</span><span class="n">m</span><span class="o">*</span><span class="n">maxx</span><span class="o">+</span><span class="n">b</span><span class="p">])</span>
 
         <span class="k">def</span> <span class="nf">annotate</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">ticks</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_visualize</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="n">overlay</span><span class="p">,</span> <span class="n">draw</span><span class="p">,</span> <span class="n">annotate</span><span class="p">)</span>
-
+</div>
 <div class="viewcode-block" id="Table.barh"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.barh.html#datascience.tables.Table.barh">[docs]</a>    <span class="k">def</span> <span class="nf">barh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_for_categories</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Plots horizontal bar charts for the table.</span>
 
@@ -1503,7 +1565,7 @@
             <span class="n">height</span> <span class="o">=</span> <span class="n">vargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;height&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_visualize</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">yticks</span><span class="p">,</span> <span class="n">overlay</span><span class="p">,</span> <span class="n">draw</span><span class="p">,</span> <span class="n">annotate</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">)</span>
 </div>
-    <span class="k">def</span> <span class="nf">bar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_for_categories</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Table.bar"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.bar.html#datascience.tables.Table.bar">[docs]</a>    <span class="k">def</span> <span class="nf">bar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_for_categories</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Plots bar charts for the table.</span>
 
 <span class="sd">        Each chart is categorized using the values in `column_for_categories`</span>
@@ -1567,7 +1629,7 @@
                 <span class="n">axis</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">tick_labels</span><span class="p">,</span> <span class="n">stretch</span><span class="o">=</span><span class="s">&#39;ultra-condensed&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_visualize</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">xticks</span><span class="p">,</span> <span class="n">overlay</span><span class="p">,</span> <span class="n">draw</span><span class="p">,</span> <span class="n">annotate</span><span class="p">)</span>
-
+</div>
     <span class="k">def</span> <span class="nf">_visualize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">ticks</span><span class="p">,</span> <span class="n">overlay</span><span class="p">,</span> <span class="n">draw</span><span class="p">,</span> <span class="n">annotate</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Generic visualization that overlays or separates the draw function.&quot;&quot;&quot;</span>
         <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>datascience.tables.Table.plot &mdash; datascience 0.3.dev21 documentation</title>
+    <title>datascience.tables.Table.bar &mdash; datascience 0.3.dev21 documentation</title>
     
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -25,8 +25,8 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="datascience 0.3.dev21 documentation" href="../index.html" />
     <link rel="up" title="Tables (datascience.tables)" href="../tables.html" />
-    <link rel="next" title="datascience.tables.Table.bar" href="datascience.tables.Table.bar.html" />
-    <link rel="prev" title="datascience.tables.Table.to_df" href="datascience.tables.Table.to_df.html" /> 
+    <link rel="next" title="datascience.tables.Table.barh" href="datascience.tables.Table.barh.html" />
+    <link rel="prev" title="datascience.tables.Table.plot" href="datascience.tables.Table.plot.html" /> 
   </head>
   <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
@@ -39,10 +39,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="datascience.tables.Table.bar.html" title="datascience.tables.Table.bar"
+          <a href="datascience.tables.Table.barh.html" title="datascience.tables.Table.barh"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="datascience.tables.Table.to_df.html" title="datascience.tables.Table.to_df"
+          <a href="datascience.tables.Table.plot.html" title="datascience.tables.Table.plot"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.3.dev21 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" accesskey="U">Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)</a> &raquo;</li> 
@@ -54,12 +54,44 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="datascience-tables-table-plot">
-<h1>datascience.tables.Table.plot<a class="headerlink" href="#datascience-tables-table-plot" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="datascience-tables-table-bar">
+<h1>datascience.tables.Table.bar<a class="headerlink" href="#datascience-tables-table-bar" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
-<dt id="datascience.tables.Table.plot">
-<code class="descclassname">Table.</code><code class="descname">plot</code><span class="sig-paren">(</span><em>column_for_xticks</em>, <em>overlay=False</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot contents as lines.</p>
+<dt id="datascience.tables.Table.bar">
+<code class="descclassname">Table.</code><code class="descname">bar</code><span class="sig-paren">(</span><em>column_for_categories=None</em>, <em>overlay=False</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.bar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.bar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots bar charts for the table.</p>
+<p>Each chart is categorized using the values in <cite>column_for_categories</cite>
+and one chart is produced for every other column in the table.
+A total of n - 1 charts are created where n is the number of columns
+in the table.</p>
+<p>Requires every column except for <cite>column_for_categories</cite> to be
+numerical. If the columns contain other types, a <cite>ValueError</cite> is
+raised.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>column_for_categories (str): The name to use for the bar chart</dt>
+<dd>categories</dd>
+</dl>
+</dd>
+<dt>Kwargs:</dt>
+<dd><dl class="first last docutils">
+<dt>overlay (bool): If True, creates one chart with n - 1 bars for each</dt>
+<dd>category, one for each column other than <cite>column_for_categories</cite>
+(instead of the default behavior of creating n - 1 charts).
+Also adds a legend that matches each bar color to its column.</dd>
+<dt>vargs: Additional arguments that get passed into <cite>plt.bar</cite>.</dt>
+<dd>See <a class="reference external" href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.bar">http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.bar</a>
+for additional arguments that can be passed into vargs. These
+include: <cite>linewidth</cite>, <cite>xerr</cite>, <cite>yerr</cite>, and <cite>log</cite>, to name a few.</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>None</dd>
+<dt>Raises:</dt>
+<dd>ValueError: The Table contains non-numerical values in columns
+other than <cite>column_for_categories</cite></dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -71,15 +103,15 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="datascience.tables.Table.to_df.html"
-                        title="previous chapter">datascience.tables.Table.to_df</a></p>
+  <p class="topless"><a href="datascience.tables.Table.plot.html"
+                        title="previous chapter">datascience.tables.Table.plot</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="datascience.tables.Table.bar.html"
-                        title="next chapter">datascience.tables.Table.bar</a></p>
+  <p class="topless"><a href="datascience.tables.Table.barh.html"
+                        title="next chapter">datascience.tables.Table.barh</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/_autosummary/datascience.tables.Table.plot.txt"
+      <li><a href="../_sources/_autosummary/datascience.tables.Table.bar.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -110,10 +142,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="datascience.tables.Table.bar.html" title="datascience.tables.Table.bar"
+          <a href="datascience.tables.Table.barh.html" title="datascience.tables.Table.barh"
              >next</a> |</li>
         <li class="right" >
-          <a href="datascience.tables.Table.to_df.html" title="datascience.tables.Table.to_df"
+          <a href="datascience.tables.Table.plot.html" title="datascience.tables.Table.plot"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.3.dev21 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" >Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)</a> &raquo;</li> 

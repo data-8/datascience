@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>datascience.tables.Table.scatter &mdash; datascience 0.3.dev21 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.3.dev21',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="datascience 0.3.dev21 documentation" href="../index.html" />
+    <link rel="up" title="Tables (datascience.tables)" href="../tables.html" />
+    <link rel="next" title="Maps (datascience.maps)" href="../maps.html" />
+    <link rel="prev" title="datascience.tables.Table.points" href="datascience.tables.Table.points.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../maps.html" title="Maps (datascience.maps)"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="datascience.tables.Table.points.html" title="datascience.tables.Table.points"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.3.dev21 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../tables.html" accesskey="U">Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="datascience-tables-table-scatter">
+<h1>datascience.tables.Table.scatter<a class="headerlink" href="#datascience-tables-table-scatter" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="datascience.tables.Table.scatter">
+<code class="descclassname">Table.</code><code class="descname">scatter</code><span class="sig-paren">(</span><em>column_for_x</em>, <em>overlay=False</em>, <em>fit_line=False</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.scatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.scatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates scatterplots, optionally adding a line of best fit.</p>
+<p>All scatterplots use the values in <code class="docutils literal"><span class="pre">column_for_x</span></code> as the x-values. A
+total of n - 1 scatterplots are created where n is the number of
+columns in the table, one for every column other than <code class="docutils literal"><span class="pre">column_for_x</span></code>.</p>
+<p>Requires all columns in the table to contain numerical values only.
+If the columns contain other types, a <code class="docutils literal"><span class="pre">ValueError</span></code> is raised.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt><code class="docutils literal"><span class="pre">column_for_x</span></code> (str): The name to use for the x-axis values of the</dt>
+<dd>scatter plots.</dd>
+</dl>
+</dd>
+<dt>Kwargs:</dt>
+<dd><dl class="first last docutils">
+<dt><code class="docutils literal"><span class="pre">overlay</span></code> (bool): If True, creates one scatterplot with n - 1</dt>
+<dd>y-values plotted, one for each column other than
+<code class="docutils literal"><span class="pre">column_for_x</span></code> (instead of the default behavior of creating n
+- 1 scatterplots. Also adds a legend that matches each dot
+and best-fit line color to its column.</dd>
+<dt><code class="docutils literal"><span class="pre">fit_line</span></code> (bool): If True, draws a line of best fit for each</dt>
+<dd>scatterplot drawn.</dd>
+<dt><code class="docutils literal"><span class="pre">vargs</span></code>: Additional arguments that get passed into <cite>plt.scatter</cite>.</dt>
+<dd>See <a class="reference external" href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.scatter">http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.scatter</a>
+for additional arguments that can be passed into vargs. These
+include: <cite>marker</cite> and <cite>norm</cite>, to name a couple.</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>None</dd>
+<dt>Raises:</dt>
+<dd><code class="docutils literal"><span class="pre">ValueError</span></code>: The table contains non-numerical values in columns.</dd>
+</dl>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">],</span> <span class="p">[</span><span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="s">&#39;y&#39;</span><span class="p">,</span> <span class="s">&#39;z&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span>
+<span class="go">x    | y    | z</span>
+<span class="go">9    | 1    | 3</span>
+<span class="go">3    | 2    | 4</span>
+<span class="go">3    | 2    | 5</span>
+<span class="go">1    | 10   | 6</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">)</span> 
+<span class="go">&lt;scatterplot of values in y on x&gt;</span>
+<span class="go">&lt;scatterplot of values in z on x&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="n">overlay</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span> 
+<span class="go">&lt;scatterplot of values in y and z on x&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="n">fit_line</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span> 
+<span class="go">&lt;scatterplot of values in y on x with line of best fit&gt;</span>
+<span class="go">&lt;scatterplot of values in z on x with line of best fit&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="datascience.tables.Table.points.html"
+                        title="previous chapter">datascience.tables.Table.points</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../maps.html"
+                        title="next chapter">Maps (<code class="docutils literal"><span class="pre">datascience.maps</span></code>)</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/_autosummary/datascience.tables.Table.scatter.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../maps.html" title="Maps (datascience.maps)"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="datascience.tables.Table.points.html" title="datascience.tables.Table.points"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.3.dev21 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../tables.html" >Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>
