@@ -2,6 +2,8 @@
 
 A library for introductory data science.
 
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/dsten/datascience?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
 *written by Professor [John DeNero](http://denero.org), Professor
 [David Culler](http://www.cs.berkeley.edu/~culler),
 [Sam Lau](https://github.com/samlau95), and [Alvin Wan](http://alvinwan.com)*
