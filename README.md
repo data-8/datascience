@@ -1,5 +1,7 @@
 # datascience
 
+[![Join the chat at https://gitter.im/dsten/datascience](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/dsten/datascience?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 A library for introductory data science.
 
 *written by Professor [John DeNero](http://denero.org), Professor
