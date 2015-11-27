@@ -49,10 +49,12 @@
   <h1>Source code for datascience.util</h1><div class="highlight"><pre>
 <span class="sd">&quot;&quot;&quot;Utility functions&quot;&quot;&quot;</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;percentile&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;percentile&#39;</span><span class="p">,</span> <span class="s">&#39;plot_cdf_area&#39;</span><span class="p">]</span>
 
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">stats</span>
 
 <div class="viewcode-block" id="percentile"><a class="viewcode-back" href="../../util.html#datascience.util.percentile">[docs]</a><span class="k">def</span> <span class="nf">percentile</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">arr</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Returns the pth percentile of the input array (the value that is at</span>
@@ -70,7 +72,36 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">arr</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="k">lambda</span> <span class="n">arr</span><span class="p">:</span> <span class="n">percentile</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">arr</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s">&#39;higher&#39;</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s">&#39;higher&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="plot_cdf_area"><a class="viewcode-back" href="../../util.html#datascience.util.plot_cdf_area">[docs]</a><span class="k">def</span> <span class="nf">plot_cdf_area</span><span class="p">(</span><span class="n">rbound</span><span class="p">,</span> <span class="n">lbound</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sd</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plots a normal curve with specified parameters and area below curve shaded</span>
+<span class="sd">    between ``lbound`` and ``rbound``.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ``rbound`` (numeric): right boundary of shaded region</span>
+
+<span class="sd">        ``lbound`` (numeric): left boundary of shaded region; by default is negative infinity</span>
+
+<span class="sd">        ``mean`` (numeric): mean/expectation of normal distribution</span>
+
+<span class="sd">        ``sd`` (numeric): standard deviation of normal distribution</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">INF</span> <span class="o">=</span> <span class="mf">3.5</span> <span class="o">*</span> <span class="n">sd</span>
+    <span class="n">llabel</span> <span class="o">=</span> <span class="n">lbound</span>
+    <span class="k">if</span> <span class="n">lbound</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">lbound</span> <span class="o">=</span> <span class="o">-</span><span class="n">INF</span> <span class="o">+</span> <span class="n">mean</span>
+        <span class="n">llabel</span> <span class="o">=</span> <span class="s">&quot;-$\infty$&quot;</span>
+    <span class="n">pdf_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="n">INF</span> <span class="o">+</span> <span class="n">mean</span><span class="p">,</span> <span class="n">INF</span> <span class="o">+</span> <span class="n">mean</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pdf_range</span><span class="p">,</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">pdf_range</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">mean</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">sd</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">cdf_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">lbound</span><span class="p">,</span> <span class="n">rbound</span> <span class="o">+</span> <span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">cdf_range</span><span class="p">,</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">cdf_range</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">mean</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">sd</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;gold&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">sd</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.25</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;z&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;$\phi$(z)&#39;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&quot;Normal Curve ~ ($\mu$ = {0}, $\sigma$ = {1}) &quot;</span>
+              <span class="s">&quot;{2} &lt; z &lt; {3}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">sd</span><span class="p">,</span> <span class="n">llabel</span><span class="p">,</span> <span class="n">rbound</span><span class="p">),</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 </pre></div>
 
           </div>
