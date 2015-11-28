@@ -1400,6 +1400,7 @@ class Table(collections.abc.MutableMapping):
         options = self.default_options.copy()
         options.update(vargs)
         xdata, labels =  self._split_by_column(column_for_x)
+        labels = [(column_for_x, y) for y in labels]
 
         def draw(axis, label, color):
             axis.scatter(xdata, self[label], color=color, **options)
@@ -1597,8 +1598,13 @@ class Table(collections.abc.MutableMapping):
             if not isinstance(axes, collections.Iterable):
                 axes=[axes]
             for axis, label, color in zip(axes, labels, colors):
-                draw(axis, label, color)
-                axis.set_xlabel(label, fontsize=16)
+                if isinstance(label, tuple):
+                  draw(axis, label[1], color)
+                  axis.set_xlabel(label[0], fontsize=16)
+                  axis.set_ylabel(label[1], fontsize=16)
+                else:
+                  draw(axis, label, color)
+                  axis.set_xlabel(label, fontsize=16)
                 if ticks is not None:
                     annotate(axis, ticks)
 
