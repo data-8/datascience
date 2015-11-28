@@ -1316,11 +1316,8 @@ class Table(collections.abc.MutableMapping):
         options = self.default_options.copy()
         options.update(vargs)
 
-        # Note that the labels here get incorrectly placed on the x-axis even
-        # though the labels describe the y-axis values.
-        # TODO(sam): Allow _visualize to accept options to put labels on both x
-        # and y axes.
         xticks, labels = self._split_by_column(column_for_xticks)
+        labels = [(column_for_xticks, y) for y in labels]
 
         def draw(axis, label, color):
             if xticks is None:
@@ -1493,6 +1490,7 @@ class Table(collections.abc.MutableMapping):
                 raise ValueError("The column '{0}' contains non-numerical "
                     "values. A bar graph cannot be drawn for this table."
                     .format(label))
+        labels = [(column_for_categories, y) for y in labels]
 
         index = np.arange(self.num_rows)
         margin = 0.1
@@ -1561,6 +1559,7 @@ class Table(collections.abc.MutableMapping):
                 raise ValueError("The column '{0}' contains non-numerical "
                     "values. A bar graph cannot be drawn for this table."
                     .format(label))
+        labels = [(column_for_categories, y) for y in labels]
 
         index = np.arange(self.num_rows)
         margin = 0.1
