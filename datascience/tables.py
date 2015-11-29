@@ -444,12 +444,26 @@ class Table(collections.abc.MutableMapping):
         return self.column_labels.index(column_label)
 
     def apply(self, fn, column_label):
-        """Returns an array where fn is applied to each element
-        of a specified column."""
+        """Returns an array where ``fn`` is applied to each set of elements
+        by row from the specified columns in ``column_label``.
+
+        >>> letter = ['a', 'b', 'c', 'z']
+        >>> count = [9, 3, 3, 1]
+        >>> points = [1, 2, 2, 10]
+        >>> t = Table([letter, count, points], ['letter', 'count', 'points'])
+        >>> t
+        letter | count | points
+        a      | 9     | 1
+        b      | 3     | 2
+        c      | 3     | 2
+        z      | 1     | 10
+        >>> t.apply(lambda x, y: x * y, ['count', 'points'])
+        array([ 9,  6,  6, 10])
+        """
         #return np.array([fn(v) for v in self[column_label]])
         if isinstance(column_label, str):
             column_label = [column_label]
-        return np.array([fn(*[self.take(i)[col] for col in column_label]) for i in range(len(self))])
+        return np.array([fn(*[self.take(i)[col][0] for col in column_label]) for i in range(self.num_rows)])
 
     ############
     # Mutation #
