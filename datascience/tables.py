@@ -1316,11 +1316,8 @@ class Table(collections.abc.MutableMapping):
         options = self.default_options.copy()
         options.update(vargs)
 
-        # Note that the labels here get incorrectly placed on the x-axis even
-        # though the labels describe the y-axis values.
-        # TODO(sam): Allow _visualize to accept options to put labels on both x
-        # and y axes.
         xticks, labels = self._split_by_column(column_for_xticks)
+        labels = [(column_for_xticks, y) for y in labels]
 
         def draw(axis, label, color):
             if xticks is None:
@@ -1400,6 +1397,7 @@ class Table(collections.abc.MutableMapping):
         options = self.default_options.copy()
         options.update(vargs)
         xdata, labels =  self._split_by_column(column_for_x)
+        labels = [(column_for_x, y) for y in labels]
 
         def draw(axis, label, color):
             axis.scatter(xdata, self[label], color=color, **options)
@@ -1492,6 +1490,7 @@ class Table(collections.abc.MutableMapping):
                 raise ValueError("The column '{0}' contains non-numerical "
                     "values. A bar graph cannot be drawn for this table."
                     .format(label))
+        labels = [(column_for_categories, y) for y in labels]
 
         index = np.arange(self.num_rows)
         margin = 0.1
@@ -1560,6 +1559,7 @@ class Table(collections.abc.MutableMapping):
                 raise ValueError("The column '{0}' contains non-numerical "
                     "values. A bar graph cannot be drawn for this table."
                     .format(label))
+        labels = [(column_for_categories, y) for y in labels]
 
         index = np.arange(self.num_rows)
         margin = 0.1
@@ -1597,8 +1597,13 @@ class Table(collections.abc.MutableMapping):
             if not isinstance(axes, collections.Iterable):
                 axes=[axes]
             for axis, label, color in zip(axes, labels, colors):
-                draw(axis, label, color)
-                axis.set_xlabel(label, fontsize=16)
+                if isinstance(label, tuple):
+                  draw(axis, label[1], color)
+                  axis.set_xlabel(label[0], fontsize=16)
+                  axis.set_ylabel(label[1], fontsize=16)
+                else:
+                  draw(axis, label, color)
+                  axis.set_xlabel(label, fontsize=16)
                 if ticks is not None:
                     annotate(axis, ticks)
 
