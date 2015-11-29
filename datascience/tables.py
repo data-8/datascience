@@ -446,7 +446,10 @@ class Table(collections.abc.MutableMapping):
     def apply(self, fn, column_label):
         """Returns an array where fn is applied to each element
         of a specified column."""
-        return np.array([fn(v) for v in self[column_label]])
+        #return np.array([fn(v) for v in self[column_label]])
+        if isinstance(column_label, str):
+            column_label = [column_label]
+        return np.array([fn(*[self.take(i)[col] for col in column_label]) for i in range(len(self))])
 
     ############
     # Mutation #
