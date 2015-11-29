@@ -1316,8 +1316,7 @@ class Table(collections.abc.MutableMapping):
         options = self.default_options.copy()
         options.update(vargs)
 
-        xticks, labels = self._split_by_column(column_for_xticks)
-        labels = [(column_for_xticks, y) for y in labels]
+        xticks, y_labels = self._split_by_column(column_for_xticks)
 
         def draw(axis, label, color):
             if xticks is None:
@@ -1328,7 +1327,7 @@ class Table(collections.abc.MutableMapping):
         def annotate(axis, ticks):
             axis.set_xticklabels(axis.get_xticks(), rotation='vertical')
 
-        self._visualize(labels, xticks, overlay, draw, annotate)
+        self._visualize(column_for_xticks, y_labels, xticks, overlay, draw, annotate)
 
     def scatter(self, column_for_x, overlay=False, fit_line=False, **vargs):
         """Creates scatterplots, optionally adding a line of best fit.
@@ -1396,8 +1395,7 @@ class Table(collections.abc.MutableMapping):
 
         options = self.default_options.copy()
         options.update(vargs)
-        xdata, labels =  self._split_by_column(column_for_x)
-        labels = [(column_for_x, y) for y in labels]
+        xdata, y_labels =  self._split_by_column(column_for_x)
 
         def draw(axis, label, color):
             axis.scatter(xdata, self[label], color=color, **options)
@@ -1408,7 +1406,7 @@ class Table(collections.abc.MutableMapping):
 
         def annotate(axis, ticks):
             return None
-        self._visualize(labels, None, overlay, draw, annotate)
+        self._visualize(column_for_x, y_labels, None, overlay, draw, annotate)
 
     def barh(self, column_for_categories, overlay=False, **vargs):
         """Plots horizontal bar charts for the table.
@@ -1484,19 +1482,18 @@ class Table(collections.abc.MutableMapping):
         options = self.default_options.copy()
         options.update(vargs)
 
-        yticks, labels = self._split_by_column(column_for_categories)
-        for label in labels:
+        yticks, y_labels = self._split_by_column(column_for_categories)
+        for label in y_labels:
             if any(isinstance(cell, np.flexible) for cell in self[label]):
                 raise ValueError("The column '{0}' contains non-numerical "
                     "values. A bar graph cannot be drawn for this table."
                     .format(label))
-        labels = [(column_for_categories, y) for y in labels]
 
         index = np.arange(self.num_rows)
         margin = 0.1
         width = 1 - 2 * margin
         if overlay:
-            width /= len(labels)
+            width /= len(y_labels)
 
         def draw(axis, label, color):
             if overlay:
@@ -1513,7 +1510,7 @@ class Table(collections.abc.MutableMapping):
         height = max(4, len(index)/2)
         if 'height' in vargs:
             height = vargs.pop('height')
-        self._visualize(labels, yticks, overlay, draw, annotate, height=height)
+        self._visualize(column_for_categories, y_labels, yticks, overlay, draw, annotate, height=height)
 
     def bar(self, column_for_categories=None, overlay=False, **vargs):
         """Plots bar charts for the table.
@@ -1553,19 +1550,18 @@ class Table(collections.abc.MutableMapping):
         options = self.default_options.copy()
         options.update(vargs)
 
-        xticks, labels = self._split_by_column(column_for_categories)
-        for label in labels:
+        xticks, y_labels = self._split_by_column(column_for_categories)
+        for label in y_labels:
             if any(isinstance(cell, np.flexible) for cell in self[label]):
                 raise ValueError("The column '{0}' contains non-numerical "
                     "values. A bar graph cannot be drawn for this table."
                     .format(label))
-        labels = [(column_for_categories, y) for y in labels]
 
         index = np.arange(self.num_rows)
         margin = 0.1
         width = 1 - 2 * margin
         if overlay:
-            width /= len(labels)
+            width /= len(y_labels)
 
         def draw(axis, label, color):
             if overlay:
@@ -1579,31 +1575,27 @@ class Table(collections.abc.MutableMapping):
                 tick_labels = [ticks[int(l)] for l in axis.get_xticks() if l<len(ticks)]
                 axis.set_xticklabels(tick_labels, stretch='ultra-condensed')
             return None
-        self._visualize(labels, xticks, overlay, draw, annotate)
+        self._visualize(column_for_categories, y_labels, xticks, overlay, draw, annotate)
 
-    def _visualize(self, labels, ticks, overlay, draw, annotate, width=6, height=4):
+    def _visualize(self, x_label, y_labels, ticks, overlay, draw, annotate, width=6, height=4):
         """Generic visualization that overlays or separates the draw function."""
-        n = len(labels)
+        n = len(y_labels)
         colors = list(itertools.islice(itertools.cycle(self.chart_colors), n))
         if overlay:
             _, axis = plt.subplots(figsize=(width, height))
-            for label, color in zip(labels, colors):
+            for label, color in zip(y_labels, colors):
                 draw(axis, label, color)
             if ticks is not None:
                 annotate(axis, ticks)
-            axis.legend(labels, bbox_to_anchor=(1.5, 1.0))
+            axis.legend(y_labels, bbox_to_anchor=(1.5, 1.0))
         else:
             fig, axes = plt.subplots(n, 1, figsize=(width, height * n))
             if not isinstance(axes, collections.Iterable):
                 axes=[axes]
-            for axis, label, color in zip(axes, labels, colors):
-                if isinstance(label, tuple):
-                  draw(axis, label[1], color)
-                  axis.set_xlabel(label[0], fontsize=16)
-                  axis.set_ylabel(label[1], fontsize=16)
-                else:
-                  draw(axis, label, color)
-                  axis.set_xlabel(label, fontsize=16)
+            for axis, y_label, color in zip(axes, y_labels, colors):
+                draw(axis, y_label, color)
+                axis.set_ylabel(y_label, fontsize=16)
+                axis.set_xlabel(x_label, fontsize=16)
                 if ticks is not None:
                     annotate(axis, ticks)
 
