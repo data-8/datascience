@@ -444,9 +444,46 @@ class Table(collections.abc.MutableMapping):
         return self.column_labels.index(column_label)
 
     def apply(self, fn, column_label):
-        """Returns an array where fn is applied to each element
-        of a specified column."""
-        return np.array([fn(v) for v in self[column_label]])
+        """Returns an array where ``fn`` is applied to each set of elements
+        by row from the specified columns in ``column_label``.
+
+        Args:
+            ``fn`` (function): The function to be applied to elements specified
+                by ``column_label``.
+            ``column_label`` (single string or list of strings): Names of
+                columns to be passed into function ``fn``. Length must match
+                number of elements ``fn`` takes.
+
+        Raises:
+            ``ValueError``: column name in ``column_label`` is not an existing
+                column in the table.
+
+        Returns:
+            A numpy array consisting of results of applying ``fn`` to elements
+            specified by ``column_label`` in each row.
+
+        >>> letter = ['a', 'b', 'c', 'z']
+        >>> count = [9, 3, 3, 1]
+        >>> points = [1, 2, 2, 10]
+        >>> t = Table([letter, count, points], ['letter', 'count', 'points'])
+        >>> t
+        letter | count | points
+        a      | 9     | 1
+        b      | 3     | 2
+        c      | 3     | 2
+        z      | 1     | 10
+        >>> t.apply(lambda x, y: x * y, ['count', 'points'])
+        array([ 9,  6,  6, 10])
+        >>> t.apply(lambda x: x - 1, 'points')
+        array([0, 1, 1, 9])
+        """
+        #return np.array([fn(v) for v in self[column_label]])
+        if isinstance(column_label, str):
+            column_label = [column_label]
+        for c in column_label:
+            if not (c in self.column_labels):
+                raise ValueError("{} is not an existing column in the table".format(c))
+        return np.array([fn(*[self.take(i)[col][0] for col in column_label]) for i in range(self.num_rows)])
 
     ############
     # Mutation #
