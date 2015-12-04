@@ -10,15 +10,28 @@ sudo: false
 python:
   - "3.4.2"
 
+cache:
+  - apt
+  directories:
+    - miniconda3
+
+addons:
+  apt:
+    packages:
+    - libatlas-dev
+    - libatlas-base-dev
+    - liblapack-dev
+    - gfortran
+
 before_install:
   - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
   - chmod +x miniconda.sh
-  - ./miniconda.sh -b
-  - export PATH=/home/travis/miniconda3/bin:$PATH
+  - ./miniconda.sh -b -p miniconda
+  - export PATH=/home/travis/miniconda/bin:$PATH
   - conda update --yes conda
 
 install:
-  - conda install --yes python=$TRAVIS_PYTHON_VERSION numpy scipy matplotlib pandas
+  - conda install --yes python=$TRAVIS_PYTHON_VERSION numpy scipy matplotlib pandas IPython
   # TODO(sam): Add --upgrade flag when it works again
   - python3 setup.py install
 
