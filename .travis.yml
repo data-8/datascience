@@ -5,14 +5,33 @@ env:
   - GH_REPO: github.com/dsten/datascience.git
   - secure: "Ndq+rOhIGAOSb1wRUCayt0TjGGikJrZOOkS1b4Qi1qFyDzrJdWy80B6fd6ZslRWNAg1YKuvj2nbCOlaXL4gC4uXjZO8ag7tRnUCW8aCp9qJtVxLVGf43Yk+tKaTdPajgmBAEw785Ua0LmTrZRTvUQzybPd4BFQVnLQ9CQ7N0KFT0COtCLC5SJaBy3/sclodaDVv2zGv/WzQPsqtsyDqi5emz43WA8EsjieSNh9rbegY5i9TijjSyt4+sR9YTSakqR6/7vvDdhLZvPkbzAJNlvy1v1FkDNtv3QKHV05Nj17UDyXeF/gs3FmkioiZdtxswF9YZBAAXuc3Lo/fOQyBjS5HPPylSkq2gBVAWSRwcSKdz0CTO4Re2YKrFigWpbm/zJzT/O+8vRrYKoejyqNweO7gRwlumVPrmyUph0wvN8XTvm01np6ZUHMgaCLS2kKLjr8fZ9l+aah3EubGx5Qp2wPAx+IC2rqLjjkibd41g3zG7DGR+r9HwW20K4VjbptTHKTHICi6rvq9HiLqBEKH6Cmv+hF4h5rwH71apcZzFaxGt/KYEsX11T1BalA0FwVn8pKZSacsh8jNMnkWgv+5G5dqwocURKUBY4x1VoCXqbvQ8mPjX88ookr3hbvpxXwkwAltGMo3H8Y7a5JcGxU4w/NXm6VSRxkukHrLtnKa8kNQ="
 
-sudo: required
+sudo: false
 
 python:
   - "3.4.2"
 
+cache:
+  - apt
+  directories:
+    - miniconda3
+
+addons:
+  apt:
+    packages:
+    - libatlas-dev
+    - libatlas-base-dev
+    - liblapack-dev
+    - gfortran
+
+before_install:
+  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+  - chmod +x miniconda.sh
+  - ./miniconda.sh -b -p miniconda
+  - export PATH=/home/travis/miniconda/bin:$PATH
+  - conda update --yes conda
+
 install:
-  - sudo apt-get install gfortran libblas-dev liblapack-dev
-  - pip install pip --upgrade
+  - conda install --yes python=$TRAVIS_PYTHON_VERSION numpy scipy matplotlib pandas IPython
   # TODO(sam): Add --upgrade flag when it works again
   - python3 setup.py install
 
