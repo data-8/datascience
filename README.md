@@ -19,6 +19,10 @@ Use `pip`:
 pip install datascience
 ```
 
+## Documentation
+
+API reference is at http://data8.org/datascience/ .
+
 ## Developing
 
 The recommended environment for installation and tests is the
