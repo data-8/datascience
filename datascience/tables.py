@@ -246,15 +246,6 @@ class Table(collections.abc.MutableMapping):
         self.take = _RowTaker(self)
         self.exclude = _RowExcluder(self)
 
-    # These, along with a snippet below, are necessary for Sphinx to
-    # correctly load the `take` and `exclude` docstrings.  The definitions
-    # will be over-ridden during class instantiation.
-    def take(self):
-        raise NotImplementedError()
-
-    def exclude(self):
-        raise NotImplementedError()
-
     @classmethod
     def empty(cls, column_labels=None):
         """Create an empty table. Column labels are optional
@@ -344,6 +335,18 @@ class Table(collections.abc.MutableMapping):
         table[label] = column
         if label in self._formats:
             table._formats[label] = self._formats[label]
+
+    @classmethod
+    def from_df(cls, df):
+        """Convert a Pandas DataFrame into a Table."""
+        labels = df.columns
+        return Table([df[label].values for label in labels], labels)
+
+    @classmethod
+    def from_array(cls, arr):
+        """Convert a structured NumPy array into a Table."""
+        return Table([arr[f] for f in arr.dtype.names],
+                     labels=arr.dtype.names)
 
 
     #################
@@ -710,6 +713,15 @@ class Table(collections.abc.MutableMapping):
         for label in column_labels:
             self._add_column_and_format(table, label, np.copy(self[label]))
         return table
+
+    # These, along with a snippet below, are necessary for Sphinx to
+    # correctly load the `take` and `exclude` docstrings.  The definitions
+    # will be over-ridden during class instantiation.
+    def take(self):
+        raise NotImplementedError()
+
+    def exclude(self):
+        raise NotImplementedError()
 
     def drop(self, column_label_or_labels):
         """Return a Table with only columns other than selected label or labels."""
@@ -1298,18 +1310,6 @@ class Table(collections.abc.MutableMapping):
             index.setdefault(key, []).append(row)
         return index
 
-    @classmethod
-    def from_df(cls, df):
-        """Convert a Pandas DataFrame into a Table."""
-        labels = df.columns
-        return Table([df[label].values for label in labels], labels)
-
-    @classmethod
-    def from_array(cls, arr):
-        """Convert a structured NumPy array into a Table."""
-        return Table([arr[f] for f in arr.dtype.names],
-                     labels=arr.dtype.names)
-
     def to_df(self):
         """Convert the table to a Pandas DataFrame."""
         return pandas.DataFrame(self._columns)
@@ -1348,6 +1348,28 @@ class Table(collections.abc.MutableMapping):
         'alpha': 0.8,
     }
 
+    def _visualize(self, x_label, y_labels, ticks, overlay, draw, annotate, width=6, height=4):
+        """Generic visualization that overlays or separates the draw function."""
+        n = len(y_labels)
+        colors = list(itertools.islice(itertools.cycle(self.chart_colors), n))
+        if overlay:
+            _, axis = plt.subplots(figsize=(width, height))
+            for label, color in zip(y_labels, colors):
+                draw(axis, label, color)
+            if ticks is not None:
+                annotate(axis, ticks)
+            axis.legend(y_labels, bbox_to_anchor=(1.5, 1.0))
+        else:
+            fig, axes = plt.subplots(n, 1, figsize=(width, height * n))
+            if not isinstance(axes, collections.Iterable):
+                axes=[axes]
+            for axis, y_label, color in zip(axes, y_labels, colors):
+                draw(axis, y_label, color)
+                axis.set_ylabel(y_label, fontsize=16)
+                axis.set_xlabel(x_label, fontsize=16)
+                if ticks is not None:
+                    annotate(axis, ticks)
+
     def plot(self, column_for_xticks, overlay=False, **vargs):
         """Plot contents as lines."""
         options = self.default_options.copy()
@@ -1366,84 +1388,70 @@ class Table(collections.abc.MutableMapping):
 
         self._visualize(column_for_xticks, y_labels, xticks, overlay, draw, annotate)
 
-    def scatter(self, column_for_x, overlay=False, fit_line=False, **vargs):
-        """Creates scatterplots, optionally adding a line of best fit.
+    def bar(self, column_for_categories=None, overlay=False, **vargs):
+        """Plots bar charts for the table.
 
-        All scatterplots use the values in ``column_for_x`` as the x-values. A
-        total of n - 1 scatterplots are created where n is the number of
-        columns in the table, one for every column other than ``column_for_x``.
+        Each chart is categorized using the values in `column_for_categories`
+        and one chart is produced for every other column in the table.
+        A total of n - 1 charts are created where n is the number of columns
+        in the table.
 
-        Requires all columns in the table to contain numerical values only.
-        If the columns contain other types, a ``ValueError`` is raised.
+        Requires every column except for `column_for_categories` to be
+        numerical. If the columns contain other types, a `ValueError` is
+        raised.
 
         Args:
-            ``column_for_x`` (str): The name to use for the x-axis values of the
-                scatter plots.
+            column_for_categories (str): The name to use for the bar chart
+                categories
 
         Kwargs:
-            ``overlay`` (bool): If True, creates one scatterplot with n - 1
-                y-values plotted, one for each column other than
-                ``column_for_x`` (instead of the default behavior of creating n
-                - 1 scatterplots. Also adds a legend that matches each dot
-                and best-fit line color to its column.
+            overlay (bool): If True, creates one chart with n - 1 bars for each
+                category, one for each column other than `column_for_categories`
+                (instead of the default behavior of creating n - 1 charts).
+                Also adds a legend that matches each bar color to its column.
 
-            ``fit_line`` (bool): If True, draws a line of best fit for each
-                scatterplot drawn.
-
-            ``vargs``: Additional arguments that get passed into `plt.scatter`.
-                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.scatter
+            vargs: Additional arguments that get passed into `plt.bar`.
+                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.bar
                 for additional arguments that can be passed into vargs. These
-                include: `marker` and `norm`, to name a couple.
+                include: `linewidth`, `xerr`, `yerr`, and `log`, to name a few.
 
         Returns:
             None
 
         Raises:
-            ``ValueError``: The table contains non-numerical values in columns.
-
-        >>> x = [9, 3, 3, 1]
-        >>> y = [1, 2, 2, 10]
-        >>> z = [3, 4, 5, 6]
-        >>> table = Table([x, y, z], ['x', 'y', 'z'])
-        >>> table
-        x    | y    | z
-        9    | 1    | 3
-        3    | 2    | 4
-        3    | 2    | 5
-        1    | 10   | 6
-        >>> table.scatter('x') # doctest: +SKIP
-        <scatterplot of values in y on x>
-        <scatterplot of values in z on x>
-
-        >>> table.scatter('x', overlay = True) # doctest: +SKIP
-        <scatterplot of values in y and z on x>
-
-        >>> table.scatter('x', fit_line = True) # doctest: +SKIP
-        <scatterplot of values in y on x with line of best fit>
-        <scatterplot of values in z on x with line of best fit>
+            ValueError: The Table contains non-numerical values in columns
+            other than `column_for_categories`
 
         """
-        # Check for non-numerical values and raise a ValueError if any found
-        for col in self:
-            if any(isinstance(cell, np.flexible) for cell in self[col]):
-                raise ValueError("The column '{0}' contains non-numerical "
-                    "values. A histogram cannot be drawn for this table."
-                    .format(col))
-
         options = self.default_options.copy()
         options.update(vargs)
-        xdata, y_labels =  self._split_by_column(column_for_x)
+
+        xticks, y_labels = self._split_by_column(column_for_categories)
+        for label in y_labels:
+            if any(isinstance(cell, np.flexible) for cell in self[label]):
+                raise ValueError("The column '{0}' contains non-numerical "
+                    "values. A bar graph cannot be drawn for this table."
+                    .format(label))
+
+        index = np.arange(self.num_rows)
+        margin = 0.1
+        width = 1 - 2 * margin
+        if overlay:
+            width /= len(y_labels)
 
         def draw(axis, label, color):
-            axis.scatter(xdata, self[label], color=color, **options)
-            if fit_line:
-                m,b = np.polyfit(xdata, self[label], 1)
-                minx, maxx = np.min(xdata),np.max(xdata)
-                axis.plot([minx,maxx],[m*minx+b,m*maxx+b])
+            if overlay:
+                xpos = index + margin + (1-2*margin)*labels.index(label)/len(labels)
+            else:
+                xpos = index
+            axis.bar(xpos, self[label], 1.0, color=color, **options)
 
         def annotate(axis, ticks):
+            if (ticks is not None) :
+                tick_labels = [ticks[int(l)] for l in axis.get_xticks() if l<len(ticks)]
+                axis.set_xticklabels(tick_labels, stretch='ultra-condensed')
             return None
-        self._visualize(column_for_x, y_labels, None, overlay, draw, annotate)
+        self._visualize(column_for_categories, y_labels, xticks, overlay, draw, annotate)
 
     def barh(self, column_for_categories, overlay=False, **vargs):
         """Plots horizontal bar charts for the table.
@@ -1548,93 +1556,6 @@ class Table(collections.abc.MutableMapping):
         if 'height' in vargs:
             height = vargs.pop('height')
         self._visualize(column_for_categories, y_labels, yticks, overlay, draw, annotate, height=height)
-
-    def bar(self, column_for_categories=None, overlay=False, **vargs):
-        """Plots bar charts for the table.
-
-        Each chart is categorized using the values in `column_for_categories`
-        and one chart is produced for every other column in the table.
-        A total of n - 1 charts are created where n is the number of columns
-        in the table.
-
-        Requires every column except for `column_for_categories` to be
-        numerical. If the columns contain other types, a `ValueError` is
-        raised.
-
-        Args:
-            column_for_categories (str): The name to use for the bar chart
-                categories
-
-        Kwargs:
-            overlay (bool): If True, creates one chart with n - 1 bars for each
-                category, one for each column other than `column_for_categories`
-                (instead of the default behavior of creating n - 1 charts).
-                Also adds a legend that matches each bar color to its column.
-
-            vargs: Additional arguments that get passed into `plt.bar`.
-                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.bar
-                for additional arguments that can be passed into vargs. These
-                include: `linewidth`, `xerr`, `yerr`, and `log`, to name a few.
-
-        Returns:
-            None
-
-        Raises:
-            ValueError: The Table contains non-numerical values in columns
-            other than `column_for_categories`
-
-        """
-        options = self.default_options.copy()
-        options.update(vargs)
-
-        xticks, y_labels = self._split_by_column(column_for_categories)
-        for label in y_labels:
-            if any(isinstance(cell, np.flexible) for cell in self[label]):
-                raise ValueError("The column '{0}' contains non-numerical "
-                    "values. A bar graph cannot be drawn for this table."
-                    .format(label))
-
-        index = np.arange(self.num_rows)
-        margin = 0.1
-        width = 1 - 2 * margin
-        if overlay:
-            width /= len(y_labels)
-
-        def draw(axis, label, color):
-            if overlay:
-                xpos = index + margin + (1-2*margin)*labels.index(label)/len(labels)
-            else:
-                xpos = index
-            axis.bar(xpos, self[label], 1.0, color=color, **options)
-
-        def annotate(axis, ticks):
-            if (ticks is not None) :
-                tick_labels = [ticks[int(l)] for l in axis.get_xticks() if l<len(ticks)]
-                axis.set_xticklabels(tick_labels, stretch='ultra-condensed')
-            return None
-        self._visualize(column_for_categories, y_labels, xticks, overlay, draw, annotate)
-
-    def _visualize(self, x_label, y_labels, ticks, overlay, draw, annotate, width=6, height=4):
-        """Generic visualization that overlays or separates the draw function."""
-        n = len(y_labels)
-        colors = list(itertools.islice(itertools.cycle(self.chart_colors), n))
-        if overlay:
-            _, axis = plt.subplots(figsize=(width, height))
-            for label, color in zip(y_labels, colors):
-                draw(axis, label, color)
-            if ticks is not None:
-                annotate(axis, ticks)
-            axis.legend(y_labels, bbox_to_anchor=(1.5, 1.0))
-        else:
-            fig, axes = plt.subplots(n, 1, figsize=(width, height * n))
-            if not isinstance(axes, collections.Iterable):
-                axes=[axes]
-            for axis, y_label, color in zip(axes, y_labels, colors):
-                draw(axis, y_label, color)
-                axis.set_ylabel(y_label, fontsize=16)
-                axis.set_xlabel(x_label, fontsize=16)
-                if ticks is not None:
-                    annotate(axis, ticks)
 
     def _split_by_column(self, column_or_label):
         """Return the specified column and labels of other columns."""
@@ -1826,6 +1747,85 @@ class Table(collections.abc.MutableMapping):
         if labels is not None : labels = self._get_column(labels)
         if colors is not None : colors = self._get_column(colors)
         return _maps.Circle.map(latitudes, longitudes, labels=labels, colors=colors, **kwargs)
+
+    def scatter(self, column_for_x, overlay=False, fit_line=False, **vargs):
+        """Creates scatterplots, optionally adding a line of best fit.
+
+        All scatterplots use the values in ``column_for_x`` as the x-values. A
+        total of n - 1 scatterplots are created where n is the number of
+        columns in the table, one for every column other than ``column_for_x``.
+
+        Requires all columns in the table to contain numerical values only.
+        If the columns contain other types, a ``ValueError`` is raised.
+
+        Args:
+            ``column_for_x`` (str): The name to use for the x-axis values of the
+                scatter plots.
+
+        Kwargs:
+            ``overlay`` (bool): If True, creates one scatterplot with n - 1
+                y-values plotted, one for each column other than
+                ``column_for_x`` (instead of the default behavior of creating n
+                - 1 scatterplots. Also adds a legend that matches each dot
+                and best-fit line color to its column.
+
+            ``fit_line`` (bool): If True, draws a line of best fit for each
+                scatterplot drawn.
+
+            ``vargs``: Additional arguments that get passed into `plt.scatter`.
+                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.scatter
+                for additional arguments that can be passed into vargs. These
+                include: `marker` and `norm`, to name a couple.
+
+        Returns:
+            None
+
+        Raises:
+            ``ValueError``: The table contains non-numerical values in columns.
+
+        >>> x = [9, 3, 3, 1]
+        >>> y = [1, 2, 2, 10]
+        >>> z = [3, 4, 5, 6]
+        >>> table = Table([x, y, z], ['x', 'y', 'z'])
+        >>> table
+        x    | y    | z
+        9    | 1    | 3
+        3    | 2    | 4
+        3    | 2    | 5
+        1    | 10   | 6
+        >>> table.scatter('x') # doctest: +SKIP
+        <scatterplot of values in y on x>
+        <scatterplot of values in z on x>
+
+        >>> table.scatter('x', overlay = True) # doctest: +SKIP
+        <scatterplot of values in y and z on x>
+
+        >>> table.scatter('x', fit_line = True) # doctest: +SKIP
+        <scatterplot of values in y on x with line of best fit>
+        <scatterplot of values in z on x with line of best fit>
+
+        """
+        # Check for non-numerical values and raise a ValueError if any found
+        for col in self:
+            if any(isinstance(cell, np.flexible) for cell in self[col]):
+                raise ValueError("The column '{0}' contains non-numerical "
+                    "values. A histogram cannot be drawn for this table."
+                    .format(col))
+
+        options = self.default_options.copy()
+        options.update(vargs)
+        xdata, y_labels =  self._split_by_column(column_for_x)
+
+        def draw(axis, label, color):
+            axis.scatter(xdata, self[label], color=color, **options)
+            if fit_line:
+                m,b = np.polyfit(xdata, self[label], 1)
+                minx, maxx = np.min(xdata),np.max(xdata)
+                axis.plot([minx,maxx],[m*minx+b,m*maxx+b])
+
+        def annotate(axis, ticks):
+            return None
+        self._visualize(column_for_x, y_labels, None, overlay, draw, annotate)
 
     ###########
     # Support #
