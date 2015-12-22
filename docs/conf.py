@@ -35,6 +35,9 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
     'sphinx.ext.viewcode',
+    # These IPython extensions allow for embedded IPython code that gets rerun
+    # at build time.
+    'IPython.sphinxext.ipython_console_highlighting',
     'IPython.sphinxext.ipython_directive'
 ]
 
