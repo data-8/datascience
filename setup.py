@@ -3,6 +3,8 @@ from setuptools import setup
 from setuptools.command.test import test as TestCommand
 
 
+if sys.version_info < (3, 0):
+    raise ValueError('This package requires python >= 3.0')
 
 with open('requirements.txt') as fid:
     install_requires = [l.strip() for l in fid.readlines() if l]
