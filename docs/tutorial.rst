@@ -24,8 +24,8 @@ the class with:
 
     from datascience import Table
 
-In the IPython notebook, type ``Table.`` followed by the TAB-key to see a list of
-members.
+In the IPython notebook, type ``Table.`` followed by the TAB-key to see a list
+of members.
 
 Note that for the Data Science 8 class we also import additional packages and
 settings for all assignments and labs. This is so that plots and other available
@@ -55,14 +55,14 @@ The basic Table constructor works as follows:
 
 .. ipython:: python
 
-   letters = ['a', 'b', 'c', 'z']
-   counts = [9, 3, 3, 1]
-   points = [1, 2, 2, 10]
+    letters = ['a', 'b', 'c', 'z']
+    counts = [9, 3, 3, 1]
+    points = [1, 2, 2, 10]
 
-   t = Table(columns=[letters, counts, points],
-             labels=['letter', 'count', 'points'])
+    t = Table(columns=[letters, counts, points],
+              labels=['letter', 'count', 'points'])
 
-   print(t)
+    print(t)
 
 Note how the first keyword, ``columns``, specifies the contents of the table,
 and how the second, ``labels``, gives a name to each column. See
@@ -75,22 +75,22 @@ spreadsheet, for example).  Here's the content of an example file:
 
 .. ipython:: python
 
-   cat mydata.csv
+    cat mydata.csv
 
 And this is how we load it in as a :class:`Table` using
 :meth:`~datascience.tables.Table.read_table`:
 
 .. ipython:: python
 
-   t = Table.read_table('sample.csv')
-   print(t)
+    t = Table.read_table('sample.csv')
+    print(t)
 
 CSVs from URLs are also valid inputs to
 :meth:`~datascience.tables.Table.read_table`:
 
 .. ipython:: python
 
-   Table.read_table('http://data8.org/text/sat2014.csv')
+    Table.read_table('http://data8.org/text/sat2014.csv')
 
 ------
 
@@ -100,23 +100,58 @@ names using
 
 .. ipython:: python
 
-   Table.from_columns_dict({
-      'letter': letters,
-      'count': counts,
-      'points': points,
-   })
+    Table.from_columns_dict({
+       'letter': letters,
+       'count': counts,
+       'points': points,
+    })
 
 This example illustrates the fact that built-in Python dictionaries don't
-preserve their key order. If you want to ensure the order of your columns, use
-an ``OrderedDict``.
+preserve their key order -- the dictionary keys are ordered 'letter', 'count',
+then 'points', but the table columns are ordered 'points', 'count', then
+'letter'). If you want to ensure the order of your columns, use an
+``OrderedDict``.
 
 Accessing Values
 ----------------
-To come.
+
+To access values of columns in the table, use
+:meth:`~datascience.tables.Table.values`.
+
+.. ipython:: python
+
+    t
+
+    t.values('x')
+    t.values('y')
+
+    t['x'] # This is a shorthand for t.values('x')
+
+To access values by row, :meth:`~datascience.tables.Table.rows` returns an
+list-like :class:`~datascience.tables.Table.Rows` object that contains
+tuple-like :class:`~datascience.tables.Table.Row` objects.
+
+.. ipython:: python
+
+    t.rows
+    t.rows[0]
+
+    second = t.rows[1]
+    second
+    second[0]
+    second[1]
+
+To get the number of rows, use :meth:`~datascience.tables.Table.num_rows`.
+
+.. ipython:: python
+
+    t.num_rows
+
 
 Manipulating Data
 -----------------
-To come.
+
+
 
 Visualizing Data
 ----------------
