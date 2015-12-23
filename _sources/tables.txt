@@ -86,6 +86,7 @@ Transformation (creates a new table)
     Table.select
     Table.drop
     Table.take
+    Table.exclude
     Table.where
     Table.sort
     Table.group
@@ -125,3 +126,4 @@ Visualizations
     Table.hist
     Table.points
     Table.scatter
+    Table.boxplot
