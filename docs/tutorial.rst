@@ -237,7 +237,7 @@ We'll start with some data drawn at random from two normal distributions:
         [ np.random.normal(loc = 1, scale = 2, size = 100),
           np.random.normal(loc = 4, scale = 3, size = 100) ],
         ['data1', 'data2']
-    })
+    )
 
     normal_data
 
@@ -299,7 +299,31 @@ converting to a pandas dataframe with :meth:`~datascience.tables.Table.to_df`:
 
 An Example
 ----------
-To come.
+
+Because most methods return a new Table, we can chain the above methods to
+work with data easily.
+
+We'll recreate the steps in `Chapter 3 of the textbook`_ to see if there is a
+significant difference in birth weights between smokers and non-smokers using a
+bootstrap test.
+
+.. _Chapter 3 of the textbook: http://data8.org/text/3_inference.html#Using-the-Bootstrap-Method-to-Test-Hypotheses
+
+From the text:
+
+    The table ``baby`` contains data on a random sample of 1,174 mothers and
+    their newborn babies. The column ``birthwt`` contains the birth weight of
+    the baby, in ounces; ``gest_days`` is the number of gestational days, that
+    is, the number of days the baby was in the womb. There is also data on
+    maternal age, maternal height, maternal pregnancy weight, and whether or not
+    the mother was a smoker.
+
+.. ipython:: python
+
+    baby = Table.read_table('http://data8.org/text/baby.csv')
+    baby # Let's take a peek at the table
+
+
 
 Drawing Maps
 ------------

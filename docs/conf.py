@@ -41,6 +41,17 @@ extensions = [
     'IPython.sphinxext.ipython_directive'
 ]
 
+# The following lines silence the matplotlib.use warnings since we import
+# matplotlib in each ipython directive block
+ipython_mplbackend = None
+ipython_execlines = [
+  'import matplotlib',
+  'matplotlib.use("Agg", warn=False)',
+  'import numpy as np',
+  'import matplotlib.pyplot as plt',
+  'plt.style.use("fivethirtyeight")',
+]
+
 # Config autosummary
 autosummary_generate = True
 
