@@ -112,6 +112,7 @@ Exporting / Displaying
     Table.index_by
     Table.to_array
     Table.to_df
+    Table.to_csv
 
 Visualizations
 
