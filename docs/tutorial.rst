@@ -282,6 +282,7 @@ Use :meth:`~datascience.tables.Table.barh` to display categorical data.
 .. ipython:: python
 
     t
+    @savefig barh.png width=4in
     t.barh('letter')
 
 Exporting
@@ -300,14 +301,14 @@ converting to a pandas dataframe with :meth:`~datascience.tables.Table.to_df`:
 An Example
 ----------
 
-Because most methods return a new Table, we can chain the above methods to
-work with data easily.
-
 We'll recreate the steps in `Chapter 3 of the textbook`_ to see if there is a
 significant difference in birth weights between smokers and non-smokers using a
 bootstrap test.
 
+For more examples, check out `the TableDemos repo`_.
+
 .. _Chapter 3 of the textbook: http://data8.org/text/3_inference.html#Using-the-Bootstrap-Method-to-Test-Hypotheses
+.. _the TableDemos repo: https://github.com/deculler/TableDemos
 
 From the text:
 
@@ -323,6 +324,67 @@ From the text:
     baby = Table.read_table('http://data8.org/text/baby.csv')
     baby # Let's take a peek at the table
 
+    # Select out columns we want.
+    smoker_and_wt = baby.select(['m_smoker', 'birthwt'])
+    smoker_and_wt
+
+Let's compare the number of smokers to non-smokers.
+
+.. ipython:: python
+
+    @savefig m_smoker.png width=4in
+    smoker_and_wt.select('m_smoker').hist(bins = [0, 1, 2]);
+
+We can also compare the distribution of birthweights between smokers and
+non-smokers.
+
+.. ipython:: python
+
+    # Non smokers
+    # We do this by grabbing the rows that correspond to mothers that don't
+    # smoke, then plotting a histogram of just the birthweights.
+    @savefig not_m_smoker_weights.png width=4in
+    smoker_and_wt.where('m_smoker', 0).select('birthwt').hist()
+
+    # Smokers
+    @savefig m_smoker_weights.png width=4in
+    smoker_and_wt.where('m_smoker', 1).select('birthwt').hist()
+
+What's the difference in mean birth weight of the two categories?
+
+.. ipython:: python
+
+    nonsmoking_mean = smoker_and_wt.where('m_smoker', 0).values('birthwt').mean()
+    smoking_mean = smoker_and_wt.where('m_smoker', 1).values('birthwt').mean()
+
+    observed_diff = nonsmoking_mean - smoking_mean
+    observed_diff
+
+Let's do the bootstrap test on the two categories.
+
+.. ipython:: python
+
+    num_nonsmokers = smoker_and_wt.where('m_smoker', 0).num_rows
+    def bootstrap_once():
+        """
+        Computes one bootstrapped difference in means.
+        The table.sample method lets us take random samples.
+        We then split according to the number of nonsmokers in the original sample.
+        """
+        resample = smoker_and_wt.sample(with_replacement = True)
+        bootstrap_diff = resample.values('birthwt')[:num_nonsmokers].mean() - \
+            resample.values('birthwt')[num_nonsmokers:].mean()
+        return bootstrap_diff
+
+    repetitions = 1000
+    bootstrapped_diff_means = np.array(
+        [ bootstrap_once() for _ in range(repetitions) ])
+
+    bootstrapped_diff_means[:10]
+
+    num_diffs_greater = (abs(bootstrapped_diff_means) > abs(observed_diff)).sum()
+    p_value = num_diffs_greater / len(bootstrapped_diff_means)
+    p_value
 
 
 Drawing Maps
