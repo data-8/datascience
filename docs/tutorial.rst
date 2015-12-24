@@ -39,9 +39,9 @@ packages mirror the ones in the textbook more closely. The exact code we use is:
     matplotlib.use('Agg')
     from datascience import Table
     %matplotlib inline
-    import matplotlib.pyplot as plots
+    import matplotlib.pyplot as plt
     import numpy as np
-    plots.style.use('fivethirtyeight')
+    plt.style.use('fivethirtyeight')
 
 In particular, the lines involving ``matplotlib`` allow for plotting within the
 IPython notebook.
