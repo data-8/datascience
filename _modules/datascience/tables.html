@@ -1363,6 +1363,35 @@
         <span class="sd">&quot;&quot;&quot;Convert the table to a Pandas DataFrame.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_columns</span><span class="p">)</span>
 </div>
+<div class="viewcode-block" id="Table.to_csv"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.to_csv.html#datascience.tables.Table.to_csv">[docs]</a>    <span class="k">def</span> <span class="nf">to_csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a CSV file with the provided filename.</span>
+
+<span class="sd">        The CSV is created in such a way that if we run</span>
+<span class="sd">        ``table.to_csv(&#39;my_table.csv&#39;)`` we can recreate the same table with</span>
+<span class="sd">        ``Table.read_table(&#39;my_table.csv&#39;)``.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ``filename`` (str): The filename of the output CSV file.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None, outputs a file with name ``filename``.</span>
+
+<span class="sd">        &gt;&gt;&gt; job = [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; wage = [10, 20, 15, 8]</span>
+<span class="sd">        &gt;&gt;&gt; some_table = Table([job, wage], [&#39;job&#39;, &#39;wage&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; some_table</span>
+<span class="sd">        job  | wage</span>
+<span class="sd">        a    | 10</span>
+<span class="sd">        b    | 20</span>
+<span class="sd">        c    | 15</span>
+<span class="sd">        d    | 8</span>
+<span class="sd">        &gt;&gt;&gt; some_table.to_csv(&#39;my_table.csv&#39;) # doctest: +SKIP</span>
+<span class="sd">        &lt;outputs a file called my_table.csv in the current directory&gt;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># We use index = False to avoid the row number output that pandas does</span>
+        <span class="c"># by default.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">to_df</span><span class="p">()</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="bp">False</span><span class="p">)</span>
+</div>
 <div class="viewcode-block" id="Table.to_array"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.to_array.html#datascience.tables.Table.to_array">[docs]</a>    <span class="k">def</span> <span class="nf">to_array</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Convert the table to a NumPy array.&quot;&quot;&quot;</span>
         <span class="n">dt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column_labels</span><span class="p">,</span>

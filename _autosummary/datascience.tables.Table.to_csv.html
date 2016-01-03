@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>datascience.tables.Table.to_df &mdash; datascience 0.3.dev21 documentation</title>
+    <title>datascience.tables.Table.to_csv &mdash; datascience 0.3.dev21 documentation</title>
     
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -25,8 +25,8 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="datascience 0.3.dev21 documentation" href="../index.html" />
     <link rel="up" title="Tables (datascience.tables)" href="../tables.html" />
-    <link rel="next" title="datascience.tables.Table.to_csv" href="datascience.tables.Table.to_csv.html" />
-    <link rel="prev" title="datascience.tables.Table.to_array" href="datascience.tables.Table.to_array.html" /> 
+    <link rel="next" title="datascience.tables.Table.plot" href="datascience.tables.Table.plot.html" />
+    <link rel="prev" title="datascience.tables.Table.to_df" href="datascience.tables.Table.to_df.html" /> 
   </head>
   <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
@@ -39,10 +39,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="datascience.tables.Table.to_csv.html" title="datascience.tables.Table.to_csv"
+          <a href="datascience.tables.Table.plot.html" title="datascience.tables.Table.plot"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="datascience.tables.Table.to_array.html" title="datascience.tables.Table.to_array"
+          <a href="datascience.tables.Table.to_df.html" title="datascience.tables.Table.to_df"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.3.dev21 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" accesskey="U">Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)</a> &raquo;</li> 
@@ -54,12 +54,34 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="datascience-tables-table-to-df">
-<h1>datascience.tables.Table.to_df<a class="headerlink" href="#datascience-tables-table-to-df" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="datascience-tables-table-to-csv">
+<h1>datascience.tables.Table.to_csv<a class="headerlink" href="#datascience-tables-table-to-csv" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
-<dt id="datascience.tables.Table.to_df">
-<code class="descclassname">Table.</code><code class="descname">to_df</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.to_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.to_df" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert the table to a Pandas DataFrame.</p>
+<dt id="datascience.tables.Table.to_csv">
+<code class="descclassname">Table.</code><code class="descname">to_csv</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.to_csv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.to_csv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a CSV file with the provided filename.</p>
+<p>The CSV is created in such a way that if we run
+<code class="docutils literal"><span class="pre">table.to_csv('my_table.csv')</span></code> we can recreate the same table with
+<code class="docutils literal"><span class="pre">Table.read_table('my_table.csv')</span></code>.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><code class="docutils literal"><span class="pre">filename</span></code> (str): The filename of the output CSV file.</dd>
+<dt>Returns:</dt>
+<dd>None, outputs a file with name <code class="docutils literal"><span class="pre">filename</span></code>.</dd>
+</dl>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">job</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="s">&#39;c&#39;</span><span class="p">,</span> <span class="s">&#39;d&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">wage</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">some_table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">([</span><span class="n">job</span><span class="p">,</span> <span class="n">wage</span><span class="p">],</span> <span class="p">[</span><span class="s">&#39;job&#39;</span><span class="p">,</span> <span class="s">&#39;wage&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">some_table</span>
+<span class="go">job  | wage</span>
+<span class="go">a    | 10</span>
+<span class="go">b    | 20</span>
+<span class="go">c    | 15</span>
+<span class="go">d    | 8</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">some_table</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s">&#39;my_table.csv&#39;</span><span class="p">)</span> 
+<span class="go">&lt;outputs a file called my_table.csv in the current directory&gt;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </div>
@@ -71,15 +93,15 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="datascience.tables.Table.to_array.html"
-                        title="previous chapter">datascience.tables.Table.to_array</a></p>
+  <p class="topless"><a href="datascience.tables.Table.to_df.html"
+                        title="previous chapter">datascience.tables.Table.to_df</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="datascience.tables.Table.to_csv.html"
-                        title="next chapter">datascience.tables.Table.to_csv</a></p>
+  <p class="topless"><a href="datascience.tables.Table.plot.html"
+                        title="next chapter">datascience.tables.Table.plot</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/_autosummary/datascience.tables.Table.to_df.txt"
+      <li><a href="../_sources/_autosummary/datascience.tables.Table.to_csv.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -110,10 +132,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="datascience.tables.Table.to_csv.html" title="datascience.tables.Table.to_csv"
+          <a href="datascience.tables.Table.plot.html" title="datascience.tables.Table.plot"
              >next</a> |</li>
         <li class="right" >
-          <a href="datascience.tables.Table.to_array.html" title="datascience.tables.Table.to_array"
+          <a href="datascience.tables.Table.to_df.html" title="datascience.tables.Table.to_df"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.3.dev21 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" >Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)</a> &raquo;</li> 

@@ -1,0 +1,6 @@
+datascience.tables.Table.to_csv
+===============================
+
+.. currentmodule:: datascience.tables
+
+.. automethod:: Table.to_csv
