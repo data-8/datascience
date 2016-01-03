@@ -1314,6 +1314,35 @@ class Table(collections.abc.MutableMapping):
         """Convert the table to a Pandas DataFrame."""
         return pandas.DataFrame(self._columns)
 
+    def to_csv(self, filename):
+        """Creates a CSV file with the provided filename.
+
+        The CSV is created in such a way that if we run
+        ``table.to_csv('my_table.csv')`` we can recreate the same table with
+        ``Table.read_table('my_table.csv')``.
+
+        Args:
+            ``filename`` (str): The filename of the output CSV file.
+
+        Returns:
+            None, outputs a file with name ``filename``.
+
+        >>> job = ['a', 'b', 'c', 'd']
+        >>> wage = [10, 20, 15, 8]
+        >>> some_table = Table([job, wage], ['job', 'wage'])
+        >>> some_table
+        job  | wage
+        a    | 10
+        b    | 20
+        c    | 15
+        d    | 8
+        >>> some_table.to_csv('my_table.csv') # doctest: +SKIP
+        <outputs a file called my_table.csv in the current directory>
+        """
+        # We use index = False to avoid the row number output that pandas does
+        # by default.
+        self.to_df().to_csv(filename, index = False)
+
     def to_array(self):
         """Convert the table to a NumPy array."""
         dt = np.dtype(list(zip(self.column_labels,
