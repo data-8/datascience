@@ -35,6 +35,21 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
     'sphinx.ext.viewcode',
+    # These IPython extensions allow for embedded IPython code that gets rerun
+    # at build time.
+    'IPython.sphinxext.ipython_console_highlighting',
+    'IPython.sphinxext.ipython_directive'
+]
+
+# The following lines silence the matplotlib.use warnings since we import
+# matplotlib in each ipython directive block
+ipython_mplbackend = None
+ipython_execlines = [
+  'import matplotlib',
+  'matplotlib.use("Agg", warn=False)',
+  'import numpy as np',
+  'import matplotlib.pyplot as plt',
+  'plt.style.use("fivethirtyeight")',
 ]
 
 # Config autosummary
@@ -147,6 +162,7 @@ html_theme = 'classic'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = []
+ipython_savefig_dir = './_build/html/_images'
 
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied

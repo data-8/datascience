@@ -26,7 +26,7 @@ addons:
 before_install:
   - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
   - chmod +x miniconda.sh
-  - ./miniconda.sh -b -p $HOME/miniconda
+  - ./miniconda.sh -b -f -p $HOME/miniconda
   - export PATH=/home/travis/miniconda/bin:$PATH
   - conda update --yes conda
 
@@ -35,14 +35,18 @@ install:
   # TODO(sam): Add --upgrade flag when it works again
   - python3 setup.py install
 
+# https://docs.travis-ci.com/user/gui-and-headless-browsers/#Using-xvfb-to-Run-Tests-That-Require-a-GUI
+# sam: Not exactly sure why we need to initialize a display for this but it
+#      helps the tutorial plots build on Travis
+before_script:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+  - sleep 3 # give xvfb some time to start
+
 script:
   - coverage run setup.py test
-  - cd docs && make html-raise-on-warning && cd ..
+  - make docs
 
 after_success:
   - coveralls
   - bash tools/deploy_docs.sh
-
-cache:
-  directories:
-  - /home/travis/virtualenv/python3.4.2/
