@@ -13,6 +13,10 @@ For other useful tutorials and examples, see:
 .. _The textbook introduction to Tables: http://data8.org/text/1_data.html#tables
 .. _Example notebooks: https://github.com/deculler/TableDemos
 
+.. contents:: Table of Contents
+    :depth: 2
+    :local:
+
 Getting Started
 ---------------
 

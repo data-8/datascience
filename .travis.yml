@@ -35,6 +35,12 @@ install:
   # TODO(sam): Add --upgrade flag when it works again
   - python3 setup.py install
 
+# https://docs.travis-ci.com/user/gui-and-headless-browsers/#Using-xvfb-to-Run-Tests-That-Require-a-GUI
+before_script:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+  - sleep 3 # give xvfb some time to start
+
 script:
   - coverage run setup.py test
   - cd docs && make html-raise-on-warning && cd ..
