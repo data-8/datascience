@@ -45,7 +45,7 @@ before_script:
 
 script:
   - coverage run setup.py test
-  - cd docs && make html-raise-on-warning && cd ..
+  - make docs
 
 after_success:
   - coveralls
