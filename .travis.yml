@@ -45,7 +45,6 @@ before_script:
 
 script:
   - coverage run setup.py test
-  - make docs
 
 after_success:
   - coveralls
