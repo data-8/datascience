@@ -173,11 +173,11 @@ names using
 <span class="gp">   ....: </span><span class="p">})</span>
 <span class="gp">   ....: </span>
 <span class="gh">Out[10]: </span><span class="go"></span>
-<span class="go">count | letter | points</span>
-<span class="go">9     | a      | 1</span>
-<span class="go">3     | b      | 2</span>
-<span class="go">3     | c      | 2</span>
-<span class="go">1     | z      | 10</span>
+<span class="go">letter | count | points</span>
+<span class="go">a      | 9     | 1</span>
+<span class="go">b      | 3     | 2</span>
+<span class="go">c      | 3     | 2</span>
+<span class="go">z      | 1     | 10</span>
 </pre></div>
 </div>
 <p>This example illustrates the fact that built-in Python dictionaries don&#8217;t
@@ -462,17 +462,17 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 
 <span class="gp">In [48]: </span><span class="n">normal_data</span>
 <span class="gh">Out[48]: </span><span class="go"></span>
-<span class="go">data1      | data2</span>
-<span class="go">0.333211   | 10.7662</span>
-<span class="go">1.42402    | 9.59896</span>
-<span class="go">-0.0327301 | 6.17483</span>
-<span class="go">-1.33806   | 0.783401</span>
-<span class="go">1.7275     | 4.49507</span>
-<span class="go">2.78515    | 10.7397</span>
-<span class="go">2.10023    | 7.19532</span>
-<span class="go">-2.72648   | 2.24067</span>
-<span class="go">-1.91819   | 7.06272</span>
-<span class="go">2.63677    | 3.25369</span>
+<span class="go">data1     | data2</span>
+<span class="go">1.4223    | 8.64938</span>
+<span class="go">0.0433981 | 5.23903</span>
+<span class="go">1.86962   | 2.01435</span>
+<span class="go">-1.88893  | 3.01929</span>
+<span class="go">-3.64501  | 1.48576</span>
+<span class="go">1.33265   | 0.203836</span>
+<span class="go">1.06273   | 4.07581</span>
+<span class="go">2.70416   | 5.36391</span>
+<span class="go">-0.667668 | 1.14888</span>
+<span class="go">2.60855   | 10.066</span>
 <span class="go">... (90 rows omitted)</span>
 </pre></div>
 </div>
@@ -524,17 +524,17 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 converting to a pandas dataframe with <a class="reference internal" href="_autosummary/datascience.tables.Table.to_df.html#datascience.tables.Table.to_df" title="datascience.tables.Table.to_df"><code class="xref py py-meth docutils literal"><span class="pre">to_df()</span></code></a>:</p>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [57]: </span><span class="n">normal_data</span>
 <span class="gh">Out[57]: </span><span class="go"></span>
-<span class="go">data1      | data2</span>
-<span class="go">0.333211   | 10.7662</span>
-<span class="go">1.42402    | 9.59896</span>
-<span class="go">-0.0327301 | 6.17483</span>
-<span class="go">-1.33806   | 0.783401</span>
-<span class="go">1.7275     | 4.49507</span>
-<span class="go">2.78515    | 10.7397</span>
-<span class="go">2.10023    | 7.19532</span>
-<span class="go">-2.72648   | 2.24067</span>
-<span class="go">-1.91819   | 7.06272</span>
-<span class="go">2.63677    | 3.25369</span>
+<span class="go">data1     | data2</span>
+<span class="go">1.4223    | 8.64938</span>
+<span class="go">0.0433981 | 5.23903</span>
+<span class="go">1.86962   | 2.01435</span>
+<span class="go">-1.88893  | 3.01929</span>
+<span class="go">-3.64501  | 1.48576</span>
+<span class="go">1.33265   | 0.203836</span>
+<span class="go">1.06273   | 4.07581</span>
+<span class="go">2.70416   | 5.36391</span>
+<span class="go">-0.667668 | 1.14888</span>
+<span class="go">2.60855   | 10.066</span>
 <span class="go">... (90 rows omitted)</span>
 
 <span class="go"># index = False prevents row numbers from appearing in the resulting CSV</span>
@@ -644,8 +644,8 @@ non-smokers.</p>
 
 <span class="gp">In [74]: </span><span class="n">bootstrapped_diff_means</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
 <span class="gh">Out[74]: </span><span class="go"></span>
-<span class="go">array([ 0.40553956, -1.21720371,  1.08640553, -0.94854122,  0.75208495,</span>
-<span class="go">        1.50662584, -0.40259914, -1.34954066,  1.37429803,  0.46460685])</span>
+<span class="go">array([-2.09394701,  0.44748237,  0.33446075,  0.11308865, -1.18358852,</span>
+<span class="go">        0.40365647, -0.03827719,  1.23089721,  1.37450828,  0.58224782])</span>
 
 <span class="gp">In [75]: </span><span class="n">num_diffs_greater</span> <span class="o">=</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">bootstrapped_diff_means</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">observed_diff</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
