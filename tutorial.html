@@ -173,11 +173,11 @@ names using
 <span class="gp">   ....: </span><span class="p">})</span>
 <span class="gp">   ....: </span>
 <span class="gh">Out[10]: </span><span class="go"></span>
-<span class="go">letter | count | points</span>
-<span class="go">a      | 9     | 1</span>
-<span class="go">b      | 3     | 2</span>
-<span class="go">c      | 3     | 2</span>
-<span class="go">z      | 1     | 10</span>
+<span class="go">points | count | letter</span>
+<span class="go">1      | 9     | a</span>
+<span class="go">2      | 3     | b</span>
+<span class="go">2      | 3     | c</span>
+<span class="go">10     | 1     | z</span>
 </pre></div>
 </div>
 <p>This example illustrates the fact that built-in Python dictionaries don&#8217;t
@@ -463,16 +463,16 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 <span class="gp">In [48]: </span><span class="n">normal_data</span>
 <span class="gh">Out[48]: </span><span class="go"></span>
 <span class="go">data1     | data2</span>
-<span class="go">1.4223    | 8.64938</span>
-<span class="go">0.0433981 | 5.23903</span>
-<span class="go">1.86962   | 2.01435</span>
-<span class="go">-1.88893  | 3.01929</span>
-<span class="go">-3.64501  | 1.48576</span>
-<span class="go">1.33265   | 0.203836</span>
-<span class="go">1.06273   | 4.07581</span>
-<span class="go">2.70416   | 5.36391</span>
-<span class="go">-0.667668 | 1.14888</span>
-<span class="go">2.60855   | 10.066</span>
+<span class="go">3.0839    | 3.42286</span>
+<span class="go">5.17829   | 8.57022</span>
+<span class="go">0.775552  | 3.51988</span>
+<span class="go">3.6576    | 2.97461</span>
+<span class="go">1.46375   | 6.38523</span>
+<span class="go">-0.101003 | 2.05238</span>
+<span class="go">1.31274   | 1.43264</span>
+<span class="go">1.46556   | -0.981905</span>
+<span class="go">0.206797  | 4.38929</span>
+<span class="go">1.06735   | 7.7596</span>
 <span class="go">... (90 rows omitted)</span>
 </pre></div>
 </div>
@@ -525,16 +525,16 @@ converting to a pandas dataframe with <a class="reference internal" href="_autos
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [57]: </span><span class="n">normal_data</span>
 <span class="gh">Out[57]: </span><span class="go"></span>
 <span class="go">data1     | data2</span>
-<span class="go">1.4223    | 8.64938</span>
-<span class="go">0.0433981 | 5.23903</span>
-<span class="go">1.86962   | 2.01435</span>
-<span class="go">-1.88893  | 3.01929</span>
-<span class="go">-3.64501  | 1.48576</span>
-<span class="go">1.33265   | 0.203836</span>
-<span class="go">1.06273   | 4.07581</span>
-<span class="go">2.70416   | 5.36391</span>
-<span class="go">-0.667668 | 1.14888</span>
-<span class="go">2.60855   | 10.066</span>
+<span class="go">3.0839    | 3.42286</span>
+<span class="go">5.17829   | 8.57022</span>
+<span class="go">0.775552  | 3.51988</span>
+<span class="go">3.6576    | 2.97461</span>
+<span class="go">1.46375   | 6.38523</span>
+<span class="go">-0.101003 | 2.05238</span>
+<span class="go">1.31274   | 1.43264</span>
+<span class="go">1.46556   | -0.981905</span>
+<span class="go">0.206797  | 4.38929</span>
+<span class="go">1.06735   | 7.7596</span>
 <span class="go">... (90 rows omitted)</span>
 
 <span class="go"># index = False prevents row numbers from appearing in the resulting CSV</span>
@@ -644,8 +644,8 @@ non-smokers.</p>
 
 <span class="gp">In [74]: </span><span class="n">bootstrapped_diff_means</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
 <span class="gh">Out[74]: </span><span class="go"></span>
-<span class="go">array([-2.09394701,  0.44748237,  0.33446075,  0.11308865, -1.18358852,</span>
-<span class="go">        0.40365647, -0.03827719,  1.23089721,  1.37450828,  0.58224782])</span>
+<span class="go">array([-1.07685909, -0.32367719,  0.83689078, -1.60325122, -1.1022594 ,</span>
+<span class="go">        1.23210384, -1.30590064, -0.53828176, -0.0873227 ,  2.38801591])</span>
 
 <span class="gp">In [75]: </span><span class="n">num_diffs_greater</span> <span class="o">=</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">bootstrapped_diff_means</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">observed_diff</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
