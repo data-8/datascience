@@ -79,7 +79,7 @@ spreadsheet, for example).  Here's the content of an example file:
 
 .. ipython:: python
 
-    cat mydata.csv
+    cat sample.csv
 
 And this is how we load it in as a :class:`Table` using
 :meth:`~datascience.tables.Table.read_table`:
@@ -128,7 +128,12 @@ To access values of columns in the table, use
     t.values('letter')
     t.values('count')
 
+Use bracket notation as a shorthand for this method:
+
+.. ipython:: python
+
     t['letter'] # This is a shorthand for t.values('letter')
+    t['count'] # This is a shorthand for t.values('count')
 
 To access values by row, :meth:`~datascience.tables.Table.rows` returns an
 list-like :class:`~datascience.tables.Table.Rows` object that contains
