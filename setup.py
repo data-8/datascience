@@ -3,6 +3,8 @@ from setuptools import setup
 from setuptools.command.test import test as TestCommand
 
 
+if sys.version_info < (3, 0):
+    raise ValueError('This package requires python >= 3.0')
 
 with open('requirements.txt') as fid:
     install_requires = [l.strip() for l in fid.readlines() if l]
@@ -29,8 +31,6 @@ class PyTest(TestCommand):
 
     def finalize_options(self):
         TestCommand.finalize_options(self)
-        self.test_args = []
-        self.test_suite = True
 
     def run_tests(self):
         # import here, cause outside the eggs aren't loaded

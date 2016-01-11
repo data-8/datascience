@@ -363,6 +363,13 @@ def test_pivot_sum(t):
     True  | 1        | 2        | 0
     """)
 
+def test_apply(t):
+    t = t.copy()
+    assert_array_equal(t.apply(lambda x, y: x * y, ['count', 'points']), np.array([9, 6, 6, 10]))
+    assert_array_equal(t.apply(lambda x: x * x, 'points'), np.array([1, 4, 4, 100]))
+    with(pytest.raises(ValueError)):
+        t.apply(lambda x, y: x + y, ['count', 'score'])
+
 
 ########
 # Init #

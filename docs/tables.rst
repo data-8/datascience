@@ -86,6 +86,7 @@ Transformation (creates a new table)
     Table.select
     Table.drop
     Table.take
+    Table.exclude
     Table.where
     Table.sort
     Table.group
@@ -112,6 +113,7 @@ Exporting / Displaying
     Table.index_by
     Table.to_array
     Table.to_df
+    Table.to_csv
 
 Visualizations
 
@@ -125,3 +127,4 @@ Visualizations
     Table.hist
     Table.points
     Table.scatter
+    Table.boxplot

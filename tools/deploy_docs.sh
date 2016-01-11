@@ -8,6 +8,13 @@ set -e # exit with nonzero exit code if anything fails
 # Only build docs on master branch
 if [[ $TRAVIS_PULL_REQUEST == false && $TRAVIS_BRANCH == "master" ]] ; then
 
+  # https://docs.travis-ci.com/user/gui-and-headless-browsers/#Using-xvfb-to-Run-Tests-That-Require-a-GUI
+  # sam: The DISPLAY env variable needs to be set for matplotlib charts to be
+  # generated on Travis. I don't know why just matplotlib.use doesn't work.
+  export DISPLAY=:99.0
+  sh -e /etc/init.d/xvfb start
+  sleep 3 # give xvfb some time to start
+
   echo "-- building docs --"
 
   make docs
