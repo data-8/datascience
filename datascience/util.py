@@ -1,11 +1,13 @@
 """Utility functions"""
 
-__all__ = ['percentile', 'plot_cdf_area']
+__all__ = ['percentile', 'plot_cdf_area', 'table_apply']
 
 
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 from scipy import stats
+
 
 def percentile(p, arr=None):
     """Returns the pth percentile of the input array (the value that is at
@@ -53,3 +55,46 @@ def plot_cdf_area(rbound, lbound=None, mean=0, sd=1):
     plt.title("Normal Curve ~ ($\mu$ = {0}, $\sigma$ = {1}) "
               "{2} < z < {3}".format(mean, sd, llabel, rbound), fontsize=16)
     plt.show()
+
+
+def table_apply(table, func, subset=None):
+    """Applies a function to each column and returns a Table.
+
+    Uses pandas `apply` under the hood, then converts back to a Table
+
+    Parameters
+    ----------
+    table : instance of Table
+        The table to apply your function to
+    func : function
+        Any function that will work with DataFrame.apply
+    subset : list | None
+        A list of columns to apply the function to. If None, function
+        will be applied to all columns in table
+
+    Returns
+    -------
+    tab : instance of Table
+        A table with the given function applied. It will either be the
+        shape == shape(table), or shape (1, table.shape[1])
+    """
+    from . import Table
+    df = table.to_df()
+
+    if subset is not None:
+        # Iterate through columns
+        subset = np.atleast_1d(subset)
+        if any([i not in df.columns for i in subset]):
+            err = np.where([i not in df.columns for i in subset])[0]
+            err = "Column mismatch: {0}".format(
+                [subset[i] for i in err])
+            raise ValueError(err)
+        for col in subset:
+            df[col] = df[col].apply(func)
+    else:
+        df = df.apply(func)
+    if isinstance(df, pd.Series):
+        # Reshape it so that we can easily convert back
+        df = pd.DataFrame(df).T
+    tab = Table.from_df(df)
+    return tab
