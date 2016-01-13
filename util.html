@@ -83,6 +83,27 @@ between <code class="docutils literal"><span class="pre">lbound</span></code> an
 </dl>
 </dd></dl>
 
+<dl class="function">
+<dt id="datascience.util.table_apply">
+<code class="descclassname">datascience.util.</code><code class="descname">table_apply</code><span class="sig-paren">(</span><em>table</em>, <em>func</em>, <em>subset=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#table_apply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.util.table_apply" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies a function to each column and returns a Table.</p>
+<p>Uses pandas <cite>apply</cite> under the hood, then converts back to a Table</p>
+<dl class="docutils">
+<dt>table <span class="classifier-delimiter">:</span> <span class="classifier">instance of Table</span></dt>
+<dd>The table to apply your function to</dd>
+<dt>func <span class="classifier-delimiter">:</span> <span class="classifier">function</span></dt>
+<dd>Any function that will work with DataFrame.apply</dd>
+<dt>subset <span class="classifier-delimiter">:</span> <span class="classifier">list | None</span></dt>
+<dd>A list of columns to apply the function to. If None, function
+will be applied to all columns in table</dd>
+</dl>
+<dl class="docutils">
+<dt>tab <span class="classifier-delimiter">:</span> <span class="classifier">instance of Table</span></dt>
+<dd>A table with the given function applied. It will either be the
+shape == shape(table), or shape (1, table.shape[1])</dd>
+</dl>
+</dd></dl>
+
 </div>
 
 
