@@ -1,0 +1,49 @@
+name: datascience
+dependencies:
+- appnope=0.1.0=py35_0
+- cycler=0.9.0=py35_0
+- decorator=4.0.6=py35_0
+- freetype=2.5.5=0
+- ipython=4.0.1=py35_0
+- ipython_genutils=0.1.0=py35_0
+- libpng=1.6.17=0
+- matplotlib=1.5.1=np110py35_0
+- numpy=1.10.2=py35_0
+- openssl=1.0.2e=0
+- pandas=0.17.1=np110py35_0
+- path.py=8.1.2=py35_1
+- pexpect=3.3=py35_0
+- pickleshare=0.5=py35_0
+- pip=7.1.2=py35_0
+- pyparsing=2.0.3=py35_0
+- pyqt=4.11.4=py35_1
+- python=3.5.1=0
+- python-dateutil=2.4.2=py35_0
+- python.app=1.2=py35_4
+- pytz=2015.7=py35_0
+- qt=4.8.7=1
+- readline=6.2=2
+- scipy=0.16.1=np110py35_0
+- simplegeneric=0.8.1=py35_0
+- sip=4.16.9=py35_0
+- six=1.10.0=py35_0
+- sqlite=3.9.2=0
+- tk=8.5.18=0
+- traitlets=4.0.0=py35_0
+- wheel=0.26.0=py35_1
+- xz=5.0.5=0
+- zlib=1.2.8=0
+- pip:
+  - alabaster==0.7.7
+  - babel==2.2.0
+  - docutils==0.12
+  - folium==0.1.5
+  - ipython-genutils==0.1.0
+  - jinja2==2.8
+  - markupsafe==0.23
+  - pygments==2.0.2
+  - setuptools==19.2
+  - snowballstemmer==1.2.1
+  - sphinx==1.3.1
+  - sphinx-rtd-theme==0.1.9
+
