@@ -32,7 +32,7 @@ before_install:
   - conda update --yes conda
 
 install:
-  - conda env create -f environment.yml -n datascience
+  - "if ! conda info -e | grep datascience ; then conda env create -f environment.yml -n datascience ; fi"
   - source activate datascience
   - python3 setup.py install
 
