@@ -19,7 +19,6 @@ addons:
   apt:
     packages:
     - libatlas-dev
-    - libatlas-base
     - libatlas-base-dev
     - liblapack-dev
     - gfortran
@@ -32,8 +31,7 @@ before_install:
   - conda update --yes conda
 
 install:
-  - "if ! conda info -e | grep datascience ; then conda env create -f environment.yml -n datascience ; fi"
-  - source activate datascience
+  - conda install --yes python=$TRAVIS_PYTHON_VERSION pip numpy scipy matplotlib pandas IPython
   - python3 setup.py install
 
 script:
