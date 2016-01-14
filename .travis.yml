@@ -19,6 +19,7 @@ addons:
   apt:
     packages:
     - libatlas-dev
+    - libatlas-base
     - libatlas-base-dev
     - liblapack-dev
     - gfortran
