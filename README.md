@@ -8,7 +8,7 @@ A library for introductory data science.
 [David Culler](http://www.cs.berkeley.edu/~culler),
 [Sam Lau](https://github.com/samlau95), and [Alvin Wan](http://alvinwan.com)*
 
-[![Build Status](https://travis-ci.org/dsten/datascience.svg?branch=master)](https://travis-ci.org/dsten/datascience)
+[![Build Status](https://travis-ci.org/data-8/datascience.svg?branch=master)](https://travis-ci.org/data-8/datascience)
 [![Coverage Status](https://coveralls.io/repos/dsten/datascience/badge.svg?branch=master&service=github)](https://coveralls.io/github/dsten/datascience?branch=master)
 
 ## Installation
