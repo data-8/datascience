@@ -32,7 +32,6 @@ before_install:
 
 install:
   - conda install --yes python=$TRAVIS_PYTHON_VERSION pip numpy scipy matplotlib pandas IPython
-  # TODO(sam): Add --upgrade flag when it works again
   - python3 setup.py install
 
 script:
