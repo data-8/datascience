@@ -6,9 +6,11 @@ dependencies:
 - freetype=2.5.5=0
 - ipython=4.0.1=py35_0
 - ipython_genutils=0.1.0=py35_0
+- libgfortran=1.0=0
 - libpng=1.6.17=0
 - matplotlib=1.5.1=np110py35_0
 - numpy=1.10.2=py35_0
+- openblas=0.2.14=3
 - openssl=1.0.2e=0
 - pandas=0.17.1=np110py35_0
 - path.py=8.1.2=py35_1
