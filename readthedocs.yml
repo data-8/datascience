@@ -1,5 +1,5 @@
 conda:
-  file: environment.yml
+  file: linux_environment.yml
 
 python:
   version: 3.4

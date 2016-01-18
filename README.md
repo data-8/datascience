@@ -37,7 +37,9 @@ Start by cloning this repository:
 
 Install the dependencies into a [Conda environment][envs] with:
 
-    conda env create -f environment.yml -n datascience
+    conda env create -f osx_environment.yml -n datascience
+    # For Linux, use
+    conda env create -f linux_environment.yml -n datascience
 
 [envs]: http://conda.pydata.org/docs/using/envs.html
 

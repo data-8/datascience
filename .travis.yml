@@ -15,14 +15,6 @@ cache:
   directories:
     - $HOME/miniconda
 
-addons:
-  apt:
-    packages:
-    - libatlas-dev
-    - libatlas-base-dev
-    - liblapack-dev
-    - gfortran
-
 before_install:
   - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
   - chmod +x miniconda.sh
@@ -31,8 +23,11 @@ before_install:
   - conda update --yes conda
 
 install:
-  - conda install --yes python=$TRAVIS_PYTHON_VERSION pip numpy scipy matplotlib pandas IPython
+  - "if ! conda info -e | grep datascience ; then conda env create -f linux_environment.yml -n datascience ; fi"
+  - source activate datascience
   - python3 setup.py install
+  - which coverage
+  - python3 -c 'import numpy'
 
 script:
   - coverage run setup.py test
