@@ -93,7 +93,7 @@ CSVs from URLs are also valid inputs to
 
 .. ipython:: python
 
-    Table.read_table('http://data8.org/text/sat2014.csv')
+    Table.read_table('http://data8.org/textbook/notebooks/sat2014.csv')
 
 ------
 
@@ -330,7 +330,7 @@ From the text:
 
 .. ipython:: python
 
-    baby = Table.read_table('http://data8.org/text/baby.csv')
+    baby = Table.read_table('http://data8.org/textbook/notebooks/baby.csv')
     baby # Let's take a peek at the table
 
     # Select out columns we want.
