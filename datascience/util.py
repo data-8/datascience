@@ -5,6 +5,8 @@ __all__ = ['percentile', 'plot_cdf_area', 'table_apply']
 
 import numpy as np
 import pandas as pd
+import matplotlib
+matplotlib.use('agg', warn=False)
 import matplotlib.pyplot as plt
 from scipy import stats
 

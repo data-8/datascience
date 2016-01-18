@@ -12,6 +12,8 @@ import itertools
 import urllib.parse
 
 import numpy as np
+import matplotlib
+matplotlib.use('agg', warn=False)
 import matplotlib.pyplot as plt
 import pandas
 import IPython
