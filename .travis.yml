@@ -23,11 +23,9 @@ before_install:
   - conda update --yes conda
 
 install:
-  - "if ! conda info -e | grep datascience ; then conda env create -f linux_environment.yml -n datascience ; fi"
+  - conda env update -f linux_environment.yml
   - source activate datascience
   - python3 setup.py install
-  - which coverage
-  - python3 -c 'import numpy'
 
 script:
   - coverage run setup.py test
