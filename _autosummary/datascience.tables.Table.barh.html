@@ -96,25 +96,25 @@ include: <cite>linewidth</cite>, <cite>xerr</cite>, <cite>yerr</cite>, and <cite
 <dd>ValueError: The Table contains non-numerical values in columns
 other than <cite>column_for_categories</cite></dd>
 </dl>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">furniture_type</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;chairs&#39;</span><span class="p">,</span> <span class="s">&#39;tables&#39;</span><span class="p">,</span> <span class="s">&#39;desks&#39;</span><span class="p">]</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">furniture_type</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;chairs&#39;</span><span class="p">,</span> <span class="s1">&#39;tables&#39;</span><span class="p">,</span> <span class="s1">&#39;desks&#39;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">count</span> <span class="o">=</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">furniture_table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">([</span><span class="n">furniture_type</span><span class="p">,</span> <span class="n">count</span><span class="p">],</span> <span class="p">[</span><span class="s">&#39;Type of furniture&#39;</span><span class="p">,</span> <span class="s">&#39;Count&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">furniture_table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">([</span><span class="n">furniture_type</span><span class="p">,</span> <span class="n">count</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;Type of furniture&#39;</span><span class="p">,</span> <span class="s1">&#39;Count&#39;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">furniture_table</span>
 <span class="go">Type of furniture | Count</span>
 <span class="go">chairs            | 6</span>
 <span class="go">tables            | 1</span>
 <span class="go">desks             | 2</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">furniture_table</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="s">&#39;Type of furniture&#39;</span><span class="p">)</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="n">furniture_table</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="s1">&#39;Type of furniture&#39;</span><span class="p">)</span> 
 <span class="go">&lt;bar graph with chairs, tables, desks as the categories and bars of</span>
 <span class="go">length 6, 1, 2, respectively&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">furniture_table</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="s">&#39;Count&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">furniture_table</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="s1">&#39;Count&#39;</span><span class="p">)</span>
 <span class="gt">Traceback (most recent call last):</span>
     <span class="o">...</span>
 <span class="gr">ValueError</span>: <span class="n">The column &#39;Type of furniture&#39; contains non-numerical values. A bar graph cannot be drawn for this table.</span>
 </pre></div>
 </div>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">other_col</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">foo_table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">([</span><span class="n">furniture_type</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">other_col</span><span class="p">],</span> <span class="p">[</span><span class="s">&#39;Type of furniture&#39;</span><span class="p">,</span> <span class="s">&#39;Count&#39;</span><span class="p">,</span> <span class="s">&#39;Other col&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">foo_table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">([</span><span class="n">furniture_type</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">other_col</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;Type of furniture&#39;</span><span class="p">,</span> <span class="s1">&#39;Count&#39;</span><span class="p">,</span> <span class="s1">&#39;Other col&#39;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">foo_table</span>
 <span class="go">Type of furniture | Count | Other col</span>
 <span class="go">chairs            | 6     | 10</span>
@@ -122,12 +122,12 @@ other than <cite>column_for_categories</cite></dd>
 <span class="go">desks             | 2     | 30</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">foo_table</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="s">&#39;Type of furniture&#39;</span><span class="p">)</span> 
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">foo_table</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="s1">&#39;Type of furniture&#39;</span><span class="p">)</span> 
 <span class="go">&lt;bar graph with Type of furniture as categories and Count values&gt;</span>
 <span class="go">&lt;bar graph with Type of furniture as categories and Other col values&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">foo_table</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="s">&#39;Type of furniture&#39;</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> 
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">foo_table</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="s1">&#39;Type of furniture&#39;</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> 
 <span class="go">&lt;bar graph with Type of furniture as categories and Count + Other col as</span>
 <span class="go">the two bars for each category&gt;</span>
 </pre></div>

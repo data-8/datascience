@@ -49,7 +49,7 @@
   <h1>Source code for datascience.tables</h1><div class="highlight"><pre>
 <span class="sd">&quot;&quot;&quot;Tables as ordered dictionaries of Numpy arrays.&quot;&quot;&quot;</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Table&#39;</span><span class="p">,</span> <span class="s">&#39;Q&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Table&#39;</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">]</span>
 
 
 <span class="kn">import</span> <span class="nn">abc</span>
@@ -61,6 +61,8 @@
 <span class="kn">import</span> <span class="nn">urllib.parse</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;agg&#39;</span><span class="p">,</span> <span class="n">warn</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">pandas</span>
 <span class="kn">import</span> <span class="nn">IPython</span>
@@ -235,9 +237,9 @@
 <span class="k">class</span> <span class="nc">Table</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A sequence of labeled columns.&quot;&quot;&quot;</span>
 
-    <span class="c">##########</span>
-    <span class="c"># Create #</span>
-    <span class="c">##########</span>
+    <span class="c1">##########</span>
+    <span class="c1"># Create #</span>
+    <span class="c1">##########</span>
 
 <div class="viewcode-block" id="Table.__init__"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.__init__.html#datascience.tables.Table.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">formatter</span><span class="o">=</span><span class="n">_formats</span><span class="o">.</span><span class="n">default_formatter</span><span class="p">):</span>
@@ -281,14 +283,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_formats</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">formatter</span> <span class="o">=</span> <span class="n">formatter</span>
 
-        <span class="c"># Ensure inputs are properly formed</span>
+        <span class="c1"># Ensure inputs are properly formed</span>
         <span class="n">columns</span> <span class="o">=</span> <span class="n">columns</span> <span class="k">if</span> <span class="n">columns</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="k">else</span> <span class="p">[]</span>
         <span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span> <span class="k">if</span> <span class="n">labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="k">else</span> <span class="p">[]</span>
-        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">),</span> <span class="s">&#39;label/column number mismatch&#39;</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">),</span> <span class="s1">&#39;label/column number mismatch&#39;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_num_rows</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span> <span class="ow">is</span> <span class="mi">0</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
-        <span class="c"># Add each column to table</span>
+        <span class="c1"># Add each column to table</span>
         <span class="k">for</span> <span class="n">column</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
             <span class="bp">self</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span>
 
@@ -359,14 +361,14 @@
 <span class="sd">                              could be a URL. Valid URL schemes include http,</span>
 <span class="sd">                              ftp, s3, and file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># Look for .csv at the end of the path; use &quot;,&quot; as a separator if found</span>
+        <span class="c1"># Look for .csv at the end of the path; use &quot;,&quot; as a separator if found</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">path</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">urlparse</span><span class="p">(</span><span class="n">filepath_or_buffer</span><span class="p">)</span><span class="o">.</span><span class="n">path</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="n">path</span> <span class="o">=</span> <span class="n">filepath_or_buffer</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s">&#39;sep&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">vargs</span> <span class="ow">and</span> <span class="n">path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;.csv&#39;</span><span class="p">):</span>
-                <span class="n">vargs</span><span class="p">[</span><span class="s">&#39;sep&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;,&#39;</span>
+            <span class="k">if</span> <span class="s1">&#39;sep&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">vargs</span> <span class="ow">and</span> <span class="n">path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">):</span>
+                <span class="n">vargs</span><span class="p">[</span><span class="s1">&#39;sep&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="n">filepath_or_buffer</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">)</span>
@@ -398,9 +400,9 @@
                      <span class="n">labels</span><span class="o">=</span><span class="n">arr</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
 
 
-    <span class="c">#################</span>
-    <span class="c"># Magic Methods #</span>
-    <span class="c">#################</span>
+    <span class="c1">#################</span>
+    <span class="c1"># Magic Methods #</span>
+    <span class="c1">#################</span>
 </div>
     <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
@@ -436,12 +438,12 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_columns</span><span class="p">([[</span><span class="n">attr</span><span class="p">]</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;&#39;{0}&#39; object has no attribute &#39;{1}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;&#39;{0}&#39; object has no attribute &#39;{1}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
-    <span class="c">####################</span>
-    <span class="c"># Accessing Values #</span>
-    <span class="c">####################</span>
+    <span class="c1">####################</span>
+    <span class="c1"># Accessing Values #</span>
+    <span class="c1">####################</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">num_rows</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -529,17 +531,17 @@
 <span class="sd">        &gt;&gt;&gt; t.apply(lambda x: x - 1, &#39;points&#39;)</span>
 <span class="sd">        array([0, 1, 1, 9])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c">#return np.array([fn(v) for v in self[column_label]])</span>
+        <span class="c1">#return np.array([fn(v) for v in self[column_label]])</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">column_label</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">column_label</span> <span class="o">=</span> <span class="p">[</span><span class="n">column_label</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">column_label</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_labels</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;{} is not an existing column in the table&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;{} is not an existing column in the table&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">i</span><span class="p">)[</span><span class="n">col</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">column_label</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_rows</span><span class="p">)])</span>
 
-    <span class="c">############</span>
-    <span class="c"># Mutation #</span>
-    <span class="c">############</span>
+    <span class="c1">############</span>
+    <span class="c1"># Mutation #</span>
+    <span class="c1">############</span>
 </div>
 <div class="viewcode-block" id="Table.set_format"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.set_format.html#datascience.tables.Table.set_format">[docs]</a>    <span class="k">def</span> <span class="nf">set_format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_label_or_labels</span><span class="p">,</span> <span class="n">formatter</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set the format of a column.&quot;&quot;&quot;</span>
@@ -554,7 +556,7 @@
                 <span class="n">column</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_formats</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">formatter</span><span class="o">.</span><span class="n">format_column</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">column</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;Expected Formatter or function: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">formatter</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Expected Formatter or function: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">formatter</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span>
 </div>
 <div class="viewcode-block" id="Table.move_to_start"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.move_to_start.html#datascience.tables.Table.move_to_start">[docs]</a>    <span class="k">def</span> <span class="nf">move_to_start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_label</span><span class="p">):</span>
@@ -642,21 +644,21 @@
 <span class="sd">            ...</span>
 <span class="sd">        ValueError: Column length mismatch. New column does not have the same number of rows as table.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># TODO(sam): Allow append_column to take in a another table, copying</span>
-        <span class="c"># over formatter as needed.</span>
+        <span class="c1"># TODO(sam): Allow append_column to take in a another table, copying</span>
+        <span class="c1"># over formatter as needed.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;The column label must be a string, but a &#39;</span>
-                <span class="s">&#39;{} was given&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The column label must be a string, but a &#39;</span>
+                <span class="s1">&#39;{} was given&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-            <span class="c"># Coerce a single value to a sequence</span>
+            <span class="c1"># Coerce a single value to a sequence</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_non_string_iterable</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
                 <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">values</span><span class="p">]</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_rows</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">values</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_rows</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_rows</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;Column length mismatch. New column does not have &#39;</span>
-                             <span class="s">&#39;the same number of rows as table.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Column length mismatch. New column does not have &#39;</span>
+                             <span class="s1">&#39;the same number of rows as table.&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_num_rows</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
 
@@ -698,13 +700,13 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">column_label</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new_label</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">column_label</span><span class="p">,</span> <span class="n">new_label</span> <span class="o">=</span> <span class="p">[</span><span class="n">column_label</span><span class="p">],</span> <span class="p">[</span><span class="n">new_label</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">column_label</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_label</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;Invalid arguments. column_label and new_label &#39;</span>
-                <span class="s">&#39;must be of equal length.&#39;</span><span class="p">)</span>
-        <span class="n">old_to_new</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">column_label</span><span class="p">,</span> <span class="n">new_label</span><span class="p">))</span> <span class="c"># dictionary to map old labels to new ones</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid arguments. column_label and new_label &#39;</span>
+                <span class="s1">&#39;must be of equal length.&#39;</span><span class="p">)</span>
+        <span class="n">old_to_new</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">column_label</span><span class="p">,</span> <span class="n">new_label</span><span class="p">))</span> <span class="c1"># dictionary to map old labels to new ones</span>
         <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">old_to_new</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_columns</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;Invalid column_labels. Column labels must &#39;</span>
-                <span class="s">&#39;already exist in table in order to be replaced.&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid column_labels. Column labels must &#39;</span>
+                <span class="s1">&#39;already exist in table in order to be replaced.&#39;</span><span class="p">)</span>
         <span class="n">rewrite</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">old_to_new</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="k">if</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">old_to_new</span> <span class="k">else</span> <span class="n">s</span>
         <span class="n">columns</span> <span class="o">=</span> <span class="p">[(</span><span class="n">rewrite</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_columns</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_columns</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span>
@@ -715,9 +717,9 @@
         <span class="k">return</span> <span class="bp">self</span>
 
 
-    <span class="c">##################</span>
-    <span class="c"># Transformation #</span>
-    <span class="c">##################</span>
+    <span class="c1">##################</span>
+    <span class="c1"># Transformation #</span>
+    <span class="c1">##################</span>
 </div>
 <div class="viewcode-block" id="Table.copy"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.copy.html#datascience.tables.Table.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a copy of a Table.&quot;&quot;&quot;</span>
@@ -763,9 +765,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_add_column_and_format</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">label</span><span class="p">]))</span>
         <span class="k">return</span> <span class="n">table</span>
 
-    <span class="c"># These, along with a snippet below, are necessary for Sphinx to</span>
-    <span class="c"># correctly load the `take` and `exclude` docstrings.  The definitions</span>
-    <span class="c"># will be over-ridden during class instantiation.</span></div>
+    <span class="c1"># These, along with a snippet below, are necessary for Sphinx to</span>
+    <span class="c1"># correctly load the `take` and `exclude` docstrings.  The definitions</span>
+    <span class="c1"># will be over-ridden during class instantiation.</span></div>
 <div class="viewcode-block" id="Table.take"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.take.html#datascience.tables.Table.take">[docs]</a>    <span class="k">def</span> <span class="nf">take</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 </div>
@@ -790,7 +792,7 @@
         <span class="k">if</span> <span class="n">distinct</span><span class="p">:</span>
             <span class="n">_</span><span class="p">,</span> <span class="n">row_numbers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">return_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">row_numbers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s">&#39;mergesort&#39;</span><span class="p">)</span>
+            <span class="n">row_numbers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;mergesort&#39;</span><span class="p">)</span>
         <span class="k">assert</span> <span class="p">(</span><span class="n">row_numbers</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_rows</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span> <span class="n">row_numbers</span>
         <span class="k">if</span> <span class="n">descending</span><span class="p">:</span>
             <span class="n">row_numbers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">row_numbers</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
@@ -803,18 +805,18 @@
 
 <span class="sd">        The grouped column will appear first in the result table.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_columns</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>  <span class="c"># Shallow self</span>
+        <span class="bp">self</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_columns</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>  <span class="c1"># Shallow self</span>
         <span class="n">collect</span> <span class="o">=</span> <span class="n">_zero_on_type_error</span><span class="p">(</span><span class="n">collect</span><span class="p">)</span>
 
-        <span class="c"># Remove column used for grouping</span>
+        <span class="c1"># Remove column used for grouping</span>
         <span class="n">column</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_column</span><span class="p">(</span><span class="n">column_or_label</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">column_or_label</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_labels</span><span class="p">:</span>
             <span class="n">column_label</span> <span class="o">=</span> <span class="n">column_or_label</span>
             <span class="k">del</span> <span class="bp">self</span><span class="p">[</span><span class="n">column_label</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">column_label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unused_label</span><span class="p">(</span><span class="s">&#39;group&#39;</span><span class="p">)</span>
+            <span class="n">column_label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unused_label</span><span class="p">(</span><span class="s1">&#39;group&#39;</span><span class="p">)</span>
 
-        <span class="c"># Generate grouped columns</span>
+        <span class="c1"># Generate grouped columns</span>
         <span class="n">groups</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_by</span><span class="p">(</span><span class="n">column</span><span class="p">)</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">groups</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="n">columns</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
@@ -837,14 +839,14 @@
             <span class="k">assert</span> <span class="n">label</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_labels</span>
             <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_column</span><span class="p">(</span><span class="n">label</span><span class="p">))</span>
         <span class="n">grouped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">columns</span><span class="p">)))</span>
-        <span class="n">grouped</span><span class="o">.</span><span class="n">_columns</span><span class="o">.</span><span class="n">popitem</span><span class="p">(</span><span class="n">last</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span> <span class="c"># Discard the column of tuples</span>
+        <span class="n">grouped</span><span class="o">.</span><span class="n">_columns</span><span class="o">.</span><span class="n">popitem</span><span class="p">(</span><span class="n">last</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span> <span class="c1"># Discard the column of tuples</span>
 
-        <span class="c"># Flatten grouping values and move them to front</span>
+        <span class="c1"># Flatten grouping values and move them to front</span>
         <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">column_labels</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
             <span class="n">grouped</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">grouped</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">_assert_same</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span>
             <span class="n">grouped</span><span class="o">.</span><span class="n">move_to_start</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
 
-        <span class="c"># Aggregate other values</span>
+        <span class="c1"># Aggregate other values</span>
         <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">grouped</span><span class="o">.</span><span class="n">column_labels</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">column_labels</span><span class="p">:</span>
                 <span class="k">continue</span>
@@ -867,16 +869,16 @@
         <span class="n">selected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="n">columns</span><span class="p">,</span> <span class="n">values</span><span class="p">]</span> <span class="o">+</span> <span class="n">rows</span><span class="p">)</span>
         <span class="n">grouped</span> <span class="o">=</span> <span class="n">selected</span><span class="o">.</span><span class="n">groups</span><span class="p">([</span><span class="n">columns</span><span class="p">]</span> <span class="o">+</span> <span class="n">rows</span><span class="p">,</span> <span class="n">collect</span><span class="p">)</span>
 
-        <span class="c"># Generate existing combinations of values from columns in rows</span>
+        <span class="c1"># Generate existing combinations of values from columns in rows</span>
         <span class="n">rows_values</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="o">.</span><span class="n">rows</span><span class="p">)))</span>
         <span class="n">pivoted</span> <span class="o">=</span> <span class="n">Table</span><span class="o">.</span><span class="n">from_rows</span><span class="p">(</span><span class="n">rows_values</span><span class="p">,</span> <span class="n">rows</span><span class="p">)</span>
 
-        <span class="c"># Generate other columns and add them to pivoted</span>
+        <span class="c1"># Generate other columns and add them to pivoted</span>
         <span class="n">by_columns</span> <span class="o">=</span> <span class="n">grouped</span><span class="o">.</span><span class="n">index_by</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">by_columns</span><span class="p">):</span>
-            <span class="n">tuples</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">by_columns</span><span class="p">[</span><span class="n">label</span><span class="p">]]</span> <span class="c"># Discard column value</span>
+            <span class="n">tuples</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">by_columns</span><span class="p">[</span><span class="n">label</span><span class="p">]]</span> <span class="c1"># Discard column value</span>
             <span class="n">column</span> <span class="o">=</span> <span class="n">_fill_with_zeros</span><span class="p">(</span><span class="n">rows_values</span><span class="p">,</span> <span class="n">tuples</span><span class="p">,</span> <span class="n">zero</span><span class="p">)</span>
-            <span class="n">pivot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unused_label</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">label</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39; &#39;</span> <span class="o">+</span> <span class="n">values</span><span class="p">)</span>
+            <span class="n">pivot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unused_label</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">label</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">values</span><span class="p">)</span>
             <span class="n">pivoted</span><span class="p">[</span><span class="n">pivot</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span>
         <span class="k">return</span> <span class="n">pivoted</span>
 </div>
@@ -907,15 +909,15 @@
         <span class="n">selected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">pivot_columns</span> <span class="o">+</span> <span class="p">[</span><span class="n">value_column</span><span class="p">])</span>
         <span class="n">grouped</span><span class="o">=</span><span class="n">selected</span><span class="o">.</span><span class="n">groups</span><span class="p">(</span><span class="n">pivot_columns</span><span class="p">)</span>
 
-        <span class="c"># refine bins by taking a histogram over all the data</span>
+        <span class="c1"># refine bins by taking a histogram over all the data</span>
         <span class="k">if</span> <span class="n">bins</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">vargs</span><span class="p">[</span><span class="s">&#39;bins&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bins</span>
+            <span class="n">vargs</span><span class="p">[</span><span class="s1">&#39;bins&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bins</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">rbins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">value_column</span><span class="p">],</span><span class="o">**</span><span class="n">vargs</span><span class="p">)</span>
-        <span class="c"># create a table with these bins a first column and counts for each group</span>
-        <span class="n">vargs</span><span class="p">[</span><span class="s">&#39;bins&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rbins</span>
-        <span class="n">binned</span> <span class="o">=</span> <span class="n">Table</span><span class="p">([</span><span class="n">rbins</span><span class="p">],[</span><span class="s">&#39;bin&#39;</span><span class="p">])</span>
+        <span class="c1"># create a table with these bins a first column and counts for each group</span>
+        <span class="n">vargs</span><span class="p">[</span><span class="s1">&#39;bins&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rbins</span>
+        <span class="n">binned</span> <span class="o">=</span> <span class="n">Table</span><span class="p">([</span><span class="n">rbins</span><span class="p">],[</span><span class="s1">&#39;bin&#39;</span><span class="p">])</span>
         <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">grouped</span><span class="o">.</span><span class="n">rows</span><span class="p">:</span>
-            <span class="n">col_label</span> <span class="o">=</span> <span class="s">&quot;-&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="n">group</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="n">col_label</span> <span class="o">=</span> <span class="s2">&quot;-&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="n">group</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
             <span class="n">col_vals</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
             <span class="n">counts</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">col_vals</span><span class="p">,</span><span class="o">**</span><span class="n">vargs</span><span class="p">)</span>
             <span class="n">binned</span><span class="p">[</span><span class="n">col_label</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
@@ -930,7 +932,7 @@
         <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">:</span>
             <span class="p">[</span><span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="nb">getattr</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">key</span><span class="p">),</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">row</span><span class="o">.</span><span class="n">asdict</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
              <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="n">key</span> <span class="ow">and</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">column_labels</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">Table</span><span class="o">.</span><span class="n">from_rows</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="p">[</span><span class="n">key</span><span class="p">,</span> <span class="s">&#39;column&#39;</span><span class="p">,</span> <span class="s">&#39;value&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">Table</span><span class="o">.</span><span class="n">from_rows</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="p">[</span><span class="n">key</span><span class="p">,</span> <span class="s1">&#39;column&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">])</span>
 </div>
 <div class="viewcode-block" id="Table.join"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.join.html#datascience.tables.Table.join">[docs]</a>    <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_label</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">other_label</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Generate a table with the columns of self and other, containing rows</span>
@@ -948,7 +950,7 @@
         <span class="n">self_rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_by</span><span class="p">(</span><span class="n">column_label</span><span class="p">)</span>
         <span class="n">other_rows</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">index_by</span><span class="p">(</span><span class="n">other_label</span><span class="p">)</span>
 
-        <span class="c"># Gather joined rows from self_rows that have join values in other_rows</span>
+        <span class="c1"># Gather joined rows from self_rows that have join values in other_rows</span>
         <span class="n">joined_rows</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">rows</span> <span class="ow">in</span> <span class="n">self_rows</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">other_rows</span><span class="p">:</span>
@@ -960,7 +962,7 @@
         <span class="n">labels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column_labels</span><span class="p">)</span>
         <span class="n">labels</span> <span class="o">+=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_unused_label</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">column_labels</span><span class="p">]</span>
         <span class="n">joined</span> <span class="o">=</span> <span class="n">Table</span><span class="o">.</span><span class="n">from_rows</span><span class="p">(</span><span class="n">joined_rows</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
-        <span class="k">del</span> <span class="n">joined</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_unused_label</span><span class="p">(</span><span class="n">other_label</span><span class="p">)]</span> <span class="c"># Remove redundant column</span>
+        <span class="k">del</span> <span class="n">joined</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_unused_label</span><span class="p">(</span><span class="n">other_label</span><span class="p">)]</span> <span class="c1"># Remove redundant column</span>
         <span class="k">return</span> <span class="n">joined</span><span class="o">.</span><span class="n">move_to_start</span><span class="p">(</span><span class="n">column_label</span><span class="p">)</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">column_label</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="Table.stats"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.stats.html#datascience.tables.Table.stats">[docs]</a>    <span class="k">def</span> <span class="nf">stats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ops</span><span class="o">=</span><span class="p">(</span><span class="nb">min</span><span class="p">,</span> <span class="nb">max</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">,</span> <span class="nb">sum</span><span class="p">)):</span>
@@ -969,7 +971,7 @@
         <span class="n">ops</span> <span class="o">=</span> <span class="p">[</span><span class="n">_zero_on_type_error</span><span class="p">(</span><span class="n">op</span><span class="p">)</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">ops</span><span class="p">]</span>
         <span class="n">columns</span> <span class="o">=</span> <span class="p">[[</span><span class="n">op</span><span class="p">(</span><span class="n">column</span><span class="p">)</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">ops</span><span class="p">]</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
         <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_labels</span><span class="p">)</span>
-        <span class="n">stats</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">_unused_label</span><span class="p">(</span><span class="s">&#39;statistic&#39;</span><span class="p">)</span>
+        <span class="n">stats</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">_unused_label</span><span class="p">(</span><span class="s1">&#39;statistic&#39;</span><span class="p">)</span>
         <span class="n">table</span><span class="p">[</span><span class="n">stats</span><span class="p">]</span> <span class="o">=</span> <span class="n">names</span>
         <span class="n">table</span><span class="o">.</span><span class="n">move_to_start</span><span class="p">(</span><span class="n">stats</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">table</span>
@@ -980,7 +982,7 @@
         <span class="n">existing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_labels</span>
         <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span>
         <span class="k">while</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">existing</span><span class="p">:</span>
-            <span class="n">label</span> <span class="o">=</span> <span class="s">&#39;{}_{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;{}_{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
             <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">return</span> <span class="n">label</span>
 
@@ -990,9 +992,9 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Hashable</span><span class="p">)</span> <span class="ow">and</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_labels</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">c</span><span class="p">]</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">assert</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_labels</span><span class="p">,</span> <span class="s">&#39;label &quot;{}&quot; not in labels {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_labels</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_labels</span><span class="p">,</span> <span class="s1">&#39;label &quot;{}&quot; not in labels {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_labels</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_rows</span><span class="p">,</span> <span class="s">&#39;column length mismatch&#39;</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_rows</span><span class="p">,</span> <span class="s1">&#39;column length mismatch&#39;</span>
             <span class="k">return</span> <span class="n">c</span>
 
 <div class="viewcode-block" id="Table.percentile"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.percentile.html#datascience.tables.Table.percentile">[docs]</a>    <span class="k">def</span> <span class="nf">percentile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
@@ -1114,8 +1116,8 @@
 <span class="sd">        d    | 8</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">k</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_rows</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Invalid value of k. k must be between 1 and the&quot;</span>
-                             <span class="s">&quot;number of rows - 1&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid value of k. k must be between 1 and the&quot;</span>
+                             <span class="s2">&quot;number of rows - 1&quot;</span><span class="p">)</span>
 
         <span class="n">rows</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_rows</span><span class="p">)]</span>
@@ -1271,23 +1273,23 @@
 <span class="sd">                histogram values will not be equal to 1 unless bins of unity</span>
 <span class="sd">                width are chosen; it is not a probability mass function.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="s">&#39;normed&#39;</span> <span class="ow">in</span> <span class="n">vargs</span><span class="p">:</span>
-            <span class="n">vargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s">&#39;density&#39;</span><span class="p">,</span> <span class="n">vargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;normed&#39;</span><span class="p">))</span>
-        <span class="n">density</span> <span class="o">=</span> <span class="n">vargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;density&#39;</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
-        <span class="n">tag</span> <span class="o">=</span> <span class="s">&#39;density&#39;</span> <span class="k">if</span> <span class="n">density</span> <span class="k">else</span> <span class="s">&#39;count&#39;</span>
+        <span class="k">if</span> <span class="s1">&#39;normed&#39;</span> <span class="ow">in</span> <span class="n">vargs</span><span class="p">:</span>
+            <span class="n">vargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;density&#39;</span><span class="p">,</span> <span class="n">vargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;normed&#39;</span><span class="p">))</span>
+        <span class="n">density</span> <span class="o">=</span> <span class="n">vargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;density&#39;</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+        <span class="n">tag</span> <span class="o">=</span> <span class="s1">&#39;density&#39;</span> <span class="k">if</span> <span class="n">density</span> <span class="k">else</span> <span class="s1">&#39;count&#39;</span>
 
         <span class="n">cols</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_columns</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">cols</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">)</span>
 
-        <span class="n">binned</span> <span class="o">=</span> <span class="n">Table</span><span class="p">([</span><span class="n">bins</span><span class="p">],</span> <span class="p">[</span><span class="s">&#39;bin&#39;</span><span class="p">])</span>
+        <span class="n">binned</span> <span class="o">=</span> <span class="n">Table</span><span class="p">([</span><span class="n">bins</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;bin&#39;</span><span class="p">])</span>
         <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_labels</span><span class="p">:</span>
             <span class="n">counts</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">label</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">)</span>
-            <span class="n">binned</span><span class="p">[</span><span class="n">label</span> <span class="o">+</span> <span class="s">&#39; &#39;</span> <span class="o">+</span> <span class="n">tag</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">binned</span><span class="p">[</span><span class="n">label</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">tag</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">binned</span>
 
-    <span class="c">##########################</span>
-    <span class="c"># Exporting / Displaying #</span>
-    <span class="c">##########################</span>
+    <span class="c1">##########################</span>
+    <span class="c1"># Exporting / Displaying #</span>
+    <span class="c1">##########################</span>
 </div>
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">as_text</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_str_rows</span><span class="p">)</span>
@@ -1303,7 +1305,7 @@
 </div>
     <span class="n">max_str_rows</span> <span class="o">=</span> <span class="mi">10</span>
 
-<div class="viewcode-block" id="Table.as_text"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.as_text.html#datascience.tables.Table.as_text">[docs]</a>    <span class="k">def</span> <span class="nf">as_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_rows</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">&quot; | &quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="Table.as_text"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.as_text.html#datascience.tables.Table.as_text">[docs]</a>    <span class="k">def</span> <span class="nf">as_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_rows</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot; | &quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Format table as text.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">max_rows</span> <span class="ow">or</span> <span class="n">max_rows</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_rows</span><span class="p">:</span>
             <span class="n">max_rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_rows</span>
@@ -1316,8 +1318,8 @@
             <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">f</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">fmts</span><span class="p">)])</span>
         <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">sep</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">omitted</span><span class="p">:</span>
-            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;... ({} rows omitted)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">omitted</span><span class="p">))</span>
-        <span class="k">return</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">])</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;... ({} rows omitted)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">omitted</span><span class="p">))</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">])</span>
 </div>
 <div class="viewcode-block" id="Table.as_html"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.as_html.html#datascience.tables.Table.as_html">[docs]</a>    <span class="k">def</span> <span class="nf">as_html</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_rows</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Format table as HTML.&quot;&quot;&quot;</span>
@@ -1326,28 +1328,28 @@
         <span class="n">omitted</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_rows</span> <span class="o">-</span> <span class="n">max_rows</span><span class="p">)</span>
         <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_labels</span>
         <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s">&#39;&lt;table border=&quot;1&quot; class=&quot;dataframe&quot;&gt;&#39;</span><span class="p">),</span>
-            <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;&lt;thead&gt;&#39;</span><span class="p">),</span>
-            <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#39;&lt;tr&gt;&#39;</span><span class="p">),</span>
-            <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s">&#39;&lt;th&gt;&#39;</span> <span class="o">+</span> <span class="n">label</span> <span class="o">+</span> <span class="s">&#39;&lt;/th&gt;&#39;</span> <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">)),</span>
-            <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#39;&lt;/tr&gt;&#39;</span><span class="p">),</span>
-            <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;&lt;/thead&gt;&#39;</span><span class="p">),</span>
-            <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;&lt;tbody&gt;&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;&lt;table border=&quot;1&quot; class=&quot;dataframe&quot;&gt;&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;&lt;thead&gt;&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;&lt;tr&gt;&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;&lt;th&gt;&#39;</span> <span class="o">+</span> <span class="n">label</span> <span class="o">+</span> <span class="s1">&#39;&lt;/th&gt;&#39;</span> <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">)),</span>
+            <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;&lt;/tr&gt;&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;&lt;/thead&gt;&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;&lt;tbody&gt;&#39;</span><span class="p">),</span>
         <span class="p">]</span>
         <span class="n">fmts</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_formats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">formatter</span><span class="o">.</span><span class="n">format_column</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">[:</span><span class="n">max_rows</span><span class="p">]))</span> <span class="k">for</span>
             <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_columns</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
         <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">islice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">,</span> <span class="n">max_rows</span><span class="p">):</span>
             <span class="n">lines</span> <span class="o">+=</span> <span class="p">[</span>
-                <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#39;&lt;tr&gt;&#39;</span><span class="p">),</span>
-                <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s">&#39;&lt;td&gt;&#39;</span> <span class="o">+</span> <span class="n">fmt</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;&lt;/td&gt;&#39;</span> <span class="k">for</span>
+                <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;&lt;tr&gt;&#39;</span><span class="p">),</span>
+                <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;&lt;td&gt;&#39;</span> <span class="o">+</span> <span class="n">fmt</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&lt;/td&gt;&#39;</span> <span class="k">for</span>
                     <span class="n">v</span><span class="p">,</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">fmts</span><span class="p">))),</span>
-                <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#39;&lt;/tr&gt;&#39;</span><span class="p">),</span>
-                <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;&lt;/tbody&gt;&#39;</span><span class="p">),</span>
+                <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;&lt;/tr&gt;&#39;</span><span class="p">),</span>
+                <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;&lt;/tbody&gt;&#39;</span><span class="p">),</span>
             <span class="p">]</span>
-        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="s">&#39;&lt;/table&gt;&#39;</span><span class="p">))</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;&lt;/table&gt;&#39;</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">omitted</span><span class="p">:</span>
-            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="s">&#39;&lt;p&gt;... ({} rows omitted)&lt;/p&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">omitted</span><span class="p">)))</span>
-        <span class="k">return</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">indent</span> <span class="o">*</span> <span class="s">&#39; &#39;</span> <span class="o">+</span> <span class="n">text</span> <span class="k">for</span> <span class="n">indent</span><span class="p">,</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">)</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;&lt;p&gt;... ({} rows omitted)&lt;/p&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">omitted</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">indent</span> <span class="o">*</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">text</span> <span class="k">for</span> <span class="n">indent</span><span class="p">,</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="Table.index_by"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.index_by.html#datascience.tables.Table.index_by">[docs]</a>    <span class="k">def</span> <span class="nf">index_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_or_label</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a dict keyed by values in a column that contains lists of</span>
@@ -1388,8 +1390,8 @@
 <span class="sd">        &gt;&gt;&gt; some_table.to_csv(&#39;my_table.csv&#39;) # doctest: +SKIP</span>
 <span class="sd">        &lt;outputs a file called my_table.csv in the current directory&gt;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># We use index = False to avoid the row number output that pandas does</span>
-        <span class="c"># by default.</span>
+        <span class="c1"># We use index = False to avoid the row number output that pandas does</span>
+        <span class="c1"># by default.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">to_df</span><span class="p">()</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="bp">False</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="Table.to_array"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.to_array.html#datascience.tables.Table.to_array">[docs]</a>    <span class="k">def</span> <span class="nf">to_array</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1403,11 +1405,11 @@
 
         <span class="k">return</span> <span class="n">arr</span>
 
-    <span class="c">##################</span>
-    <span class="c"># Visualizations #</span>
-    <span class="c">##################</span>
+    <span class="c1">##################</span>
+    <span class="c1"># Visualizations #</span>
+    <span class="c1">##################</span>
 
-    <span class="c"># As RGB tuples</span></div>
+    <span class="c1"># As RGB tuples</span></div>
     <span class="n">chart_colors</span> <span class="o">=</span> <span class="p">(</span>
         <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.102</span><span class="p">,</span> <span class="mf">0.267</span><span class="p">),</span>
         <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.784</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
@@ -1423,7 +1425,7 @@
     <span class="n">default_hist_alpha</span> <span class="o">=</span> <span class="mf">0.7</span>
 
     <span class="n">default_options</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s">&#39;alpha&#39;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span>
+        <span class="s1">&#39;alpha&#39;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">_visualize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_label</span><span class="p">,</span> <span class="n">y_labels</span><span class="p">,</span> <span class="n">ticks</span><span class="p">,</span> <span class="n">overlay</span><span class="p">,</span> <span class="n">draw</span><span class="p">,</span> <span class="n">annotate</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
@@ -1462,7 +1464,7 @@
                 <span class="n">axis</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xticks</span><span class="p">,</span> <span class="bp">self</span><span class="p">[</span><span class="n">label</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">annotate</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">ticks</span><span class="p">):</span>
-            <span class="n">axis</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">axis</span><span class="o">.</span><span class="n">get_xticks</span><span class="p">(),</span> <span class="n">rotation</span><span class="o">=</span><span class="s">&#39;vertical&#39;</span><span class="p">)</span>
+            <span class="n">axis</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">axis</span><span class="o">.</span><span class="n">get_xticks</span><span class="p">(),</span> <span class="n">rotation</span><span class="o">=</span><span class="s1">&#39;vertical&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_visualize</span><span class="p">(</span><span class="n">column_for_xticks</span><span class="p">,</span> <span class="n">y_labels</span><span class="p">,</span> <span class="n">xticks</span><span class="p">,</span> <span class="n">overlay</span><span class="p">,</span> <span class="n">draw</span><span class="p">,</span> <span class="n">annotate</span><span class="p">)</span>
 </div>
@@ -1507,8 +1509,8 @@
         <span class="n">xticks</span><span class="p">,</span> <span class="n">y_labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_by_column</span><span class="p">(</span><span class="n">column_for_categories</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">y_labels</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">flexible</span><span class="p">)</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">[</span><span class="n">label</span><span class="p">]):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The column &#39;{0}&#39; contains non-numerical &quot;</span>
-                    <span class="s">&quot;values. A bar graph cannot be drawn for this table.&quot;</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The column &#39;{0}&#39; contains non-numerical &quot;</span>
+                    <span class="s2">&quot;values. A bar graph cannot be drawn for this table.&quot;</span>
                     <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label</span><span class="p">))</span>
 
         <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_rows</span><span class="p">)</span>
@@ -1527,7 +1529,7 @@
         <span class="k">def</span> <span class="nf">annotate</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">ticks</span><span class="p">):</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">ticks</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">)</span> <span class="p">:</span>
                 <span class="n">tick_labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">ticks</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">l</span><span class="p">)]</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">axis</span><span class="o">.</span><span class="n">get_xticks</span><span class="p">()</span> <span class="k">if</span> <span class="n">l</span><span class="o">&lt;</span><span class="nb">len</span><span class="p">(</span><span class="n">ticks</span><span class="p">)]</span>
-                <span class="n">axis</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">tick_labels</span><span class="p">,</span> <span class="n">stretch</span><span class="o">=</span><span class="s">&#39;ultra-condensed&#39;</span><span class="p">)</span>
+                <span class="n">axis</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">tick_labels</span><span class="p">,</span> <span class="n">stretch</span><span class="o">=</span><span class="s1">&#39;ultra-condensed&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_visualize</span><span class="p">(</span><span class="n">column_for_categories</span><span class="p">,</span> <span class="n">y_labels</span><span class="p">,</span> <span class="n">xticks</span><span class="p">,</span> <span class="n">overlay</span><span class="p">,</span> <span class="n">draw</span><span class="p">,</span> <span class="n">annotate</span><span class="p">)</span>
 </div>
@@ -1608,8 +1610,8 @@
         <span class="n">yticks</span><span class="p">,</span> <span class="n">y_labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_by_column</span><span class="p">(</span><span class="n">column_for_categories</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">y_labels</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">flexible</span><span class="p">)</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">[</span><span class="n">label</span><span class="p">]):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The column &#39;{0}&#39; contains non-numerical &quot;</span>
-                    <span class="s">&quot;values. A bar graph cannot be drawn for this table.&quot;</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The column &#39;{0}&#39; contains non-numerical &quot;</span>
+                    <span class="s2">&quot;values. A bar graph cannot be drawn for this table.&quot;</span>
                     <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label</span><span class="p">))</span>
 
         <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_rows</span><span class="p">)</span>
@@ -1623,16 +1625,16 @@
                 <span class="n">ypos</span> <span class="o">=</span> <span class="n">index</span> <span class="o">+</span> <span class="n">margin</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">margin</span><span class="p">)</span><span class="o">*</span><span class="n">labels</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">label</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">ypos</span> <span class="o">=</span> <span class="n">index</span>
-            <span class="c"># barh plots entries in reverse order from bottom to top</span>
+            <span class="c1"># barh plots entries in reverse order from bottom to top</span>
             <span class="n">axis</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="n">ypos</span><span class="p">,</span> <span class="bp">self</span><span class="p">[</span><span class="n">label</span><span class="p">][::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">width</span><span class="p">,</span>  <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">annotate</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">ticks</span><span class="p">):</span>
-            <span class="n">axis</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">index</span><span class="o">+</span><span class="mf">0.5</span><span class="p">)</span> <span class="c"># Center labels on bars</span>
-            <span class="c"># barh plots entries in reverse order from bottom to top</span>
-            <span class="n">axis</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">ticks</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">stretch</span><span class="o">=</span><span class="s">&#39;ultra-condensed&#39;</span><span class="p">)</span>
+            <span class="n">axis</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">index</span><span class="o">+</span><span class="mf">0.5</span><span class="p">)</span> <span class="c1"># Center labels on bars</span>
+            <span class="c1"># barh plots entries in reverse order from bottom to top</span>
+            <span class="n">axis</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">ticks</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">stretch</span><span class="o">=</span><span class="s1">&#39;ultra-condensed&#39;</span><span class="p">)</span>
         <span class="n">height</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s">&#39;height&#39;</span> <span class="ow">in</span> <span class="n">vargs</span><span class="p">:</span>
-            <span class="n">height</span> <span class="o">=</span> <span class="n">vargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;height&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;height&#39;</span> <span class="ow">in</span> <span class="n">vargs</span><span class="p">:</span>
+            <span class="n">height</span> <span class="o">=</span> <span class="n">vargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;height&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_visualize</span><span class="p">(</span><span class="n">column_for_categories</span><span class="p">,</span> <span class="n">y_labels</span><span class="p">,</span> <span class="n">yticks</span><span class="p">,</span> <span class="n">overlay</span><span class="p">,</span> <span class="n">draw</span><span class="p">,</span> <span class="n">annotate</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">)</span>
 </div>
     <span class="k">def</span> <span class="nf">_split_by_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_or_label</span><span class="p">):</span>
@@ -1650,7 +1652,7 @@
         <span class="n">pvt_labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">pivot_column_label</span><span class="p">])</span>
         <span class="n">pvt_columns</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="p">[</span><span class="n">value_column_label</span><span class="p">][</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">pivot_column_label</span><span class="p">]</span> <span class="o">==</span> <span class="n">pivot</span><span class="p">)]</span> <span class="k">for</span> <span class="n">pivot</span> <span class="ow">in</span> <span class="n">pvt_labels</span><span class="p">]</span>
         <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pvt_labels</span><span class="p">)</span>
-        <span class="n">colors</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">islice</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">((</span><span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="s">&#39;g&#39;</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)),</span> <span class="n">n</span><span class="p">))</span>
+        <span class="n">colors</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">islice</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">((</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)),</span> <span class="n">n</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">overlay</span><span class="p">:</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
             <span class="n">vals</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">patches</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">pvt_columns</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">)</span>
@@ -1667,10 +1669,10 @@
                 <span class="n">axis</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
                 <span class="n">vals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">avals</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">abins</span>
-                <span class="k">else</span><span class="p">:</span> <span class="k">assert</span> <span class="n">bins</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="o">==</span> <span class="n">abins</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span> <span class="s">&quot;Inconsistent bins in hist&quot;</span>
+                <span class="k">else</span><span class="p">:</span> <span class="k">assert</span> <span class="n">bins</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="o">==</span> <span class="n">abins</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span> <span class="s2">&quot;Inconsistent bins in hist&quot;</span>
         <span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span>
-        <span class="n">t</span><span class="p">[</span><span class="s">&#39;start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bins</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">t</span><span class="p">[</span><span class="s">&#39;end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bins</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">t</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bins</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">t</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bins</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
         <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">column</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">pvt_labels</span><span class="p">,</span><span class="n">vals</span><span class="p">):</span>
             <span class="n">t</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span>
         <span class="k">return</span> <span class="n">t</span>
@@ -1725,11 +1727,11 @@
 <span class="sd">        &gt;&gt;&gt; t.hist(counts=&#39;value&#39;) # doctest: +SKIP</span>
 <span class="sd">        &lt;histogram of values in prop weighted by corresponding values in value&gt;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># Check for non-numerical values and raise a ValueError if any found</span>
+        <span class="c1"># Check for non-numerical values and raise a ValueError if any found</span>
         <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">flexible</span><span class="p">)</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">[</span><span class="n">col</span><span class="p">]):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The column &#39;{0}&#39; contains non-numerical &quot;</span>
-                    <span class="s">&quot;values. A histogram cannot be drawn for this table.&quot;</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The column &#39;{0}&#39; contains non-numerical &quot;</span>
+                    <span class="s2">&quot;values. A histogram cannot be drawn for this table.&quot;</span>
                     <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">col</span><span class="p">))</span>
 
         <span class="n">columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_columns</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -1737,12 +1739,12 @@
         <span class="k">if</span> <span class="n">bins</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Hashable</span><span class="p">)</span> <span class="ow">and</span> <span class="n">bins</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_labels</span><span class="p">:</span>
                 <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">bins</span><span class="p">])</span>
-            <span class="n">vargs</span><span class="p">[</span><span class="s">&#39;bins&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bins</span>
+            <span class="n">vargs</span><span class="p">[</span><span class="s1">&#39;bins&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bins</span>
 
         <span class="n">counted_values</span> <span class="o">=</span> <span class="n">counted_label</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">if</span> <span class="n">counts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">counted_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_column</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
-            <span class="n">counted_label</span> <span class="o">=</span> <span class="s">&#39;counts&#39;</span>
+            <span class="n">counted_label</span> <span class="o">=</span> <span class="s1">&#39;counts&#39;</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Hashable</span><span class="p">)</span> <span class="ow">and</span> <span class="n">counts</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_labels</span><span class="p">:</span>
                 <span class="n">columns</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
                 <span class="n">counted_label</span> <span class="o">=</span> <span class="n">counts</span>
@@ -1752,11 +1754,11 @@
             <span class="n">itertools</span><span class="o">.</span><span class="n">islice</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chart_colors</span><span class="p">),</span> <span class="n">n</span><span class="p">)]</span>
         <span class="k">if</span> <span class="n">overlay</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">counted_values</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="n">values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">())[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="c"># Reverse to match legend</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">())[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># Reverse to match legend</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">counted_values</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">n</span><span class="p">)</span>
-                <span class="n">vargs</span><span class="p">[</span><span class="s">&#39;weights&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">())[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="c"># Reverse to match legend</span>
-            <span class="n">vargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s">&#39;histtype&#39;</span><span class="p">,</span> <span class="s">&#39;stepfilled&#39;</span><span class="p">)</span>
+                <span class="n">vargs</span><span class="p">[</span><span class="s1">&#39;weights&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">())[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># Reverse to match legend</span>
+            <span class="n">vargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;histtype&#39;</span><span class="p">,</span> <span class="s1">&#39;stepfilled&#39;</span><span class="p">)</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">)</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">columns</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
@@ -1771,7 +1773,7 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">values</span> <span class="o">=</span> <span class="n">counted_values</span>
                     <span class="n">axis</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">counted_label</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
-                    <span class="n">vargs</span><span class="p">[</span><span class="s">&#39;weights&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">columns</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
+                    <span class="n">vargs</span><span class="p">[</span><span class="s1">&#39;weights&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">columns</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
                 <span class="n">axis</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="Table.boxplot"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.boxplot.html#datascience.tables.Table.boxplot">[docs]</a>    <span class="k">def</span> <span class="nf">boxplot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
@@ -1807,15 +1809,15 @@
 <span class="sd">        &gt;&gt;&gt; table.boxplot() # doctest: +SKIP</span>
 <span class="sd">        &lt;boxplot of test1 and boxplot of test2 side-by-side on the same figure&gt;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># Check for non-numerical values and raise a ValueError if any found</span>
+        <span class="c1"># Check for non-numerical values and raise a ValueError if any found</span>
         <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">flexible</span><span class="p">)</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">[</span><span class="n">col</span><span class="p">]):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The column &#39;{0}&#39; contains non-numerical &quot;</span>
-                    <span class="s">&quot;values. A histogram cannot be drawn for this table.&quot;</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The column &#39;{0}&#39; contains non-numerical &quot;</span>
+                    <span class="s2">&quot;values. A histogram cannot be drawn for this table.&quot;</span>
                     <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">col</span><span class="p">))</span>
 
         <span class="n">columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_columns</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">vargs</span><span class="p">[</span><span class="s">&#39;labels&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">columns</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="n">vargs</span><span class="p">[</span><span class="s1">&#39;labels&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">columns</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
         <span class="n">values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">)</span>
 </div>
@@ -1883,11 +1885,11 @@
 <span class="sd">        &lt;scatterplot of values in z on x with line of best fit&gt;</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># Check for non-numerical values and raise a ValueError if any found</span>
+        <span class="c1"># Check for non-numerical values and raise a ValueError if any found</span>
         <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">flexible</span><span class="p">)</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">[</span><span class="n">col</span><span class="p">]):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The column &#39;{0}&#39; contains non-numerical &quot;</span>
-                    <span class="s">&quot;values. A histogram cannot be drawn for this table.&quot;</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The column &#39;{0}&#39; contains non-numerical &quot;</span>
+                    <span class="s2">&quot;values. A histogram cannot be drawn for this table.&quot;</span>
                     <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">col</span><span class="p">))</span>
 
         <span class="n">options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_options</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -1905,18 +1907,18 @@
             <span class="k">return</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_visualize</span><span class="p">(</span><span class="n">column_for_x</span><span class="p">,</span> <span class="n">y_labels</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="n">overlay</span><span class="p">,</span> <span class="n">draw</span><span class="p">,</span> <span class="n">annotate</span><span class="p">)</span>
 
-    <span class="c">###########</span>
-    <span class="c"># Support #</span>
-    <span class="c">###########</span>
+    <span class="c1">###########</span>
+    <span class="c1"># Support #</span>
+    <span class="c1">###########</span>
 </div>
     <span class="k">class</span> <span class="nc">Row</span><span class="p">(</span><span class="nb">tuple</span><span class="p">):</span>
-        <span class="n">_table</span> <span class="o">=</span> <span class="bp">None</span>  <span class="c"># Set by subclasses in Rows</span>
+        <span class="n">_table</span> <span class="o">=</span> <span class="bp">None</span>  <span class="c1"># Set by subclasses in Rows</span>
 
         <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_label</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">column_index</span><span class="p">(</span><span class="n">column_label</span><span class="p">)]</span>
 
         <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="k">return</span> <span class="s">&#39;Row({})&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s">&#39;{}={}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="k">return</span> <span class="s1">&#39;Row({})&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;{}={}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">column_labels</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">v</span><span class="o">.</span><span class="n">__repr__</span><span class="p">())</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
 
         <span class="k">def</span> <span class="nf">asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1935,17 +1937,17 @@
             <span class="n">labels</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">column_labels</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">labels</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_labels</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_labels</span> <span class="o">=</span> <span class="n">labels</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_row</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="s">&#39;Row&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">Table</span><span class="o">.</span><span class="n">Row</span><span class="p">,</span> <span class="p">),</span> <span class="nb">dict</span><span class="p">(</span><span class="n">_table</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_row</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="s1">&#39;Row&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">Table</span><span class="o">.</span><span class="n">Row</span><span class="p">,</span> <span class="p">),</span> <span class="nb">dict</span><span class="p">(</span><span class="n">_table</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">))</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_row</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">_columns</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
 
         <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">num_rows</span>
 
         <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="k">return</span> <span class="s">&#39;{0}({1})&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">))</span>
+            <span class="k">return</span> <span class="s1">&#39;{0}({1})&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">))</span>
 
 
-<span class="c"># For Sphinx: grab the docstrings from `Taker.__getitem__` and `Withouter.__getitem__`</span>
+<span class="c1"># For Sphinx: grab the docstrings from `Taker.__getitem__` and `Withouter.__getitem__`</span>
 <span class="n">Table</span><span class="o">.</span><span class="n">take</span><span class="o">.</span><span class="n">__doc__</span> <span class="o">=</span> <span class="n">_RowTaker</span><span class="o">.</span><span class="n">__getitem__</span><span class="o">.</span><span class="n">__doc__</span>
 <span class="n">Table</span><span class="o">.</span><span class="n">exclude</span><span class="o">.</span><span class="n">__doc__</span> <span class="o">=</span> <span class="n">_RowExcluder</span><span class="o">.</span><span class="n">__getitem__</span><span class="o">.</span><span class="n">__doc__</span>
 
@@ -1974,7 +1976,7 @@
             <span class="k">return</span> <span class="n">column_fn</span><span class="p">(</span><span class="n">column</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-                <span class="k">return</span> <span class="n">column</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">()</span> <span class="c"># A typed zero value</span>
+                <span class="k">return</span> <span class="n">column</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">()</span> <span class="c1"># A typed zero value</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span>
     <span class="k">return</span> <span class="n">wrapped</span>
@@ -1992,16 +1994,16 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_non_string_iterable</span><span class="p">(</span><span class="n">partials</span><span class="p">):</span>
-        <span class="c"># Convert partials to tuple for comparison against row slice later</span>
+        <span class="c1"># Convert partials to tuple for comparison against row slice later</span>
         <span class="n">partials</span> <span class="o">=</span> <span class="p">[(</span><span class="n">partial</span><span class="p">,)</span> <span class="k">for</span> <span class="n">partial</span> <span class="ow">in</span> <span class="n">partials</span><span class="p">]</span>
 
-    <span class="c"># Construct mapping of partials to values in rows</span>
+    <span class="c1"># Construct mapping of partials to values in rows</span>
     <span class="n">mapping</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
         <span class="n">mapping</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">row</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="n">zero</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="c"># Try to infer zero from given row values.</span>
+        <span class="c1"># Try to infer zero from given row values.</span>
         <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">mapping</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">zero</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">()</span>
@@ -2027,8 +2029,8 @@
 
 <span class="k">def</span> <span class="nf">_collected_label</span><span class="p">(</span><span class="n">collect</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Label of a collected column.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">collect</span><span class="o">.</span><span class="n">__name__</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;&lt;&#39;</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">label</span> <span class="o">+</span> <span class="s">&#39; &#39;</span> <span class="o">+</span> <span class="n">collect</span><span class="o">.</span><span class="n">__name__</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">collect</span><span class="o">.</span><span class="n">__name__</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;&lt;&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">label</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">collect</span><span class="o">.</span><span class="n">__name__</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">label</span>
 
@@ -2037,7 +2039,7 @@
     <span class="sd">&quot;&quot;&quot;Whether a value is iterable.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">False</span>
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s">&#39;__iter__&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">True</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Sequence</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">True</span>
