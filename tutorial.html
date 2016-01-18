@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Start Here: datascience Tutorial &mdash; datascience 0.3.dev22 documentation</title>
+    <title>Start Here: datascience Tutorial &mdash; datascience 0.4.0 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.3.dev22',
+        VERSION:     '0.4.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.3.dev22 documentation" href="index.html" />
+    <link rel="top" title="datascience 0.4.0 documentation" href="index.html" />
     <link rel="next" title="Tables (datascience.tables)" href="tables.html" />
     <link rel="prev" title="Welcome to datascience’s documentation!" href="index.html" /> 
   </head>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="index.html" title="Welcome to datascience’s documentation!"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.3.dev22 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.4.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -176,11 +176,11 @@ names using
 <span class="gp">   ....: </span><span class="p">})</span>
 <span class="gp">   ....: </span>
 <span class="gh">Out[10]: </span><span class="go"></span>
-<span class="go">count | letter | points</span>
-<span class="go">9     | a      | 1</span>
-<span class="go">3     | b      | 2</span>
-<span class="go">3     | c      | 2</span>
-<span class="go">1     | z      | 10</span>
+<span class="go">points | count | letter</span>
+<span class="go">1      | 9     | a</span>
+<span class="go">2      | 3     | b</span>
+<span class="go">2      | 3     | c</span>
+<span class="go">10     | 1     | z</span>
 </pre></div>
 </div>
 <p>This example illustrates the fact that built-in Python dictionaries don&#8217;t
@@ -470,17 +470,17 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 
 <span class="gp">In [49]: </span><span class="n">normal_data</span>
 <span class="gh">Out[49]: </span><span class="go"></span>
-<span class="go">data1    | data2</span>
-<span class="go">1.03263  | 4.03366</span>
-<span class="go">3.91931  | 2.65894</span>
-<span class="go">-1.75453 | 7.88533</span>
-<span class="go">-2.44746 | 7.00597</span>
-<span class="go">-0.14036 | 3.72319</span>
-<span class="go">1.99979  | 9.89993</span>
-<span class="go">4.25775  | 5.22476</span>
-<span class="go">3.3104   | 7.99094</span>
-<span class="go">3.62887  | 1.51454</span>
-<span class="go">2.77231  | 0.0211922</span>
+<span class="go">data1     | data2</span>
+<span class="go">-0.471384 | 0.256513</span>
+<span class="go">2.66126   | 7.19987</span>
+<span class="go">0.149487  | 1.96766</span>
+<span class="go">-0.885455 | 1.36178</span>
+<span class="go">2.66468   | 5.20613</span>
+<span class="go">-1.63362  | 3.72167</span>
+<span class="go">2.87398   | -0.0366871</span>
+<span class="go">0.636207  | 1.85133</span>
+<span class="go">3.89156   | 8.63673</span>
+<span class="go">1.93005   | 3.05674</span>
 <span class="go">... (90 rows omitted)</span>
 </pre></div>
 </div>
@@ -532,17 +532,17 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 converting to a pandas dataframe with <a class="reference internal" href="_autosummary/datascience.tables.Table.to_df.html#datascience.tables.Table.to_df" title="datascience.tables.Table.to_df"><code class="xref py py-meth docutils literal"><span class="pre">to_df()</span></code></a>:</p>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [58]: </span><span class="n">normal_data</span>
 <span class="gh">Out[58]: </span><span class="go"></span>
-<span class="go">data1    | data2</span>
-<span class="go">1.03263  | 4.03366</span>
-<span class="go">3.91931  | 2.65894</span>
-<span class="go">-1.75453 | 7.88533</span>
-<span class="go">-2.44746 | 7.00597</span>
-<span class="go">-0.14036 | 3.72319</span>
-<span class="go">1.99979  | 9.89993</span>
-<span class="go">4.25775  | 5.22476</span>
-<span class="go">3.3104   | 7.99094</span>
-<span class="go">3.62887  | 1.51454</span>
-<span class="go">2.77231  | 0.0211922</span>
+<span class="go">data1     | data2</span>
+<span class="go">-0.471384 | 0.256513</span>
+<span class="go">2.66126   | 7.19987</span>
+<span class="go">0.149487  | 1.96766</span>
+<span class="go">-0.885455 | 1.36178</span>
+<span class="go">2.66468   | 5.20613</span>
+<span class="go">-1.63362  | 3.72167</span>
+<span class="go">2.87398   | -0.0366871</span>
+<span class="go">0.636207  | 1.85133</span>
+<span class="go">3.89156   | 8.63673</span>
+<span class="go">1.93005   | 3.05674</span>
 <span class="go">... (90 rows omitted)</span>
 
 <span class="go"># index = False prevents row numbers from appearing in the resulting CSV</span>
@@ -652,8 +652,8 @@ non-smokers.</p>
 
 <span class="gp">In [75]: </span><span class="n">bootstrapped_diff_means</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
 <span class="gh">Out[75]: </span><span class="go"></span>
-<span class="go">array([-0.03419413, -0.92095617, -0.13665768, -1.73738288, -1.76144553,</span>
-<span class="go">       -0.41760592, -0.83521185, -2.18897268, -0.32193427, -0.42653381])</span>
+<span class="go">array([-0.0861831 ,  2.43298749, -0.7436842 , -1.69217667, -1.22985207,</span>
+<span class="go">       -0.58121486, -1.61397383,  2.22349894, -0.33561863,  0.73481421])</span>
 
 <span class="gp">In [76]: </span><span class="n">num_diffs_greater</span> <span class="o">=</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">bootstrapped_diff_means</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">observed_diff</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
@@ -736,7 +736,7 @@ non-smokers.</p>
         <li class="right" >
           <a href="index.html" title="Welcome to datascience’s documentation!"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.3.dev22 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.4.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
