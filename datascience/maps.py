@@ -15,6 +15,7 @@ import json
 import functools
 import random
 
+# TODO use built-in numbers module
 _number = (int, float, np.number)
 
 
