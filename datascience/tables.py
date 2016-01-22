@@ -40,7 +40,7 @@ class Table(collections.abc.MutableMapping):
         for label in labels:
             self._check_label(label)
         self.df = pd.DataFrame(columns=labels)
-        self._formats = dict() # TODO formats
+        self._formats = dict()
         self.formatter = formatter
 
     @classmethod
@@ -80,7 +80,7 @@ class Table(collections.abc.MutableMapping):
         Args:
             ``columns`` (list): An alternating sequence of labels and values.
 
-        >>> Table().with_columns([
+        >>> Table.from_columns([
         ...     'letter', ['c', 'd'],
         ...     'count', [3, 2],
         ... ])
@@ -88,13 +88,8 @@ class Table(collections.abc.MutableMapping):
         c      | 3
         d      | 2
         """
-        assert len(columns) % 2 == 0, 'columns must alternate labels and values'
         t = cls()
-        for i in range(len(columns), 2):
-            label, value = columns[i], columns[i+1]
-            assert cls._check_label(columns[i])
-            t.df[label] = value
-        return t
+        return t.with_columns(columns)
 
     @staticmethod
     def _check_label(label):
@@ -383,7 +378,6 @@ class Table(collections.abc.MutableMapping):
 
     def set_format(self, label_or_labels, formatter):
         """Set the format of a column."""
-        # TODO
         if inspect.isclass(formatter) and issubclass(formatter, _formats.Formatter):
             formatter = formatter()
         for label in self._as_labels(label_or_labels):
