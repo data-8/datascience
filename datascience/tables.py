@@ -190,15 +190,28 @@ class Table(collections.abc.MutableMapping):
             ``labels_and_values``: An alternating list of labels and values.
 
 
-        >>> tiles = Table().with_columns([
+        >>> Table().with_columns([
         ...     'letter', ['c', 'd'],
         ...     'count', [2, 4],
         ... ])
-        >>> tiles
+        letter | count
+        c      | 2
+        d      | 4
+        >>> Table().with_columns([
+        ...     ['letter', ['c', 'd']],
+        ...     ['count', [2, 4]],
+        ... ])
         letter | count
         c      | 2
         d      | 4
         """
+        if not labels_and_values:
+            return self
+        first = labels_and_values[0]
+        if not isinstance(first, str) and hasattr(first, '__iter__'):
+            for pair in labels_and_values:
+                assert len(pair) == 2, 'incorrect columns format'
+            labels_and_values = [x for pair in labels_and_values for x in pair]
         assert len(labels_and_values) % 2 == 0, 'Even length sequence required'
         for i in range(0, len(labels_and_values), 2):
             label, values = labels_and_values[i], labels_and_values[i+1]
