@@ -11,6 +11,7 @@ import inspect
 import itertools
 import numbers
 import urllib.parse
+import warnings
 
 import numpy as np
 import matplotlib
@@ -206,7 +207,7 @@ class Table(collections.abc.MutableMapping):
         self.formatter = formatter
 
         if _other is not None:
-            # TODO add deprecated warning
+            warnings.warn("deprecated", DeprecationWarning)
             columns, labels = labels, _other
             columns = columns if columns is not None else []
             labels = labels if labels is not None else []
@@ -242,7 +243,7 @@ class Table(collections.abc.MutableMapping):
         Returns:
             A new instance of ``Table``.
         """
-        # TODO Add deprecated warning
+        warnings.warn("deprecated", DeprecationWarning)
         if labels is None:
             return cls()
         values = [[] for label in labels]
@@ -396,7 +397,7 @@ class Table(collections.abc.MutableMapping):
     @property
     def column_labels(self):
         """Return a tuple of column labels."""
-        # TODO Add deprecated warning
+        warnings.warn("deprecated", DeprecationWarning)
         return self.labels
 
     @property
@@ -1231,7 +1232,7 @@ class Table(collections.abc.MutableMapping):
         return copy
 
     def with_relabeling(self, *args):
-        # TODO Add deprecated warning
+        warnings.warn("deprecated", DeprecationWarning)
         return self.relabeled(*args)
 
     def bin(self, **vargs):
