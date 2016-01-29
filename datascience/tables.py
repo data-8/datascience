@@ -760,7 +760,7 @@ class Table(collections.abc.MutableMapping):
     def group(self, column_or_label, collect=len):
         """Group rows by unique values in column_label, aggregating values.
 
-        collect -- an optional function applied to the values for each group.
+        collect -- a function applied to the values for each group (default len)
 
         The grouped column will appear first in the result table.
         """
