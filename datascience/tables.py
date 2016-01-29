@@ -252,7 +252,7 @@ class Table(collections.abc.MutableMapping):
     @classmethod
     def from_rows(cls, rows, labels):
         """Create a table from a sequence of rows (fixed-length sequences)."""
-        return cls(list(zip(*rows)), labels)
+        return cls().with_columns(list(zip(labels, list(zip(*rows)))))
 
     @classmethod
     def from_records(cls, records):
