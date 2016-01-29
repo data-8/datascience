@@ -640,6 +640,8 @@ class Table(collections.abc.MutableMapping):
             ...
         ValueError: Invalid arguments. column_label and new_label must be of equal length.
         """
+        if isinstance(column_label, numbers.Integral):
+            column_label = self._as_label(column_label)
         if isinstance(column_label, str) and isinstance(new_label, str):
             column_label, new_label = [column_label], [new_label]
         if len(column_label) != len(new_label):

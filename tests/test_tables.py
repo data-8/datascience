@@ -556,7 +556,14 @@ def test_append_different_order(table, table3):
 
 def test_relabel():
     table = Table([(1, 2, 3), (12345, 123, 5123)], ['points', 'id'])
-    table.relabel('id', 'yolo')
+    table.relabel('id', 'todo')
+    assert_equal(table, """
+    points | todo
+    1      | 12345
+    2      | 123
+    3      | 5123
+    """)
+    table.relabel(1, 'yolo')
     assert_equal(table, """
     points | yolo
     1      | 12345
