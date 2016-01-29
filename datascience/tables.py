@@ -312,6 +312,7 @@ class Table(collections.abc.MutableMapping):
 
     def _add_column_and_format(self, table, label, column):
         """Add a column to table, copying the formatter from self."""
+        label = self._as_label(label)
         table[label] = column
         if label in self._formats:
             table._formats[label] = self._formats[label]
@@ -490,12 +491,11 @@ class Table(collections.abc.MutableMapping):
         array([0, 1, 1, 9])
         """
         #return np.array([fn(v) for v in self[column_label]])
-        if isinstance(column_label, str):
-            column_label = [column_label]
-        for c in column_label:
+        labels = [self._as_label(s) for s in _as_labels(column_label)]
+        for c in labels:
             if not (c in self.labels):
                 raise ValueError("{} is not an existing column in the table".format(c))
-        return np.array([fn(*[self.take(i)[col][0] for col in column_label]) for i in range(self.num_rows)])
+        return np.array([fn(*[self.take(i)[col][0] for col in labels]) for i in range(self.num_rows)])
 
     ############
     # Mutation #
@@ -681,6 +681,7 @@ class Table(collections.abc.MutableMapping):
 
     def copy(self):
         """Return a copy of a Table."""
+        # TODO(denero) Shallow copy by default with an option for deep copy
         table = Table()
         for label in self.labels:
             self._add_column_and_format(table, label, np.copy(self[label]))
@@ -756,7 +757,7 @@ class Table(collections.abc.MutableMapping):
             row_numbers = np.array(row_numbers[::-1])
         return self.take(row_numbers)
 
-    def group(self, column_or_label, collect=lambda s: s):
+    def group(self, column_or_label, collect=len):
         """Group rows by unique values in column_label, aggregating values.
 
         collect -- an optional function applied to the values for each group.
@@ -789,14 +790,15 @@ class Table(collections.abc.MutableMapping):
         grouped.move_to_start(column_label)
         return grouped
 
-    def groups(self, labels, collect=lambda s: s):
+    def groups(self, labels, collect=len):
         """Group rows by multiple columns, aggregating values."""
         collect = _zero_on_type_error(collect)
         columns = []
+        labels = [self._as_label(label) for label in labels]
         for label in labels:
             assert label in self.labels
             columns.append(self._get_column(label))
-        grouped = self.group(list(zip(*columns)))
+        grouped = self.group(list(zip(*columns)), lambda s: s)
         grouped._columns.popitem(last=False) # Discard the column of tuples
 
         # Flatten grouping values and move them to front
@@ -956,6 +958,8 @@ class Table(collections.abc.MutableMapping):
         """Convert label to column and check column length."""
         c = column_or_label
         if isinstance(c, collections.Hashable) and c in self.labels:
+            return self[c]
+        elif isinstance(c, numbers.Integral):
             return self[c]
         elif isinstance(c, str):
             assert c in self.labels, 'label "{}" not in labels {}'.format(c, self.labels)
@@ -2006,7 +2010,6 @@ def _as_labels(column_label_or_labels):
         return [column_label_or_labels]
     else:
         return column_label_or_labels
-
 
 def _assert_same(values):
     """Assert that all values are identical and return the unique value."""

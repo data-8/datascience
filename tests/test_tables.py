@@ -111,7 +111,7 @@ def test_basic_rows(t):
 
 
 def test_select(t):
-    test = t.select(['points', 'count']).cumsum()
+    test = t.select(['points', 1]).cumsum()
     assert_equal(test, """
     points | count
     1      | 9
@@ -220,6 +220,12 @@ def test_where(t):
     b      | 3     | 2
     c      | 3     | 2
     """)
+    test = t.where(2, 2)
+    assert_equal(test, """
+    letter | count | points
+    b      | 3     | 2
+    c      | 3     | 2
+    """)
 
 
 def test_where_conditions(t):
@@ -239,6 +245,14 @@ def test_sort(t):
     a      | 9     | 1      | 9
     b      | 3     | 2      | 6
     c      | 3     | 2      | 6
+    z      | 1     | 10     | 10
+    """)
+    test = t.sort(3)
+    assert_equal(test, """
+    letter | count | points | totals
+    b      | 3     | 2      | 6
+    c      | 3     | 2      | 6
+    a      | 9     | 1      | 9
     z      | 1     | 10     | 10
     """)
 
@@ -267,10 +281,10 @@ def test_sort_syntax(t):
 def test_group(t):
     test = t.group('points')
     assert_equal(test, """
-    points | letter    | count | totals
-    1      | ['a']     | [9]   | [9]
-    2      | ['b' 'c'] | [3 3] | [6 6]
-    10     | ['z']     | [1]   | [10]
+    points | letter len | count len | totals len
+    1      | 1          | 1         | 1
+    2      | 2          | 2         | 2
+    10     | 1          | 1         | 1
     """)
 
 
@@ -288,7 +302,7 @@ def test_groups(t):
     t = t.copy()
     t.append(('e', 12, 1, 12))
     t['early'] = t['letter'] < 'd'
-    test = t.groups(['points', 'early'])
+    test = t.groups(['points', 'early'], lambda s: s)
     assert_equal(test, """
     points | early | letter    | count | totals
     1      | False | ['e']     | [12]  | [12]
@@ -693,7 +707,7 @@ def test_group_by_tuples():
     (1, 2, 2, 10) | 3
     (1, 2, 2, 10) | 1
     """)
-    table = t.group('tuples')
+    table = t.group('tuples', lambda s: s)
     assert_equal(table, """
     tuples        | ints
     (1, 2, 2, 10) | [3 1]
