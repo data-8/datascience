@@ -415,42 +415,27 @@ class Table(collections.abc.MutableMapping):
 
         table.column(label) is equivalent to table[label].
 
+        >>> tiles = Table().with_columns([
+        ...     'letter', ['c', 'd'],
+        ...     'count', [2, 4],
+        ... ])
+        >>> list(tiles.column('letter'))
+        ['c', 'd']
+        >>> tiles.column(1)
+        array([2, 4])
+
         Args:
             label (int or str): The index or label of a column
 
         Returns:
-            An array
-        """
-        return column[index_or_label]
-
-    def values(self, label):
-        """Returns the values of a column as an array.
-
-        ``__getitem__`` is aliased to this, so bracket notation can be used
-        ie. table.values(label) is equivalent to table[label].
-
-        >>> letter = ['a', 'b', 'c', 'z']
-        >>> count = [9, 3, 3, 1]
-        >>> points = [1, 2, 2, 10]
-        >>> t = Table([letter, count, points], ['letter', 'count', 'points'])
-        >>> t
-        letter | count | points
-        a      | 9     | 1
-        b      | 3     | 2
-        c      | 3     | 2
-        z      | 1     | 10
-        >>> t.values("letter") # doctest: +NORMALIZE_WHITESPACE
-        array(['a', 'b', 'c', 'z'], dtype='<U1')
-        >>> t.values("count")
-        array([9, 3, 3, 1])
-
-        Args:
-            label (str): The name of the column
-
-        Returns:
             An instance of ``numpy.array``.
         """
-        return self._columns[label]
+        return self._columns[self._as_label(index_or_label)]
+
+    def values(self, label):
+        """Returns the values of a column as an array."""
+        warnings.warn("deprecated", DeprecationWarning)
+        return self.column(label)
 
     def column_index(self, column_label):
         """Return the index of a column."""

@@ -94,10 +94,10 @@ def test_basic(t):
     z      | 1     | 10
     """)
 
-def test_values(table):
+def test_column(table):
     """Test table.values()"""
-    assert_array_equal(table.values('letter'), np.array(['a', 'b', 'c', 'z']))
-    assert_array_equal(table.values('count'), np.array([9, 3, 3, 1]))
+    assert_array_equal(table.column('letter'), np.array(['a', 'b', 'c', 'z']))
+    assert_array_equal(table.column(1), np.array([9, 3, 3, 1]))
 
 
 def test_basic_points(t):
