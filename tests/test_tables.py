@@ -26,8 +26,8 @@ def table():
 def table2():
     """Setup second table"""
     return Table().with_columns([
-        'points', (1, 2, 3),
-        'names', ('one', 'two', 'three'),
+        ['points', (1, 2, 3)],
+        ['names', ('one', 'two', 'three')],
         ])
 
 
