@@ -321,7 +321,8 @@ class Table(collections.abc.MutableMapping):
     def from_df(cls, df):
         """Convert a Pandas DataFrame into a Table."""
         labels = df.columns
-        return Table([df[label].values for label in labels], labels)
+
+        return Table().with_columns([(label, df[label].values) for label in labels])
 
     @classmethod
     def from_array(cls, arr):
@@ -336,7 +337,7 @@ class Table(collections.abc.MutableMapping):
 
     def __getitem__(self, index_or_label):
         label = self._as_label(index_or_label)
-        return self.values(label)
+        return self.column(label)
 
     def __setitem__(self, label, values):
         self.append_column(label, values)
@@ -491,6 +492,7 @@ class Table(collections.abc.MutableMapping):
         if inspect.isclass(formatter) and issubclass(formatter, _formats.Formatter):
             formatter = formatter()
         for label in _as_labels(column_label_or_labels):
+            label = self._as_label(label)
             if callable(formatter):
                 self._formats[label] = lambda v, label: v if label else str(formatter(v))
             elif isinstance(formatter, _formats.Formatter):
