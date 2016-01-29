@@ -207,7 +207,7 @@ class Table(collections.abc.MutableMapping):
         self.formatter = formatter
 
         if _other is not None:
-            warnings.warn("deprecated", DeprecationWarning)
+            warnings.warn("deprecated", FutureWarning)
             columns, labels = labels, _other
             columns = columns if columns is not None else []
             labels = labels if labels is not None else []
@@ -243,7 +243,7 @@ class Table(collections.abc.MutableMapping):
         Returns:
             A new instance of ``Table``.
         """
-        warnings.warn("deprecated", DeprecationWarning)
+        warnings.warn("deprecated", FutureWarning)
         if labels is None:
             return cls()
         values = [[] for label in labels]
@@ -398,7 +398,7 @@ class Table(collections.abc.MutableMapping):
     @property
     def column_labels(self):
         """Return a tuple of column labels."""
-        warnings.warn("deprecated", DeprecationWarning)
+        warnings.warn("deprecated", FutureWarning)
         return self.labels
 
     @property
@@ -434,7 +434,7 @@ class Table(collections.abc.MutableMapping):
 
     def values(self, label):
         """Returns the values of a column as an array."""
-        warnings.warn("deprecated", DeprecationWarning)
+        warnings.warn("deprecated", FutureWarning)
         return self.column(label)
 
     def column_index(self, column_label):
@@ -1221,7 +1221,7 @@ class Table(collections.abc.MutableMapping):
         return copy
 
     def with_relabeling(self, *args):
-        warnings.warn("deprecated", DeprecationWarning)
+        warnings.warn("deprecated", FutureWarning)
         return self.relabeled(*args)
 
     def bin(self, **vargs):
@@ -1895,6 +1895,14 @@ class Table(collections.abc.MutableMapping):
 
         def __getattr__(self, column_label):
             return self[self._table.column_index(column_label)]
+
+        def item(self, index_or_label):
+            """Return the item at an index or label."""
+            if isinstance(index_or_label, numbers.Integral):
+                index = index_or_label
+            else:
+                index = self._table.column_index(index_or_label)
+            return self[index]
 
         def __repr__(self):
             return 'Row({})'.format(', '.join('{}={}'.format(
