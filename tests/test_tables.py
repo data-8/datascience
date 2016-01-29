@@ -14,29 +14,41 @@ import pandas as pd
 
 @pytest.fixture(scope='function')
 def table():
-    """Setup alphanumeric table"""
-    letter, count, points = ['a', 'b', 'c', 'z'], [9, 3, 3, 1], [1, 2, 2, 10]
-    return Table([letter, count, points], ['letter', 'count', 'points'])
+    """Setup Scrabble table"""
+    return Table().with_columns([
+        'letter', ['a', 'b', 'c', 'z'],
+        'count', [9, 3, 3, 1],
+        'points', [1, 2, 2, 10],
+        ])
 
 
 @pytest.fixture(scope='function')
 def table2():
-    """Setup second alphanumeric table"""
-    points, names = (1, 2, 3), ('one', 'two', 'three')
-    return Table([points, names], ['points', 'names'])
+    """Setup second table"""
+    return Table().with_columns([
+        'points', (1, 2, 3),
+        'names', ('one', 'two', 'three'),
+        ])
 
 
 @pytest.fixture(scope='function')
 def table3():
-    """Setup alphanumeric table, identical columns in diff order from first"""
-    letter, count, points = ['x', 'y', 'z'], [0, 54, 5], [3, 10, 24]
-    return Table([count, points, letter], ['count', 'points', 'letter'])
+    """Setup third table; same labels as first but in a different order."""
+    return Table().with_columns([
+        'count', [0, 54, 5],
+        'points', [3, 10, 24],
+        'letter', ['x', 'y', 'z'],
+        ])
+
 
 @pytest.fixture(scope='function')
 def numbers_table():
     """Setup table containing only numbers"""
-    count, points = [9, 3, 3, 1], [1, 2, 2, 10]
-    return Table([count, points], ['count', 'points'])
+    return Table().with_columns([
+        'count', [9, 3, 3, 1],
+        'points', [1, 2, 2, 10],
+        ])
+
 
 @pytest.fixture(scope='module')
 def t():
@@ -716,7 +728,7 @@ def test_stack(table):
 
 
 def test_stack_restrict_columns(table):
-    test = table.stack(key='letter', column_labels=['count'])
+    test = table.stack('letter', ['count'])
     assert_equal(test, """
     letter | column | value
     a      | count  | 9
