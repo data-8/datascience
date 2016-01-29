@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Start Here: datascience Tutorial &mdash; datascience 0.4.0 documentation</title>
+    <title>Start Here: datascience Tutorial &mdash; datascience 0.5.0 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.4.0 documentation" href="index.html" />
+    <link rel="top" title="datascience 0.5.0 documentation" href="index.html" />
     <link rel="next" title="Tables (datascience.tables)" href="tables.html" />
     <link rel="prev" title="Welcome to datascience’s documentation!" href="index.html" /> 
   </head>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="index.html" title="Welcome to datascience’s documentation!"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.4.0 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.5.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -115,13 +115,21 @@ IPython notebook.</p>
 <span class="gp">In [5]: </span><span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">letters</span><span class="p">,</span> <span class="n">counts</span><span class="p">,</span> <span class="n">points</span><span class="p">],</span>
 <span class="gp">   ...: </span>          <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;letter&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="s1">&#39;points&#39;</span><span class="p">])</span>
 <span class="gp">   ...: </span>
+<span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">TypeError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="nn">&lt;ipython-input-5-a7c7544ca775&gt;</span> in <span class="ni">&lt;module&gt;</span><span class="nt">()</span>
+<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">letters</span><span class="p">,</span> <span class="n">counts</span><span class="p">,</span> <span class="n">points</span><span class="p">],</span>
+<span class="ne">----&gt; </span><span class="mi">2</span>           <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;letter&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="s1">&#39;points&#39;</span><span class="p">])</span>
+
+<span class="ne">TypeError</span>: __init__() got an unexpected keyword argument &#39;columns&#39;
 
 <span class="gp">In [6]: </span><span class="k">print</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-<span class="go">letter | count | points</span>
-<span class="go">a      | 9     | 1</span>
-<span class="go">b      | 3     | 2</span>
-<span class="go">c      | 3     | 2</span>
-<span class="go">z      | 1     | 10</span>
+<span class="go">                                                                                                                                                                                                                                                                                                                                                                                      ---------------------------------------------------------------------------</span>
+<span class="go">NameError                                 Traceback (most recent call last)</span>
+<span class="go">&lt;ipython-input-6-d6c4f5caf31e&gt; in &lt;module&gt;()</span>
+<span class="go">----&gt; 1 print(t)</span>
+
+<span class="go">NameError: name &#39;t&#39; is not defined</span>
 </pre></div>
 </div>
 <p>Note how the first keyword, <code class="docutils literal"><span class="pre">columns</span></code>, specifies the contents of the table,
@@ -176,11 +184,11 @@ names using
 <span class="gp">   ....: </span><span class="p">})</span>
 <span class="gp">   ....: </span>
 <span class="gh">Out[10]: </span><span class="go"></span>
-<span class="go">count | letter | points</span>
-<span class="go">9     | a      | 1</span>
-<span class="go">3     | b      | 2</span>
-<span class="go">3     | c      | 2</span>
-<span class="go">1     | z      | 10</span>
+<span class="go">letter | points | count</span>
+<span class="go">a      | 1      | 9</span>
+<span class="go">b      | 2      | 3</span>
+<span class="go">c      | 2      | 3</span>
+<span class="go">z      | 10     | 1</span>
 </pre></div>
 </div>
 <p>This example illustrates the fact that built-in Python dictionaries don&#8217;t
@@ -194,61 +202,108 @@ columns, use an <code class="docutils literal"><span class="pre">OrderedDict</sp
 <p>To access values of columns in the table, use
 <a class="reference internal" href="_autosummary/datascience.tables.Table.values.html#datascience.tables.Table.values" title="datascience.tables.Table.values"><code class="xref py py-meth docutils literal"><span class="pre">values()</span></code></a>.</p>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [11]: </span><span class="n">t</span>
-<span class="gh">Out[11]: </span><span class="go"></span>
-<span class="go">letter | count | points</span>
-<span class="go">a      | 9     | 1</span>
-<span class="go">b      | 3     | 2</span>
-<span class="go">c      | 3     | 2</span>
-<span class="go">z      | 1     | 10</span>
+<span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="nn">&lt;ipython-input-11-b7269fa25085&gt;</span> in <span class="ni">&lt;module&gt;</span><span class="nt">()</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">t</span>
+
+<span class="ne">NameError</span>: name &#39;t&#39; is not defined
 
 <span class="gp">In [12]: </span><span class="n">t</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="s1">&#39;letter&#39;</span><span class="p">)</span>
-<span class="go">                                                                                                               Out[12]: </span>
-<span class="go">array([&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;z&#39;], </span>
-<span class="go">      dtype=&#39;&lt;U1&#39;)</span>
+<span class="go">                                                                                                                                                                                                                                                    ---------------------------------------------------------------------------</span>
+<span class="go">NameError                                 Traceback (most recent call last)</span>
+<span class="go">&lt;ipython-input-12-221f59a7956e&gt; in &lt;module&gt;()</span>
+<span class="go">----&gt; 1 t.values(&#39;letter&#39;)</span>
+
+<span class="go">NameError: name &#39;t&#39; is not defined</span>
 
 <span class="gp">In [13]: </span><span class="n">t</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">)</span>
-<span class="go">                                                                                                                                                                         Out[13]: array([9, 3, 3, 1])</span>
+<span class="go">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         ---------------------------------------------------------------------------</span>
+<span class="go">NameError                                 Traceback (most recent call last)</span>
+<span class="go">&lt;ipython-input-13-a6bcd4af4dcc&gt; in &lt;module&gt;()</span>
+<span class="go">----&gt; 1 t.values(&#39;count&#39;)</span>
+
+<span class="go">NameError: name &#39;t&#39; is not defined</span>
 </pre></div>
 </div>
 <p>Use bracket notation as a shorthand for this method:</p>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [14]: </span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;letter&#39;</span><span class="p">]</span> <span class="c1"># This is a shorthand for t.values(&#39;letter&#39;)</span>
-<span class="gh">Out[14]: </span><span class="go"></span>
-<span class="go">array([&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;z&#39;], </span>
-<span class="go">      dtype=&#39;&lt;U1&#39;)</span>
+<span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="nn">&lt;ipython-input-14-a853ddbf7a0c&gt;</span> in <span class="ni">&lt;module&gt;</span><span class="nt">()</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">t</span><span class="p">[</span><span class="s1">&#39;letter&#39;</span><span class="p">]</span> <span class="c1"># This is a shorthand for t.values(&#39;letter&#39;)</span>
+
+<span class="ne">NameError</span>: name &#39;t&#39; is not defined
 
 <span class="gp">In [15]: </span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="c1"># This is a shorthand for t.values(&#39;count&#39;)</span>
-<span class="go">                                                          Out[15]: array([9, 3, 3, 1])</span>
+<span class="go">                                                                                                                                                                                                                                                                                                           ---------------------------------------------------------------------------</span>
+<span class="go">NameError                                 Traceback (most recent call last)</span>
+<span class="go">&lt;ipython-input-15-6625c903256d&gt; in &lt;module&gt;()</span>
+<span class="go">----&gt; 1 t[&#39;count&#39;] # This is a shorthand for t.values(&#39;count&#39;)</span>
+
+<span class="go">NameError: name &#39;t&#39; is not defined</span>
 </pre></div>
 </div>
 <p>To access values by row, <a class="reference internal" href="_autosummary/datascience.tables.Table.rows.html#datascience.tables.Table.rows" title="datascience.tables.Table.rows"><code class="xref py py-meth docutils literal"><span class="pre">rows()</span></code></a> returns an
 list-like <code class="xref py py-class docutils literal"><span class="pre">Rows</span></code> object that contains
 tuple-like <code class="xref py py-class docutils literal"><span class="pre">Row</span></code> objects.</p>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [16]: </span><span class="n">t</span><span class="o">.</span><span class="n">rows</span>
-<span class="gh">Out[16]: </span><span class="go"></span>
-<span class="go">Rows(letter | count | points</span>
-<span class="go">a      | 9     | 1</span>
-<span class="go">b      | 3     | 2</span>
-<span class="go">c      | 3     | 2</span>
-<span class="go">z      | 1     | 10)</span>
+<span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="nn">&lt;ipython-input-16-92caacf9cac4&gt;</span> in <span class="ni">&lt;module&gt;</span><span class="nt">()</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">t</span><span class="o">.</span><span class="n">rows</span>
+
+<span class="ne">NameError</span>: name &#39;t&#39; is not defined
 
 <span class="gp">In [17]: </span><span class="n">t</span><span class="o">.</span><span class="n">rows</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="go">                                                                                                                     Out[17]: Row(letter=&#39;a&#39;, count=9, points=1)</span>
+<span class="go">                                                                                                                                                                                                                                                         ---------------------------------------------------------------------------</span>
+<span class="go">NameError                                 Traceback (most recent call last)</span>
+<span class="go">&lt;ipython-input-17-b3f9a29a7121&gt; in &lt;module&gt;()</span>
+<span class="go">----&gt; 1 t.rows[0]</span>
+
+<span class="go">NameError: name &#39;t&#39; is not defined</span>
 
 <span class="gp">In [18]: </span><span class="n">second</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">rows</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="go">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ---------------------------------------------------------------------------</span>
+<span class="go">NameError                                 Traceback (most recent call last)</span>
+<span class="go">&lt;ipython-input-18-31b7d8f3e46c&gt; in &lt;module&gt;()</span>
+<span class="go">----&gt; 1 second = t.rows[1]</span>
+
+<span class="go">NameError: name &#39;t&#39; is not defined</span>
 
 <span class="gp">In [19]: </span><span class="n">second</span>
-<span class="gh">Out[19]: </span><span class="go">Row(letter=&#39;b&#39;, count=3, points=2)</span>
+<span class="go">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ---------------------------------------------------------------------------</span>
+<span class="go">NameError                                 Traceback (most recent call last)</span>
+<span class="go">&lt;ipython-input-19-59d0d19fc45c&gt; in &lt;module&gt;()</span>
+<span class="go">----&gt; 1 second</span>
+
+<span class="go">NameError: name &#39;second&#39; is not defined</span>
 
 <span class="gp">In [20]: </span><span class="n">second</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="go">                                            Out[20]: &#39;b&#39;</span>
+<span class="go">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ---------------------------------------------------------------------------</span>
+<span class="go">NameError                                 Traceback (most recent call last)</span>
+<span class="go">&lt;ipython-input-20-9e21093dc935&gt; in &lt;module&gt;()</span>
+<span class="go">----&gt; 1 second[0]</span>
+
+<span class="go">NameError: name &#39;second&#39; is not defined</span>
 
 <span class="gp">In [21]: </span><span class="n">second</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-<span class="go">                                                         Out[21]: 3</span>
+<span class="go">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         ---------------------------------------------------------------------------</span>
+<span class="go">NameError                                 Traceback (most recent call last)</span>
+<span class="go">&lt;ipython-input-21-61ed78c96647&gt; in &lt;module&gt;()</span>
+<span class="go">----&gt; 1 second[1]</span>
+
+<span class="go">NameError: name &#39;second&#39; is not defined</span>
 </pre></div>
 </div>
 <p>To get the number of rows, use <a class="reference internal" href="_autosummary/datascience.tables.Table.num_rows.html#datascience.tables.Table.num_rows" title="datascience.tables.Table.num_rows"><code class="xref py py-attr docutils literal"><span class="pre">num_rows</span></code></a>.</p>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [22]: </span><span class="n">t</span><span class="o">.</span><span class="n">num_rows</span>
-<span class="gh">Out[22]: </span><span class="go">4</span>
+<span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="nn">&lt;ipython-input-22-a27d6b33cf03&gt;</span> in <span class="ni">&lt;module&gt;</span><span class="nt">()</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">t</span><span class="o">.</span><span class="n">num_rows</span>
+
+<span class="ne">NameError</span>: name &#39;t&#39; is not defined
 </pre></div>
 </div>
 </div>
@@ -258,179 +313,195 @@ tuple-like <code class="xref py py-class docutils literal"><span class="pre">Row
 reference (<a class="reference internal" href="tables.html#tables-overview"><span>Tables (datascience.tables)</span></a>).</p>
 <p>Adding a column with <a class="reference internal" href="_autosummary/datascience.tables.Table.with_column.html#datascience.tables.Table.with_column" title="datascience.tables.Table.with_column"><code class="xref py py-meth docutils literal"><span class="pre">with_column()</span></code></a>:</p>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [23]: </span><span class="n">t</span>
-<span class="gh">Out[23]: </span><span class="go"></span>
-<span class="go">letter | count | points</span>
-<span class="go">a      | 9     | 1</span>
-<span class="go">b      | 3     | 2</span>
-<span class="go">c      | 3     | 2</span>
-<span class="go">z      | 1     | 10</span>
+<span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="nn">&lt;ipython-input-23-b7269fa25085&gt;</span> in <span class="ni">&lt;module&gt;</span><span class="nt">()</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">t</span>
+
+<span class="ne">NameError</span>: name &#39;t&#39; is not defined
 
 <span class="gp">In [24]: </span><span class="n">t</span><span class="o">.</span><span class="n">with_column</span><span class="p">(</span><span class="s1">&#39;vowel?&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;yes&#39;</span><span class="p">,</span> <span class="s1">&#39;no&#39;</span><span class="p">,</span> <span class="s1">&#39;no&#39;</span><span class="p">,</span> <span class="s1">&#39;no&#39;</span><span class="p">])</span>
-<span class="go">                                                                                                               Out[24]: </span>
-<span class="go">letter | count | points | vowel?</span>
-<span class="go">a      | 9     | 1      | yes</span>
-<span class="go">b      | 3     | 2      | no</span>
-<span class="go">c      | 3     | 2      | no</span>
-<span class="go">z      | 1     | 10     | no</span>
+<span class="go">                                                                                                                                                                                                                                                    ---------------------------------------------------------------------------</span>
+<span class="go">NameError                                 Traceback (most recent call last)</span>
+<span class="go">&lt;ipython-input-24-b3bda552fe4c&gt; in &lt;module&gt;()</span>
+<span class="go">----&gt; 1 t.with_column(&#39;vowel?&#39;, [&#39;yes&#39;, &#39;no&#39;, &#39;no&#39;, &#39;no&#39;])</span>
+
+<span class="go">NameError: name &#39;t&#39; is not defined</span>
 
 <span class="gp">In [25]: </span><span class="n">t</span> <span class="c1"># .with_column returns a new table without modifying the original</span>
-<span class="go">                                                                                                                                                                                                                                                                               Out[25]: </span>
-<span class="go">letter | count | points</span>
-<span class="go">a      | 9     | 1</span>
-<span class="go">b      | 3     | 2</span>
-<span class="go">c      | 3     | 2</span>
-<span class="go">z      | 1     | 10</span>
+<span class="go">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         ---------------------------------------------------------------------------</span>
+<span class="go">NameError                                 Traceback (most recent call last)</span>
+<span class="go">&lt;ipython-input-25-150cef78d9e9&gt; in &lt;module&gt;()</span>
+<span class="go">----&gt; 1 t # .with_column returns a new table without modifying the original</span>
+
+<span class="go">NameError: name &#39;t&#39; is not defined</span>
 
 <span class="gp">In [26]: </span><span class="n">t</span><span class="o">.</span><span class="n">with_column</span><span class="p">(</span><span class="s1">&#39;2 * count&#39;</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="c1"># A simple way to operate on columns</span>
-<span class="go">                                                                                                                                                                                                                                                                                                                                                                                              Out[26]: </span>
-<span class="go">letter | count | points | 2 * count</span>
-<span class="go">a      | 9     | 1      | 18</span>
-<span class="go">b      | 3     | 2      | 6</span>
-<span class="go">c      | 3     | 2      | 6</span>
-<span class="go">z      | 1     | 10     | 2</span>
+<span class="go">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ---------------------------------------------------------------------------</span>
+<span class="go">NameError                                 Traceback (most recent call last)</span>
+<span class="go">&lt;ipython-input-26-b0c480f6f038&gt; in &lt;module&gt;()</span>
+<span class="go">----&gt; 1 t.with_column(&#39;2 * count&#39;, t[&#39;count&#39;] * 2) # A simple way to operate on columns</span>
+
+<span class="go">NameError: name &#39;t&#39; is not defined</span>
 </pre></div>
 </div>
 <p>Selecting columns with <a class="reference internal" href="_autosummary/datascience.tables.Table.select.html#datascience.tables.Table.select" title="datascience.tables.Table.select"><code class="xref py py-meth docutils literal"><span class="pre">select()</span></code></a>:</p>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [27]: </span><span class="n">t</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;letter&#39;</span><span class="p">)</span>
-<span class="gh">Out[27]: </span><span class="go"></span>
-<span class="go">letter</span>
-<span class="go">a</span>
-<span class="go">b</span>
-<span class="go">c</span>
-<span class="go">z</span>
+<span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="nn">&lt;ipython-input-27-5ad050f2bf50&gt;</span> in <span class="ni">&lt;module&gt;</span><span class="nt">()</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">t</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;letter&#39;</span><span class="p">)</span>
+
+<span class="ne">NameError</span>: name &#39;t&#39; is not defined
 
 <span class="gp">In [28]: </span><span class="n">t</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;letter&#39;</span><span class="p">,</span> <span class="s1">&#39;points&#39;</span><span class="p">])</span>
-<span class="go">                         Out[28]: </span>
-<span class="go">letter | points</span>
-<span class="go">a      | 1</span>
-<span class="go">b      | 2</span>
-<span class="go">c      | 2</span>
-<span class="go">z      | 10</span>
+<span class="go">                                                                                                                                                                                                                                                                     ---------------------------------------------------------------------------</span>
+<span class="go">NameError                                 Traceback (most recent call last)</span>
+<span class="go">&lt;ipython-input-28-7eb3c525b77a&gt; in &lt;module&gt;()</span>
+<span class="go">----&gt; 1 t.select([&#39;letter&#39;, &#39;points&#39;])</span>
+
+<span class="go">NameError: name &#39;t&#39; is not defined</span>
 </pre></div>
 </div>
 <p>Renaming columns with <a class="reference internal" href="_autosummary/datascience.tables.Table.with_relabeling.html#datascience.tables.Table.with_relabeling" title="datascience.tables.Table.with_relabeling"><code class="xref py py-meth docutils literal"><span class="pre">with_relabeling()</span></code></a>:</p>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [29]: </span><span class="n">t</span>
-<span class="gh">Out[29]: </span><span class="go"></span>
-<span class="go">letter | count | points</span>
-<span class="go">a      | 9     | 1</span>
-<span class="go">b      | 3     | 2</span>
-<span class="go">c      | 3     | 2</span>
-<span class="go">z      | 1     | 10</span>
+<span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="nn">&lt;ipython-input-29-b7269fa25085&gt;</span> in <span class="ni">&lt;module&gt;</span><span class="nt">()</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">t</span>
+
+<span class="ne">NameError</span>: name &#39;t&#39; is not defined
 
 <span class="gp">In [30]: </span><span class="n">t</span><span class="o">.</span><span class="n">with_relabeling</span><span class="p">(</span><span class="s1">&#39;points&#39;</span><span class="p">,</span> <span class="s1">&#39;other name&#39;</span><span class="p">)</span>
-<span class="go">                                                                                                               Out[30]: </span>
-<span class="go">letter | count | other name</span>
-<span class="go">a      | 9     | 1</span>
-<span class="go">b      | 3     | 2</span>
-<span class="go">c      | 3     | 2</span>
-<span class="go">z      | 1     | 10</span>
+<span class="go">                                                                                                                                                                                                                                                    ---------------------------------------------------------------------------</span>
+<span class="go">NameError                                 Traceback (most recent call last)</span>
+<span class="go">&lt;ipython-input-30-a4f3044c399a&gt; in &lt;module&gt;()</span>
+<span class="go">----&gt; 1 t.with_relabeling(&#39;points&#39;, &#39;other name&#39;)</span>
+
+<span class="go">NameError: name &#39;t&#39; is not defined</span>
 
 <span class="gp">In [31]: </span><span class="n">t</span>
-<span class="go">                                                                                                                                                                                                                                  Out[31]: </span>
-<span class="go">letter | count | points</span>
-<span class="go">a      | 9     | 1</span>
-<span class="go">b      | 3     | 2</span>
-<span class="go">c      | 3     | 2</span>
-<span class="go">z      | 1     | 10</span>
+<span class="go">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ---------------------------------------------------------------------------</span>
+<span class="go">NameError                                 Traceback (most recent call last)</span>
+<span class="go">&lt;ipython-input-31-b7269fa25085&gt; in &lt;module&gt;()</span>
+<span class="go">----&gt; 1 t</span>
+
+<span class="go">NameError: name &#39;t&#39; is not defined</span>
 
 <span class="gp">In [32]: </span><span class="n">t</span><span class="o">.</span><span class="n">with_relabeling</span><span class="p">([</span><span class="s1">&#39;letter&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="s1">&#39;points&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">])</span>
-<span class="go">                                                                                                                                                                                                                                                                                                                                                 Out[32]: </span>
-<span class="go">x    | y    | z</span>
-<span class="go">a    | 9    | 1</span>
-<span class="go">b    | 3    | 2</span>
-<span class="go">c    | 3    | 2</span>
-<span class="go">z    | 1    | 10</span>
+<span class="go">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ---------------------------------------------------------------------------</span>
+<span class="go">NameError                                 Traceback (most recent call last)</span>
+<span class="go">&lt;ipython-input-32-ae3cc7b10b5f&gt; in &lt;module&gt;()</span>
+<span class="go">----&gt; 1 t.with_relabeling([&#39;letter&#39;, &#39;count&#39;, &#39;points&#39;], [&#39;x&#39;, &#39;y&#39;, &#39;z&#39;])</span>
+
+<span class="go">NameError: name &#39;t&#39; is not defined</span>
 </pre></div>
 </div>
 <p>Selecting out rows by index with <a class="reference internal" href="_autosummary/datascience.tables.Table.take.html#datascience.tables.Table.take" title="datascience.tables.Table.take"><code class="xref py py-meth docutils literal"><span class="pre">take()</span></code></a> and
 conditionally with <a class="reference internal" href="_autosummary/datascience.tables.Table.where.html#datascience.tables.Table.where" title="datascience.tables.Table.where"><code class="xref py py-meth docutils literal"><span class="pre">where()</span></code></a>:</p>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [33]: </span><span class="n">t</span>
-<span class="gh">Out[33]: </span><span class="go"></span>
-<span class="go">letter | count | points</span>
-<span class="go">a      | 9     | 1</span>
-<span class="go">b      | 3     | 2</span>
-<span class="go">c      | 3     | 2</span>
-<span class="go">z      | 1     | 10</span>
+<span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="nn">&lt;ipython-input-33-b7269fa25085&gt;</span> in <span class="ni">&lt;module&gt;</span><span class="nt">()</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">t</span>
+
+<span class="ne">NameError</span>: name &#39;t&#39; is not defined
 
 <span class="gp">In [34]: </span><span class="n">t</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># the third row</span>
-<span class="go">                                                                                                               Out[34]: </span>
-<span class="go">letter | count | points</span>
-<span class="go">c      | 3     | 2</span>
+<span class="go">                                                                                                                                                                                                                                                    ---------------------------------------------------------------------------</span>
+<span class="go">NameError                                 Traceback (most recent call last)</span>
+<span class="go">&lt;ipython-input-34-5be4e38787d1&gt; in &lt;module&gt;()</span>
+<span class="go">----&gt; 1 t.take(2) # the third row</span>
+
+<span class="go">NameError: name &#39;t&#39; is not defined</span>
 
 <span class="gp">In [35]: </span><span class="n">t</span><span class="o">.</span><span class="n">take</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="c1"># the first and second rows</span>
-<span class="go">                                                                                                                                                                    Out[35]: </span>
-<span class="go">letter | count | points</span>
-<span class="go">a      | 9     | 1</span>
-<span class="go">b      | 3     | 2</span>
+<span class="go">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ---------------------------------------------------------------------------</span>
+<span class="go">NameError                                 Traceback (most recent call last)</span>
+<span class="go">&lt;ipython-input-35-1da1248c4df4&gt; in &lt;module&gt;()</span>
+<span class="go">----&gt; 1 t.take[0:2] # the first and second rows</span>
+
+<span class="go">NameError: name &#39;t&#39; is not defined</span>
 </pre></div>
 </div>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [36]: </span><span class="n">t</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;points&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="c1"># rows where points == 2</span>
-<span class="gh">Out[36]: </span><span class="go"></span>
-<span class="go">letter | count | points</span>
-<span class="go">b      | 3     | 2</span>
-<span class="go">c      | 3     | 2</span>
+<span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="nn">&lt;ipython-input-36-732d37a059ae&gt;</span> in <span class="ni">&lt;module&gt;</span><span class="nt">()</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">t</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;points&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="c1"># rows where points == 2</span>
+
+<span class="ne">NameError</span>: name &#39;t&#39; is not defined
 
 <span class="gp">In [37]: </span><span class="n">t</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="c1"># rows where count &lt; 8</span>
-<span class="go">                                                                        Out[37]: </span>
-<span class="go">letter | count | points</span>
-<span class="go">b      | 3     | 2</span>
-<span class="go">c      | 3     | 2</span>
-<span class="go">z      | 1     | 10</span>
+<span class="go">                                                                                                                                                                                                                                                                                                ---------------------------------------------------------------------------</span>
+<span class="go">NameError                                 Traceback (most recent call last)</span>
+<span class="go">&lt;ipython-input-37-e9a854af8b28&gt; in &lt;module&gt;()</span>
+<span class="go">----&gt; 1 t.where(t[&#39;count&#39;] &lt; 8) # rows where count &lt; 8</span>
+
+<span class="go">NameError: name &#39;t&#39; is not defined</span>
 
 <span class="gp">In [38]: </span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">8</span> <span class="c1"># .where actually takes in an array of booleans</span>
-<span class="go">                                                                                                                                                                    Out[38]: array([False,  True,  True,  True], dtype=bool)</span>
+<span class="go">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ---------------------------------------------------------------------------</span>
+<span class="go">NameError                                 Traceback (most recent call last)</span>
+<span class="go">&lt;ipython-input-38-1b25cf45e265&gt; in &lt;module&gt;()</span>
+<span class="go">----&gt; 1 t[&#39;count&#39;] &lt; 8 # .where actually takes in an array of booleans</span>
+
+<span class="go">NameError: name &#39;t&#39; is not defined</span>
 
 <span class="gp">In [39]: </span><span class="n">t</span><span class="o">.</span><span class="n">where</span><span class="p">([</span><span class="bp">False</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="bp">True</span><span class="p">])</span> <span class="c1"># same as the last line</span>
-<span class="go">                                                                                                                                                                                                                             Out[39]: </span>
-<span class="go">letter | count | points</span>
-<span class="go">b      | 3     | 2</span>
-<span class="go">c      | 3     | 2</span>
-<span class="go">z      | 1     | 10</span>
+<span class="go">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ---------------------------------------------------------------------------</span>
+<span class="go">NameError                                 Traceback (most recent call last)</span>
+<span class="go">&lt;ipython-input-39-ab9b32020104&gt; in &lt;module&gt;()</span>
+<span class="go">----&gt; 1 t.where([False, True, True, True]) # same as the last line</span>
+
+<span class="go">NameError: name &#39;t&#39; is not defined</span>
 </pre></div>
 </div>
 <p>Operate on table data with <a class="reference internal" href="_autosummary/datascience.tables.Table.sort.html#datascience.tables.Table.sort" title="datascience.tables.Table.sort"><code class="xref py py-meth docutils literal"><span class="pre">sort()</span></code></a>,
 <a class="reference internal" href="_autosummary/datascience.tables.Table.group.html#datascience.tables.Table.group" title="datascience.tables.Table.group"><code class="xref py py-meth docutils literal"><span class="pre">group()</span></code></a>, and
 <a class="reference internal" href="_autosummary/datascience.tables.Table.pivot.html#datascience.tables.Table.pivot" title="datascience.tables.Table.pivot"><code class="xref py py-meth docutils literal"><span class="pre">pivot()</span></code></a></p>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [40]: </span><span class="n">t</span>
-<span class="gh">Out[40]: </span><span class="go"></span>
-<span class="go">letter | count | points</span>
-<span class="go">a      | 9     | 1</span>
-<span class="go">b      | 3     | 2</span>
-<span class="go">c      | 3     | 2</span>
-<span class="go">z      | 1     | 10</span>
+<span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="nn">&lt;ipython-input-40-b7269fa25085&gt;</span> in <span class="ni">&lt;module&gt;</span><span class="nt">()</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">t</span>
+
+<span class="ne">NameError</span>: name &#39;t&#39; is not defined
 
 <span class="gp">In [41]: </span><span class="n">t</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">)</span>
-<span class="go">                                                                                                               Out[41]: </span>
-<span class="go">letter | count | points</span>
-<span class="go">z      | 1     | 10</span>
-<span class="go">b      | 3     | 2</span>
-<span class="go">c      | 3     | 2</span>
-<span class="go">a      | 9     | 1</span>
+<span class="go">                                                                                                                                                                                                                                                    ---------------------------------------------------------------------------</span>
+<span class="go">NameError                                 Traceback (most recent call last)</span>
+<span class="go">&lt;ipython-input-41-7ae8c4c4c950&gt; in &lt;module&gt;()</span>
+<span class="go">----&gt; 1 t.sort(&#39;count&#39;)</span>
+
+<span class="go">NameError: name &#39;t&#39; is not defined</span>
 
 <span class="gp">In [42]: </span><span class="n">t</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">&#39;letter&#39;</span><span class="p">,</span> <span class="n">descending</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
-<span class="go">                                                                                                                                                                                                                              Out[42]: </span>
-<span class="go">letter | count | points</span>
-<span class="go">z      | 1     | 10</span>
-<span class="go">c      | 3     | 2</span>
-<span class="go">b      | 3     | 2</span>
-<span class="go">a      | 9     | 1</span>
+<span class="go">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ---------------------------------------------------------------------------</span>
+<span class="go">NameError                                 Traceback (most recent call last)</span>
+<span class="go">&lt;ipython-input-42-e2a67a768057&gt; in &lt;module&gt;()</span>
+<span class="go">----&gt; 1 t.sort(&#39;letter&#39;, descending = True)</span>
+
+<span class="go">NameError: name &#39;t&#39; is not defined</span>
 </pre></div>
 </div>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [43]: </span><span class="n">t</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">)</span>
-<span class="gh">Out[43]: </span><span class="go"></span>
-<span class="go">count | letter    | points</span>
-<span class="go">1     | [&#39;z&#39;]     | [10]</span>
-<span class="go">3     | [&#39;b&#39; &#39;c&#39;] | [2 2]</span>
-<span class="go">9     | [&#39;a&#39;]     | [1]</span>
+<span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="nn">&lt;ipython-input-43-fe7ce32f78c3&gt;</span> in <span class="ni">&lt;module&gt;</span><span class="nt">()</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">t</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">)</span>
 
-<span class="go"># You may pass a reducing function into the collect arg</span>
-<span class="go"># Note the renaming of the points column because of the collect arg</span>
+<span class="ne">NameError</span>: name &#39;t&#39; is not defined
+
+<span class="c1"># You may pass a reducing function into the collect arg</span>
+<span class="c1"># Note the renaming of the points column because of the collect arg</span>
 <span class="gp">In [44]: </span><span class="n">t</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="s1">&#39;points&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="n">collect</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">)</span>
-<span class="go">                                                                                                                Out[44]: </span>
-<span class="go">count | points sum</span>
-<span class="go">1     | 10</span>
-<span class="go">3     | 4</span>
-<span class="go">9     | 1</span>
+<span class="go">                                                                                                                                                                                                                                                                   ---------------------------------------------------------------------------</span>
+<span class="go">NameError                                 Traceback (most recent call last)</span>
+<span class="go">&lt;ipython-input-44-183b8ac860fc&gt; in &lt;module&gt;()</span>
+<span class="go">----&gt; 1 t.select([&#39;count&#39;, &#39;points&#39;]).group(&#39;count&#39;, collect = sum)</span>
+
+<span class="go">NameError: name &#39;t&#39; is not defined</span>
 </pre></div>
 </div>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [45]: </span><span class="n">other_table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">([</span>
@@ -471,16 +542,16 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 <span class="gp">In [49]: </span><span class="n">normal_data</span>
 <span class="gh">Out[49]: </span><span class="go"></span>
 <span class="go">data1     | data2</span>
-<span class="go">1.17909   | 2.80125</span>
-<span class="go">1.27012   | 10.6938</span>
-<span class="go">1.2149    | 8.01531</span>
-<span class="go">1.41164   | 7.93481</span>
-<span class="go">-0.658741 | -1.22878</span>
-<span class="go">1.15886   | 4.13781</span>
-<span class="go">0.683221  | 2.24112</span>
-<span class="go">-0.679698 | 9.32676</span>
-<span class="go">3.55474   | 6.33416</span>
-<span class="go">-0.658266 | 5.37793</span>
+<span class="go">-1.40721  | 6.2832</span>
+<span class="go">1.30323   | 0.354395</span>
+<span class="go">1.49305   | 4.41856</span>
+<span class="go">0.613776  | 2.1055</span>
+<span class="go">1.53244   | 6.77868</span>
+<span class="go">3.68899   | 2.29248</span>
+<span class="go">-0.613208 | 4.54381</span>
+<span class="go">-3.42502  | 3.09554</span>
+<span class="go">-1.66916  | 7.58895</span>
+<span class="go">3.41256   | -2.1518</span>
 <span class="go">... (90 rows omitted)</span>
 </pre></div>
 </div>
@@ -514,14 +585,20 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 <a class="reference internal image-reference" href="_images/scatter_line.png"><img alt="_images/scatter_line.png" src="_images/scatter_line.png" style="width: 4in;" /></a>
 <p>Use <a class="reference internal" href="_autosummary/datascience.tables.Table.barh.html#datascience.tables.Table.barh" title="datascience.tables.Table.barh"><code class="xref py py-meth docutils literal"><span class="pre">barh()</span></code></a> to display categorical data.</p>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [56]: </span><span class="n">t</span>
-<span class="gh">Out[56]: </span><span class="go"></span>
-<span class="go">letter | count | points</span>
-<span class="go">a      | 9     | 1</span>
-<span class="go">b      | 3     | 2</span>
-<span class="go">c      | 3     | 2</span>
-<span class="go">z      | 1     | 10</span>
+<span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="nn">&lt;ipython-input-56-b7269fa25085&gt;</span> in <span class="ni">&lt;module&gt;</span><span class="nt">()</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">t</span>
+
+<span class="ne">NameError</span>: name &#39;t&#39; is not defined
 
 <span class="gp">In [57]: </span><span class="n">t</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="s1">&#39;letter&#39;</span><span class="p">)</span>
+<span class="go">                                                                                                                                                                                                                                                    ---------------------------------------------------------------------------</span>
+<span class="go">NameError                                 Traceback (most recent call last)</span>
+<span class="go">&lt;ipython-input-57-e1d420a40338&gt; in &lt;module&gt;()</span>
+<span class="go">----&gt; 1 t.barh(&#39;letter&#39;)</span>
+
+<span class="go">NameError: name &#39;t&#39; is not defined</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/barh.png"><img alt="_images/barh.png" src="_images/barh.png" style="width: 4in;" /></a>
@@ -533,16 +610,16 @@ converting to a pandas dataframe with <a class="reference internal" href="_autos
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [58]: </span><span class="n">normal_data</span>
 <span class="gh">Out[58]: </span><span class="go"></span>
 <span class="go">data1     | data2</span>
-<span class="go">1.17909   | 2.80125</span>
-<span class="go">1.27012   | 10.6938</span>
-<span class="go">1.2149    | 8.01531</span>
-<span class="go">1.41164   | 7.93481</span>
-<span class="go">-0.658741 | -1.22878</span>
-<span class="go">1.15886   | 4.13781</span>
-<span class="go">0.683221  | 2.24112</span>
-<span class="go">-0.679698 | 9.32676</span>
-<span class="go">3.55474   | 6.33416</span>
-<span class="go">-0.658266 | 5.37793</span>
+<span class="go">-1.40721  | 6.2832</span>
+<span class="go">1.30323   | 0.354395</span>
+<span class="go">1.49305   | 4.41856</span>
+<span class="go">0.613776  | 2.1055</span>
+<span class="go">1.53244   | 6.77868</span>
+<span class="go">3.68899   | 2.29248</span>
+<span class="go">-0.613208 | 4.54381</span>
+<span class="go">-3.42502  | 3.09554</span>
+<span class="go">-1.66916  | 7.58895</span>
+<span class="go">3.41256   | -2.1518</span>
 <span class="go">... (90 rows omitted)</span>
 
 <span class="go"># index = False prevents row numbers from appearing in the resulting CSV</span>
@@ -652,8 +729,8 @@ non-smokers.</p>
 
 <span class="gp">In [75]: </span><span class="n">bootstrapped_diff_means</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
 <span class="gh">Out[75]: </span><span class="go"></span>
-<span class="go">array([-1.04714414,  0.94391273, -2.1155324 ,  1.8129165 , -0.21272148,</span>
-<span class="go">        0.38275363, -2.27685909, -1.5663452 , -2.61209988,  0.04089766])</span>
+<span class="go">array([ 0.10666849,  0.38067249, -2.70593111, -0.04924357, -0.2057041 ,</span>
+<span class="go">        1.12122431,  0.84296967,  1.1792038 ,  1.43006841,  1.36902357])</span>
 
 <span class="gp">In [76]: </span><span class="n">num_diffs_greater</span> <span class="o">=</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">bootstrapped_diff_means</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">observed_diff</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
@@ -736,7 +813,7 @@ non-smokers.</p>
         <li class="right" >
           <a href="index.html" title="Welcome to datascience’s documentation!"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.4.0 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.5.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

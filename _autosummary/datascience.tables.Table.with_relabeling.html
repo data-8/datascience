@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>datascience.tables.Table.with_relabeling &mdash; datascience 0.4.0 documentation</title>
+    <title>datascience.tables.Table.with_relabeling &mdash; datascience 0.5.0 documentation</title>
     
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.4.0',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.4.0 documentation" href="../index.html" />
+    <link rel="top" title="datascience 0.5.0 documentation" href="../index.html" />
     <link rel="up" title="Tables (datascience.tables)" href="../tables.html" />
     <link rel="next" title="datascience.tables.Table.bin" href="datascience.tables.Table.bin.html" />
     <link rel="prev" title="datascience.tables.Table.with_column" href="datascience.tables.Table.with_column.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="datascience.tables.Table.with_column.html" title="datascience.tables.Table.with_column"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.4.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.5.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" accesskey="U">Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)</a> &raquo;</li> 
       </ul>
     </div>  
@@ -58,53 +58,8 @@
 <h1>datascience.tables.Table.with_relabeling<a class="headerlink" href="#datascience-tables-table-with-relabeling" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="datascience.tables.Table.with_relabeling">
-<code class="descclassname">Table.</code><code class="descname">with_relabeling</code><span class="sig-paren">(</span><em>column_label</em>, <em>new_label</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.with_relabeling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.with_relabeling" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a new table with column_label changed to new_label.</p>
-<p><code class="docutils literal"><span class="pre">column_label</span></code> and <code class="docutils literal"><span class="pre">new_label</span></code> may be single values or lists
-specifying column labels to be changed and their new corresponding
-labels.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><dl class="first last docutils">
-<dt><code class="docutils literal"><span class="pre">column_label</span></code> (single str or list/array of str): The label(s) of</dt>
-<dd>columns to be changed. Must be str.</dd>
-<dt><code class="docutils literal"><span class="pre">new_label</span></code> (single str or list/array of): The new label(s) of</dt>
-<dd><p class="first">columns to be changed. Must be str.</p>
-<p class="last">Number of elements must match number of elements in
-<code class="docutils literal"><span class="pre">column_label</span></code>.</p>
-</dd>
-</dl>
-</dd>
-<dt>Returns:</dt>
-<dd>A new separate table containing same data with column headers in
-<code class="docutils literal"><span class="pre">column_label</span></code> replaced by <code class="docutils literal"><span class="pre">new_label</span></code>.</dd>
-</dl>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">letter</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">count</span> <span class="o">=</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">points</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">([</span><span class="n">letter</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">points</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;letter&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="s1">&#39;points&#39;</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span>
-<span class="go">letter | count | points</span>
-<span class="go">a      | 9     | 1</span>
-<span class="go">b      | 3     | 2</span>
-<span class="go">c      | 3     | 2</span>
-<span class="go">z      | 1     | 10</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">table2</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">with_relabeling</span><span class="p">(</span><span class="s1">&#39;points&#39;</span><span class="p">,</span> <span class="s1">&#39;minions&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">table2</span>
-<span class="go">letter | count | minions</span>
-<span class="go">a      | 9     | 1</span>
-<span class="go">b      | 3     | 2</span>
-<span class="go">c      | 3     | 2</span>
-<span class="go">z      | 1     | 10</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span>
-<span class="go">letter | count | points</span>
-<span class="go">a      | 9     | 1</span>
-<span class="go">b      | 3     | 2</span>
-<span class="go">c      | 3     | 2</span>
-<span class="go">z      | 1     | 10</span>
-</pre></div>
-</div>
-</dd></dl>
+<code class="descclassname">Table.</code><code class="descname">with_relabeling</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.with_relabeling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.with_relabeling" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </div>
 
@@ -159,7 +114,7 @@ labels.</p>
         <li class="right" >
           <a href="datascience.tables.Table.with_column.html" title="datascience.tables.Table.with_column"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.4.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.5.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" >Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)</a> &raquo;</li> 
       </ul>
     </div>
