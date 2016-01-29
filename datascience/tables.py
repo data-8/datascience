@@ -207,7 +207,7 @@ class Table(collections.abc.MutableMapping):
         self.formatter = formatter
 
         if _other is not None:
-            warnings.warn("deprecated", FutureWarning)
+            warnings.warn("Two-argument __init__ is deprecated. Use Table().with_columns(...)", FutureWarning)
             columns, labels = labels, _other
             columns = columns if columns is not None else []
             labels = labels if labels is not None else []
@@ -243,7 +243,7 @@ class Table(collections.abc.MutableMapping):
         Returns:
             A new instance of ``Table``.
         """
-        warnings.warn("deprecated", FutureWarning)
+        warnings.warn("Table.empty(labels) is deprecated. Use Table(labels)", FutureWarning)
         if labels is None:
             return cls()
         values = [[] for label in labels]
@@ -398,7 +398,7 @@ class Table(collections.abc.MutableMapping):
     @property
     def column_labels(self):
         """Return a tuple of column labels."""
-        warnings.warn("deprecated", FutureWarning)
+        warnings.warn("column_labels is deprecated; use labels", FutureWarning)
         return self.labels
 
     @property
@@ -434,7 +434,7 @@ class Table(collections.abc.MutableMapping):
 
     def values(self, label):
         """Returns the values of a column as an array."""
-        warnings.warn("deprecated", FutureWarning)
+        warnings.warn("values is deprecated; use column", FutureWarning)
         return self.column(label)
 
     def column_index(self, column_label):
@@ -1221,7 +1221,7 @@ class Table(collections.abc.MutableMapping):
         return copy
 
     def with_relabeling(self, *args):
-        warnings.warn("deprecated", FutureWarning)
+        warnings.warn("with_relabeling is deprecated; use relabeled", FutureWarning)
         return self.relabeled(*args)
 
     def bin(self, **vargs):
