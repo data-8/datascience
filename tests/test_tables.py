@@ -14,29 +14,41 @@ import pandas as pd
 
 @pytest.fixture(scope='function')
 def table():
-    """Setup alphanumeric table"""
-    letter, count, points = ['a', 'b', 'c', 'z'], [9, 3, 3, 1], [1, 2, 2, 10]
-    return Table([letter, count, points], ['letter', 'count', 'points'])
+    """Setup Scrabble table"""
+    return Table().with_columns([
+        'letter', ['a', 'b', 'c', 'z'],
+        'count', [9, 3, 3, 1],
+        'points', [1, 2, 2, 10],
+        ])
 
 
 @pytest.fixture(scope='function')
 def table2():
-    """Setup second alphanumeric table"""
-    points, names = (1, 2, 3), ('one', 'two', 'three')
-    return Table([points, names], ['points', 'names'])
+    """Setup second table"""
+    return Table().with_columns([
+        ['points', (1, 2, 3)],
+        ['names', ('one', 'two', 'three')],
+        ])
 
 
 @pytest.fixture(scope='function')
 def table3():
-    """Setup alphanumeric table, identical columns in diff order from first"""
-    letter, count, points = ['x', 'y', 'z'], [0, 54, 5], [3, 10, 24]
-    return Table([count, points, letter], ['count', 'points', 'letter'])
+    """Setup third table; same labels as first but in a different order."""
+    return Table().with_columns([
+        'count', [0, 54, 5],
+        'points', [3, 10, 24],
+        'letter', ['x', 'y', 'z'],
+        ])
+
 
 @pytest.fixture(scope='function')
 def numbers_table():
     """Setup table containing only numbers"""
-    count, points = [9, 3, 3, 1], [1, 2, 2, 10]
-    return Table([count, points], ['count', 'points'])
+    return Table().with_columns([
+        'count', [9, 3, 3, 1],
+        'points', [1, 2, 2, 10],
+        ])
+
 
 @pytest.fixture(scope='module')
 def t():
@@ -82,10 +94,10 @@ def test_basic(t):
     z      | 1     | 10
     """)
 
-def test_values(table):
+def test_column(table):
     """Test table.values()"""
-    assert_array_equal(table.values('letter'), np.array(['a', 'b', 'c', 'z']))
-    assert_array_equal(table.values('count'), np.array([9, 3, 3, 1]))
+    assert_array_equal(table.column('letter'), np.array(['a', 'b', 'c', 'z']))
+    assert_array_equal(table.column(1), np.array([9, 3, 3, 1]))
 
 
 def test_basic_points(t):
@@ -99,7 +111,7 @@ def test_basic_rows(t):
 
 
 def test_select(t):
-    test = t.select(['points', 'count']).cumsum()
+    test = t.select(['points', 1]).cumsum()
     assert_equal(test, """
     points | count
     1      | 9
@@ -208,6 +220,12 @@ def test_where(t):
     b      | 3     | 2
     c      | 3     | 2
     """)
+    test = t.where(2, 2)
+    assert_equal(test, """
+    letter | count | points
+    b      | 3     | 2
+    c      | 3     | 2
+    """)
 
 
 def test_where_conditions(t):
@@ -227,6 +245,14 @@ def test_sort(t):
     a      | 9     | 1      | 9
     b      | 3     | 2      | 6
     c      | 3     | 2      | 6
+    z      | 1     | 10     | 10
+    """)
+    test = t.sort(3)
+    assert_equal(test, """
+    letter | count | points | totals
+    b      | 3     | 2      | 6
+    c      | 3     | 2      | 6
+    a      | 9     | 1      | 9
     z      | 1     | 10     | 10
     """)
 
@@ -255,10 +281,10 @@ def test_sort_syntax(t):
 def test_group(t):
     test = t.group('points')
     assert_equal(test, """
-    points | letter    | count | totals
-    1      | ['a']     | [9]   | [9]
-    2      | ['b' 'c'] | [3 3] | [6 6]
-    10     | ['z']     | [1]   | [10]
+    points | letter len | count len | totals len
+    1      | 1          | 1         | 1
+    2      | 2          | 2         | 2
+    10     | 1          | 1         | 1
     """)
 
 
@@ -276,7 +302,7 @@ def test_groups(t):
     t = t.copy()
     t.append(('e', 12, 1, 12))
     t['early'] = t['letter'] < 'd'
-    test = t.groups(['points', 'early'])
+    test = t.groups(['points', 'early'], lambda s: s)
     assert_equal(test, """
     points | early | letter    | count | totals
     1      | False | ['e']     | [12]  | [12]
@@ -530,7 +556,14 @@ def test_append_different_order(table, table3):
 
 def test_relabel():
     table = Table([(1, 2, 3), (12345, 123, 5123)], ['points', 'id'])
-    table.relabel('id', 'yolo')
+    table.relabel('id', 'todo')
+    assert_equal(table, """
+    points | todo
+    1      | 12345
+    2      | 123
+    3      | 5123
+    """)
+    table.relabel(1, 'yolo')
     assert_equal(table, """
     points | yolo
     1      | 12345
@@ -681,7 +714,7 @@ def test_group_by_tuples():
     (1, 2, 2, 10) | 3
     (1, 2, 2, 10) | 1
     """)
-    table = t.group('tuples')
+    table = t.group('tuples', lambda s: s)
     assert_equal(table, """
     tuples        | ints
     (1, 2, 2, 10) | [3 1]
@@ -716,7 +749,7 @@ def test_stack(table):
 
 
 def test_stack_restrict_columns(table):
-    test = table.stack(key='letter', column_labels=['count'])
+    test = table.stack('letter', ['count'])
     assert_equal(test, """
     letter | column | value
     a      | count  | 9
