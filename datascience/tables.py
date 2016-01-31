@@ -122,6 +122,7 @@ class Table(collections.abc.MutableMapping):
         c      | 3     | 2
         z      | 1     | 10
         """
+        warnings.warn("Table.from_columns_dict is deprecated. Use Table().with_columns(...)", FutureWarning)
         return cls().with_columns(list(columns.items()))
 
     @classmethod
@@ -168,7 +169,7 @@ class Table(collections.abc.MutableMapping):
     @classmethod
     def from_array(cls, arr):
         """Convert a structured NumPy array into a Table."""
-        return cls([arr[f] for f in arr.dtype.names], arr.dtype.names)
+        return cls().with_columns([(f, arr[f]) for f in arr.dtype.names])
 
     #################
     # Magic Methods #
@@ -192,12 +193,15 @@ class Table(collections.abc.MutableMapping):
     def __iter__(self):
         return iter(self.labels)
 
+    # Deprecated
     def __getattr__(self, attr):
         """Return a method that applies to all columns or a table of attributes.
 
         E.g., t.sum() on a Table will return a table with the sum of each column.
         """
+
         if self.columns and all(hasattr(c, attr) for c in self.columns):
+            warnings.warn("Implicit column method lookup is deprecated.", FutureWarning)
             attrs = [getattr(c, attr) for c in self.columns]
             if all(callable(attr) for attr in attrs):
                 @functools.wraps(attrs[0])
