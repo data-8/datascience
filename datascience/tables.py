@@ -67,7 +67,7 @@ class Table(collections.abc.MutableMapping):
     # Deprecated
     @classmethod
     def empty(cls, labels=None):
-        """Create an empty table. Column labels are optional
+        """Create an empty table. Column labels are optional [Deprecated]
 
         >>> t = Table.empty(['x', 'y'])
         >>> t.append((2, 3))
@@ -92,7 +92,7 @@ class Table(collections.abc.MutableMapping):
     # Deprecated
     @classmethod
     def from_rows(cls, rows, labels):
-        """Create a table from a sequence of rows (fixed-length sequences)."""
+        """Create a table from a sequence of rows (fixed-length sequences). [Deprecated]"""
         warnings.warn("Table.from_rows is deprecated. Use Table(labels).with_rows(...)", FutureWarning)
         return cls(labels).with_rows(rows)
 
@@ -107,7 +107,7 @@ class Table(collections.abc.MutableMapping):
 
     @classmethod
     def from_columns_dict(cls, columns):
-        """Create a table from a mapping of column labels to column values.
+        """Create a table from a mapping of column labels to column values. [Deprecated]
 
         >>> from collections import OrderedDict
         >>> columns = OrderedDict()
@@ -195,7 +195,7 @@ class Table(collections.abc.MutableMapping):
 
     # Deprecated
     def __getattr__(self, attr):
-        """Return a method that applies to all columns or a table of attributes.
+        """Return a method that applies to all columns or a table of attributes. [Deprecated]
 
         E.g., t.sum() on a Table will return a table with the sum of each column.
         """
@@ -239,9 +239,10 @@ class Table(collections.abc.MutableMapping):
         """Return a tuple of column labels."""
         return tuple(self._columns.keys())
 
+    # Deprecated
     @property
     def column_labels(self):
-        """Return a tuple of column labels."""
+        """Return a tuple of column labels. [Deprecated]"""
         warnings.warn("column_labels is deprecated; use labels", FutureWarning)
         return self.labels
 
@@ -276,8 +277,9 @@ class Table(collections.abc.MutableMapping):
         """
         return self._columns[self._as_label(index_or_label)]
 
+    # Deprecated
     def values(self, label):
-        """Returns the values of a column as an array."""
+        """Returns the values of a column as an array. [Deprecated]"""
         warnings.warn("values is deprecated; use column", FutureWarning)
         return self.column(label)
 
@@ -1075,6 +1077,7 @@ class Table(collections.abc.MutableMapping):
         copy.relabel(label, new_label)
         return copy
 
+    # Deprecated
     def with_relabeling(self, *args):
         warnings.warn("with_relabeling is deprecated; use relabeled", FutureWarning)
         return self.relabeled(*args)
