@@ -321,7 +321,6 @@ class Table(collections.abc.MutableMapping):
         >>> t.apply(lambda x: x - 1, 'points')
         array([0, 1, 1, 9])
         """
-        #return np.array([fn(v) for v in self[column_label]])
         labels = [self._as_label(s) for s in _as_labels(column_label)]
         for c in labels:
             if not (c in self.labels):
@@ -336,8 +335,7 @@ class Table(collections.abc.MutableMapping):
         """Set the format of a column."""
         if inspect.isclass(formatter) and issubclass(formatter, _formats.Formatter):
             formatter = formatter()
-        for label in _as_labels(column_label_or_labels):
-            label = self._as_label(label)
+        for label in self._as_labels(column_label_or_labels):
             if callable(formatter):
                 self._formats[label] = lambda v, label: v if label else str(formatter(v))
             elif isinstance(formatter, _formats.Formatter):
@@ -379,24 +377,23 @@ class Table(collections.abc.MutableMapping):
         return self
 
     def append_column(self, label, values):
-        """Appends a column to the table.
+        """Appends a column to the table or replaces a column.
 
-        ``__setitem__`` is aliased to this method so
-        ``table.append_column('new_col', [1, 2, 3])`` is equivalent to
-        ``table['new_col'] = [1, 2, 3]``.
+        ``__setitem__`` is aliased to this method:
+            ``table.append_column('new_col', [1, 2, 3])`` is equivalent to
+            ``table['new_col'] = [1, 2, 3]``.
 
         Args:
             ``label`` (str): The label of the new column.
-                Must be a string.
 
             ``values`` (single value or list/array): If a single value, every
                 value in the new column is ``values``.
 
                 If a list or array, the new column contains the values in
-                ``values``. ``values`` must be the same length as the table.
+                ``values``, which must be the same length as the table.
 
         Returns:
-            Original table with new column
+            Original table with new or replaced column
 
         Raises:
             ``ValueError``: If
@@ -489,6 +486,11 @@ class Table(collections.abc.MutableMapping):
         Traceback (most recent call last):
             ...
         ValueError: Invalid arguments. column_label and new_label must be of equal length.
+        >>> table.relabel(['red', 'blue'], ['blue', 'red'])
+        blue | red
+        1    | 12345
+        2    | 123
+        3    | 5123
         """
         if isinstance(column_label, numbers.Integral):
             column_label = self._as_label(column_label)
@@ -497,15 +499,16 @@ class Table(collections.abc.MutableMapping):
         if len(column_label) != len(new_label):
             raise ValueError('Invalid arguments. column_label and new_label '
                 'must be of equal length.')
-        old_to_new = dict(zip(column_label, new_label)) # dictionary to map old labels to new ones
-        for col in old_to_new:
-            if not (col in self._columns):
+        old_to_new = dict(zip(column_label, new_label)) # maps old labels to new ones
+        for label in column_label:
+            if not (label in self.labels):
                 raise ValueError('Invalid labels. Column labels must '
                 'already exist in table in order to be replaced.')
         rewrite = lambda s: old_to_new[s] if s in old_to_new else s
         columns = [(rewrite(s), c) for s, c in self._columns.items()]
         self._columns = collections.OrderedDict(columns)
         for label in self._formats:
+            # TODO(denero) Error when old and new columns share a name
             if label in column_label:
                 formatter = self._formats.pop(label)
                 self._formats[old_to_new[label]] = formatter
@@ -516,12 +519,15 @@ class Table(collections.abc.MutableMapping):
     # Transformation #
     ##################
 
-    def copy(self):
+    def copy(self, *, shallow=False):
         """Return a copy of a Table."""
-        # TODO(denero) Shallow copy by default with an option for deep copy
-        table = Table()
+        table = type(self)()
         for label in self.labels:
-            self._add_column_and_format(table, label, np.copy(self[label]))
+            if shallow:
+                column = self[label]
+            else:
+                column = np.copy(self[label])
+            self._add_column_and_format(table, label, column)
         return table
 
     def select(self, column_label_or_labels):
@@ -555,7 +561,7 @@ class Table(collections.abc.MutableMapping):
         5
         5
         """
-        labels = _as_labels(column_label_or_labels)
+        labels = self._as_labels(column_label_or_labels)
         table = Table()
         for label in labels:
             self._add_column_and_format(table, label, np.copy(self[label]))
@@ -601,7 +607,7 @@ class Table(collections.abc.MutableMapping):
 
         The grouped column will appear first in the result table.
         """
-        self = self._with_columns(self.columns)  # Shallow self
+        self = self.copy(shallow=True)
         collect = _zero_on_type_error(collect)
 
         # Remove column used for grouping
@@ -631,9 +637,10 @@ class Table(collections.abc.MutableMapping):
         """Group rows by multiple columns, aggregating values."""
         collect = _zero_on_type_error(collect)
         columns = []
-        labels = [self._as_label(label) for label in labels]
+        labels = self._as_labels(labels)
         for label in labels:
-            assert label in self.labels
+            if label not in self.labels:
+                raise ValueError("All labels must exist in the table")
             columns.append(self._get_column(label))
         grouped = self.group(list(zip(*columns)), lambda s: s)
         grouped._columns.popitem(last=False) # Discard the column of tuples
@@ -652,7 +659,7 @@ class Table(collections.abc.MutableMapping):
             grouped[_collected_label(collect, label)] = column
         return grouped
 
-    def pivot(self, columns, rows, values, collect=lambda s:s, zero=None):
+    def pivot(self, columns, rows, values, collect=len, zero=None):
         """Generate a table with a column for rows (or a column for each row
         in rows list) and a column for each unique value in columns. Each row
         aggregates over the values that match both row and column.
@@ -721,8 +728,7 @@ class Table(collections.abc.MutableMapping):
         return binned
 
     def stack(self, key, labels=None):
-        """
-        Takes k original columns and returns two columns, with col. 1 of
+        """Takes k original columns and returns two columns, with col. 1 of
         all column names and col. 2 of all associated data.
         """
         rows, labels = [], labels or self.labels
@@ -774,12 +780,17 @@ class Table(collections.abc.MutableMapping):
         return table
 
     def _as_label(self, index_or_label):
+        """Convert index to label."""
         if isinstance(index_or_label, str):
             return index_or_label
         if isinstance(index_or_label, numbers.Integral):
             return self.labels[index_or_label]
         else:
             raise ValueError(str(index_or_label) + ' is not a label or index')
+
+    def _as_labels(self, label_or_labels):
+        """Convert single label to list and convert indices to labels."""
+        return [self._as_label(s) for s in _as_labels(label_or_labels)]
 
     def _unused_label(self, label):
         """Generate an unused label."""
@@ -799,7 +810,7 @@ class Table(collections.abc.MutableMapping):
         elif isinstance(c, numbers.Integral):
             return self[c]
         elif isinstance(c, str):
-            assert c in self.labels, 'label "{}" not in labels {}'.format(c, self.labels)
+            raise ValueError('label "{}" not in labels {}'.format(c, self.labels))
         else:
             assert len(c) == self.num_rows, 'column length mismatch'
             return c
@@ -828,9 +839,8 @@ class Table(collections.abc.MutableMapping):
         count | points
         9     | 10
         """
-        percentiles = [[_util.percentile(p, self[column_name])]
-                       for column_name in self]
-        return Table(percentiles, self.labels)
+        percentiles = [[_util.percentile(p, column)] for column in self.columns]
+        return self._with_columns(percentiles)
 
     def sample(self, k=None, with_replacement=False, weights=None):
         """Returns a new table where k rows are randomly sampled from the
@@ -884,9 +894,7 @@ class Table(collections.abc.MutableMapping):
             k = n
         index = np.random.choice(n, k, replace=with_replacement, p=weights)
         columns = [[c[i] for i in index] for c in self.columns]
-        sample = Table(columns, self.labels)
-        for label in self._formats:
-            sample._formats[label] = self._formats[label]
+        sample = self._with_columns(columns)
         return sample
 
     def split(self, k):
@@ -928,9 +936,10 @@ class Table(collections.abc.MutableMapping):
 
         rows = [self.rows[index] for index in
                 np.random.permutation(self.num_rows)]
-        first = Table.from_rows(rows[:k], self.labels)
-        rest = Table.from_rows(rows[k:], self.labels)
-        for column_label in self._formats :
+        cls = type(self)
+        first = cls(self.labels).with_rows(rows[:k])
+        rest = cls(self.labels).with_rows(rows[k:])
+        for column_label in self._formats:
             first._formats[column_label] = self._formats[column_label]
             rest._formats[column_label] = self._formats[column_label]
         return first, rest
