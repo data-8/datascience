@@ -260,7 +260,8 @@ class Table(collections.abc.MutableMapping):
         if not records:
             return cls()
         labels = sorted(list(records[0].keys()))
-        return cls([[rec[label] for rec in records] for label in labels], labels)
+        columns = [[rec[label] for rec in records] for label in labels]
+        return cls().with_columns(list(zip(labels, columns)))
 
     @classmethod
     def from_columns_dict(cls, columns):
@@ -280,7 +281,7 @@ class Table(collections.abc.MutableMapping):
         z      | 1     | 10
 
         """
-        return cls(list(columns.values()), columns.keys())
+        return cls().with_columns(list(columns.items()))
 
     @classmethod
     def read_table(cls, filepath_or_buffer, *args, **vargs):
@@ -301,11 +302,11 @@ class Table(collections.abc.MutableMapping):
         except AttributeError:
             pass
         df = pandas.read_table(filepath_or_buffer, *args, **vargs)
-        return Table.from_df(df)
+        return cls.from_df(df)
 
     def _with_columns(self, columns):
         """Create a table from a sequence of columns, copying column labels."""
-        table = Table()
+        table = type(self)()
         for label, column in zip(self.labels, columns):
             self._add_column_and_format(table, label, column)
         return table
@@ -321,15 +322,12 @@ class Table(collections.abc.MutableMapping):
     def from_df(cls, df):
         """Convert a Pandas DataFrame into a Table."""
         labels = df.columns
-
-        return Table().with_columns([(label, df[label].values) for label in labels])
+        return cls().with_columns([(label, df[label].values) for label in labels])
 
     @classmethod
     def from_array(cls, arr):
         """Convert a structured NumPy array into a Table."""
-        return Table([arr[f] for f in arr.dtype.names],
-                     arr.dtype.names)
-
+        return cls([arr[f] for f in arr.dtype.names], arr.dtype.names)
 
     #################
     # Magic Methods #
