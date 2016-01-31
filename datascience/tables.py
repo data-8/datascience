@@ -25,166 +25,6 @@ import datascience.formats as _formats
 import datascience.util as _util
 
 
-class _RowSelector(metaclass=abc.ABCMeta):
-    def __init__(self, table):
-        self._table = table
-
-    def __call__(self, row_numbers_or_slice):
-        return self[row_numbers_or_slice]
-
-    @abc.abstractmethod
-    def __getitem__(self, item):
-        raise NotImplementedError()
-
-
-class _RowTaker(_RowSelector):
-    def __getitem__(self, row_indices_or_slice):
-        """Return a new Table of a sequence of rows taken by number.
-
-        Args:
-            ``row_indices_or_slice`` (integer or list of integers or slice):
-            The row index, list of row indices or a slice of row indices to
-            be selected.
-
-        Returns:
-            A new instance of ``Table``.
-
-        >>> grade = ['A+', 'A', 'A-', 'B+', 'B', 'B-']
-        >>> gpa = [4, 4, 3.7, 3.3, 3, 2.7]
-        >>> t = Table([grade, gpa], ['letter grade', 'gpa'])
-        >>> t
-        letter grade | gpa
-        A+           | 4
-        A            | 4
-        A-           | 3.7
-        B+           | 3.3
-        B            | 3
-        B-           | 2.7
-        >>> t.take(0)
-        letter grade | gpa
-        A+           | 4
-        >>> t.take(5)
-        letter grade | gpa
-        B-           | 2.7
-        >>> t.take(-1)
-        letter grade | gpa
-        B-           | 2.7
-        >>> t.take([2, 1, 0])
-        letter grade | gpa
-        A-           | 3.7
-        A            | 4
-        A+           | 4
-        >>> t.take([1, 5])
-        letter grade | gpa
-        A            | 4
-        B-           | 2.7
-        >>> t.take(range(3))
-        letter grade | gpa
-        A+           | 4
-        A            | 4
-        A-           | 3.7
-
-        Note that ``take`` also supports NumPy-like indexing and slicing:
-
-        >>> t.take[:3]
-        letter grade | gpa
-        A+           | 4
-        A            | 4
-        A-           | 3.7
-
-        >>> t.take[2, 1, 0]
-        letter grade | gpa
-        A-           | 3.7
-        A            | 4
-        A+           | 4
-
-        """
-        if isinstance(row_indices_or_slice, collections.Iterable):
-            columns = [np.take(column, row_indices_or_slice, axis=0)
-                       for column in self._table._columns.values()]
-            return self._table._with_columns(columns)
-
-        rows = self._table.rows[row_indices_or_slice]
-        if isinstance(rows, Table.Row):
-            rows = [rows]
-        return Table.from_rows(rows, self._table.labels)
-
-
-class _RowExcluder(_RowSelector):
-    def __getitem__(self, row_indices_or_slice):
-        """Return a new Table without a sequence of rows excluded by number.
-
-        Args:
-            ``row_indices_or_slice`` (integer or list of integers or slice):
-                The row index, list of row indices or a slice of row indices
-                to be excluded.
-
-        Returns:
-            A new instance of ``Table``.
-
-        >>> grade = ['A+', 'A', 'A-', 'B+', 'B', 'B-']
-        >>> gpa = [4, 4, 3.7, 3.3, 3, 2.7]
-        >>> t = Table([grade, gpa], ['letter grade', 'gpa'])
-        >>> t
-        letter grade | gpa
-        A+           | 4
-        A            | 4
-        A-           | 3.7
-        B+           | 3.3
-        B            | 3
-        B-           | 2.7
-        >>> t.exclude(4)
-        letter grade | gpa
-        A+           | 4
-        A            | 4
-        A-           | 3.7
-        B+           | 3.3
-        B-           | 2.7
-        >>> t.exclude(-1)
-        letter grade | gpa
-        A+           | 4
-        A            | 4
-        A-           | 3.7
-        B+           | 3.3
-        B            | 3
-        >>> t.exclude([1, 3, 4])
-        letter grade | gpa
-        A+           | 4
-        A-           | 3.7
-        B-           | 2.7
-        >>> t.exclude(range(3))
-        letter grade | gpa
-        B+           | 3.3
-        B            | 3
-        B-           | 2.7
-
-        Note that ``exclude`` also supports NumPy-like indexing and slicing:
-
-        >>> t.exclude[:3]
-        letter grade | gpa
-        B+           | 3.3
-        B            | 3
-        B-           | 2.7
-
-        >>> t.exclude[1, 3, 4]
-        letter grade | gpa
-        A+           | 4
-        A-           | 3.7
-        B-           | 2.7
-        """
-        if isinstance(row_indices_or_slice, collections.Iterable):
-            without_row_indices = set(row_indices_or_slice)
-            rows = [row for index, row in enumerate(self._table.rows[:])
-                    if index not in without_row_indices]
-            return Table.from_rows(rows, self._table.labels)
-
-        row_slice = row_indices_or_slice
-        if not isinstance(row_slice, slice):
-            row_slice %= self._table.num_rows
-            row_slice = slice(row_slice, row_slice+1)
-        return Table.from_rows(itertools.chain(self._table.rows[:row_slice.start or 0],
-                                               self._table.rows[row_slice.stop:]),
-                               self._table.labels)
 
 class Table(collections.abc.MutableMapping):
     """A sequence of string-labeled columns."""
@@ -1936,10 +1776,6 @@ class Table(collections.abc.MutableMapping):
             return '{0}({1})'.format(type(self).__name__, repr(self._table))
 
 
-# For Sphinx: grab the docstrings from `Taker.__getitem__` and `Withouter.__getitem__`
-Table.take.__doc__ = _RowTaker.__getitem__.__doc__
-Table.exclude.__doc__ = _RowExcluder.__getitem__.__doc__
-
 
 class Q:
     """Query manager for Tables."""
@@ -2032,3 +1868,172 @@ def _is_non_string_iterable(value):
     if isinstance(value, collections.abc.Sequence):
         return True
     return False
+
+###################
+# Slicing support #
+###################
+
+class _RowSelector(metaclass=abc.ABCMeta):
+    def __init__(self, table):
+        self._table = table
+
+    def __call__(self, row_numbers_or_slice):
+        return self[row_numbers_or_slice]
+
+    @abc.abstractmethod
+    def __getitem__(self, item):
+        raise NotImplementedError()
+
+
+class _RowTaker(_RowSelector):
+    def __getitem__(self, row_indices_or_slice):
+        """Return a new Table of a sequence of rows taken by number.
+
+        Args:
+            ``row_indices_or_slice`` (integer or list of integers or slice):
+            The row index, list of row indices or a slice of row indices to
+            be selected.
+
+        Returns:
+            A new instance of ``Table``.
+
+        >>> grade = ['A+', 'A', 'A-', 'B+', 'B', 'B-']
+        >>> gpa = [4, 4, 3.7, 3.3, 3, 2.7]
+        >>> t = Table([grade, gpa], ['letter grade', 'gpa'])
+        >>> t
+        letter grade | gpa
+        A+           | 4
+        A            | 4
+        A-           | 3.7
+        B+           | 3.3
+        B            | 3
+        B-           | 2.7
+        >>> t.take(0)
+        letter grade | gpa
+        A+           | 4
+        >>> t.take(5)
+        letter grade | gpa
+        B-           | 2.7
+        >>> t.take(-1)
+        letter grade | gpa
+        B-           | 2.7
+        >>> t.take([2, 1, 0])
+        letter grade | gpa
+        A-           | 3.7
+        A            | 4
+        A+           | 4
+        >>> t.take([1, 5])
+        letter grade | gpa
+        A            | 4
+        B-           | 2.7
+        >>> t.take(range(3))
+        letter grade | gpa
+        A+           | 4
+        A            | 4
+        A-           | 3.7
+
+        Note that ``take`` also supports NumPy-like indexing and slicing:
+
+        >>> t.take[:3]
+        letter grade | gpa
+        A+           | 4
+        A            | 4
+        A-           | 3.7
+
+        >>> t.take[2, 1, 0]
+        letter grade | gpa
+        A-           | 3.7
+        A            | 4
+        A+           | 4
+
+        """
+        if isinstance(row_indices_or_slice, collections.Iterable):
+            columns = [np.take(column, row_indices_or_slice, axis=0)
+                       for column in self._table._columns.values()]
+            return self._table._with_columns(columns)
+
+        rows = self._table.rows[row_indices_or_slice]
+        if isinstance(rows, Table.Row):
+            rows = [rows]
+        return Table.from_rows(rows, self._table.labels)
+
+
+class _RowExcluder(_RowSelector):
+    def __getitem__(self, row_indices_or_slice):
+        """Return a new Table without a sequence of rows excluded by number.
+
+        Args:
+            ``row_indices_or_slice`` (integer or list of integers or slice):
+                The row index, list of row indices or a slice of row indices
+                to be excluded.
+
+        Returns:
+            A new instance of ``Table``.
+
+        >>> grade = ['A+', 'A', 'A-', 'B+', 'B', 'B-']
+        >>> gpa = [4, 4, 3.7, 3.3, 3, 2.7]
+        >>> t = Table([grade, gpa], ['letter grade', 'gpa'])
+        >>> t
+        letter grade | gpa
+        A+           | 4
+        A            | 4
+        A-           | 3.7
+        B+           | 3.3
+        B            | 3
+        B-           | 2.7
+        >>> t.exclude(4)
+        letter grade | gpa
+        A+           | 4
+        A            | 4
+        A-           | 3.7
+        B+           | 3.3
+        B-           | 2.7
+        >>> t.exclude(-1)
+        letter grade | gpa
+        A+           | 4
+        A            | 4
+        A-           | 3.7
+        B+           | 3.3
+        B            | 3
+        >>> t.exclude([1, 3, 4])
+        letter grade | gpa
+        A+           | 4
+        A-           | 3.7
+        B-           | 2.7
+        >>> t.exclude(range(3))
+        letter grade | gpa
+        B+           | 3.3
+        B            | 3
+        B-           | 2.7
+
+        Note that ``exclude`` also supports NumPy-like indexing and slicing:
+
+        >>> t.exclude[:3]
+        letter grade | gpa
+        B+           | 3.3
+        B            | 3
+        B-           | 2.7
+
+        >>> t.exclude[1, 3, 4]
+        letter grade | gpa
+        A+           | 4
+        A-           | 3.7
+        B-           | 2.7
+        """
+        if isinstance(row_indices_or_slice, collections.Iterable):
+            without_row_indices = set(row_indices_or_slice)
+            rows = [row for index, row in enumerate(self._table.rows[:])
+                    if index not in without_row_indices]
+            return Table.from_rows(rows, self._table.labels)
+
+        row_slice = row_indices_or_slice
+        if not isinstance(row_slice, slice):
+            row_slice %= self._table.num_rows
+            row_slice = slice(row_slice, row_slice+1)
+        return Table.from_rows(itertools.chain(self._table.rows[:row_slice.start or 0],
+                                               self._table.rows[row_slice.stop:]),
+                               self._table.labels)
+
+# For Sphinx: grab the docstrings from `Taker.__getitem__` and `Withouter.__getitem__`
+Table.take.__doc__ = _RowTaker.__getitem__.__doc__
+Table.exclude.__doc__ = _RowExcluder.__getitem__.__doc__
