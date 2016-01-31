@@ -25,11 +25,10 @@ import datascience.formats as _formats
 import datascience.util as _util
 
 
-
 class Table(collections.abc.MutableMapping):
     """A sequence of string-labeled columns."""
 
-    def __init__(self, labels=None, _other=None, formatter=_formats.default_formatter):
+    def __init__(self, labels=None, _deprecated=None, *, formatter=_formats.default_formatter):
         """Create an empty table with column labels.
 
         >>> tiles = Table(['letter', 'count', 'points'])
@@ -46,9 +45,9 @@ class Table(collections.abc.MutableMapping):
         self._formats = dict()
         self.formatter = formatter
 
-        if _other is not None:
+        if _deprecated is not None:
             warnings.warn("Two-argument __init__ is deprecated. Use Table().with_columns(...)", FutureWarning)
-            columns, labels = labels, _other
+            columns, labels = labels, _deprecated
             columns = columns if columns is not None else []
             labels = labels if labels is not None else []
             assert len(labels) == len(columns), 'label/column number mismatch'
@@ -65,6 +64,7 @@ class Table(collections.abc.MutableMapping):
         self.take = _RowTaker(self)
         self.exclude = _RowExcluder(self)
 
+    # Deprecated
     @classmethod
     def empty(cls, labels=None):
         """Create an empty table. Column labels are optional
@@ -89,10 +89,12 @@ class Table(collections.abc.MutableMapping):
         values = [[] for label in labels]
         return cls(values, labels)
 
+    # Deprecated
     @classmethod
     def from_rows(cls, rows, labels):
         """Create a table from a sequence of rows (fixed-length sequences)."""
-        return cls().with_columns(list(zip(labels, list(zip(*rows)))))
+        warnings.warn("Table.from_rows is deprecated. Use Table(labels).with_rows(...)", FutureWarning)
+        return cls(labels).with_rows(rows)
 
     @classmethod
     def from_records(cls, records):
@@ -119,7 +121,6 @@ class Table(collections.abc.MutableMapping):
         b      | 3     | 2
         c      | 3     | 2
         z      | 1     | 10
-
         """
         return cls().with_columns(list(columns.items()))
 
@@ -359,12 +360,15 @@ class Table(collections.abc.MutableMapping):
             return
         if isinstance(row_or_table, Table):
             t = row_or_table
-            row = list(t.select(self.labels)._columns.values())
+            columns = list(t.select(self.labels)._columns.values())
             n = t.num_rows
         else:
-            row, n = row_or_table, 1
+            columns, n = [[value] for value in row_or_table], 1
         for i, column in enumerate(self._columns):
-            self._columns[column] = np.append(self[column], row[i])
+            if self.num_rows:
+                self._columns[column] = np.append(self[column], columns[i])
+            else:
+                self._columns[column] = np.array(columns[i])
         self._num_rows += n
         return self
 
@@ -962,8 +966,7 @@ class Table(collections.abc.MutableMapping):
         d      | 4     | 2
         """
         self = self.copy()
-        for row in rows:
-            self.append(row)
+        self.append(self._with_columns(zip(*rows)))
         return self
 
     def with_column(self, label, values):
@@ -1023,9 +1026,15 @@ class Table(collections.abc.MutableMapping):
         letter | count
         c      | 2
         d      | 4
+        >>> Table().with_columns({'letter': ['c', 'd']})
+        letter
+        c
+        d
         """
         if not labels_and_values:
             return self
+        if isinstance(labels_and_values, collections.abc.Mapping):
+            labels_and_values = list(labels_and_values.items())
         first = labels_and_values[0]
         if not isinstance(first, str) and hasattr(first, '__iter__'):
             for pair in labels_and_values:
