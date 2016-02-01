@@ -25,6 +25,8 @@ import datascience.maps as _maps
 import datascience.formats as _formats
 import datascience.util as _util
 
+#warnings.simplefilter("error")
+
 class Table(collections.abc.MutableMapping):
     """A sequence of string-labeled columns."""
 
@@ -545,7 +547,7 @@ class Table(collections.abc.MutableMapping):
 
         >>> t = Table().with_columns([
         ...     'burgers',  ['cheeseburger', 'hamburger', 'veggie burger'],
-        ...     'prices',   [6, 5, 5]
+        ...     'prices',   [6, 5, 5],
         ...     'calories', [743, 651, 582]])
         >>> t
         burgers       | prices | calories
@@ -677,7 +679,7 @@ class Table(collections.abc.MutableMapping):
 
         # Generate existing combinations of values from columns in rows
         rows_values = sorted(list(set(self.select(rows).rows)))
-        pivoted = Table.from_rows(rows_values, rows)
+        pivoted = type(self)(rows).with_rows(rows_values)
 
         # Generate other columns and add them to pivoted
         by_columns = grouped.index_by(columns)
@@ -737,7 +739,7 @@ class Table(collections.abc.MutableMapping):
         for row in self.rows:
             [rows.append((getattr(row, key), k, v)) for k, v in row.asdict().items()
              if k != key and k in labels]
-        return Table.from_rows(rows, [key, 'column', 'value'])
+        return type(self)([key, 'column', 'value']).with_rows(rows)
 
     def join(self, column_label, other, other_label=None):
         """Generate a table with the columns of self and other, containing rows
@@ -766,7 +768,7 @@ class Table(collections.abc.MutableMapping):
 
         labels = list(self.labels)
         labels += [self._unused_label(s) for s in other.labels]
-        joined = Table.from_rows(joined_rows, labels)
+        joined = type(self)(labels).with_rows(joined_rows)
         del joined[self._unused_label(other_label)] # Remove redundant column
         return joined.move_to_start(column_label).sort(column_label)
 
@@ -1427,19 +1429,18 @@ class Table(collections.abc.MutableMapping):
             ...
         ValueError: The column 'Type of furniture' contains non-numerical values. A bar graph cannot be drawn for this table.
 
-        >>> other_col = [10, 20, 30]
-        >>> foo_table = Table([furniture_type, count, other_col], ['Type of furniture', 'Count', 'Other col'])
-        >>> foo_table
+        >>> other = furniture_table.with_column('Other col', [10, 20, 30])
+        >>> other
         Type of furniture | Count | Other col
         chairs            | 6     | 10
         tables            | 1     | 20
         desks             | 2     | 30
 
-        >>> foo_table.barh('Type of furniture') # doctest: +SKIP
+        >>> other.barh('Type of furniture') # doctest: +SKIP
         <bar graph with Type of furniture as categories and Count values>
         <bar graph with Type of furniture as categories and Other col values>
 
-        >>> foo_table.barh('Type of furniture', overlay=True) # doctest: +SKIP
+        >>> other.barh('Type of furniture', overlay=True) # doctest: +SKIP
         <bar graph with Type of furniture as categories and Count + Other col as
         the two bars for each category>
         """
@@ -1977,7 +1978,7 @@ class _RowTaker(_RowSelector):
         rows = self._table.rows[row_indices_or_slice]
         if isinstance(rows, Table.Row):
             rows = [rows]
-        return Table.from_rows(rows, self._table.labels)
+        return self._table._with_columns(zip(*rows))
 
 
 class _RowExcluder(_RowSelector):
@@ -2052,9 +2053,9 @@ class _RowExcluder(_RowSelector):
         if not isinstance(row_slice, slice):
             row_slice %= self._table.num_rows
             row_slice = slice(row_slice, row_slice+1)
-        return Table.from_rows(itertools.chain(self._table.rows[:row_slice.start or 0],
-                                               self._table.rows[row_slice.stop:]),
-                               self._table.labels)
+        rows = itertools.chain(self._table.rows[:row_slice.start or 0],
+                               self._table.rows[row_slice.stop:])
+        return self._table._with_columns(zip(*rows))
 
 # For Sphinx: grab the docstrings from `Taker.__getitem__` and `Withouter.__getitem__`
 Table.take.__doc__ = _RowTaker.__getitem__.__doc__
