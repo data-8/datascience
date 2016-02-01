@@ -358,8 +358,8 @@ def test_pivot(t):
     test = t.pivot('points', 'early', 'exists')
     assert_equal(test, """
     early | 1 exists | 2 exists | 10 exists
-    False | [1]      | None     | [1]
-    True  | [1]      | [1 1]    | None
+    False | 1        | 0        | 1
+    True  | 1        | 2        | 0
     """)
 
 
@@ -372,8 +372,8 @@ def test_pivot_multiple_rows(t):
     test = t.pivot('points', ['early', 'late'], 'exists')
     assert_equal(test, """
     early | late  | 1 exists | 2 exists | 10 exists
-    False | True  | [1]      | None     | [1]
-    True  | False | [1]      | [1 1]    | None
+    False | True  | 1        | 0        | 1
+    True  | False | 1        | 2        | 0
     """)
 
 
