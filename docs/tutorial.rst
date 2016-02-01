@@ -10,7 +10,7 @@ For other useful tutorials and examples, see:
 - `The textbook introduction to Tables`_
 - `Example notebooks`_
 
-.. _The textbook introduction to Tables: http://data8.org/text/1_data.html#tables
+.. _The textbook introduction to Tables: http://www.inferentialthinking.com/chapter1/tables.html
 .. _Example notebooks: https://github.com/deculler/TableDemos
 
 .. contents:: Table of Contents
@@ -21,8 +21,8 @@ Getting Started
 ---------------
 
 The most important functionality in the package is is the :py:class:`Table`
-class, which is the structure used to represent columns of data. You may load
-the class with:
+class, which is the structure used to represent columns of data. First, load
+the class:
 
 .. ipython:: python
 
