@@ -3,7 +3,7 @@
 A library for introductory data science.
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/dsten/datascience?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-[![Documentation Status](https://readthedocs.org/projects/datascience/badge/?version=v0.4.0)](http://datascience.readthedocs.org/en/v0.4.0/?badge=v0.4.0)
+[![Documentation Status](https://readthedocs.org/projects/datascience/badge/?version=v0.5.1)](http://datascience.readthedocs.org/en/v0.5.1/?badge=v0.5.1)
 
 
 *written by Professor [John DeNero](http://denero.org), Professor
