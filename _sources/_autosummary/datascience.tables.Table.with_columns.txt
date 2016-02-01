@@ -1,0 +1,6 @@
+datascience.tables.Table.with_columns
+=====================================
+
+.. currentmodule:: datascience.tables
+
+.. automethod:: Table.with_columns

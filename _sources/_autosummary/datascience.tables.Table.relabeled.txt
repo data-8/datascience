@@ -1,0 +1,6 @@
+datascience.tables.Table.relabeled
+==================================
+
+.. currentmodule:: datascience.tables
+
+.. automethod:: Table.relabeled

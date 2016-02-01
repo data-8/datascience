@@ -1,0 +1,6 @@
+datascience.tables.Table.num_columns
+====================================
+
+.. currentmodule:: datascience.tables
+
+.. autoattribute:: Table.num_columns
