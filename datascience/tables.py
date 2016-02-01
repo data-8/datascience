@@ -3,6 +3,7 @@
 __all__ = ['Table', 'Q']
 
 
+
 import abc
 import collections
 import collections.abc
@@ -23,7 +24,6 @@ import IPython
 import datascience.maps as _maps
 import datascience.formats as _formats
 import datascience.util as _util
-
 
 class Table(collections.abc.MutableMapping):
     """A sequence of string-labeled columns."""
@@ -262,7 +262,7 @@ class Table(collections.abc.MutableMapping):
 
         >>> tiles = Table().with_columns([
         ...     'letter', ['c', 'd'],
-        ...     'count', [2, 4],
+        ...     'count',  [2, 4],
         ... ])
         >>> list(tiles.column('letter'))
         ['c', 'd']
@@ -306,10 +306,10 @@ class Table(collections.abc.MutableMapping):
             A numpy array consisting of results of applying ``fn`` to elements
             specified by ``column_label`` in each row.
 
-        >>> letter = ['a', 'b', 'c', 'z']
-        >>> count = [9, 3, 3, 1]
-        >>> points = [1, 2, 2, 10]
-        >>> t = Table([letter, count, points], ['letter', 'count', 'points'])
+        >>> t = Table().with_columns([
+        ...     'letter', ['a', 'b', 'c', 'z'],
+        ...     'count',  [9, 3, 3, 1],
+        ...     'points', [1, 2, 2, 10]])
         >>> t
         letter | count | points
         a      | 9     | 1
@@ -401,10 +401,10 @@ class Table(collections.abc.MutableMapping):
                 - ``values`` is a list/array and does not have the same length
                   as the number of rows in the table.
 
-        >>> letter = ['a', 'b', 'c', 'z']
-        >>> count = [9, 3, 3, 1]
-        >>> points = [1, 2, 2, 10]
-        >>> table = Table([letter, count, points], ['letter', 'count', 'points'])
+        >>> table = Table().with_columns([
+        ...     'letter', ['a', 'b', 'c', 'z'],
+        ...     'count',  [9, 3, 3, 1],
+        ...     'points', [1, 2, 2, 10]])
         >>> table
         letter | count | points
         a      | 9     | 1
@@ -471,7 +471,9 @@ class Table(collections.abc.MutableMapping):
         Returns:
             Original table with modified labels
 
-        >>> table = Table([(1, 2, 3), (12345, 123, 5123)], ['points', 'id'])
+        >>> table = Table().with_columns([
+        ...     'points', (1, 2, 3),
+        ...     'id',     (12345, 123, 5123)])
         >>> table.relabel('id', 'yolo')
         points | yolo
         1      | 12345
@@ -541,10 +543,10 @@ class Table(collections.abc.MutableMapping):
         Returns:
             An instance of ``Table`` containing only selected columns.
 
-        >>> burgers = ['cheeseburger', 'hamburger', 'veggie burger']
-        >>> prices = [6, 5, 5]
-        >>> calories = [743, 651, 582]
-        >>> t = Table([burgers, prices, calories], ['burgers', 'prices', 'calories'])
+        >>> t = Table().with_columns([
+        ...     'burgers',  ['cheeseburger', 'hamburger', 'veggie burger'],
+        ...     'prices',   [6, 5, 5]
+        ...     'calories', [743, 651, 582]])
         >>> t
         burgers       | prices | calories
         cheeseburger  | 6      | 743
@@ -826,9 +828,9 @@ class Table(collections.abc.MutableMapping):
         pth percentile of a column is the smallest value that at at least as
         large as the p% of numbers in the column.
 
-        >>> count = [9, 3, 3, 1]
-        >>> points = [1, 2, 2, 10]
-        >>> table = Table([count, points], ['count', 'points'])
+        >>> table = Table().with_columns([
+        ...     'count',  [9, 3, 3, 1],
+        ...     'points', [1, 2, 2, 10]])
         >>> table
         count | points
         9     | 1
@@ -864,26 +866,26 @@ class Table(collections.abc.MutableMapping):
         Returns:
             A new instance of ``Table``.
 
-        >>> job = ['a', 'b', 'c', 'd']
-        >>> wage = [10, 20, 15, 8]
-        >>> some_table = Table([job, wage], ['job', 'wage'])
-        >>> some_table
+        >>> jobs = Table().with_columns([
+        ...     'job',  ['a', 'b', 'c', 'd'],
+        ...     'wage', [10, 20, 15, 8]])
+        >>> jobs
         job  | wage
         a    | 10
         b    | 20
         c    | 15
         d    | 8
-        >>> some_table.sample() # doctest: +SKIP
+        >>> jobs.sample() # doctest: +SKIP
         job  | wage
         b    | 20
         c    | 15
         a    | 10
         d    | 8
-        >>> some_table.sample(k = 2) # doctest: +SKIP
+        >>> jobs.sample(k = 2) # doctest: +SKIP
         job  | wage
         b    | 20
         c    | 15
-        >>> some_table.sample(k = 2, with_replacement = True,
+        >>> jobs.sample(k = 2, with_replacement = True,
         ...     weights = [0.5, 0.5, 0, 0]) # doctest: +SKIP
         job  | wage
         a    | 10
@@ -1005,7 +1007,7 @@ class Table(collections.abc.MutableMapping):
 
         >>> tiles = Table().with_columns([
         ...     'letter', ['c', 'd'],
-        ...     'count', [2, 4],
+        ...     'count',  [2, 4],
         ... ])
         >>> tiles.with_column('points', [3, 2])
         letter | count | points
@@ -1029,14 +1031,14 @@ class Table(collections.abc.MutableMapping):
 
         >>> Table().with_columns([
         ...     'letter', ['c', 'd'],
-        ...     'count', [2, 4],
+        ...     'count',  [2, 4],
         ... ])
         letter | count
         c      | 2
         d      | 4
         >>> Table().with_columns([
         ...     ['letter', ['c', 'd']],
-        ...     ['count', [2, 4]],
+        ...     ['count',  [2, 4]],
         ... ])
         letter | count
         c      | 2
@@ -1224,31 +1226,27 @@ class Table(collections.abc.MutableMapping):
         Returns:
             None, outputs a file with name ``filename``.
 
-        >>> job = ['a', 'b', 'c', 'd']
-        >>> wage = [10, 20, 15, 8]
-        >>> some_table = Table([job, wage], ['job', 'wage'])
-        >>> some_table
+        >>> jobs = Table().with_columns([
+        ...     'job',  ['a', 'b', 'c', 'd'],
+        ...     'wage', [10, 20, 15, 8]])
+        >>> jobs
         job  | wage
         a    | 10
         b    | 20
         c    | 15
         d    | 8
-        >>> some_table.to_csv('my_table.csv') # doctest: +SKIP
+        >>> jobs.to_csv('my_table.csv') # doctest: +SKIP
         <outputs a file called my_table.csv in the current directory>
         """
-        # We use index = False to avoid the row number output that pandas does
-        # by default.
-        self.to_df().to_csv(filename, index = False)
+        # index=False avoids row numbers in the output
+        self.to_df().to_csv(filename, index=False)
 
     def to_array(self):
         """Convert the table to a NumPy array."""
-        dt = np.dtype(list(zip(self.labels,
-                               (c.dtype for c in self.columns))))
+        dt = np.dtype(list(zip(self.labels, (c.dtype for c in self.columns))))
         arr = np.empty_like(self.columns[0], dt)
-
         for label in self.labels:
             arr[label] = self[label]
-
         return arr
 
     ##################
@@ -1271,7 +1269,7 @@ class Table(collections.abc.MutableMapping):
     default_hist_alpha = 0.7
 
     default_options = {
-        'alpha': 0.8,
+        'alpha': 0.7,
     }
 
     def _visualize(self, x_label, y_labels, ticks, overlay, draw, annotate, width=6, height=4):
@@ -1322,9 +1320,7 @@ class Table(collections.abc.MutableMapping):
         A total of n - 1 charts are created where n is the number of columns
         in the table.
 
-        Requires every column except for `column_for_categories` to be
-        numerical. If the columns contain other types, a `ValueError` is
-        raised.
+        Every column except for `column_for_categories` must be numerical.
 
         Args:
             column_for_categories (str): The name to use for the bar chart
@@ -1347,7 +1343,6 @@ class Table(collections.abc.MutableMapping):
         Raises:
             ValueError: The Table contains non-numerical values in columns
             other than `column_for_categories`
-
         """
         options = self.default_options.copy()
         options.update(vargs)
@@ -1392,9 +1387,7 @@ class Table(collections.abc.MutableMapping):
         as the rows in the `column_for_categories` may not output a bar graph
         with the labels in that order.
 
-        Requires every column except for `column_for_categories` to be
-        numerical. If the columns contain other types, a `ValueError` is
-        raised.
+        Every column except for `column_for_categories` must be numerical.
 
         Args:
             column_for_categories (str): The name to use for the bar chart
@@ -1418,9 +1411,9 @@ class Table(collections.abc.MutableMapping):
             ValueError: The Table contains non-numerical values in columns
             other than `column_for_categories`
 
-        >>> furniture_type = ['chairs', 'tables', 'desks']
-        >>> count = [6, 1, 2]
-        >>> furniture_table = Table([furniture_type, count], ['Type of furniture', 'Count'])
+        >>> furniture_table = Table().with_columns([
+        ...     'Type of furniture', ['chairs', 'tables', 'desks'],
+        ...     'Count', [6, 1, 2]])
         >>> furniture_table
         Type of furniture | Count
         chairs            | 6
@@ -1526,8 +1519,7 @@ class Table(collections.abc.MutableMapping):
     def hist(self, overlay=False, bins=None, counts=None, **vargs):
         """Plots one histogram for each column in the table.
 
-        Requires all columns in the table to contain numerical values only.
-        If the columns contain other types, a ValueError is raised.
+        Every column must be numerical.
 
         Kwargs:
             overlay (bool): If True, plots 1 chart with all the histograms
@@ -1554,22 +1546,22 @@ class Table(collections.abc.MutableMapping):
         Raises:
             ValueError: The Table contains non-numerical values
 
-        >>> count = [9, 3, 3, 1]
-        >>> points = [1, 2, 2, 10]
-        >>> table = Table([count, points], ['count', 'points'])
-        >>> table
+        >>> t = Table().with_columns([
+        ...     'count',  [9, 3, 3, 1],
+        ...     'points', [1, 2, 2, 10]])
+        >>> t
         count | points
         9     | 1
         3     | 2
         3     | 2
         1     | 10
-        >>> table.hist() # doctest: +SKIP
+        >>> t.hist() # doctest: +SKIP
         <histogram of values in count>
         <histogram of values in points>
 
-        >>> value = [101, 102, 103]
-        >>> prop = [0.25, 0.5, 0.25]
-        >>> t = Table([value, prop], ['value', 'proportion'])
+        >>> t = Table().with_columns([
+        ...     'value',      [101, 102, 103],
+        ...     'proportion', [0.25, 0.5, 0.25]])
         >>> t.hist(counts='value') # doctest: +SKIP
         <histogram of values in prop weighted by corresponding values in value>
         """
@@ -1625,6 +1617,8 @@ class Table(collections.abc.MutableMapping):
     def boxplot(self, **vargs):
         """Plots a boxplot for the table.
 
+        Every column must be numerical.
+
         Kwargs:
             vargs: Additional arguments that get passed into `plt.boxplot`.
                 See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.boxplot
@@ -1667,7 +1661,10 @@ class Table(collections.abc.MutableMapping):
         values = list(columns.values())
         plt.boxplot(values, **vargs)
 
+    # Deprecated
     def points(self, column__lat, column__long, labels=None, colors=None, **kwargs) :
+        """Draw points from latitude and longitude columns [deprecated]."""
+        warnings.warn("points is deprecated. Use Circle.map", FutureWarning)
         latitudes = self._get_column(column__lat)
         longitudes = self._get_column(column__long)
         if labels is not None : labels = self._get_column(labels)
