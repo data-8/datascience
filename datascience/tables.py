@@ -96,14 +96,14 @@ class Table(collections.abc.MutableMapping):
             return cls()
         labels = sorted(list(records[0].keys()))
         columns = [[rec[label] for rec in records] for label in labels]
-        return cls().with_columns(list(zip(labels, columns)))
+        return cls().with_columns(zip(labels, columns))
 
     # Deprecated
     @classmethod
     def from_columns_dict(cls, columns):
         """Create a table from a mapping of column labels to column values. [Deprecated]"""
         warnings.warn("Table.from_columns_dict is deprecated. Use Table().with_columns(...)", FutureWarning)
-        return cls().with_columns(list(columns.items()))
+        return cls().with_columns(columns.items())
 
     @classmethod
     def read_table(cls, filepath_or_buffer, *args, **vargs):
@@ -1032,6 +1032,8 @@ class Table(collections.abc.MutableMapping):
             return self
         if isinstance(labels_and_values, collections.abc.Mapping):
             labels_and_values = list(labels_and_values.items())
+        if not isinstance(labels_and_values, collections.abc.Sequence):
+            labels_and_values = list(labels_and_values)
         first = labels_and_values[0]
         if not isinstance(first, str) and hasattr(first, '__iter__'):
             for pair in labels_and_values:
