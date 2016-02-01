@@ -2,8 +2,6 @@
 
 __all__ = ['Table', 'Q']
 
-
-
 import abc
 import collections
 import collections.abc
@@ -100,6 +98,7 @@ class Table(collections.abc.MutableMapping):
         columns = [[rec[label] for rec in records] for label in labels]
         return cls().with_columns(list(zip(labels, columns)))
 
+    # Deprecated
     @classmethod
     def from_columns_dict(cls, columns):
         """Create a table from a mapping of column labels to column values. [Deprecated]"""
