@@ -1006,8 +1006,8 @@ class Table(collections.abc.MutableMapping):
         """Return a table with additional or replaced columns.
 
         Args:
-            ``labels_and_values``: An alternating list of labels and values.
-
+            ``labels_and_values``: An alternating list of labels and values or
+                a list of label-values pairs.
 
         >>> Table().with_columns([
         ...     'letter', ['c', 'd'],
