@@ -42,28 +42,37 @@ Creation
     :toctree: _autosummary
 
     Table.__init__
-    Table.empty
-    Table.from_rows
     Table.from_records
-    Table.from_columns_dict
     Table.read_table
     Table.from_df
     Table.from_array
+
+Extension (does not modify original table)
+
+.. autosummary::
+    :toctree: _autosummary
+
+    Table.with_column
+    Table.with_columns
+    Table.with_row
+    Table.with_rows
+    Table.relabeled
 
 Accessing values
 
 .. autosummary::
     :toctree: _autosummary
 
-    Table.values
+    Table.num_columns
+    Table.columns
+    Table.column
     Table.num_rows
     Table.rows
-    Table.column_labels
-    Table.columns
+    Table.row
+    Table.labels
 
     Table.column_index
     Table.apply
-
 
 Mutation (modifies table in place)
 
@@ -98,8 +107,6 @@ Transformation (creates a new table)
     Table.percentile
     Table.sample
     Table.split
-    Table.with_column
-    Table.with_relabeling
     Table.bin
 
 Exporting / Displaying
