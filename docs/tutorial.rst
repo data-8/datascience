@@ -60,10 +60,6 @@ columns.
 
 .. ipython:: python
 
-    letters =
-    counts =
-    points =
-
     t = Table().with_columns([
         'letter', ['a', 'b', 'c', 'z'],
         'count',  [  9,   3,   3,   1],
@@ -114,14 +110,16 @@ Accessing Values
 ----------------
 
 To access values of columns in the table, use
-:meth:`~datascience.tables.Table.columns`, which takes a column label or index.
+:meth:`~datascience.tables.Table.column`, which takes a column label or index
+and returns an array. Alternatively, :meth:`~datascience.tables.Table.columns`
+returns a list of columns (arrays).
 
 .. ipython:: python
 
     t
 
-    t.columns('letter')
-    t.columns(1)
+    t.column('letter')
+    t.column(1)
 
 You can use bracket notation as a shorthand for this method:
 
@@ -130,7 +128,8 @@ You can use bracket notation as a shorthand for this method:
     t['letter'] # This is a shorthand for t.column('letter')
     t[1]        # This is a shorthand for t.column(1)
 
-To access values by row, :meth:`~datascience.tables.Table.rows` returns an
+To access values by row, :meth:`~datascience.tables.Table.row` returns a
+row by index. Alternatively, :meth:`~datascience.tables.Table.rows` returns an
 list-like :class:`~datascience.tables.Table.Rows` object that contains
 tuple-like :class:`~datascience.tables.Table.Row` objects.
 
@@ -354,8 +353,8 @@ What's the difference in mean birth weight of the two categories?
 
 .. ipython:: python
 
-    nonsmoking_mean = smoker_and_wt.where('m_smoker', 0).values('birthwt').mean()
-    smoking_mean = smoker_and_wt.where('m_smoker', 1).values('birthwt').mean()
+    nonsmoking_mean = smoker_and_wt.where('m_smoker', 0).column('birthwt').mean()
+    smoking_mean = smoker_and_wt.where('m_smoker', 1).column('birthwt').mean()
 
     observed_diff = nonsmoking_mean - smoking_mean
     observed_diff
@@ -372,8 +371,8 @@ Let's do the bootstrap test on the two categories.
         We then split according to the number of nonsmokers in the original sample.
         """
         resample = smoker_and_wt.sample(with_replacement = True)
-        bootstrap_diff = resample.values('birthwt')[:num_nonsmokers].mean() - \
-            resample.values('birthwt')[num_nonsmokers:].mean()
+        bootstrap_diff = resample.column('birthwt')[:num_nonsmokers].mean() - \
+            resample.column('birthwt')[num_nonsmokers:].mean()
         return bootstrap_diff
 
     repetitions = 1000

@@ -609,7 +609,7 @@ class Table(collections.abc.MutableMapping):
             c = [collect(np.array([row[i] for row in groups[k]])) for k in keys]
             columns.append(c)
 
-        grouped = type(self)(columns, labels)
+        grouped = type(self)().with_columns(zip(labels, columns))
         assert column_label == self._unused_label(column_label)
         grouped[column_label] = keys
         grouped.move_to_start(column_label)
