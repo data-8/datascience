@@ -25,8 +25,6 @@ import datascience.maps as _maps
 import datascience.formats as _formats
 import datascience.util as _util
 
-#warnings.simplefilter("error")
-
 class Table(collections.abc.MutableMapping):
     """A sequence of string-labeled columns."""
 
@@ -69,12 +67,7 @@ class Table(collections.abc.MutableMapping):
     # Deprecated
     @classmethod
     def empty(cls, labels=None):
-        """Create an empty table. Column labels are optional [Deprecated]
-
-        >>> t = Table.empty(['x', 'y'])
-        >>> t.append((2, 3))
-        x    | y
-        2    | 3
+        """Create an empty table. Column labels are optional. [Deprecated]
 
         Args:
             ``labels`` (None or list): If ``None``, a table with 0
@@ -109,21 +102,7 @@ class Table(collections.abc.MutableMapping):
 
     @classmethod
     def from_columns_dict(cls, columns):
-        """Create a table from a mapping of column labels to column values. [Deprecated]
-
-        >>> from collections import OrderedDict
-        >>> columns = OrderedDict()
-        >>> columns['letter'] = ['a', 'b', 'c', 'z']
-        >>> columns['count'] = [9, 3, 3, 1]
-        >>> columns['points'] = [1, 2, 2, 10]
-        >>> t = Table.from_columns_dict(columns)
-        >>> t
-        letter | count | points
-        a      | 9     | 1
-        b      | 3     | 2
-        c      | 3     | 2
-        z      | 1     | 10
-        """
+        """Create a table from a mapping of column labels to column values. [Deprecated]"""
         warnings.warn("Table.from_columns_dict is deprecated. Use Table().with_columns(...)", FutureWarning)
         return cls().with_columns(list(columns.items()))
 
@@ -915,16 +894,16 @@ class Table(collections.abc.MutableMapping):
         Returns:
             A tuple containing two instances of ``Table``.
 
-        >>> job = ['a', 'b', 'c', 'd']
-        >>> wage = [10, 20, 15, 8]
-        >>> foo_table = Table([job, wage], ['job', 'wage'])
-        >>> foo_table
+        >>> jobs = Table().with_columns([
+        ...     'job',  ['a', 'b', 'c', 'd'],
+        ...     'wage', [10, 20, 15, 8]])
+        >>> jobs
         job  | wage
         a    | 10
         b    | 20
         c    | 15
         d    | 8
-        >>> sample, rest = foo_table.split(3)
+        >>> sample, rest = jobs.split(3)
         >>> sample # doctest: +SKIP
         job  | wage
         c    | 15
@@ -1632,9 +1611,9 @@ class Table(collections.abc.MutableMapping):
         Raises:
             ValueError: The Table contains columns with non-numerical values.
 
-        >>> test1_scores = [92.5, 88, 72, 71, 99, 100, 95, 83, 94, 93]
-        >>> test2_scores = [89, 84, 74, 66, 92, 99, 88, 81, 95, 94]
-        >>> table = Table([test1_scores, test2_scores], ['test1', 'test2'])
+        >>> table = Table().with_columns([
+        ...     'test1', [92.5, 88, 72, 71, 99, 100, 95, 83, 94, 93],
+        ...     'test2', [89, 84, 74, 66, 92, 99, 88, 81, 95, 94]])
         >>> table
         test1 | test2
         92.5  | 89
@@ -1664,7 +1643,7 @@ class Table(collections.abc.MutableMapping):
 
     # Deprecated
     def points(self, column__lat, column__long, labels=None, colors=None, **kwargs) :
-        """Draw points from latitude and longitude columns [deprecated]."""
+        """Draw points from latitude and longitude columns. [Deprecated]"""
         warnings.warn("points is deprecated. Use Circle.map", FutureWarning)
         latitudes = self._get_column(column__lat)
         longitudes = self._get_column(column__long)
@@ -1707,10 +1686,10 @@ class Table(collections.abc.MutableMapping):
         Raises:
             ``ValueError``: The table contains non-numerical values in columns.
 
-        >>> x = [9, 3, 3, 1]
-        >>> y = [1, 2, 2, 10]
-        >>> z = [3, 4, 5, 6]
-        >>> table = Table([x, y, z], ['x', 'y', 'z'])
+        >>> table = Table().with_columns([
+        ...     'x', [9, 3, 3, 1],
+        ...     'y', [1, 2, 2, 10],
+        ...     'z', [3, 4, 5, 6]])
         >>> table
         x    | y    | z
         9    | 1    | 3
@@ -1920,9 +1899,9 @@ class _RowTaker(_RowSelector):
         Returns:
             A new instance of ``Table``.
 
-        >>> grade = ['A+', 'A', 'A-', 'B+', 'B', 'B-']
-        >>> gpa = [4, 4, 3.7, 3.3, 3, 2.7]
-        >>> t = Table([grade, gpa], ['letter grade', 'gpa'])
+        >>> t = Table().with_columns([
+        ...     'letter grade', ['A+', 'A', 'A-', 'B+', 'B', 'B-'],
+        ...     'gpa', [4, 4, 3.7, 3.3, 3, 2.7]])
         >>> t
         letter grade | gpa
         A+           | 4
@@ -1993,9 +1972,9 @@ class _RowExcluder(_RowSelector):
         Returns:
             A new instance of ``Table``.
 
-        >>> grade = ['A+', 'A', 'A-', 'B+', 'B', 'B-']
-        >>> gpa = [4, 4, 3.7, 3.3, 3, 2.7]
-        >>> t = Table([grade, gpa], ['letter grade', 'gpa'])
+        >>> t = Table().with_columns([
+        ...     'letter grade', ['A+', 'A', 'A-', 'B+', 'B', 'B-'],
+        ...     'gpa', [4, 4, 3.7, 3.3, 3, 2.7]])
         >>> t
         letter grade | gpa
         A+           | 4
@@ -2047,7 +2026,7 @@ class _RowExcluder(_RowSelector):
             without_row_indices = set(row_indices_or_slice)
             rows = [row for index, row in enumerate(self._table.rows[:])
                     if index not in without_row_indices]
-            return Table.from_rows(rows, self._table.labels)
+            return self._table._with_columns(zip(*rows))
 
         row_slice = row_indices_or_slice
         if not isinstance(row_slice, slice):
