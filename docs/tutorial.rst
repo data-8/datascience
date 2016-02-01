@@ -55,27 +55,27 @@ Creating a Table
 
 A Table is a sequence of labeled columns of data.
 
-The basic Table constructor works as follows:
+A Table can be constructed from scratch by extending an empty table with
+columns.
 
 .. ipython:: python
 
-    letters = ['a', 'b', 'c', 'z']
-    counts = [9, 3, 3, 1]
-    points = [1, 2, 2, 10]
+    letters =
+    counts =
+    points =
 
-    t = Table(columns=[letters, counts, points],
-              labels=['letter', 'count', 'points'])
+    t = Table().with_columns([
+        'letter', ['a', 'b', 'c', 'z'],
+        'count',  [  9,   3,   3,   1],
+        'points', [  1,   2,   2,  10],
+    ])
 
     print(t)
 
-Note how the first keyword, ``columns``, specifies the contents of the table,
-and how the second, ``labels``, gives a name to each column. See
-:meth:`~datascience.tables.Table.__init__` for more details.
-
 ------
 
-A table could also be read from a CSV file (that can be exported from an Excel
-spreadsheet, for example).  Here's the content of an example file:
+More often, a table is read from a CSV file (or an Excel spreadsheet).  Here's
+the content of an example file:
 
 .. ipython:: python
 
@@ -97,43 +97,38 @@ CSVs from URLs are also valid inputs to
 
 ------
 
-For convenience, you can also initialize a Table from a dictionary of column
-names using
-:meth:`~datascience.tables.Table.from_columns_dict`.
+It's also possible to add columns from a dictionary, but this option is
+discouraged because dictionaries do not preserve column order.
 
 .. ipython:: python
 
-    Table.from_columns_dict({
-       'letter': letters,
-       'count': counts,
-       'points': points,
+    t = Table().with_columns({
+        'letter': ['a', 'b', 'c', 'z'],
+        'count':  [  9,   3,   3,   1],
+        'points': [  1,   2,   2,  10],
     })
 
-This example illustrates the fact that built-in Python dictionaries don't
-preserve their key order -- the dictionary keys are ordered ``'letter'``,
-``'count'``, then ``'points'``, but the table columns are ordered ``'points'``,
-``'count'``, then ``'letter'``). If you want to ensure the order of your
-columns, use an ``OrderedDict``.
+    print(t)
 
 Accessing Values
 ----------------
 
 To access values of columns in the table, use
-:meth:`~datascience.tables.Table.values`.
+:meth:`~datascience.tables.Table.columns`, which takes a column label or index.
 
 .. ipython:: python
 
     t
 
-    t.values('letter')
-    t.values('count')
+    t.columns('letter')
+    t.columns(1)
 
-Use bracket notation as a shorthand for this method:
+You can use bracket notation as a shorthand for this method:
 
 .. ipython:: python
 
-    t['letter'] # This is a shorthand for t.values('letter')
-    t['count'] # This is a shorthand for t.values('count')
+    t['letter'] # This is a shorthand for t.column('letter')
+    t[1]        # This is a shorthand for t.column(1)
 
 To access values by row, :meth:`~datascience.tables.Table.rows` returns an
 list-like :class:`~datascience.tables.Table.Rows` object that contains
@@ -143,6 +138,7 @@ tuple-like :class:`~datascience.tables.Table.Row` objects.
 
     t.rows
     t.rows[0]
+    t.row(0)
 
     second = t.rows[1]
     second
@@ -179,14 +175,14 @@ Selecting columns with :meth:`~datascience.tables.Table.select`:
     t.select('letter')
     t.select(['letter', 'points'])
 
-Renaming columns with :meth:`~datascience.tables.Table.with_relabeling`:
+Renaming columns with :meth:`~datascience.tables.Table.relabeled`:
 
 .. ipython:: python
 
     t
-    t.with_relabeling('points', 'other name')
+    t.relabeled('points', 'other name')
     t
-    t.with_relabeling(['letter', 'count', 'points'], ['x', 'y', 'z'])
+    t.relabeled(['letter', 'count', 'points'], ['x', 'y', 'z'])
 
 Selecting out rows by index with :meth:`~datascience.tables.Table.take` and
 conditionally with :meth:`~datascience.tables.Table.where`:
@@ -217,23 +213,20 @@ Operate on table data with :meth:`~datascience.tables.Table.sort`,
 
 .. ipython:: python
 
-    t.group('count')
-
     # You may pass a reducing function into the collect arg
     # Note the renaming of the points column because of the collect arg
-    t.select(['count', 'points']).group('count', collect = sum)
+    t.select(['count', 'points']).group('count', collect=sum)
 
 .. ipython:: python
 
-    other_table = Table([
-        ['married', 'married', 'partner', 'partner', 'married'],
-        ['Working as paid', 'Working as paid', 'Not working', 'Not working', 'Not working'],
-        [1, 1, 1, 1, 1]
-    ],
-    ['mar_status', 'empl_status', 'count'])
+    other_table = Table().with_columns([
+        'mar_status',  ['married', 'married', 'partner', 'partner', 'married'],
+        'empl_status', ['Working as paid', 'Working as paid', 'Not working',
+                        'Not working', 'Not working'],
+        'count',       [1, 1, 1, 1, 1]])
     other_table
 
-    other_table.pivot('mar_status', 'empl_status', 'count', collect = sum)
+    other_table.pivot('mar_status', 'empl_status', 'count', collect=sum)
 
 Visualizing Data
 ----------------
@@ -242,11 +235,9 @@ We'll start with some data drawn at random from two normal distributions:
 
 .. ipython:: python
 
-    normal_data = Table(
-        [ np.random.normal(loc = 1, scale = 2, size = 100),
-          np.random.normal(loc = 4, scale = 3, size = 100) ],
-        ['data1', 'data2']
-    )
+    normal_data = Table().with_columns([
+        'data1', np.random.normal(loc = 1, scale = 2, size = 100),
+        'data2', np.random.normal(loc = 4, scale = 3, size = 100)])
 
     normal_data
 
