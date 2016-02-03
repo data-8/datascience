@@ -643,8 +643,8 @@
 
         <span class="c1"># Remove column used for grouping</span>
         <span class="n">column</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_column</span><span class="p">(</span><span class="n">column_or_label</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">column_or_label</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">:</span>
-            <span class="n">column_label</span> <span class="o">=</span> <span class="n">column_or_label</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">column_or_label</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">column_or_label</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Integral</span><span class="p">):</span>
+            <span class="n">column_label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_as_label</span><span class="p">(</span><span class="n">column_or_label</span><span class="p">)</span>
             <span class="k">del</span> <span class="bp">self</span><span class="p">[</span><span class="n">column_label</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">column_label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unused_label</span><span class="p">(</span><span class="s1">&#39;group&#39;</span><span class="p">)</span>
