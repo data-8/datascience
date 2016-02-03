@@ -286,6 +286,13 @@ def test_group(t):
     2      | 2          | 2         | 2
     10     | 1          | 1         | 1
     """)
+    test = t.group(2)
+    assert_equal(test, """
+    points | letter len | count len | totals len
+    1      | 1          | 1         | 1
+    2      | 2          | 2         | 2
+    10     | 1          | 1         | 1
+    """)
 
 
 def test_group_with_func(t):

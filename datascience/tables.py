@@ -594,8 +594,8 @@ class Table(collections.abc.MutableMapping):
 
         # Remove column used for grouping
         column = self._get_column(column_or_label)
-        if isinstance(column_or_label, str):
-            column_label = column_or_label
+        if isinstance(column_or_label, str) or isinstance(column_or_label, numbers.Integral):
+            column_label = self._as_label(column_or_label)
             del self[column_label]
         else:
             column_label = self._unused_label('group')
