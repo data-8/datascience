@@ -281,17 +281,17 @@ def test_sort_syntax(t):
 def test_group(t):
     test = t.group('points')
     assert_equal(test, """
-    points | letter len | count len | totals len
-    1      | 1          | 1         | 1
-    2      | 2          | 2         | 2
-    10     | 1          | 1         | 1
+    points | count
+    1      | 1
+    2      | 2
+    10     | 1
     """)
     test = t.group(2)
     assert_equal(test, """
-    points | letter len | count len | totals len
-    1      | 1          | 1         | 1
-    2      | 2          | 2         | 2
-    10     | 1          | 1         | 1
+    points | count
+    1      | 1
+    2      | 2
+    10     | 1
     """)
 
 
@@ -306,6 +306,20 @@ def test_group_with_func(t):
 
 
 def test_groups(t):
+    t = t.copy()
+    t.append(('e', 12, 1, 12))
+    t['early'] = t['letter'] < 'd'
+    test = t.groups(['points', 'early'])
+    assert_equal(test, """
+    points | early | count
+    1      | False | 1
+    1      | True  | 1
+    2      | True  | 2
+    10     | False | 1
+    """)
+
+
+def test_groups_list(t):
     t = t.copy()
     t.append(('e', 12, 1, 12))
     t['early'] = t['letter'] < 'd'
@@ -400,7 +414,7 @@ def test_apply(t):
     t = t.copy()
     assert_array_equal(t.apply(lambda x, y: x * y, ['count', 'points']), np.array([9, 6, 6, 10]))
     assert_array_equal(t.apply(lambda x: x * x, 'points'), np.array([1, 4, 4, 100]))
-    with(pytest.raises(ValueError)):
+    with(pytest.raises(KeyError)):
         t.apply(lambda x, y: x + y, ['count', 'score'])
 
 

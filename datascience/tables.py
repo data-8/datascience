@@ -301,11 +301,8 @@ class Table(collections.abc.MutableMapping):
         >>> t.apply(lambda x: x - 1, 'points')
         array([0, 1, 1, 9])
         """
-        labels = [self._as_label(s) for s in _as_labels(column_label)]
-        for c in labels:
-            if not (c in self.labels):
-                raise ValueError("{} is not an existing column in the table".format(c))
-        return np.array([fn(*[self.take(i)[col][0] for col in labels]) for i in range(self.num_rows)])
+        rows = zip(*self.select(column_label).columns)
+        return np.array([fn(*row) for row in rows])
 
     ############
     # Mutation #
@@ -582,12 +579,14 @@ class Table(collections.abc.MutableMapping):
             row_numbers = np.array(row_numbers[::-1])
         return self.take(row_numbers)
 
-    def group(self, column_or_label, collect=len):
-        """Group rows by unique values in column_label, aggregating values.
+    def group(self, column_or_label, collect=None):
+        """Group rows by unique values in a column; count or aggregate others.
 
-        collect -- a function applied to the values for each group (default len)
+        column_or_label -- values to group (label, index, or column)
+        collect -- a function applied to values in other columns for each group
 
-        The grouped column will appear first in the result table.
+        The grouped column will appear first in the result table. If no collect
+        function is provided, only counts are shown.
         """
         self = self.copy(shallow=True)
         collect = _zero_on_type_error(collect)
@@ -600,14 +599,20 @@ class Table(collections.abc.MutableMapping):
         else:
             column_label = self._unused_label('group')
 
-        # Generate grouped columns
+        # Group by column
         groups = self.index_by(column)
         keys = sorted(groups.keys())
-        columns, labels = [], []
-        for i, label in enumerate(self.labels):
-            labels.append(_collected_label(collect, label))
-            c = [collect(np.array([row[i] for row in groups[k]])) for k in keys]
-            columns.append(c)
+
+        # Generate grouped columns
+        if collect is None:
+            labels = [column_label, 'count' if column_label != 'count' else self._unused_label('count')]
+            columns = [keys, [len(groups[k]) for k in keys]]
+        else:
+            columns, labels = [], []
+            for i, label in enumerate(self.labels):
+                labels.append(_collected_label(collect, label))
+                c = [collect(np.array([row[i] for row in groups[k]])) for k in keys]
+                columns.append(c)
 
         grouped = type(self)().with_columns(zip(labels, columns))
         assert column_label == self._unused_label(column_label)
@@ -615,7 +620,7 @@ class Table(collections.abc.MutableMapping):
         grouped.move_to_start(column_label)
         return grouped
 
-    def groups(self, labels, collect=len):
+    def groups(self, labels, collect=None):
         """Group rows by multiple columns, aggregating values."""
         collect = _zero_on_type_error(collect)
         columns = []
@@ -628,18 +633,23 @@ class Table(collections.abc.MutableMapping):
         grouped._columns.popitem(last=False) # Discard the column of tuples
 
         # Flatten grouping values and move them to front
+        counts = [len(v) for v in grouped[0]]
         for label in labels[::-1]:
             grouped[label] = grouped.apply(_assert_same, label)
             grouped.move_to_start(label)
 
         # Aggregate other values
-        for label in grouped.labels:
-            if label in labels:
-                continue
-            column = [collect(v) for v in grouped[label]]
-            del grouped[label]
-            grouped[_collected_label(collect, label)] = column
-        return grouped
+        if collect is None:
+            count = 'count' if 'count' not in labels else self._unused_label('count')
+            return grouped.select(labels).with_column(count, counts)
+        else:
+            for label in grouped.labels:
+                if label in labels:
+                    continue
+                column = [collect(v) for v in grouped[label]]
+                del grouped[label]
+                grouped[_collected_label(collect, label)] = column
+            return grouped
 
     def pivot(self, columns, rows, values, collect=len, zero=None):
         """Generate a table with a column for rows (or a column for each row
@@ -651,7 +661,7 @@ class Table(collections.abc.MutableMapping):
         collect -- aggregation function over values
         zero -- zero value for non-existent row-column combinations
         """
-        rows = _as_labels(rows)
+        rows = self._as_labels(rows)
         selected = self.select([columns, values] + rows)
         grouped = selected.groups([columns] + rows, collect)
 
@@ -1028,12 +1038,12 @@ class Table(collections.abc.MutableMapping):
         c
         d
         """
-        if not labels_and_values:
-            return self
         if isinstance(labels_and_values, collections.abc.Mapping):
             labels_and_values = list(labels_and_values.items())
         if not isinstance(labels_and_values, collections.abc.Sequence):
             labels_and_values = list(labels_and_values)
+        if not labels_and_values:
+            return self
         first = labels_and_values[0]
         if not isinstance(first, str) and hasattr(first, '__iter__'):
             for pair in labels_and_values:
@@ -1798,6 +1808,8 @@ class Q:
 
 def _zero_on_type_error(column_fn):
     """Wrap a function on an np.ndarray to return 0 on a type error."""
+    if not column_fn:
+        return column_fn
     @functools.wraps(column_fn)
     def wrapped(column):
         try:
