@@ -1,6 +1,6 @@
 """Tables are sequences of labeled columns."""
 
-__all__ = ['Table', 'Q']
+__all__ = ['Table']
 
 import abc
 import collections
@@ -1787,23 +1787,6 @@ class Table(collections.abc.MutableMapping):
 
         def __repr__(self):
             return '{0}({1})'.format(type(self).__name__, repr(self._table))
-
-
-
-class Q:
-    """Query manager for Tables."""
-    array = None
-
-    def __init__(self, array):
-        """save numpy array"""
-        self.array = array
-
-    def __and__(self, other):
-        """allows bitwise & operations"""
-        return np.logical_and(self.array, other.array)
-
-    def __or__(self, other):
-        return np.logical_or(self.array, other.array)
 
 
 def _zero_on_type_error(column_fn):
