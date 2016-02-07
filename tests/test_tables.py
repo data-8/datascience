@@ -371,16 +371,34 @@ def test_join(t, u):
     """)
 
 
-def test_pivot(t):
+def test_pivot_counts(t):
     t = t.copy()
     t.append(('e', 12, 1, 12))
     t['early'] = t['letter'] < 'd'
-    t['exists'] = 1
-    test = t.pivot('points', 'early', 'exists')
+    test = t.pivot('points', 'early')
     assert_equal(test, """
-    early | 1 exists | 2 exists | 10 exists
-    False | 1        | 0        | 1
-    True  | 1        | 2        | 0
+    early | 1 | 2 | 10
+    False | 1 | 0 | 1
+    True  | 1 | 2 | 0
+    """)
+
+
+def test_pivot_values(t):
+    t = t.copy()
+    t.append(('e', 12, 1, 12))
+    t['early'] = t['letter'] < 'd'
+    t['exists'] = 2
+    summed = t.pivot('points', 'early', 'exists', sum)
+    assert_equal(summed, """
+    early | 1 | 2 | 10
+    False | 2 | 0 | 2
+    True  | 2 | 4 | 0
+    """)
+    maxed = t.pivot('points', 'early', 'exists', max, -1)
+    assert_equal(maxed, """
+    early | 1 | 2  | 10
+    False | 2 | -1 | 2
+    True  | 2 | 2  | -1
     """)
 
 
@@ -390,11 +408,11 @@ def test_pivot_multiple_rows(t):
     t['early'] = t['letter'] < 'd'
     t['late'] = t['letter'] > 'c'
     t['exists'] = 1
-    test = t.pivot('points', ['early', 'late'], 'exists')
+    test = t.pivot('points', ['early', 'late'], 'exists', sum)
     assert_equal(test, """
-    early | late  | 1 exists | 2 exists | 10 exists
-    False | True  | 1        | 0        | 1
-    True  | False | 1        | 2        | 0
+    early | late  | 1 | 2 | 10
+    False | True  | 1 | 0 | 1
+    True  | False | 1 | 2 | 0
     """)
 
 
@@ -405,10 +423,11 @@ def test_pivot_sum(t):
     t['exists'] = 1
     test = t.pivot('points', 'early', 'exists', sum)
     assert_equal(test, """
-    early | 1 exists | 2 exists | 10 exists
-    False | 1        | 0        | 1
-    True  | 1        | 2        | 0
+    early | 1 | 2 | 10
+    False | 1 | 0 | 1
+    True  | 1 | 2 | 0
     """)
+
 
 def test_apply(t):
     t = t.copy()

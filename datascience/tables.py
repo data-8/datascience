@@ -651,19 +651,31 @@ class Table(collections.abc.MutableMapping):
                 grouped[_collected_label(collect, label)] = column
             return grouped
 
-    def pivot(self, columns, rows, values, collect=len, zero=None):
+    def pivot(self, columns, rows, values=None, collect=None, zero=None):
         """Generate a table with a column for rows (or a column for each row
         in rows list) and a column for each unique value in columns. Each row
-        aggregates over the values that match both row and column.
+        counts/aggregates the values that match both row and column.
 
-        columns, values -- column labels in self
+        columns -- column label in self
         rows -- column label or a list of column labels
+        values -- column label in self (or None to produce counts)
         collect -- aggregation function over values
         zero -- zero value for non-existent row-column combinations
         """
+        if collect is not None and values is None:
+            raise TypeError('collect requires values to be specified')
+        if values is not None and collect is None:
+            raise TypeError('values requires collect to be specified')
+        if collect is not None and not callable(collect):
+            raise TypeError('collect must be callable (or None)')
         rows = self._as_labels(rows)
-        selected = self.select([columns, values] + rows)
+        if values is None:
+            selected = self.select([columns] + rows)
+        else:
+            selected = self.select([columns, values] + rows)
         grouped = selected.groups([columns] + rows, collect)
+        if values is None:
+            values = grouped.labels[-1]
 
         # Generate existing combinations of values from columns in rows
         rows_values = sorted(list(set(self.select(rows).rows)))
@@ -674,7 +686,7 @@ class Table(collections.abc.MutableMapping):
         for label in sorted(by_columns):
             tuples = [t[1:] for t in by_columns[label]] # Discard column value
             column = _fill_with_zeros(rows_values, tuples, zero)
-            pivot = self._unused_label(str(label) + ' ' + values)
+            pivot = self._unused_label(str(label))
             pivoted[pivot] = column
         return pivoted
 
