@@ -58,10 +58,12 @@
 <h1>datascience.tables.Table.group<a class="headerlink" href="#datascience-tables-table-group" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="datascience.tables.Table.group">
-<code class="descclassname">Table.</code><code class="descname">group</code><span class="sig-paren">(</span><em>column_or_label</em>, <em>collect=&lt;built-in function len&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.group" title="Permalink to this definition">¶</a></dt>
-<dd><p>Group rows by unique values in column_label, aggregating values.</p>
-<p>collect &#8211; a function applied to the values for each group (default len)</p>
-<p>The grouped column will appear first in the result table.</p>
+<code class="descclassname">Table.</code><code class="descname">group</code><span class="sig-paren">(</span><em>column_or_label</em>, <em>collect=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Group rows by unique values in a column; count or aggregate others.</p>
+<p>column_or_label &#8211; values to group (label, index, or column)
+collect &#8211; a function applied to values in other columns for each group</p>
+<p>The grouped column will appear first in the result table. If no collect
+function is provided, only counts are shown.</p>
 </dd></dl>
 
 </div>
