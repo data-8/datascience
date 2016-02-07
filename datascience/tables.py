@@ -666,8 +666,6 @@ class Table(collections.abc.MutableMapping):
             raise TypeError('collect requires values to be specified')
         if values is not None and collect is None:
             raise TypeError('values requires collect to be specified')
-        if collect is not None and not callable(collect):
-            raise TypeError('collect must be callable (or None)')
         rows = self._as_labels(rows)
         if values is None:
             selected = self.select([columns] + rows)
@@ -1822,6 +1820,8 @@ def _zero_on_type_error(column_fn):
     """Wrap a function on an np.ndarray to return 0 on a type error."""
     if not column_fn:
         return column_fn
+    if not callable(column_fn):
+        raise TypeError('column functions must be callable')
     @functools.wraps(column_fn)
     def wrapped(column):
         try:
