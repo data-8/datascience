@@ -42,6 +42,7 @@ class Table(collections.abc.MutableMapping):
         self._columns = collections.OrderedDict()
         self._formats = dict()
         self.formatter = formatter
+        self.plots = []
 
         if _deprecated is not None:
             warnings.warn("Two-argument __init__ is deprecated. Use Table().with_columns(...)", FutureWarning)
@@ -1264,34 +1265,36 @@ class Table(collections.abc.MutableMapping):
         'alpha': 0.7,
     }
 
-    def _visualize(self, x_label, y_labels, ticks, overlay, draw, annotate, width=6, height=4):
-        """Generic visualization that overlays or separates the draw function."""
-        n = len(y_labels)
-        colors = list(itertools.islice(itertools.cycle(self.chart_colors), n))
-        if overlay:
-            _, axis = plt.subplots(figsize=(width, height))
-            for label, color in zip(y_labels, colors):
-                draw(axis, label, color)
-            if ticks is not None:
-                annotate(axis, ticks)
-            axis.legend(y_labels, bbox_to_anchor=(1.5, 1.0))
-        else:
-            fig, axes = plt.subplots(n, 1, figsize=(width, height * n))
-            if not isinstance(axes, collections.Iterable):
-                axes=[axes]
-            for axis, y_label, color in zip(axes, y_labels, colors):
-                draw(axis, y_label, color)
-                axis.set_ylabel(y_label, fontsize=16)
-                axis.set_xlabel(x_label, fontsize=16)
-                if ticks is not None:
-                    annotate(axis, ticks)
+    def plot(self, column_for_xticks=None, select=None, overlay=True, **vargs):
+        """Plot line charts for the table.
 
-    def plot(self, column_for_xticks, overlay=False, **vargs):
-        """Plot contents as lines."""
+        Each plot is labeled using the values in `column_for_xticks` and one
+        plot is produced for every other column (or for the columns designated
+        by `select`).
+
+        Every selected column except for `column_for_xticks` must be numerical.
+
+        Args:
+            column_for_xticks (str/array): A column containing x-axis labels
+
+        Kwargs:
+            overlay (bool): create a chart with one color per data column;
+                if False, each will be displayed separately.
+
+            vargs: Additional arguments that get passed into `plt.plot`.
+                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot
+                for additional arguments that can be passed into vargs.
+        """
         options = self.default_options.copy()
         options.update(vargs)
 
-        xticks, y_labels = self._split_by_column(column_for_xticks)
+        xticks, labels = self._split_column_and_labels(column_for_xticks)
+        if select is not None:
+            labels = self._as_labels(select)
+
+        if xticks is not None:
+            self = self.sort(xticks)
+            xticks = np.sort(xticks)
 
         def draw(axis, label, color):
             if xticks is None:
@@ -1299,160 +1302,101 @@ class Table(collections.abc.MutableMapping):
             else:
                 axis.plot(xticks, self[label], color=color, **options)
 
-        def annotate(axis, ticks):
-            axis.set_xticklabels(axis.get_xticks(), rotation='vertical')
+        self._visualize(column_for_xticks, labels, xticks, overlay, draw, _vertical_x)
 
-        self._visualize(column_for_xticks, y_labels, xticks, overlay, draw, annotate)
+    def bar(self, column_for_categories=None, select=None, overlay=True, **vargs):
+        """Plot bar charts for the table.
 
-    def bar(self, column_for_categories=None, overlay=False, **vargs):
-        """Plots bar charts for the table.
+        Each plot is labeled using the values in `column_for_categories` and
+        one plot is produced for every other column (or for the columns
+        designated by `select`).
 
-        Each chart is categorized using the values in `column_for_categories`
-        and one chart is produced for every other column in the table.
-        A total of n - 1 charts are created where n is the number of columns
-        in the table.
-
-        Every column except for `column_for_categories` must be numerical.
+        Every selected except column for `column_for_categories` must be numerical.
 
         Args:
-            column_for_categories (str): The name to use for the bar chart
-                categories
+            column_for_categories (str): A column containing x-axis categories
 
         Kwargs:
-            overlay (bool): If True, creates one chart with n - 1 bars for each
-                category, one for each column other than `column_for_categories`
-                (instead of the default behavior of creating n - 1 charts).
-                Also adds a legend that matches each bar color to its column.
+            overlay (bool): create a chart with one color per data column;
+                if False, each will be displayed separately.
 
             vargs: Additional arguments that get passed into `plt.bar`.
                 See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.bar
-                for additional arguments that can be passed into vargs. These
-                include: `linewidth`, `xerr`, `yerr`, and `log`, to name a few.
-
-        Returns:
-            None
-
-        Raises:
-            ValueError: The Table contains non-numerical values in columns
-            other than `column_for_categories`
+                for additional arguments that can be passed into vargs.
         """
         options = self.default_options.copy()
         options.update(vargs)
 
-        xticks, y_labels = self._split_by_column(column_for_categories)
-        for label in y_labels:
-            if any(isinstance(cell, np.flexible) for cell in self[label]):
-                raise ValueError("The column '{0}' contains non-numerical "
-                    "values. A bar graph cannot be drawn for this table."
-                    .format(label))
+        xticks, labels = self._split_column_and_labels(column_for_categories)
+        if select is not None:
+            labels = self._as_labels(select)
 
         index = np.arange(self.num_rows)
-        margin = 0.1
-        width = 1 - 2 * margin
-        if overlay:
-            width /= len(y_labels)
 
         def draw(axis, label, color):
-            if overlay:
-                xpos = index + margin + (1-2*margin)*labels.index(label)/len(labels)
-            else:
-                xpos = index
-            axis.bar(xpos, self[label], 1.0, color=color, **options)
+            axis.bar(index-0.5, self[label], 1.0, color=color, **options)
 
         def annotate(axis, ticks):
             if (ticks is not None) :
-                tick_labels = [ticks[int(l)] for l in axis.get_xticks() if l<len(ticks)]
+                tick_labels = [ticks[int(l)] if 0<=l<len(ticks) else '' for l in axis.get_xticks()]
                 axis.set_xticklabels(tick_labels, stretch='ultra-condensed')
-            return None
-        self._visualize(column_for_categories, y_labels, xticks, overlay, draw, annotate)
 
-    def barh(self, column_for_categories, overlay=False, **vargs):
-        """Plots horizontal bar charts for the table.
+        self._visualize(column_for_categories, labels, xticks, overlay, draw, annotate)
 
-        Each chart is categorized using the values in `column_for_categories`
-        and one chart is produced for every other column in the table.
-        A total of n - 1 charts are created where n is the number of columns
-        in the table.
+    def barh(self, column_for_categories=None, select=None, overlay=True, **vargs):
+        """Plot horizontal bar charts for the table.
 
-        Note that the order of the categories in the table is not guaranteed to
-        be preserved in the bar graph. Ex. `barh` on a table with "a", "b", "c"
-        as the rows in the `column_for_categories` may not output a bar graph
-        with the labels in that order.
+        Each plot is labeled using the values in `column_for_categories` and
+        one plot is produced for every other column (or for the columns
+        designated by `select`).
 
-        Every column except for `column_for_categories` must be numerical.
+        Every selected except column for `column_for_categories` must be numerical.
 
         Args:
-            column_for_categories (str): The name to use for the bar chart
-                categories
+            column_for_categories (str): A column containing y-axis categories
 
         Kwargs:
-            overlay (bool): If True, creates one chart with n - 1 bars for each
-                category, one for each column other than `column_for_categories`
-                (instead of the default behavior of creating n - 1 charts).
-                Also adds a legend that matches each bar color to its column.
+            overlay (bool): create a chart with one color per data column;
+                if False, each will be displayed separately.
 
             vargs: Additional arguments that get passed into `plt.barh`.
                 See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.barh
-                for additional arguments that can be passed into vargs. These
-                include: `linewidth`, `xerr`, `yerr`, and `log`, to name a few.
+                for additional arguments that can be passed into vargs.
 
-        Returns:
-            None
-
-        Raises:
-            ValueError: The Table contains non-numerical values in columns
-            other than `column_for_categories`
-
-        >>> furniture_table = Table().with_columns([
-        ...     'Type of furniture', ['chairs', 'tables', 'desks'],
-        ...     'Count', [6, 1, 2]])
-        >>> furniture_table
-        Type of furniture | Count
-        chairs            | 6
-        tables            | 1
-        desks             | 2
-        >>> furniture_table.barh('Type of furniture') # doctest: +SKIP
-        <bar graph with chairs, tables, desks as the categories and bars of
-        length 6, 1, 2, respectively>
-        >>> furniture_table.barh('Count')
-        Traceback (most recent call last):
-            ...
-        ValueError: The column 'Type of furniture' contains non-numerical values. A bar graph cannot be drawn for this table.
-
-        >>> other = furniture_table.with_column('Other col', [10, 20, 30])
-        >>> other
-        Type of furniture | Count | Other col
-        chairs            | 6     | 10
-        tables            | 1     | 20
-        desks             | 2     | 30
-
-        >>> other.barh('Type of furniture') # doctest: +SKIP
-        <bar graph with Type of furniture as categories and Count values>
-        <bar graph with Type of furniture as categories and Other col values>
-
-        >>> other.barh('Type of furniture', overlay=True) # doctest: +SKIP
-        <bar graph with Type of furniture as categories and Count + Other col as
-        the two bars for each category>
+        >>> t = Table().with_columns([
+        ...     'Furniture', ['chairs', 'tables', 'desks'],
+        ...     'Count', [6, 1, 2],
+        ...     'Price', [10, 20, 30]
+        ...     ])
+        >>> t
+        Furniture | Count | Price
+        chairs    | 6     | 10
+        tables    | 1     | 20
+        desks     | 2     | 30
+        >>> furniture_table.barh('Furniture') # doctest: +SKIP
+        <bar graph with furniture as categories and bars for count and price>
+        >>> furniture_table.barh('Furniture', 'Price') # doctest: +SKIP
+        <bar graph with furniture as categories and bars for price>
+        >>> furniture_table.barh('Furniture', [1, 2]) # doctest: +SKIP
+        <bar graph with furniture as categories and bars for count and price>
         """
         options = self.default_options.copy()
         options.update(vargs)
 
-        yticks, y_labels = self._split_by_column(column_for_categories)
-        for label in y_labels:
-            if any(isinstance(cell, np.flexible) for cell in self[label]):
-                raise ValueError("The column '{0}' contains non-numerical "
-                    "values. A bar graph cannot be drawn for this table."
-                    .format(label))
+        yticks, labels = self._split_column_and_labels(column_for_categories)
+        if select is not None:
+            labels = self._as_labels(select)
+        n = len(labels)
 
         index = np.arange(self.num_rows)
         margin = 0.1
         width = 1 - 2 * margin
         if overlay:
-            width /= len(y_labels)
+            width /= len(labels)
 
         def draw(axis, label, color):
             if overlay:
-                ypos = index + margin + (1-2*margin)*labels.index(label)/len(labels)
+                ypos = index + margin + (1-2*margin)*(n - 1 - labels.index(label))/n
             else:
                 ypos = index
             # barh plots entries in reverse order from bottom to top
@@ -1462,27 +1406,123 @@ class Table(collections.abc.MutableMapping):
             axis.set_yticks(index+0.5) # Center labels on bars
             # barh plots entries in reverse order from bottom to top
             axis.set_yticklabels(ticks[::-1], stretch='ultra-condensed')
+            axis.set_xlabel(axis.get_ylabel())
+            if isinstance(column_for_categories, str):
+                axis.set_ylabel(column_for_categories)
+
         height = max(4, len(index)/2)
         if 'height' in vargs:
             height = vargs.pop('height')
-        self._visualize(column_for_categories, y_labels, yticks, overlay, draw, annotate, height=height)
 
-    def _split_by_column(self, column_or_label):
+        self._visualize('', labels, yticks, overlay, draw, annotate, height=height)
+
+    def scatter(self, column_for_x, select=None, overlay=True, fit_line=False, **vargs):
+        """Creates scatterplots, optionally adding a line of best fit.
+
+        Each plot uses the values in `column_for_x` for horizontal positions.
+        One plot is produced for every other column as y (or for the columns
+        designated by `select`).
+
+        Every selected except column for `column_for_categories` must be numerical.
+
+        Args:
+            ``column_for_x`` (str): The name to use for the x-axis values of the
+                scatter plots.
+
+        Kwargs:
+            ``overlay`` (bool): create a chart with one color per data column;
+                if False, each will be displayed separately.
+
+            ``fit_line`` (bool): draw a line of best fit for each set of points
+
+            ``vargs``: Additional arguments that get passed into `plt.scatter`.
+                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.scatter
+                for additional arguments that can be passed into vargs. These
+                include: `marker` and `norm`, to name a couple.
+
+        >>> table = Table().with_columns([
+        ...     'x', [9, 3, 3, 1],
+        ...     'y', [1, 2, 2, 10],
+        ...     'z', [3, 4, 5, 6]])
+        >>> table
+        x    | y    | z
+        9    | 1    | 3
+        3    | 2    | 4
+        3    | 2    | 5
+        1    | 10   | 6
+        >>> table.scatter('x') # doctest: +SKIP
+        <scatterplot of values in y and z on x>
+
+        >>> table.scatter('x', overlay=False) # doctest: +SKIP
+        <scatterplot of values in y on x>
+        <scatterplot of values in z on x>
+
+        >>> table.scatter('x', fit_line=True) # doctest: +SKIP
+        <scatterplot of values in y and z on x with lines of best fit>
+        """
+        options = self.default_options.copy()
+        options.update(vargs)
+        xdata, y_labels =  self._split_column_and_labels(column_for_x)
+        if select is not None:
+            y_labels = self._as_labels(select)
+
+        def draw(axis, label, color):
+            axis.scatter(xdata, self[label], color=color, **options)
+            if fit_line:
+                m,b = np.polyfit(xdata, self[label], 1)
+                minx, maxx = np.min(xdata),np.max(xdata)
+                axis.plot([minx,maxx],[m*minx+b,m*maxx+b], color=color)
+
+        self._visualize(column_for_x, y_labels, xdata, overlay, draw, _vertical_x)
+
+    def _visualize(self, x_label, y_labels, ticks, overlay, draw, annotate, width=6, height=4):
+        """Generic visualization that overlays or separates the draw function.
+
+        Raises:
+            ValueError: The Table contains non-numerical values in columns
+            other than `column_for_categories`
+        """
+        for label in y_labels:
+            if not all(isinstance(x, numbers.Real) for x in self[label]):
+                raise ValueError("The column '{0}' contains non-numerical "
+                    "values. A plot cannot be drawn for this column."
+                    .format(label))
+
+        n = len(y_labels)
+        colors = list(itertools.islice(itertools.cycle(self.chart_colors), n))
+        if overlay:
+            _, axis = plt.subplots(figsize=(width, height))
+            axis.set_xlabel(x_label)
+            for label, color in zip(y_labels, colors):
+                draw(axis, label, color)
+            if ticks is not None:
+                annotate(axis, ticks)
+            axis.legend(y_labels, bbox_to_anchor=(1.5, 1.0))
+            self.plots.append(axis)
+        else:
+            fig, axes = plt.subplots(n, 1, figsize=(width, height*n))
+            if not isinstance(axes, collections.Iterable):
+                axes=[axes]
+            for axis, y_label, color in zip(axes, y_labels, colors):
+                draw(axis, y_label, color)
+                axis.set_ylabel(y_label, fontsize=16)
+                axis.set_xlabel(x_label, fontsize=16)
+                if ticks is not None:
+                    annotate(axis, ticks)
+                self.plots.append(axis)
+
+    def _split_column_and_labels(self, column_or_label):
         """Return the specified column and labels of other columns."""
-        labels = list(self.labels)
-        if column_or_label is None:
-            return None, labels
-        if column_or_label in labels:
-            labels.remove(column_or_label)
-        column = self._get_column(column_or_label)
+        column = None if column_or_label is None else self._get_column(column_or_label)
+        labels = [label for label in self.labels if label != column_or_label]
         return column, labels
 
-    def pivot_hist(self, pivot_column_label, value_column_label, overlay=False, **vargs):
+    def pivot_hist(self, pivot_column_label, value_column_label, overlay=True, **vargs):
         """Draw histograms of each category in a column."""
         pvt_labels = np.unique(self[pivot_column_label])
         pvt_columns = [self[value_column_label][np.where(self[pivot_column_label] == pivot)] for pivot in pvt_labels]
         n = len(pvt_labels)
-        colors = list(itertools.islice(itertools.cycle(('b', 'g', 'r')), n))
+        colors = list(itertools.islice(itertools.cycle(self.chart_colors), n))
         if overlay:
             plt.figure(figsize=(6, 4))
             vals, bins, patches = plt.hist(pvt_columns, color=colors, **vargs)
@@ -1498,16 +1538,17 @@ class Table(collections.abc.MutableMapping):
                     avals, abins, patches = axis.hist(column, color=color, **vargs)
                 axis.set_xlabel(label, fontsize=16)
                 vals.append(avals)
-                if not isinstance(bins, np.ndarray): bins = abins
-                else: assert bins.all() == abins.all(), "Inconsistent bins in hist"
+                if not isinstance(bins, np.ndarray):
+                    bins = abins
+                else:
+                    assert bins.all() == abins.all(), "Inconsistent bins in hist"
         t = Table()
         t['start'] = bins[0:-1]
         t['end'] = bins[1:]
         for label, column in zip(pvt_labels,vals):
             t[label] = column
-        return t
 
-    def hist(self, overlay=False, bins=None, counts=None, **vargs):
+    def hist(self, select=None, overlay=True, bins=None, counts=None, **vargs):
         """Plots one histogram for each column in the table.
 
         Every column must be numerical.
@@ -1531,12 +1572,6 @@ class Table(collections.abc.MutableMapping):
                 include: `range`, `normed`, `cumulative`, and `orientation`,
                 to name a few.
 
-        Returns:
-            None
-
-        Raises:
-            ValueError: The Table contains non-numerical values
-
         >>> t = Table().with_columns([
         ...     'count',  [9, 3, 3, 1],
         ...     'points', [1, 2, 2, 10]])
@@ -1556,6 +1591,9 @@ class Table(collections.abc.MutableMapping):
         >>> t.hist(counts='value') # doctest: +SKIP
         <histogram of values in prop weighted by corresponding values in value>
         """
+        if select is not None:
+            self = self.select(select)
+
         # Check for non-numerical values and raise a ValueError if any found
         for col in self:
             if any(isinstance(cell, np.flexible) for cell in self[col]):
@@ -1569,6 +1607,10 @@ class Table(collections.abc.MutableMapping):
             if isinstance(bins, collections.Hashable) and bins in self.labels:
                 bins = np.unique(self[bins])
             vargs['bins'] = bins
+
+        if 'normed' not in vargs:
+            vargs['normed'] = True
+        percentage = plt.FuncFormatter(lambda x, _: "{:g}%".format(100*x))
 
         counted_values = counted_label = None
         if counts is not None:
@@ -1588,9 +1630,14 @@ class Table(collections.abc.MutableMapping):
                 values = np.repeat(counted_values, n).reshape(-1,n)
                 vargs['weights'] = list(columns.values())[::-1] # Reverse to match legend
             vargs.setdefault('histtype', 'stepfilled')
-            plt.figure(figsize=(6, 4))
-            plt.hist(values, color=colors, **vargs)
+            figure = plt.figure(figsize=(6, 4))
+            _, ticks, _ = plt.hist(values, color=colors, **vargs)
+            axis = figure.get_axes()[0]
+            _vertical_x(axis, ticks)
+            if vargs['normed']:
+                axis.yaxis.set_major_formatter(percentage)
             plt.legend(columns.keys())
+            self.plots.append(axis)
         else:
             _, axes = plt.subplots(n, 1, figsize=(6, 4 * n))
             if n == 1:
@@ -1603,7 +1650,11 @@ class Table(collections.abc.MutableMapping):
                     values = counted_values
                     axis.set_xlabel(counted_label, fontsize=16)
                     vargs['weights'] = columns[label]
-                axis.hist(values, color=color, **vargs)
+                _, ticks, _ = axis.hist(values, color=color, **vargs)
+                _vertical_x(axis, ticks)
+                if vargs['normed']:
+                    axis.yaxis.set_major_formatter(percentage)
+                self.plots.append(axis)
 
     def boxplot(self, **vargs):
         """Plots a boxplot for the table.
@@ -1662,84 +1713,6 @@ class Table(collections.abc.MutableMapping):
         if colors is not None : colors = self._get_column(colors)
         return _maps.Circle.map(latitudes, longitudes, labels=labels, colors=colors, **kwargs)
 
-    def scatter(self, column_for_x, overlay=False, fit_line=False, **vargs):
-        """Creates scatterplots, optionally adding a line of best fit.
-
-        All scatterplots use the values in ``column_for_x`` as the x-values. A
-        total of n - 1 scatterplots are created where n is the number of
-        columns in the table, one for every column other than ``column_for_x``.
-
-        Requires all columns in the table to contain numerical values only.
-        If the columns contain other types, a ``ValueError`` is raised.
-
-        Args:
-            ``column_for_x`` (str): The name to use for the x-axis values of the
-                scatter plots.
-
-        Kwargs:
-            ``overlay`` (bool): If True, creates one scatterplot with n - 1
-                y-values plotted, one for each column other than
-                ``column_for_x`` (instead of the default behavior of creating n
-                - 1 scatterplots. Also adds a legend that matches each dot
-                and best-fit line color to its column.
-
-            ``fit_line`` (bool): If True, draws a line of best fit for each
-                scatterplot drawn.
-
-            ``vargs``: Additional arguments that get passed into `plt.scatter`.
-                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.scatter
-                for additional arguments that can be passed into vargs. These
-                include: `marker` and `norm`, to name a couple.
-
-        Returns:
-            None
-
-        Raises:
-            ``ValueError``: The table contains non-numerical values in columns.
-
-        >>> table = Table().with_columns([
-        ...     'x', [9, 3, 3, 1],
-        ...     'y', [1, 2, 2, 10],
-        ...     'z', [3, 4, 5, 6]])
-        >>> table
-        x    | y    | z
-        9    | 1    | 3
-        3    | 2    | 4
-        3    | 2    | 5
-        1    | 10   | 6
-        >>> table.scatter('x') # doctest: +SKIP
-        <scatterplot of values in y on x>
-        <scatterplot of values in z on x>
-
-        >>> table.scatter('x', overlay = True) # doctest: +SKIP
-        <scatterplot of values in y and z on x>
-
-        >>> table.scatter('x', fit_line = True) # doctest: +SKIP
-        <scatterplot of values in y on x with line of best fit>
-        <scatterplot of values in z on x with line of best fit>
-
-        """
-        # Check for non-numerical values and raise a ValueError if any found
-        for col in self:
-            if any(isinstance(cell, np.flexible) for cell in self[col]):
-                raise ValueError("The column '{0}' contains non-numerical "
-                    "values. A histogram cannot be drawn for this table."
-                    .format(col))
-
-        options = self.default_options.copy()
-        options.update(vargs)
-        xdata, y_labels =  self._split_by_column(column_for_x)
-
-        def draw(axis, label, color):
-            axis.scatter(xdata, self[label], color=color, **options)
-            if fit_line:
-                m,b = np.polyfit(xdata, self[label], 1)
-                minx, maxx = np.min(xdata),np.max(xdata)
-                axis.plot([minx,maxx],[m*minx+b,m*maxx+b])
-
-        def annotate(axis, ticks):
-            return None
-        self._visualize(column_for_x, y_labels, None, overlay, draw, annotate)
 
     ###########
     # Support #
@@ -1866,6 +1839,11 @@ def _is_non_string_iterable(value):
     if isinstance(value, collections.abc.Sequence):
         return True
     return False
+
+def _vertical_x(axis, ticks):
+    """Switch labels to vertical if they are long."""
+    if max([len(str(tick)) for tick in ticks]) > 5:
+        axis.set_xticklabels(ticks, rotation='vertical')
 
 ###################
 # Slicing support #
