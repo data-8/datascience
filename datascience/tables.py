@@ -1483,7 +1483,7 @@ class Table(collections.abc.MutableMapping):
             other than `column_for_categories`
         """
         for label in y_labels:
-            if any(isinstance(cell, np.flexible) for cell in self[label]):
+            if not all(isinstance(x, numbers.Real) for x in self[label]):
                 raise ValueError("The column '{0}' contains non-numerical "
                     "values. A plot cannot be drawn for this column."
                     .format(label))
