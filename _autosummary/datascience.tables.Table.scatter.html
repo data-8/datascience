@@ -58,13 +58,12 @@
 <h1>datascience.tables.Table.scatter<a class="headerlink" href="#datascience-tables-table-scatter" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="datascience.tables.Table.scatter">
-<code class="descclassname">Table.</code><code class="descname">scatter</code><span class="sig-paren">(</span><em>column_for_x</em>, <em>overlay=False</em>, <em>fit_line=False</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.scatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.scatter" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">Table.</code><code class="descname">scatter</code><span class="sig-paren">(</span><em>column_for_x</em>, <em>select=None</em>, <em>overlay=True</em>, <em>fit_line=False</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.scatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.scatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates scatterplots, optionally adding a line of best fit.</p>
-<p>All scatterplots use the values in <code class="docutils literal"><span class="pre">column_for_x</span></code> as the x-values. A
-total of n - 1 scatterplots are created where n is the number of
-columns in the table, one for every column other than <code class="docutils literal"><span class="pre">column_for_x</span></code>.</p>
-<p>Requires all columns in the table to contain numerical values only.
-If the columns contain other types, a <code class="docutils literal"><span class="pre">ValueError</span></code> is raised.</p>
+<p>Each plot uses the values in <cite>column_for_x</cite> for horizontal positions.
+One plot is produced for every other column as y (or for the columns
+designated by <cite>select</cite>).</p>
+<p>Every selected except column for <cite>column_for_categories</cite> must be numerical.</p>
 <dl class="docutils">
 <dt>Args:</dt>
 <dd><dl class="first last docutils">
@@ -73,24 +72,18 @@ If the columns contain other types, a <code class="docutils literal"><span class
 </dl>
 </dd>
 <dt>Kwargs:</dt>
-<dd><dl class="first last docutils">
-<dt><code class="docutils literal"><span class="pre">overlay</span></code> (bool): If True, creates one scatterplot with n - 1</dt>
-<dd>y-values plotted, one for each column other than
-<code class="docutils literal"><span class="pre">column_for_x</span></code> (instead of the default behavior of creating n
-- 1 scatterplots. Also adds a legend that matches each dot
-and best-fit line color to its column.</dd>
-<dt><code class="docutils literal"><span class="pre">fit_line</span></code> (bool): If True, draws a line of best fit for each</dt>
-<dd>scatterplot drawn.</dd>
+<dd><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">overlay</span></code> (bool): create a chart with one color per data column;</dt>
+<dd>if False, each will be displayed separately.</dd>
+</dl>
+<p><code class="docutils literal"><span class="pre">fit_line</span></code> (bool): draw a line of best fit for each set of points</p>
+<dl class="last docutils">
 <dt><code class="docutils literal"><span class="pre">vargs</span></code>: Additional arguments that get passed into <cite>plt.scatter</cite>.</dt>
 <dd>See <a class="reference external" href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.scatter">http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.scatter</a>
 for additional arguments that can be passed into vargs. These
 include: <cite>marker</cite> and <cite>norm</cite>, to name a couple.</dd>
 </dl>
 </dd>
-<dt>Returns:</dt>
-<dd>None</dd>
-<dt>Raises:</dt>
-<dd><code class="docutils literal"><span class="pre">ValueError</span></code>: The table contains non-numerical values in columns.</dd>
 </dl>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">([</span>
 <span class="gp">... </span>    <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
@@ -103,17 +96,16 @@ include: <cite>marker</cite> and <cite>norm</cite>, to name a couple.</dd>
 <span class="go">3    | 2    | 5</span>
 <span class="go">1    | 10   | 6</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span> 
+<span class="go">&lt;scatterplot of values in y and z on x&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span> 
 <span class="go">&lt;scatterplot of values in y on x&gt;</span>
 <span class="go">&lt;scatterplot of values in z on x&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">overlay</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span> 
-<span class="go">&lt;scatterplot of values in y and z on x&gt;</span>
-</pre></div>
-</div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">fit_line</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span> 
-<span class="go">&lt;scatterplot of values in y on x with line of best fit&gt;</span>
-<span class="go">&lt;scatterplot of values in z on x with line of best fit&gt;</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">fit_line</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> 
+<span class="go">&lt;scatterplot of values in y and z on x with lines of best fit&gt;</span>
 </pre></div>
 </div>
 </dd></dl>

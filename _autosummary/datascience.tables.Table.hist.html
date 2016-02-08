@@ -58,7 +58,7 @@
 <h1>datascience.tables.Table.hist<a class="headerlink" href="#datascience-tables-table-hist" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="datascience.tables.Table.hist">
-<code class="descclassname">Table.</code><code class="descname">hist</code><span class="sig-paren">(</span><em>overlay=False</em>, <em>bins=None</em>, <em>counts=None</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.hist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.hist" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">Table.</code><code class="descname">hist</code><span class="sig-paren">(</span><em>select=None</em>, <em>overlay=True</em>, <em>bins=None</em>, <em>counts=None</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.hist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.hist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots one histogram for each column in the table.</p>
 <p>Every column must be numerical.</p>
 <dl class="docutils">
@@ -80,10 +80,6 @@ include: <cite>range</cite>, <cite>normed</cite>, <cite>cumulative</cite>, and <
 to name a few.</dd>
 </dl>
 </dd>
-<dt>Returns:</dt>
-<dd>None</dd>
-<dt>Raises:</dt>
-<dd>ValueError: The Table contains non-numerical values</dd>
 </dl>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">([</span>
 <span class="gp">... </span>    <span class="s1">&#39;count&#39;</span><span class="p">,</span>  <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
