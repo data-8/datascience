@@ -1611,7 +1611,7 @@ class Table(collections.abc.MutableMapping):
 
         if 'normed' not in vargs:
             vargs['normed'] = True
-
+        percentage = plt.FuncFormatter(lambda x, _: "{:g}%".format(100*x))
 
         counted_values = counted_label = None
         if counts is not None:
@@ -1636,7 +1636,7 @@ class Table(collections.abc.MutableMapping):
             axis = figure.get_axes()[0]
             _vertical_x(axis, ticks)
             if vargs['normed']:
-                axis.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: "{:g}%".format(100*x)))
+                axis.yaxis.set_major_formatter(percentage)
             plt.legend(columns.keys())
         else:
             _, axes = plt.subplots(n, 1, figsize=(6, 4 * n))
@@ -1653,7 +1653,7 @@ class Table(collections.abc.MutableMapping):
                 _, ticks, _ = axis.hist(values, color=color, **vargs)
                 _vertical_x(axis, ticks)
                 if vargs['normed']:
-                    axis.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: "{:.0%}".format(x)))
+                    axis.yaxis.set_major_formatter(percentage)
 
     def boxplot(self, **vargs):
         """Plots a boxplot for the table.
