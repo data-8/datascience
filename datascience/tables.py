@@ -1549,7 +1549,7 @@ class Table(collections.abc.MutableMapping):
             t[label] = column
         self.plots.append(t)
 
-    def hist(self, overlay=True, bins=None, counts=None, **vargs):
+    def hist(self, select=None, overlay=True, bins=None, counts=None, **vargs):
         """Plots one histogram for each column in the table.
 
         Every column must be numerical.
@@ -1573,12 +1573,6 @@ class Table(collections.abc.MutableMapping):
                 include: `range`, `normed`, `cumulative`, and `orientation`,
                 to name a few.
 
-        Returns:
-            None
-
-        Raises:
-            ValueError: The Table contains non-numerical values
-
         >>> t = Table().with_columns([
         ...     'count',  [9, 3, 3, 1],
         ...     'points', [1, 2, 2, 10]])
@@ -1598,6 +1592,9 @@ class Table(collections.abc.MutableMapping):
         >>> t.hist(counts='value') # doctest: +SKIP
         <histogram of values in prop weighted by corresponding values in value>
         """
+        if select is not None:
+            self = self.select(select)
+
         # Check for non-numerical values and raise a ValueError if any found
         for col in self:
             if any(isinstance(cell, np.flexible) for cell in self[col]):
@@ -1611,6 +1608,10 @@ class Table(collections.abc.MutableMapping):
             if isinstance(bins, collections.Hashable) and bins in self.labels:
                 bins = np.unique(self[bins])
             vargs['bins'] = bins
+
+        if 'normed' not in vargs:
+            vargs['normed'] = True
+
 
         counted_values = counted_label = None
         if counts is not None:
@@ -1630,8 +1631,12 @@ class Table(collections.abc.MutableMapping):
                 values = np.repeat(counted_values, n).reshape(-1,n)
                 vargs['weights'] = list(columns.values())[::-1] # Reverse to match legend
             vargs.setdefault('histtype', 'stepfilled')
-            plt.figure(figsize=(6, 4))
-            plt.hist(values, color=colors, **vargs)
+            figure = plt.figure(figsize=(6, 4))
+            _, ticks, _ = plt.hist(values, color=colors, **vargs)
+            axis = figure.get_axes()[0]
+            _vertical_x(axis, ticks)
+            if vargs['normed']:
+                axis.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: "{:g}%".format(100*x)))
             plt.legend(columns.keys())
         else:
             _, axes = plt.subplots(n, 1, figsize=(6, 4 * n))
@@ -1645,7 +1650,10 @@ class Table(collections.abc.MutableMapping):
                     values = counted_values
                     axis.set_xlabel(counted_label, fontsize=16)
                     vargs['weights'] = columns[label]
-                axis.hist(values, color=color, **vargs)
+                _, ticks, _ = axis.hist(values, color=color, **vargs)
+                _vertical_x(axis, ticks)
+                if vargs['normed']:
+                    axis.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: "{:.0%}".format(x)))
 
     def boxplot(self, **vargs):
         """Plots a boxplot for the table.
