@@ -962,39 +962,6 @@ def test_scatter_error(table):
     with pytest.raises(ValueError):
         table.scatter('letter')
 
-###########
-# Queries #
-###########
-
-
-def test_q_and(table):
-    """Test that Q performs logical AND correctly"""
-    test = table.where(Q(table['letter'] < 'c') & Q(table['points'] > 1))
-    assert_equal(test, """
-    letter | count | points
-    b      | 3     | 2
-    """)
-
-
-def test_q_or(table):
-    """Test that Q performs logical OR correctly"""
-    test = table.where(Q(table['letter'] < 'b') | Q(table['points'] > 2))
-    assert_equal(test, """
-    letter | count | points
-    a      | 9     | 1
-    z      | 1     | 10
-    """)
-
-
-def test_q_chaining(table):
-    """Tests that successive Qs can be added"""
-    test_q_or_filter = Q(table['letter'] < 'b') | Q(table['points'] > 2)
-    test = table.where(Q(test_q_or_filter) & Q(table['count'] > 2))
-    assert_equal(test, """
-    letter | count | points
-    a      | 9     | 1
-    """)
-
 def test_df_roundtrip(table):
     df = table.to_df()
     assert isinstance(df, pd.DataFrame)
