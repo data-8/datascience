@@ -58,12 +58,13 @@
 <h1>datascience.tables.Table.pivot<a class="headerlink" href="#datascience-tables-table-pivot" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="datascience.tables.Table.pivot">
-<code class="descclassname">Table.</code><code class="descname">pivot</code><span class="sig-paren">(</span><em>columns</em>, <em>rows</em>, <em>values</em>, <em>collect=&lt;built-in function len&gt;</em>, <em>zero=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.pivot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.pivot" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">Table.</code><code class="descname">pivot</code><span class="sig-paren">(</span><em>columns</em>, <em>rows</em>, <em>values=None</em>, <em>collect=None</em>, <em>zero=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.pivot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.pivot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a table with a column for rows (or a column for each row
 in rows list) and a column for each unique value in columns. Each row
-aggregates over the values that match both row and column.</p>
-<p>columns, values &#8211; column labels in self
+counts/aggregates the values that match both row and column.</p>
+<p>columns &#8211; column label in self
 rows &#8211; column label or a list of column labels
+values &#8211; column label in self (or None to produce counts)
 collect &#8211; aggregation function over values
 zero &#8211; zero value for non-existent row-column combinations</p>
 </dd></dl>

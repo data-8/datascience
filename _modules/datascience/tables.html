@@ -701,19 +701,29 @@
                 <span class="n">grouped</span><span class="p">[</span><span class="n">_collected_label</span><span class="p">(</span><span class="n">collect</span><span class="p">,</span> <span class="n">label</span><span class="p">)]</span> <span class="o">=</span> <span class="n">column</span>
             <span class="k">return</span> <span class="n">grouped</span>
 </div>
-<div class="viewcode-block" id="Table.pivot"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.pivot.html#datascience.tables.Table.pivot">[docs]</a>    <span class="k">def</span> <span class="nf">pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">columns</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">collect</span><span class="o">=</span><span class="nb">len</span><span class="p">,</span> <span class="n">zero</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Table.pivot"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.pivot.html#datascience.tables.Table.pivot">[docs]</a>    <span class="k">def</span> <span class="nf">pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">columns</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">collect</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">zero</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Generate a table with a column for rows (or a column for each row</span>
 <span class="sd">        in rows list) and a column for each unique value in columns. Each row</span>
-<span class="sd">        aggregates over the values that match both row and column.</span>
+<span class="sd">        counts/aggregates the values that match both row and column.</span>
 
-<span class="sd">        columns, values -- column labels in self</span>
+<span class="sd">        columns -- column label in self</span>
 <span class="sd">        rows -- column label or a list of column labels</span>
+<span class="sd">        values -- column label in self (or None to produce counts)</span>
 <span class="sd">        collect -- aggregation function over values</span>
 <span class="sd">        zero -- zero value for non-existent row-column combinations</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">collect</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">values</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;collect requires values to be specified&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">collect</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;values requires collect to be specified&#39;</span><span class="p">)</span>
         <span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_as_labels</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
-        <span class="n">selected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="n">columns</span><span class="p">,</span> <span class="n">values</span><span class="p">]</span> <span class="o">+</span> <span class="n">rows</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">values</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">selected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="n">columns</span><span class="p">]</span> <span class="o">+</span> <span class="n">rows</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">selected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="n">columns</span><span class="p">,</span> <span class="n">values</span><span class="p">]</span> <span class="o">+</span> <span class="n">rows</span><span class="p">)</span>
         <span class="n">grouped</span> <span class="o">=</span> <span class="n">selected</span><span class="o">.</span><span class="n">groups</span><span class="p">([</span><span class="n">columns</span><span class="p">]</span> <span class="o">+</span> <span class="n">rows</span><span class="p">,</span> <span class="n">collect</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">values</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">grouped</span><span class="o">.</span><span class="n">labels</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="c1"># Generate existing combinations of values from columns in rows</span>
         <span class="n">rows_values</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="o">.</span><span class="n">rows</span><span class="p">)))</span>
@@ -724,7 +734,7 @@
         <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">by_columns</span><span class="p">):</span>
             <span class="n">tuples</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">by_columns</span><span class="p">[</span><span class="n">label</span><span class="p">]]</span> <span class="c1"># Discard column value</span>
             <span class="n">column</span> <span class="o">=</span> <span class="n">_fill_with_zeros</span><span class="p">(</span><span class="n">rows_values</span><span class="p">,</span> <span class="n">tuples</span><span class="p">,</span> <span class="n">zero</span><span class="p">)</span>
-            <span class="n">pivot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unused_label</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">label</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">values</span><span class="p">)</span>
+            <span class="n">pivot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unused_label</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">label</span><span class="p">))</span>
             <span class="n">pivoted</span><span class="p">[</span><span class="n">pivot</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span>
         <span class="k">return</span> <span class="n">pivoted</span>
 </div>
@@ -1815,6 +1825,8 @@
     <span class="sd">&quot;&quot;&quot;Wrap a function on an np.ndarray to return 0 on a type error.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">column_fn</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">column_fn</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">column_fn</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;column functions must be callable&#39;</span><span class="p">)</span>
     <span class="nd">@functools.wraps</span><span class="p">(</span><span class="n">column_fn</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">wrapped</span><span class="p">(</span><span class="n">column</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
