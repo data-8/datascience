@@ -1547,7 +1547,6 @@ class Table(collections.abc.MutableMapping):
         t['end'] = bins[1:]
         for label, column in zip(pvt_labels,vals):
             t[label] = column
-        self.plots.append(t)
 
     def hist(self, select=None, overlay=True, bins=None, counts=None, **vargs):
         """Plots one histogram for each column in the table.
@@ -1638,6 +1637,7 @@ class Table(collections.abc.MutableMapping):
             if vargs['normed']:
                 axis.yaxis.set_major_formatter(percentage)
             plt.legend(columns.keys())
+            self.plots.append(axis)
         else:
             _, axes = plt.subplots(n, 1, figsize=(6, 4 * n))
             if n == 1:
@@ -1654,6 +1654,7 @@ class Table(collections.abc.MutableMapping):
                 _vertical_x(axis, ticks)
                 if vargs['normed']:
                     axis.yaxis.set_major_formatter(percentage)
+                self.plots.append(axis)
 
     def boxplot(self, **vargs):
         """Plots a boxplot for the table.
