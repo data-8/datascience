@@ -559,7 +559,7 @@ class Table(collections.abc.MutableMapping):
     def drop(self, column_label_or_labels):
         """Return a Table with only columns other than selected label or labels."""
         exclude = _as_labels(column_label_or_labels)
-        return self.select([c for c in self.labels if c not in exclude])
+        return self.select([c for (i, c) in enumerate(self.labels) if i not in exclude and c not in exclude])
 
     def where(self, column_or_label, value=None):
         """Return a Table of rows for which the column is value or a non-zero value."""
@@ -673,8 +673,6 @@ class Table(collections.abc.MutableMapping):
         else:
             selected = self.select([columns, values] + rows)
         grouped = selected.groups([columns] + rows, collect)
-        if values is None:
-            values = grouped.labels[-1]
 
         # Generate existing combinations of values from columns in rows
         rows_values = sorted(list(set(self.select(rows).rows)))

@@ -109,7 +109,6 @@ def test_basic_rows(t):
         t.rows[2],
         "Row(letter='c', count=3, points=2)")
 
-
 def test_select(t):
     test = t.select(['points', 1]).cumsum()
     assert_equal(test, """
@@ -120,6 +119,15 @@ def test_select(t):
     15     | 16
     """)
 
+def test_drop(t):
+    test = t.drop(['points', 1])
+    assert_equal(test, """
+    letter
+    a
+    b
+    c
+    z
+    """)
 
 def test_take(t):
     test = t.take([1, 2])
