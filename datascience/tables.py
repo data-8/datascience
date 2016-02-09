@@ -511,12 +511,12 @@ class Table(collections.abc.MutableMapping):
         return table
 
     def select(self, column_label_or_labels):
-        """Return a Table with selected column or columns by label.
+        """Return a Table with selected column or columns by label or index.
 
         Args:
             ``column_label_or_labels`` (string or list of strings): The header
-            names of the columns to be selected. ``column_label_or_labels`` must
-            be an existing header name.
+            names or indices of the columns to be selected. ``column_label_or_labels`` must
+            be an existing header name, or a valid column index.
 
         Returns:
             An instance of ``Table`` containing only selected columns.
@@ -557,19 +557,56 @@ class Table(collections.abc.MutableMapping):
         raise NotImplementedError()
 
     def drop(self, column_label_or_labels):
-        """Return a Table with only columns other than selected label or labels."""
+        """Return a Table with only columns other than selected label or labels.
+        
+        Args:
+            ``column_label_or_labels`` (string or list of strings): The header
+            names or indices of the columns to be dropped. ``column_label_or_labels`` must
+            be an existing header name, or a valid column index.
+
+        Returns:
+            An instance of ``Table`` with given columns removed.
+
+        """
         exclude = _as_labels(column_label_or_labels)
         return self.select([c for (i, c) in enumerate(self.labels) if i not in exclude and c not in exclude])
 
     def where(self, column_or_label, value=None):
-        """Return a Table of rows for which the column is value or a non-zero value."""
+        """Return a Table of rows for which the column is ``value`` or a non-zero value.
+        
+        If ``column_or_label`` contains Boolean values, returns rows corresponding to True.
+
+        Args:
+            ``column_or_label``: The header name of a column in the table or an array.
+
+            ``value``: Value for comparison with items in ``column_or_label``.
+
+        Returns:
+            An instance of ``Table`` containing rows for which the ``column_or_label``
+            column or ``column_or_label`` itself is non-zero or True, or is equal to ``value``,
+            if provided.
+
+        """
         column = self._get_column(column_or_label)
         if value is not None:
             column = column == value
         return self.take(np.nonzero(column)[0])
 
     def sort(self, column_or_label, descending=False, distinct=False):
-        """Return a Table of sorted rows by the values in a column."""
+        """Return a Table of sorted rows by the values in a column.
+        
+        Args:
+            ``column_or_label``: the column whose values are used for sorting.
+
+            ``descending``: if True, sorting will be in descending, rather than 
+            ascending order.
+
+            ``distinct``: if True, repeated values in ``column_or_label`` will be ommitted.
+
+        Returns:
+            An instance of ``Table`` containing rows sorted based on the values in ``column_or_label``.
+        
+        """
         column = self._get_column(column_or_label)
         if distinct:
             _, row_numbers = np.unique(column, return_index=True)
