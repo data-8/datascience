@@ -693,6 +693,18 @@ def test_bin(table):
     7.75 | 1           | 1
     10   | 0           | 0
     """)
+    binned = table.bin('points', bins=[-1, 1, 3, 5, 7, 9, 11, 13])
+    assert_equal(binned, """
+    bin  | points count
+    -1   | 0
+    1    | 3
+    3    | 0
+    5    | 0
+    7    | 0
+    9    | 1
+    11   | 0
+    13   | 0
+    """)
 
 
 ##########
