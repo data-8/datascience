@@ -674,6 +674,26 @@ def test_with_relabeling(table):
     z      | 1     | 10
     """)
 
+def test_bin(table):
+    binned = table.bin('count')
+    assert_equal(binned.take(np.arange(5)), """
+    bin  | count count
+    1    | 1
+    1.8  | 0
+    2.6  | 2
+    3.4  | 0
+    4.2  | 0
+    """)
+    binned = table.select([1, 2]).bin(bins=4)
+    assert_equal(binned, """
+    bin  | count count | points count
+    1    | 3           | 3
+    3.25 | 0           | 0
+    5.5  | 0           | 0
+    7.75 | 1           | 1
+    10   | 0           | 0
+    """)
+
 
 ##########
 # Create #
