@@ -593,10 +593,10 @@ class Table(collections.abc.MutableMapping):
         return self.take(np.nonzero(column)[0])
 
     def sort(self, column_or_label, descending=False, distinct=False):
-        """Return a Table of sorted rows by the values in a column.
+        """Return a Table of rows sorted according to the values in a column.
         
         Args:
-            ``column_or_label``: the column whose values are used for sorting.
+            column_or_label: the column whose values are used for sorting.
 
             ``descending``: if True, sorting will be in descending, rather than 
             ascending order.
@@ -620,11 +620,42 @@ class Table(collections.abc.MutableMapping):
     def group(self, column_or_label, collect=None):
         """Group rows by unique values in a column; count or aggregate others.
 
-        column_or_label -- values to group (label, index, or column)
-        collect -- a function applied to values in other columns for each group
+        Args:
+            ``column_or_label``: values to group (column label or index, or array)
+            ``collect``: a function applied to values in other columns for each group
 
-        The grouped column will appear first in the result table. If no collect
-        function is provided, only counts are shown.
+        Returns:
+            A Table with each row corresponding to a unique value in ``column_or_label``,
+            where the first column contains the unique values from ``column_or_label``, and the
+            second contains counts for each of the unique values. If ``collect`` is
+            provided, a Table is returned with all original columns, each containing values
+            calculated by first grouping rows according to ``column_or_label``, then applying
+            ``collect`` to each set of grouped values in the other columns.
+
+        Note:
+            The grouped column will appear first in the result table. If ``collect`` does not
+            accept arguments with one of the column types, that column will be empty in the resulting
+            table.
+
+        >>> marbles = Table().with_columns([
+        ...    "Color", ["Red", "Green", "Blue", "Red", "Green", "Green"],
+        ...    "Shape", ["Round", "Rectangular", "Rectangular", "Round", "Rectangular", "Round"],
+        ...    "Amount", [4, 6, 12, 7, 9, 2],
+        ...    "Price", [1.30, 1.20, 2.00, 1.75, 1.40, 1.00]])
+        >>> marbles.group("Color") # just gives counts
+        Color | count
+        Blue  | 1
+        Green | 3
+        Red   | 2
+        >>> marbles.group("Color", max) # takes the max of each grouping, in each column
+        Color | Shape max   | Amount max | Price max
+        Blue  | Rectangular | 12         | 2
+        Green | Round       | 9          | 1.4
+        Red   | Round       | 7          | 1.75
+        >>> marbles.group("Shape", sum) # sum doesn't make sense for strings
+        Shape       | Color sum | Amount sum | Price sum
+        Rectangular |           | 27         | 4.6
+        Round       |           | 13         | 4.05
         """
         self = self.copy(shallow=True)
         collect = _zero_on_type_error(collect)
@@ -659,7 +690,43 @@ class Table(collections.abc.MutableMapping):
         return grouped
 
     def groups(self, labels, collect=None):
-        """Group rows by multiple columns, aggregating values."""
+        """Group rows by multiple columns, count or aggregate others.
+
+        Args:
+            ``labels``: list of column names (or indices) to group on
+            ``collect``: a function applied to values in other columns for each group
+
+        Returns: A Table with each row corresponding to a unique combination of values in
+            the columns specified in ``labels``, where the first columns are those
+            specified in ``labels``, followed by a column of counts for each of the unique
+            values. If ``collect`` is provided, a Table is returned with all original
+            columns, each containing values calculated by first grouping rows according to
+            to values in the ``labels`` column, then applying ``collect`` to each set of
+            grouped values in the other columns.
+
+        Note:
+            The grouped columns will appear first in the result table. If ``collect`` does not
+            accept arguments with one of the column types, that column will be empty in the resulting
+            table.
+
+        >>> marbles = Table().with_columns([
+        ...    "Color", ["Red", "Green", "Blue", "Red", "Green", "Green"],
+        ...    "Shape", ["Round", "Rectangular", "Rectangular", "Round", "Rectangular", "Round"],
+        ...    "Amount", [4, 6, 12, 7, 9, 2],
+        ...    "Price", [1.30, 1.20, 2.00, 1.75, 1.40, 1.00]])
+        >>> marbles.groups(["Color", "Shape"])
+        Color | Shape       | count
+        Blue  | Rectangular | 1
+        Green | Rectangular | 2
+        Green | Round       | 1
+        Red   | Round       | 2
+        >>> marbles.groups(["Color", "Shape"], sum)
+        Color | Shape       | Amount sum | Price sum
+        Blue  | Rectangular | 12         | 2
+        Green | Rectangular | 15         | 2.6
+        Green | Round       | 2          | 1
+        Red   | Round       | 11         | 3.05
+        """
         collect = _zero_on_type_error(collect)
         columns = []
         labels = self._as_labels(labels)
