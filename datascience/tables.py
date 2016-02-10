@@ -1135,7 +1135,7 @@ class Table(collections.abc.MutableMapping):
         cols = list(self._columns.values())
         _, bins = np.histogram(cols, **vargs)
 
-        binned = Table([bins], ['bin'])
+        binned = Table().with_column('bin', bins)
         for label in self.labels:
             counts, _ = np.histogram(self[label], bins=bins, density=density)
             binned[label + ' ' + tag] = np.append(counts, 0)
