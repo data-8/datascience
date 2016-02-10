@@ -622,6 +622,7 @@ class Table(collections.abc.MutableMapping):
 
         Args:
             ``column_or_label``: values to group (column label or index, or array)
+            
             ``collect``: a function applied to values in other columns for each group
 
         Returns:
@@ -694,6 +695,7 @@ class Table(collections.abc.MutableMapping):
 
         Args:
             ``labels``: list of column names (or indices) to group on
+            
             ``collect``: a function applied to values in other columns for each group
 
         Returns: A Table with each row corresponding to a unique combination of values in
