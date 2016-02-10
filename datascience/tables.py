@@ -1198,7 +1198,7 @@ class Table(collections.abc.MutableMapping):
         warnings.warn("with_relabeling is deprecated; use relabeled", FutureWarning)
         return self.relabeled(*args)
 
-    def bin(self, **vargs):
+    def bin(self, select=None, **vargs):
         """Group values by bin and compute counts per bin by column.
 
         By default, bins are chosen to contain all values in all columns. The
@@ -1209,6 +1209,9 @@ class Table(collections.abc.MutableMapping):
         n+1 columns, where column 0 contains the lower bound of each bin.
 
         Args:
+            ``select`` (columns): Columns to be binned. If None, all columns
+                are binned.
+
             ``bins`` (int or sequence of scalars): If bins is an int,
                 it defines the number of equal-width bins in the given range
                 (10, by default). If bins is a sequence, it defines the bin
@@ -1226,6 +1229,8 @@ class Table(collections.abc.MutableMapping):
                 histogram values will not be equal to 1 unless bins of unity
                 width are chosen; it is not a probability mass function.
         """
+        if select is not None:
+            self = self.select(select)
         if 'normed' in vargs:
             vargs.setdefault('density', vargs.pop('normed'))
         density = vargs.get('density', False)
@@ -1234,7 +1239,7 @@ class Table(collections.abc.MutableMapping):
         cols = list(self._columns.values())
         _, bins = np.histogram(cols, **vargs)
 
-        binned = Table([bins], ['bin'])
+        binned = Table().with_column('bin', bins)
         for label in self.labels:
             counts, _ = np.histogram(self[label], bins=bins, density=density)
             binned[label + ' ' + tag] = np.append(counts, 0)
