@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Start Here: datascience Tutorial &mdash; datascience 0.5.3 documentation</title>
+    <title>Start Here: datascience Tutorial &mdash; datascience 0.5.4 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.5.3',
+        VERSION:     '0.5.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.5.3 documentation" href="index.html" />
+    <link rel="top" title="datascience 0.5.4 documentation" href="index.html" />
     <link rel="next" title="Tables (datascience.tables)" href="tables.html" />
     <link rel="prev" title="Welcome to datascience’s documentation!" href="index.html" /> 
   </head>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="index.html" title="Welcome to datascience’s documentation!"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.5.3 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.5.4 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -171,11 +171,11 @@ discouraged because dictionaries do not preserve column order.</p>
 <span class="gp">   ...: </span>
 
 <span class="gp">In [8]: </span><span class="k">print</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-<span class="go">count | letter | points</span>
-<span class="go">9     | a      | 1</span>
-<span class="go">3     | b      | 2</span>
-<span class="go">3     | c      | 2</span>
-<span class="go">1     | z      | 10</span>
+<span class="go">letter | count | points</span>
+<span class="go">a      | 9     | 1</span>
+<span class="go">b      | 3     | 2</span>
+<span class="go">c      | 3     | 2</span>
+<span class="go">z      | 1     | 10</span>
 </pre></div>
 </div>
 </div>
@@ -187,11 +187,11 @@ and returns an array. Alternatively, <a class="reference internal" href="_autosu
 returns a list of columns (arrays).</p>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [9]: </span><span class="n">t</span>
 <span class="gh">Out[9]: </span><span class="go"></span>
-<span class="go">count | letter | points</span>
-<span class="go">9     | a      | 1</span>
-<span class="go">3     | b      | 2</span>
-<span class="go">3     | c      | 2</span>
-<span class="go">1     | z      | 10</span>
+<span class="go">letter | count | points</span>
+<span class="go">a      | 9     | 1</span>
+<span class="go">b      | 3     | 2</span>
+<span class="go">c      | 3     | 2</span>
+<span class="go">z      | 1     | 10</span>
 
 <span class="gp">In [10]: </span><span class="n">t</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s1">&#39;letter&#39;</span><span class="p">)</span>
 <span class="go">                                                                                                              Out[10]: </span>
@@ -199,9 +199,7 @@ returns a list of columns (arrays).</p>
 <span class="go">      dtype=&#39;&lt;U1&#39;)</span>
 
 <span class="gp">In [11]: </span><span class="n">t</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="go">                                                                                                                                                                        Out[11]: </span>
-<span class="go">array([&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;z&#39;], </span>
-<span class="go">      dtype=&#39;&lt;U1&#39;)</span>
+<span class="go">                                                                                                                                                                        Out[11]: array([9, 3, 3, 1])</span>
 </pre></div>
 </div>
 <p>You can use bracket notation as a shorthand for this method:</p>
@@ -211,9 +209,7 @@ returns a list of columns (arrays).</p>
 <span class="go">      dtype=&#39;&lt;U1&#39;)</span>
 
 <span class="gp">In [13]: </span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>        <span class="c1"># This is a shorthand for t.column(1)</span>
-<span class="go">                                                          Out[13]: </span>
-<span class="go">array([&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;z&#39;], </span>
-<span class="go">      dtype=&#39;&lt;U1&#39;)</span>
+<span class="go">                                                          Out[13]: array([9, 3, 3, 1])</span>
 </pre></div>
 </div>
 <p>To access values by row, <a class="reference internal" href="_autosummary/datascience.tables.Table.row.html#datascience.tables.Table.row" title="datascience.tables.Table.row"><code class="xref py py-meth docutils literal"><span class="pre">row()</span></code></a> returns a
@@ -222,28 +218,28 @@ list-like <code class="xref py py-class docutils literal"><span class="pre">Rows
 tuple-like <code class="xref py py-class docutils literal"><span class="pre">Row</span></code> objects.</p>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [14]: </span><span class="n">t</span><span class="o">.</span><span class="n">rows</span>
 <span class="gh">Out[14]: </span><span class="go"></span>
-<span class="go">Rows(count | letter | points</span>
-<span class="go">9     | a      | 1</span>
-<span class="go">3     | b      | 2</span>
-<span class="go">3     | c      | 2</span>
-<span class="go">1     | z      | 10)</span>
+<span class="go">Rows(letter | count | points</span>
+<span class="go">a      | 9     | 1</span>
+<span class="go">b      | 3     | 2</span>
+<span class="go">c      | 3     | 2</span>
+<span class="go">z      | 1     | 10)</span>
 
 <span class="gp">In [15]: </span><span class="n">t</span><span class="o">.</span><span class="n">rows</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="go">                                                                                                                     Out[15]: Row(count=9, letter=&#39;a&#39;, points=1)</span>
+<span class="go">                                                                                                                     Out[15]: Row(letter=&#39;a&#39;, count=9, points=1)</span>
 
 <span class="gp">In [16]: </span><span class="n">t</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="go">                                                                                                                                                                 Out[16]: Row(count=9, letter=&#39;a&#39;, points=1)</span>
+<span class="go">                                                                                                                                                                 Out[16]: Row(letter=&#39;a&#39;, count=9, points=1)</span>
 
 <span class="gp">In [17]: </span><span class="n">second</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">rows</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
 <span class="gp">In [18]: </span><span class="n">second</span>
-<span class="gh">Out[18]: </span><span class="go">Row(count=3, letter=&#39;b&#39;, points=2)</span>
+<span class="gh">Out[18]: </span><span class="go">Row(letter=&#39;b&#39;, count=3, points=2)</span>
 
 <span class="gp">In [19]: </span><span class="n">second</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="go">                                            Out[19]: 3</span>
+<span class="go">                                            Out[19]: &#39;b&#39;</span>
 
 <span class="gp">In [20]: </span><span class="n">second</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-<span class="go">                                                       Out[20]: &#39;b&#39;</span>
+<span class="go">                                                         Out[20]: 3</span>
 </pre></div>
 </div>
 <p>To get the number of rows, use <a class="reference internal" href="_autosummary/datascience.tables.Table.num_rows.html#datascience.tables.Table.num_rows" title="datascience.tables.Table.num_rows"><code class="xref py py-attr docutils literal"><span class="pre">num_rows</span></code></a>.</p>
@@ -259,35 +255,35 @@ reference (<a class="reference internal" href="tables.html#tables-overview"><spa
 <p>Adding a column with <a class="reference internal" href="_autosummary/datascience.tables.Table.with_column.html#datascience.tables.Table.with_column" title="datascience.tables.Table.with_column"><code class="xref py py-meth docutils literal"><span class="pre">with_column()</span></code></a>:</p>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [22]: </span><span class="n">t</span>
 <span class="gh">Out[22]: </span><span class="go"></span>
-<span class="go">count | letter | points</span>
-<span class="go">9     | a      | 1</span>
-<span class="go">3     | b      | 2</span>
-<span class="go">3     | c      | 2</span>
-<span class="go">1     | z      | 10</span>
+<span class="go">letter | count | points</span>
+<span class="go">a      | 9     | 1</span>
+<span class="go">b      | 3     | 2</span>
+<span class="go">c      | 3     | 2</span>
+<span class="go">z      | 1     | 10</span>
 
 <span class="gp">In [23]: </span><span class="n">t</span><span class="o">.</span><span class="n">with_column</span><span class="p">(</span><span class="s1">&#39;vowel?&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;yes&#39;</span><span class="p">,</span> <span class="s1">&#39;no&#39;</span><span class="p">,</span> <span class="s1">&#39;no&#39;</span><span class="p">,</span> <span class="s1">&#39;no&#39;</span><span class="p">])</span>
 <span class="go">                                                                                                               Out[23]: </span>
-<span class="go">count | letter | points | vowel?</span>
-<span class="go">9     | a      | 1      | yes</span>
-<span class="go">3     | b      | 2      | no</span>
-<span class="go">3     | c      | 2      | no</span>
-<span class="go">1     | z      | 10     | no</span>
+<span class="go">letter | count | points | vowel?</span>
+<span class="go">a      | 9     | 1      | yes</span>
+<span class="go">b      | 3     | 2      | no</span>
+<span class="go">c      | 3     | 2      | no</span>
+<span class="go">z      | 1     | 10     | no</span>
 
 <span class="gp">In [24]: </span><span class="n">t</span> <span class="c1"># .with_column returns a new table without modifying the original</span>
 <span class="go">                                                                                                                                                                                                                                                                               Out[24]: </span>
-<span class="go">count | letter | points</span>
-<span class="go">9     | a      | 1</span>
-<span class="go">3     | b      | 2</span>
-<span class="go">3     | c      | 2</span>
-<span class="go">1     | z      | 10</span>
+<span class="go">letter | count | points</span>
+<span class="go">a      | 9     | 1</span>
+<span class="go">b      | 3     | 2</span>
+<span class="go">c      | 3     | 2</span>
+<span class="go">z      | 1     | 10</span>
 
 <span class="gp">In [25]: </span><span class="n">t</span><span class="o">.</span><span class="n">with_column</span><span class="p">(</span><span class="s1">&#39;2 * count&#39;</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="c1"># A simple way to operate on columns</span>
 <span class="go">                                                                                                                                                                                                                                                                                                                                                                                              Out[25]: </span>
-<span class="go">count | letter | points | 2 * count</span>
-<span class="go">9     | a      | 1      | 18</span>
-<span class="go">3     | b      | 2      | 6</span>
-<span class="go">3     | c      | 2      | 6</span>
-<span class="go">1     | z      | 10     | 2</span>
+<span class="go">letter | count | points | 2 * count</span>
+<span class="go">a      | 9     | 1      | 18</span>
+<span class="go">b      | 3     | 2      | 6</span>
+<span class="go">c      | 3     | 2      | 6</span>
+<span class="go">z      | 1     | 10     | 2</span>
 </pre></div>
 </div>
 <p>Selecting columns with <a class="reference internal" href="_autosummary/datascience.tables.Table.select.html#datascience.tables.Table.select" title="datascience.tables.Table.select"><code class="xref py py-meth docutils literal"><span class="pre">select()</span></code></a>:</p>
@@ -311,81 +307,81 @@ reference (<a class="reference internal" href="tables.html#tables-overview"><spa
 <p>Renaming columns with <a class="reference internal" href="_autosummary/datascience.tables.Table.relabeled.html#datascience.tables.Table.relabeled" title="datascience.tables.Table.relabeled"><code class="xref py py-meth docutils literal"><span class="pre">relabeled()</span></code></a>:</p>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [28]: </span><span class="n">t</span>
 <span class="gh">Out[28]: </span><span class="go"></span>
-<span class="go">count | letter | points</span>
-<span class="go">9     | a      | 1</span>
-<span class="go">3     | b      | 2</span>
-<span class="go">3     | c      | 2</span>
-<span class="go">1     | z      | 10</span>
+<span class="go">letter | count | points</span>
+<span class="go">a      | 9     | 1</span>
+<span class="go">b      | 3     | 2</span>
+<span class="go">c      | 3     | 2</span>
+<span class="go">z      | 1     | 10</span>
 
 <span class="gp">In [29]: </span><span class="n">t</span><span class="o">.</span><span class="n">relabeled</span><span class="p">(</span><span class="s1">&#39;points&#39;</span><span class="p">,</span> <span class="s1">&#39;other name&#39;</span><span class="p">)</span>
 <span class="go">                                                                                                               Out[29]: </span>
-<span class="go">count | letter | other name</span>
-<span class="go">9     | a      | 1</span>
-<span class="go">3     | b      | 2</span>
-<span class="go">3     | c      | 2</span>
-<span class="go">1     | z      | 10</span>
+<span class="go">letter | count | other name</span>
+<span class="go">a      | 9     | 1</span>
+<span class="go">b      | 3     | 2</span>
+<span class="go">c      | 3     | 2</span>
+<span class="go">z      | 1     | 10</span>
 
 <span class="gp">In [30]: </span><span class="n">t</span>
 <span class="go">                                                                                                                                                                                                                                  Out[30]: </span>
-<span class="go">count | letter | points</span>
-<span class="go">9     | a      | 1</span>
-<span class="go">3     | b      | 2</span>
-<span class="go">3     | c      | 2</span>
-<span class="go">1     | z      | 10</span>
+<span class="go">letter | count | points</span>
+<span class="go">a      | 9     | 1</span>
+<span class="go">b      | 3     | 2</span>
+<span class="go">c      | 3     | 2</span>
+<span class="go">z      | 1     | 10</span>
 
 <span class="gp">In [31]: </span><span class="n">t</span><span class="o">.</span><span class="n">relabeled</span><span class="p">([</span><span class="s1">&#39;letter&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="s1">&#39;points&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">])</span>
 <span class="go">                                                                                                                                                                                                                                                                                                                                                 Out[31]: </span>
-<span class="go">y    | x    | z</span>
-<span class="go">9    | a    | 1</span>
-<span class="go">3    | b    | 2</span>
-<span class="go">3    | c    | 2</span>
-<span class="go">1    | z    | 10</span>
+<span class="go">x    | y    | z</span>
+<span class="go">a    | 9    | 1</span>
+<span class="go">b    | 3    | 2</span>
+<span class="go">c    | 3    | 2</span>
+<span class="go">z    | 1    | 10</span>
 </pre></div>
 </div>
 <p>Selecting out rows by index with <a class="reference internal" href="_autosummary/datascience.tables.Table.take.html#datascience.tables.Table.take" title="datascience.tables.Table.take"><code class="xref py py-meth docutils literal"><span class="pre">take()</span></code></a> and
 conditionally with <a class="reference internal" href="_autosummary/datascience.tables.Table.where.html#datascience.tables.Table.where" title="datascience.tables.Table.where"><code class="xref py py-meth docutils literal"><span class="pre">where()</span></code></a>:</p>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [32]: </span><span class="n">t</span>
 <span class="gh">Out[32]: </span><span class="go"></span>
-<span class="go">count | letter | points</span>
-<span class="go">9     | a      | 1</span>
-<span class="go">3     | b      | 2</span>
-<span class="go">3     | c      | 2</span>
-<span class="go">1     | z      | 10</span>
+<span class="go">letter | count | points</span>
+<span class="go">a      | 9     | 1</span>
+<span class="go">b      | 3     | 2</span>
+<span class="go">c      | 3     | 2</span>
+<span class="go">z      | 1     | 10</span>
 
 <span class="gp">In [33]: </span><span class="n">t</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># the third row</span>
 <span class="go">                                                                                                               Out[33]: </span>
-<span class="go">count | letter | points</span>
-<span class="go">3     | c      | 2</span>
+<span class="go">letter | count | points</span>
+<span class="go">c      | 3     | 2</span>
 
 <span class="gp">In [34]: </span><span class="n">t</span><span class="o">.</span><span class="n">take</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="c1"># the first and second rows</span>
 <span class="go">                                                                                                                                                                    Out[34]: </span>
-<span class="go">count | letter | points</span>
-<span class="go">9     | a      | 1</span>
-<span class="go">3     | b      | 2</span>
+<span class="go">letter | count | points</span>
+<span class="go">a      | 9     | 1</span>
+<span class="go">b      | 3     | 2</span>
 </pre></div>
 </div>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [35]: </span><span class="n">t</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;points&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="c1"># rows where points == 2</span>
 <span class="gh">Out[35]: </span><span class="go"></span>
-<span class="go">count | letter | points</span>
-<span class="go">3     | b      | 2</span>
-<span class="go">3     | c      | 2</span>
+<span class="go">letter | count | points</span>
+<span class="go">b      | 3     | 2</span>
+<span class="go">c      | 3     | 2</span>
 
 <span class="gp">In [36]: </span><span class="n">t</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="c1"># rows where count &lt; 8</span>
 <span class="go">                                                                        Out[36]: </span>
-<span class="go">count | letter | points</span>
-<span class="go">3     | b      | 2</span>
-<span class="go">3     | c      | 2</span>
-<span class="go">1     | z      | 10</span>
+<span class="go">letter | count | points</span>
+<span class="go">b      | 3     | 2</span>
+<span class="go">c      | 3     | 2</span>
+<span class="go">z      | 1     | 10</span>
 
 <span class="gp">In [37]: </span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">8</span> <span class="c1"># .where actually takes in an array of booleans</span>
 <span class="go">                                                                                                                                                                    Out[37]: array([False,  True,  True,  True], dtype=bool)</span>
 
 <span class="gp">In [38]: </span><span class="n">t</span><span class="o">.</span><span class="n">where</span><span class="p">([</span><span class="bp">False</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="bp">True</span><span class="p">])</span> <span class="c1"># same as the last line</span>
 <span class="go">                                                                                                                                                                                                                             Out[38]: </span>
-<span class="go">count | letter | points</span>
-<span class="go">3     | b      | 2</span>
-<span class="go">3     | c      | 2</span>
-<span class="go">1     | z      | 10</span>
+<span class="go">letter | count | points</span>
+<span class="go">b      | 3     | 2</span>
+<span class="go">c      | 3     | 2</span>
+<span class="go">z      | 1     | 10</span>
 </pre></div>
 </div>
 <p>Operate on table data with <a class="reference internal" href="_autosummary/datascience.tables.Table.sort.html#datascience.tables.Table.sort" title="datascience.tables.Table.sort"><code class="xref py py-meth docutils literal"><span class="pre">sort()</span></code></a>,
@@ -393,27 +389,27 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 <a class="reference internal" href="_autosummary/datascience.tables.Table.pivot.html#datascience.tables.Table.pivot" title="datascience.tables.Table.pivot"><code class="xref py py-meth docutils literal"><span class="pre">pivot()</span></code></a></p>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [39]: </span><span class="n">t</span>
 <span class="gh">Out[39]: </span><span class="go"></span>
-<span class="go">count | letter | points</span>
-<span class="go">9     | a      | 1</span>
-<span class="go">3     | b      | 2</span>
-<span class="go">3     | c      | 2</span>
-<span class="go">1     | z      | 10</span>
+<span class="go">letter | count | points</span>
+<span class="go">a      | 9     | 1</span>
+<span class="go">b      | 3     | 2</span>
+<span class="go">c      | 3     | 2</span>
+<span class="go">z      | 1     | 10</span>
 
 <span class="gp">In [40]: </span><span class="n">t</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">)</span>
 <span class="go">                                                                                                               Out[40]: </span>
-<span class="go">count | letter | points</span>
-<span class="go">1     | z      | 10</span>
-<span class="go">3     | b      | 2</span>
-<span class="go">3     | c      | 2</span>
-<span class="go">9     | a      | 1</span>
+<span class="go">letter | count | points</span>
+<span class="go">z      | 1     | 10</span>
+<span class="go">b      | 3     | 2</span>
+<span class="go">c      | 3     | 2</span>
+<span class="go">a      | 9     | 1</span>
 
 <span class="gp">In [41]: </span><span class="n">t</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">&#39;letter&#39;</span><span class="p">,</span> <span class="n">descending</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
 <span class="go">                                                                                                                                                                                                                              Out[41]: </span>
-<span class="go">count | letter | points</span>
-<span class="go">1     | z      | 10</span>
-<span class="go">3     | c      | 2</span>
-<span class="go">3     | b      | 2</span>
-<span class="go">9     | a      | 1</span>
+<span class="go">letter | count | points</span>
+<span class="go">z      | 1     | 10</span>
+<span class="go">c      | 3     | 2</span>
+<span class="go">b      | 3     | 2</span>
+<span class="go">a      | 9     | 1</span>
 </pre></div>
 </div>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="go"># You may pass a reducing function into the collect arg</span>
@@ -460,17 +456,17 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 
 <span class="gp">In [47]: </span><span class="n">normal_data</span>
 <span class="gh">Out[47]: </span><span class="go"></span>
-<span class="go">data1     | data2</span>
-<span class="go">-0.795153 | 4.25664</span>
-<span class="go">1.69959   | 7.91349</span>
-<span class="go">0.582314  | 0.344359</span>
-<span class="go">-1.39344  | 2.9678</span>
-<span class="go">-1.76353  | 2.06823</span>
-<span class="go">-0.146613 | 4.38687</span>
-<span class="go">-1.918    | 3.39523</span>
-<span class="go">2.9235    | -0.727927</span>
-<span class="go">-2.335    | 1.275</span>
-<span class="go">1.12657   | 3.01726</span>
+<span class="go">data1    | data2</span>
+<span class="go">2.32873  | 5.40941</span>
+<span class="go">1.00597  | 6.27913</span>
+<span class="go">-0.86506 | -0.181219</span>
+<span class="go">1.59189  | 3.97492</span>
+<span class="go">0.726405 | 2.37841</span>
+<span class="go">-1.39874 | -0.0754677</span>
+<span class="go">2.92225  | -0.648017</span>
+<span class="go">-4.40724 | 2.42723</span>
+<span class="go">0.167801 | 5.6757</span>
+<span class="go">2.96508  | 3.66722</span>
 <span class="go">... (90 rows omitted)</span>
 </pre></div>
 </div>
@@ -505,11 +501,11 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 <p>Use <a class="reference internal" href="_autosummary/datascience.tables.Table.barh.html#datascience.tables.Table.barh" title="datascience.tables.Table.barh"><code class="xref py py-meth docutils literal"><span class="pre">barh()</span></code></a> to display categorical data.</p>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [54]: </span><span class="n">t</span>
 <span class="gh">Out[54]: </span><span class="go"></span>
-<span class="go">count | letter | points</span>
-<span class="go">9     | a      | 1</span>
-<span class="go">3     | b      | 2</span>
-<span class="go">3     | c      | 2</span>
-<span class="go">1     | z      | 10</span>
+<span class="go">letter | count | points</span>
+<span class="go">a      | 9     | 1</span>
+<span class="go">b      | 3     | 2</span>
+<span class="go">c      | 3     | 2</span>
+<span class="go">z      | 1     | 10</span>
 
 <span class="gp">In [55]: </span><span class="n">t</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="s1">&#39;letter&#39;</span><span class="p">)</span>
 </pre></div>
@@ -522,17 +518,17 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 converting to a pandas dataframe with <a class="reference internal" href="_autosummary/datascience.tables.Table.to_df.html#datascience.tables.Table.to_df" title="datascience.tables.Table.to_df"><code class="xref py py-meth docutils literal"><span class="pre">to_df()</span></code></a>:</p>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [56]: </span><span class="n">normal_data</span>
 <span class="gh">Out[56]: </span><span class="go"></span>
-<span class="go">data1     | data2</span>
-<span class="go">-0.795153 | 4.25664</span>
-<span class="go">1.69959   | 7.91349</span>
-<span class="go">0.582314  | 0.344359</span>
-<span class="go">-1.39344  | 2.9678</span>
-<span class="go">-1.76353  | 2.06823</span>
-<span class="go">-0.146613 | 4.38687</span>
-<span class="go">-1.918    | 3.39523</span>
-<span class="go">2.9235    | -0.727927</span>
-<span class="go">-2.335    | 1.275</span>
-<span class="go">1.12657   | 3.01726</span>
+<span class="go">data1    | data2</span>
+<span class="go">2.32873  | 5.40941</span>
+<span class="go">1.00597  | 6.27913</span>
+<span class="go">-0.86506 | -0.181219</span>
+<span class="go">1.59189  | 3.97492</span>
+<span class="go">0.726405 | 2.37841</span>
+<span class="go">-1.39874 | -0.0754677</span>
+<span class="go">2.92225  | -0.648017</span>
+<span class="go">-4.40724 | 2.42723</span>
+<span class="go">0.167801 | 5.6757</span>
+<span class="go">2.96508  | 3.66722</span>
 <span class="go">... (90 rows omitted)</span>
 
 <span class="go"># index = False prevents row numbers from appearing in the resulting CSV</span>
@@ -642,8 +638,8 @@ non-smokers.</p>
 
 <span class="gp">In [73]: </span><span class="n">bootstrapped_diff_means</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
 <span class="gh">Out[73]: </span><span class="go"></span>
-<span class="go">array([-1.25248869,  0.25657784,  0.42102473, -0.18837851, -0.8611393 ,</span>
-<span class="go">        0.34613099, -0.7788412 ,  0.26199552, -2.76714048,  1.60515563])</span>
+<span class="go">array([ 0.72345781, -1.62444658,  1.48254795,  0.12111766,  1.59913768,</span>
+<span class="go">       -0.03298444,  1.30853939,  0.62607371, -1.19634048,  1.17917943])</span>
 
 <span class="gp">In [74]: </span><span class="n">num_diffs_greater</span> <span class="o">=</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">bootstrapped_diff_means</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">observed_diff</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
@@ -726,7 +722,7 @@ non-smokers.</p>
         <li class="right" >
           <a href="index.html" title="Welcome to datascience’s documentation!"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.5.3 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.5.4 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
