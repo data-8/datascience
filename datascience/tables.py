@@ -625,6 +625,33 @@ class Table(collections.abc.MutableMapping):
             column or ``column_or_label`` itself is non-zero or True, or is equal to ``value``,
             if provided.
 
+        >>> marbles = Table().with_columns([
+        ...    "Color", ["Red", "Green", "Blue", "Red", "Green", "Green"],
+        ...    "Shape", ["Round", "Rectangular", "Rectangular", "Round", "Rectangular", "Round"],
+        ...    "Amount", [4, 6, 12, 7, 9, 2],
+        ...    "Price", [1.30, 1.20, 2.00, 1.75, 1.40, 1.00]])
+        >>> marbles
+        Color | Shape       | Amount | Price
+        Red   | Round       | 4      | 1.3
+        Green | Rectangular | 6      | 1.2
+        Blue  | Rectangular | 12     | 2
+        Red   | Round       | 7      | 1.75
+        Green | Rectangular | 9      | 1.4
+        Green | Round       | 2      | 1
+        >>> marbles.where("Shape", "Round")
+        Color | Shape | Amount | Price
+        Red   | Round | 4      | 1.3
+        Red   | Round | 7      | 1.75
+        Green | Round | 2      | 1
+        >>> marbles.where(marbles.column("Shape") == "Round") # equivalent to the previous example
+        Color | Shape | Amount | Price
+        Red   | Round | 4      | 1.3
+        Red   | Round | 7      | 1.75
+        Green | Round | 2      | 1
+        >>> marbles.where(marbles.column("Price") > 1.5)
+        Color | Shape       | Amount | Price
+        Blue  | Rectangular | 12     | 2
+        Red   | Round       | 7      | 1.75
         """
         column = self._get_column(column_or_label)
         if value is not None:
@@ -635,16 +662,60 @@ class Table(collections.abc.MutableMapping):
         """Return a Table of rows sorted according to the values in a column.
         
         Args:
-            column_or_label: the column whose values are used for sorting.
-
+            ``column_or_label``: the column whose values are used for sorting.
+        
             ``descending``: if True, sorting will be in descending, rather than 
             ascending order.
 
-            ``distinct``: if True, repeated values in ``column_or_label`` will be ommitted.
+            ``distinct``: if True, repeated values in ``column_or_label`` will be omitted.
 
         Returns:
             An instance of ``Table`` containing rows sorted based on the values in ``column_or_label``.
-        
+
+        >>> marbles = Table().with_columns([
+        ...    "Color", ["Red", "Green", "Blue", "Red", "Green", "Green"],
+        ...    "Shape", ["Round", "Rectangular", "Rectangular", "Round", "Rectangular", "Round"],
+        ...    "Amount", [4, 6, 12, 7, 9, 2],
+        ...    "Price", [1.30, 1.30, 2.00, 1.75, 1.40, 1.00]])
+        >>> marbles
+        Color | Shape       | Amount | Price
+        Red   | Round       | 4      | 1.3
+        Green | Rectangular | 6      | 1.3
+        Blue  | Rectangular | 12     | 2
+        Red   | Round       | 7      | 1.75
+        Green | Rectangular | 9      | 1.4
+        Green | Round       | 2      | 1
+        >>> marbles.sort("Amount")
+        Color | Shape       | Amount | Price
+        Green | Round       | 2      | 1
+        Red   | Round       | 4      | 1.3
+        Green | Rectangular | 6      | 1.3
+        Red   | Round       | 7      | 1.75
+        Green | Rectangular | 9      | 1.4
+        Blue  | Rectangular | 12     | 2
+        >>> marbles.sort("Amount", descending = True)
+        Color | Shape       | Amount | Price
+        Blue  | Rectangular | 12     | 2
+        Green | Rectangular | 9      | 1.4
+        Red   | Round       | 7      | 1.75
+        Green | Rectangular | 6      | 1.3
+        Red   | Round       | 4      | 1.3
+        Green | Round       | 2      | 1
+        >>> marbles.sort(3) # the Price column
+        Color | Shape       | Amount | Price
+        Green | Round       | 2      | 1
+        Red   | Round       | 4      | 1.3
+        Green | Rectangular | 6      | 1.3
+        Green | Rectangular | 9      | 1.4
+        Red   | Round       | 7      | 1.75
+        Blue  | Rectangular | 12     | 2
+        >>> marbles.sort(3, distinct = True)
+        Color | Shape       | Amount | Price
+        Green | Round       | 2      | 1
+        Red   | Round       | 4      | 1.3
+        Green | Rectangular | 9      | 1.4
+        Red   | Round       | 7      | 1.75
+        Blue  | Rectangular | 12     | 2
         """
         column = self._get_column(column_or_label)
         if distinct:
@@ -681,7 +752,15 @@ class Table(collections.abc.MutableMapping):
         ...    "Color", ["Red", "Green", "Blue", "Red", "Green", "Green"],
         ...    "Shape", ["Round", "Rectangular", "Rectangular", "Round", "Rectangular", "Round"],
         ...    "Amount", [4, 6, 12, 7, 9, 2],
-        ...    "Price", [1.30, 1.20, 2.00, 1.75, 1.40, 1.00]])
+        ...    "Price", [1.30, 1.30, 2.00, 1.75, 1.40, 1.00]])
+        >>> marbles
+        Color | Shape       | Amount | Price
+        Red   | Round       | 4      | 1.3
+        Green | Rectangular | 6      | 1.3
+        Blue  | Rectangular | 12     | 2
+        Red   | Round       | 7      | 1.75
+        Green | Rectangular | 9      | 1.4
+        Green | Round       | 2      | 1
         >>> marbles.group("Color") # just gives counts
         Color | count
         Blue  | 1
@@ -694,7 +773,7 @@ class Table(collections.abc.MutableMapping):
         Red   | Round       | 7          | 1.75
         >>> marbles.group("Shape", sum) # sum doesn't make sense for strings
         Shape       | Color sum | Amount sum | Price sum
-        Rectangular |           | 27         | 4.6
+        Rectangular |           | 27         | 4.7
         Round       |           | 13         | 4.05
         """
         self = self.copy(shallow=True)
@@ -754,7 +833,15 @@ class Table(collections.abc.MutableMapping):
         ...    "Color", ["Red", "Green", "Blue", "Red", "Green", "Green"],
         ...    "Shape", ["Round", "Rectangular", "Rectangular", "Round", "Rectangular", "Round"],
         ...    "Amount", [4, 6, 12, 7, 9, 2],
-        ...    "Price", [1.30, 1.20, 2.00, 1.75, 1.40, 1.00]])
+        ...    "Price", [1.30, 1.30, 2.00, 1.75, 1.40, 1.00]])
+        >>> marbles
+        Color | Shape       | Amount | Price
+        Red   | Round       | 4      | 1.3
+        Green | Rectangular | 6      | 1.3
+        Blue  | Rectangular | 12     | 2
+        Red   | Round       | 7      | 1.75
+        Green | Rectangular | 9      | 1.4
+        Green | Round       | 2      | 1
         >>> marbles.groups(["Color", "Shape"])
         Color | Shape       | count
         Blue  | Rectangular | 1
@@ -764,7 +851,7 @@ class Table(collections.abc.MutableMapping):
         >>> marbles.groups(["Color", "Shape"], sum)
         Color | Shape       | Amount sum | Price sum
         Blue  | Rectangular | 12         | 2
-        Green | Rectangular | 15         | 2.6
+        Green | Rectangular | 15         | 2.7
         Green | Round       | 2          | 1
         Red   | Round       | 11         | 3.05
         """
