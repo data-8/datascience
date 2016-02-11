@@ -540,6 +540,16 @@ class Table(collections.abc.MutableMapping):
         6
         5
         5
+        >>> t.select(1)
+        prices
+        6
+        5
+        5
+        >>> t.select([2, 0])
+        calories | burgers
+        743      | cheeseburger
+        651      | hamburger
+        582      | veggie burger
         """
         labels = self._as_labels(column_label_or_labels)
         table = Table()
@@ -566,7 +576,36 @@ class Table(collections.abc.MutableMapping):
 
         Returns:
             An instance of ``Table`` with given columns removed.
-
+        
+        >>> t = Table().with_columns([
+        ...     'burgers',  ['cheeseburger', 'hamburger', 'veggie burger'],
+        ...     'prices',   [6, 5, 5],
+        ...     'calories', [743, 651, 582]])
+        >>> t
+        burgers       | prices | calories
+        cheeseburger  | 6      | 743
+        hamburger     | 5      | 651
+        veggie burger | 5      | 582
+        >>> t.drop('prices')
+        burgers       | calories
+        cheeseburger  | 743
+        hamburger     | 651
+        veggie burger | 582
+        >>> t.drop(['burgers', 'calories'])
+        prices
+        6
+        5
+        5
+        >>> t.drop([0, 2])
+        prices
+        6
+        5
+        5
+        >>> t.drop(1)
+        burgers       | calories
+        cheeseburger  | 743
+        hamburger     | 651
+        veggie burger | 582
         """
         exclude = _as_labels(column_label_or_labels)
         return self.select([c for (i, c) in enumerate(self.labels) if i not in exclude and c not in exclude])
