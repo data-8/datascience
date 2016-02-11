@@ -202,7 +202,7 @@ methods (mostly visualizations).</p>
 <td>Return a copy of a Table.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.select.html#datascience.tables.Table.select" title="datascience.tables.Table.select"><code class="xref py py-obj docutils literal"><span class="pre">Table.select</span></code></a>(column_label_or_labels)</td>
-<td>Return a Table with selected column or columns by label.</td>
+<td>Return a Table with selected column or columns by label or index.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.drop.html#datascience.tables.Table.drop" title="datascience.tables.Table.drop"><code class="xref py py-obj docutils literal"><span class="pre">Table.drop</span></code></a>(column_label_or_labels)</td>
 <td>Return a Table with only columns other than selected label or labels.</td>
@@ -214,16 +214,16 @@ methods (mostly visualizations).</p>
 <td>Return a new Table without a sequence of rows excluded by number.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.where.html#datascience.tables.Table.where" title="datascience.tables.Table.where"><code class="xref py py-obj docutils literal"><span class="pre">Table.where</span></code></a>(column_or_label[,&nbsp;value])</td>
-<td>Return a Table of rows for which the column is value or a non-zero value.</td>
+<td>Return a Table of rows for which the column is <code class="docutils literal"><span class="pre">value</span></code> or a non-zero value.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.sort.html#datascience.tables.Table.sort" title="datascience.tables.Table.sort"><code class="xref py py-obj docutils literal"><span class="pre">Table.sort</span></code></a>(column_or_label[,&nbsp;descending,&nbsp;...])</td>
-<td>Return a Table of sorted rows by the values in a column.</td>
+<td>Return a Table of rows sorted according to the values in a column.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.group.html#datascience.tables.Table.group" title="datascience.tables.Table.group"><code class="xref py py-obj docutils literal"><span class="pre">Table.group</span></code></a>(column_or_label[,&nbsp;collect])</td>
 <td>Group rows by unique values in a column; count or aggregate others.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.groups.html#datascience.tables.Table.groups" title="datascience.tables.Table.groups"><code class="xref py py-obj docutils literal"><span class="pre">Table.groups</span></code></a>(labels[,&nbsp;collect])</td>
-<td>Group rows by multiple columns, aggregating values.</td>
+<td>Group rows by multiple columns, count or aggregate others.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.pivot.html#datascience.tables.Table.pivot" title="datascience.tables.Table.pivot"><code class="xref py py-obj docutils literal"><span class="pre">Table.pivot</span></code></a>(columns,&nbsp;rows[,&nbsp;values,&nbsp;...])</td>
 <td>Generate a table with a column for rows (or a column for each row in rows list) and a column for each unique value in columns.</td>

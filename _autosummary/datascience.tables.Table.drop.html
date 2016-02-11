@@ -60,6 +60,45 @@
 <dt id="datascience.tables.Table.drop">
 <code class="descclassname">Table.</code><code class="descname">drop</code><span class="sig-paren">(</span><em>column_label_or_labels</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.drop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.drop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a Table with only columns other than selected label or labels.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><code class="docutils literal"><span class="pre">column_label_or_labels</span></code> (string or list of strings): The header
+names or indices of the columns to be dropped. <code class="docutils literal"><span class="pre">column_label_or_labels</span></code> must
+be an existing header name, or a valid column index.</dd>
+<dt>Returns:</dt>
+<dd>An instance of <code class="docutils literal"><span class="pre">Table</span></code> with given columns removed.</dd>
+</dl>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="s1">&#39;burgers&#39;</span><span class="p">,</span>  <span class="p">[</span><span class="s1">&#39;cheeseburger&#39;</span><span class="p">,</span> <span class="s1">&#39;hamburger&#39;</span><span class="p">,</span> <span class="s1">&#39;veggie burger&#39;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="s1">&#39;prices&#39;</span><span class="p">,</span>   <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="s1">&#39;calories&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">743</span><span class="p">,</span> <span class="mi">651</span><span class="p">,</span> <span class="mi">582</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span>
+<span class="go">burgers       | prices | calories</span>
+<span class="go">cheeseburger  | 6      | 743</span>
+<span class="go">hamburger     | 5      | 651</span>
+<span class="go">veggie burger | 5      | 582</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;prices&#39;</span><span class="p">)</span>
+<span class="go">burgers       | calories</span>
+<span class="go">cheeseburger  | 743</span>
+<span class="go">hamburger     | 651</span>
+<span class="go">veggie burger | 582</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;burgers&#39;</span><span class="p">,</span> <span class="s1">&#39;calories&#39;</span><span class="p">])</span>
+<span class="go">prices</span>
+<span class="go">6</span>
+<span class="go">5</span>
+<span class="go">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="go">prices</span>
+<span class="go">6</span>
+<span class="go">5</span>
+<span class="go">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">burgers       | calories</span>
+<span class="go">cheeseburger  | 743</span>
+<span class="go">hamburger     | 651</span>
+<span class="go">veggie burger | 582</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </div>

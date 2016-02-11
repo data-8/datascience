@@ -560,12 +560,12 @@
         <span class="k">return</span> <span class="n">table</span>
 </div>
 <div class="viewcode-block" id="Table.select"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.select.html#datascience.tables.Table.select">[docs]</a>    <span class="k">def</span> <span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_label_or_labels</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return a Table with selected column or columns by label.</span>
+        <span class="sd">&quot;&quot;&quot;Return a Table with selected column or columns by label or index.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            ``column_label_or_labels`` (string or list of strings): The header</span>
-<span class="sd">            names of the columns to be selected. ``column_label_or_labels`` must</span>
-<span class="sd">            be an existing header name.</span>
+<span class="sd">            names or indices of the columns to be selected. ``column_label_or_labels`` must</span>
+<span class="sd">            be an existing header name, or a valid column index.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            An instance of ``Table`` containing only selected columns.</span>
@@ -589,6 +589,16 @@
 <span class="sd">        6</span>
 <span class="sd">        5</span>
 <span class="sd">        5</span>
+<span class="sd">        &gt;&gt;&gt; t.select(1)</span>
+<span class="sd">        prices</span>
+<span class="sd">        6</span>
+<span class="sd">        5</span>
+<span class="sd">        5</span>
+<span class="sd">        &gt;&gt;&gt; t.select([2, 0])</span>
+<span class="sd">        calories | burgers</span>
+<span class="sd">        743      | cheeseburger</span>
+<span class="sd">        651      | hamburger</span>
+<span class="sd">        582      | veggie burger</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_as_labels</span><span class="p">(</span><span class="n">column_label_or_labels</span><span class="p">)</span>
         <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span>
@@ -606,19 +616,156 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="Table.drop"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.drop.html#datascience.tables.Table.drop">[docs]</a>    <span class="k">def</span> <span class="nf">drop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_label_or_labels</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return a Table with only columns other than selected label or labels.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Return a Table with only columns other than selected label or labels.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            ``column_label_or_labels`` (string or list of strings): The header</span>
+<span class="sd">            names or indices of the columns to be dropped. ``column_label_or_labels`` must</span>
+<span class="sd">            be an existing header name, or a valid column index.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            An instance of ``Table`` with given columns removed.</span>
+<span class="sd">        </span>
+<span class="sd">        &gt;&gt;&gt; t = Table().with_columns([</span>
+<span class="sd">        ...     &#39;burgers&#39;,  [&#39;cheeseburger&#39;, &#39;hamburger&#39;, &#39;veggie burger&#39;],</span>
+<span class="sd">        ...     &#39;prices&#39;,   [6, 5, 5],</span>
+<span class="sd">        ...     &#39;calories&#39;, [743, 651, 582]])</span>
+<span class="sd">        &gt;&gt;&gt; t</span>
+<span class="sd">        burgers       | prices | calories</span>
+<span class="sd">        cheeseburger  | 6      | 743</span>
+<span class="sd">        hamburger     | 5      | 651</span>
+<span class="sd">        veggie burger | 5      | 582</span>
+<span class="sd">        &gt;&gt;&gt; t.drop(&#39;prices&#39;)</span>
+<span class="sd">        burgers       | calories</span>
+<span class="sd">        cheeseburger  | 743</span>
+<span class="sd">        hamburger     | 651</span>
+<span class="sd">        veggie burger | 582</span>
+<span class="sd">        &gt;&gt;&gt; t.drop([&#39;burgers&#39;, &#39;calories&#39;])</span>
+<span class="sd">        prices</span>
+<span class="sd">        6</span>
+<span class="sd">        5</span>
+<span class="sd">        5</span>
+<span class="sd">        &gt;&gt;&gt; t.drop([0, 2])</span>
+<span class="sd">        prices</span>
+<span class="sd">        6</span>
+<span class="sd">        5</span>
+<span class="sd">        5</span>
+<span class="sd">        &gt;&gt;&gt; t.drop(1)</span>
+<span class="sd">        burgers       | calories</span>
+<span class="sd">        cheeseburger  | 743</span>
+<span class="sd">        hamburger     | 651</span>
+<span class="sd">        veggie burger | 582</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">exclude</span> <span class="o">=</span> <span class="n">_as_labels</span><span class="p">(</span><span class="n">column_label_or_labels</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="n">c</span> <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">exclude</span> <span class="ow">and</span> <span class="n">c</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">exclude</span><span class="p">])</span>
 </div>
 <div class="viewcode-block" id="Table.where"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.where.html#datascience.tables.Table.where">[docs]</a>    <span class="k">def</span> <span class="nf">where</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_or_label</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return a Table of rows for which the column is value or a non-zero value.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Return a Table of rows for which the column is ``value`` or a non-zero value.</span>
+<span class="sd">        </span>
+<span class="sd">        If ``column_or_label`` contains Boolean values, returns rows corresponding to True.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ``column_or_label``: The header name of a column in the table or an array.</span>
+
+<span class="sd">            ``value``: Value for comparison with items in ``column_or_label``.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            An instance of ``Table`` containing rows for which the ``column_or_label``</span>
+<span class="sd">            column or ``column_or_label`` itself is non-zero or True, or is equal to ``value``,</span>
+<span class="sd">            if provided.</span>
+
+<span class="sd">        &gt;&gt;&gt; marbles = Table().with_columns([</span>
+<span class="sd">        ...    &quot;Color&quot;, [&quot;Red&quot;, &quot;Green&quot;, &quot;Blue&quot;, &quot;Red&quot;, &quot;Green&quot;, &quot;Green&quot;],</span>
+<span class="sd">        ...    &quot;Shape&quot;, [&quot;Round&quot;, &quot;Rectangular&quot;, &quot;Rectangular&quot;, &quot;Round&quot;, &quot;Rectangular&quot;, &quot;Round&quot;],</span>
+<span class="sd">        ...    &quot;Amount&quot;, [4, 6, 12, 7, 9, 2],</span>
+<span class="sd">        ...    &quot;Price&quot;, [1.30, 1.20, 2.00, 1.75, 1.40, 1.00]])</span>
+<span class="sd">        &gt;&gt;&gt; marbles</span>
+<span class="sd">        Color | Shape       | Amount | Price</span>
+<span class="sd">        Red   | Round       | 4      | 1.3</span>
+<span class="sd">        Green | Rectangular | 6      | 1.2</span>
+<span class="sd">        Blue  | Rectangular | 12     | 2</span>
+<span class="sd">        Red   | Round       | 7      | 1.75</span>
+<span class="sd">        Green | Rectangular | 9      | 1.4</span>
+<span class="sd">        Green | Round       | 2      | 1</span>
+<span class="sd">        &gt;&gt;&gt; marbles.where(&quot;Shape&quot;, &quot;Round&quot;)</span>
+<span class="sd">        Color | Shape | Amount | Price</span>
+<span class="sd">        Red   | Round | 4      | 1.3</span>
+<span class="sd">        Red   | Round | 7      | 1.75</span>
+<span class="sd">        Green | Round | 2      | 1</span>
+<span class="sd">        &gt;&gt;&gt; marbles.where(marbles.column(&quot;Shape&quot;) == &quot;Round&quot;) # equivalent to the previous example</span>
+<span class="sd">        Color | Shape | Amount | Price</span>
+<span class="sd">        Red   | Round | 4      | 1.3</span>
+<span class="sd">        Red   | Round | 7      | 1.75</span>
+<span class="sd">        Green | Round | 2      | 1</span>
+<span class="sd">        &gt;&gt;&gt; marbles.where(marbles.column(&quot;Price&quot;) &gt; 1.5)</span>
+<span class="sd">        Color | Shape       | Amount | Price</span>
+<span class="sd">        Blue  | Rectangular | 12     | 2</span>
+<span class="sd">        Red   | Round       | 7      | 1.75</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">column</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_column</span><span class="p">(</span><span class="n">column_or_label</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">column</span> <span class="o">=</span> <span class="n">column</span> <span class="o">==</span> <span class="n">value</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">column</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
 </div>
 <div class="viewcode-block" id="Table.sort"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.sort.html#datascience.tables.Table.sort">[docs]</a>    <span class="k">def</span> <span class="nf">sort</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_or_label</span><span class="p">,</span> <span class="n">descending</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">distinct</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return a Table of sorted rows by the values in a column.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Return a Table of rows sorted according to the values in a column.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            ``column_or_label``: the column whose values are used for sorting.</span>
+<span class="sd">        </span>
+<span class="sd">            ``descending``: if True, sorting will be in descending, rather than </span>
+<span class="sd">            ascending order.</span>
+
+<span class="sd">            ``distinct``: if True, repeated values in ``column_or_label`` will be omitted.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            An instance of ``Table`` containing rows sorted based on the values in ``column_or_label``.</span>
+
+<span class="sd">        &gt;&gt;&gt; marbles = Table().with_columns([</span>
+<span class="sd">        ...    &quot;Color&quot;, [&quot;Red&quot;, &quot;Green&quot;, &quot;Blue&quot;, &quot;Red&quot;, &quot;Green&quot;, &quot;Green&quot;],</span>
+<span class="sd">        ...    &quot;Shape&quot;, [&quot;Round&quot;, &quot;Rectangular&quot;, &quot;Rectangular&quot;, &quot;Round&quot;, &quot;Rectangular&quot;, &quot;Round&quot;],</span>
+<span class="sd">        ...    &quot;Amount&quot;, [4, 6, 12, 7, 9, 2],</span>
+<span class="sd">        ...    &quot;Price&quot;, [1.30, 1.30, 2.00, 1.75, 1.40, 1.00]])</span>
+<span class="sd">        &gt;&gt;&gt; marbles</span>
+<span class="sd">        Color | Shape       | Amount | Price</span>
+<span class="sd">        Red   | Round       | 4      | 1.3</span>
+<span class="sd">        Green | Rectangular | 6      | 1.3</span>
+<span class="sd">        Blue  | Rectangular | 12     | 2</span>
+<span class="sd">        Red   | Round       | 7      | 1.75</span>
+<span class="sd">        Green | Rectangular | 9      | 1.4</span>
+<span class="sd">        Green | Round       | 2      | 1</span>
+<span class="sd">        &gt;&gt;&gt; marbles.sort(&quot;Amount&quot;)</span>
+<span class="sd">        Color | Shape       | Amount | Price</span>
+<span class="sd">        Green | Round       | 2      | 1</span>
+<span class="sd">        Red   | Round       | 4      | 1.3</span>
+<span class="sd">        Green | Rectangular | 6      | 1.3</span>
+<span class="sd">        Red   | Round       | 7      | 1.75</span>
+<span class="sd">        Green | Rectangular | 9      | 1.4</span>
+<span class="sd">        Blue  | Rectangular | 12     | 2</span>
+<span class="sd">        &gt;&gt;&gt; marbles.sort(&quot;Amount&quot;, descending = True)</span>
+<span class="sd">        Color | Shape       | Amount | Price</span>
+<span class="sd">        Blue  | Rectangular | 12     | 2</span>
+<span class="sd">        Green | Rectangular | 9      | 1.4</span>
+<span class="sd">        Red   | Round       | 7      | 1.75</span>
+<span class="sd">        Green | Rectangular | 6      | 1.3</span>
+<span class="sd">        Red   | Round       | 4      | 1.3</span>
+<span class="sd">        Green | Round       | 2      | 1</span>
+<span class="sd">        &gt;&gt;&gt; marbles.sort(3) # the Price column</span>
+<span class="sd">        Color | Shape       | Amount | Price</span>
+<span class="sd">        Green | Round       | 2      | 1</span>
+<span class="sd">        Red   | Round       | 4      | 1.3</span>
+<span class="sd">        Green | Rectangular | 6      | 1.3</span>
+<span class="sd">        Green | Rectangular | 9      | 1.4</span>
+<span class="sd">        Red   | Round       | 7      | 1.75</span>
+<span class="sd">        Blue  | Rectangular | 12     | 2</span>
+<span class="sd">        &gt;&gt;&gt; marbles.sort(3, distinct = True)</span>
+<span class="sd">        Color | Shape       | Amount | Price</span>
+<span class="sd">        Green | Round       | 2      | 1</span>
+<span class="sd">        Red   | Round       | 4      | 1.3</span>
+<span class="sd">        Green | Rectangular | 9      | 1.4</span>
+<span class="sd">        Red   | Round       | 7      | 1.75</span>
+<span class="sd">        Blue  | Rectangular | 12     | 2</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">column</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_column</span><span class="p">(</span><span class="n">column_or_label</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">distinct</span><span class="p">:</span>
             <span class="n">_</span><span class="p">,</span> <span class="n">row_numbers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">return_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
@@ -632,11 +779,51 @@
 <div class="viewcode-block" id="Table.group"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.group.html#datascience.tables.Table.group">[docs]</a>    <span class="k">def</span> <span class="nf">group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_or_label</span><span class="p">,</span> <span class="n">collect</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Group rows by unique values in a column; count or aggregate others.</span>
 
-<span class="sd">        column_or_label -- values to group (label, index, or column)</span>
-<span class="sd">        collect -- a function applied to values in other columns for each group</span>
+<span class="sd">        Args:</span>
+<span class="sd">            ``column_or_label``: values to group (column label or index, or array)</span>
+<span class="sd">            </span>
+<span class="sd">            ``collect``: a function applied to values in other columns for each group</span>
 
-<span class="sd">        The grouped column will appear first in the result table. If no collect</span>
-<span class="sd">        function is provided, only counts are shown.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            A Table with each row corresponding to a unique value in ``column_or_label``,</span>
+<span class="sd">            where the first column contains the unique values from ``column_or_label``, and the</span>
+<span class="sd">            second contains counts for each of the unique values. If ``collect`` is</span>
+<span class="sd">            provided, a Table is returned with all original columns, each containing values</span>
+<span class="sd">            calculated by first grouping rows according to ``column_or_label``, then applying</span>
+<span class="sd">            ``collect`` to each set of grouped values in the other columns.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            The grouped column will appear first in the result table. If ``collect`` does not</span>
+<span class="sd">            accept arguments with one of the column types, that column will be empty in the resulting</span>
+<span class="sd">            table.</span>
+
+<span class="sd">        &gt;&gt;&gt; marbles = Table().with_columns([</span>
+<span class="sd">        ...    &quot;Color&quot;, [&quot;Red&quot;, &quot;Green&quot;, &quot;Blue&quot;, &quot;Red&quot;, &quot;Green&quot;, &quot;Green&quot;],</span>
+<span class="sd">        ...    &quot;Shape&quot;, [&quot;Round&quot;, &quot;Rectangular&quot;, &quot;Rectangular&quot;, &quot;Round&quot;, &quot;Rectangular&quot;, &quot;Round&quot;],</span>
+<span class="sd">        ...    &quot;Amount&quot;, [4, 6, 12, 7, 9, 2],</span>
+<span class="sd">        ...    &quot;Price&quot;, [1.30, 1.30, 2.00, 1.75, 1.40, 1.00]])</span>
+<span class="sd">        &gt;&gt;&gt; marbles</span>
+<span class="sd">        Color | Shape       | Amount | Price</span>
+<span class="sd">        Red   | Round       | 4      | 1.3</span>
+<span class="sd">        Green | Rectangular | 6      | 1.3</span>
+<span class="sd">        Blue  | Rectangular | 12     | 2</span>
+<span class="sd">        Red   | Round       | 7      | 1.75</span>
+<span class="sd">        Green | Rectangular | 9      | 1.4</span>
+<span class="sd">        Green | Round       | 2      | 1</span>
+<span class="sd">        &gt;&gt;&gt; marbles.group(&quot;Color&quot;) # just gives counts</span>
+<span class="sd">        Color | count</span>
+<span class="sd">        Blue  | 1</span>
+<span class="sd">        Green | 3</span>
+<span class="sd">        Red   | 2</span>
+<span class="sd">        &gt;&gt;&gt; marbles.group(&quot;Color&quot;, max) # takes the max of each grouping, in each column</span>
+<span class="sd">        Color | Shape max   | Amount max | Price max</span>
+<span class="sd">        Blue  | Rectangular | 12         | 2</span>
+<span class="sd">        Green | Round       | 9          | 1.4</span>
+<span class="sd">        Red   | Round       | 7          | 1.75</span>
+<span class="sd">        &gt;&gt;&gt; marbles.group(&quot;Shape&quot;, sum) # sum doesn&#39;t make sense for strings</span>
+<span class="sd">        Shape       | Color sum | Amount sum | Price sum</span>
+<span class="sd">        Rectangular |           | 27         | 4.7</span>
+<span class="sd">        Round       |           | 13         | 4.05</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">shallow</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
         <span class="n">collect</span> <span class="o">=</span> <span class="n">_zero_on_type_error</span><span class="p">(</span><span class="n">collect</span><span class="p">)</span>
@@ -671,7 +858,52 @@
         <span class="k">return</span> <span class="n">grouped</span>
 </div>
 <div class="viewcode-block" id="Table.groups"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.groups.html#datascience.tables.Table.groups">[docs]</a>    <span class="k">def</span> <span class="nf">groups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">collect</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Group rows by multiple columns, aggregating values.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Group rows by multiple columns, count or aggregate others.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ``labels``: list of column names (or indices) to group on</span>
+<span class="sd">            </span>
+<span class="sd">            ``collect``: a function applied to values in other columns for each group</span>
+
+<span class="sd">        Returns: A Table with each row corresponding to a unique combination of values in</span>
+<span class="sd">            the columns specified in ``labels``, where the first columns are those</span>
+<span class="sd">            specified in ``labels``, followed by a column of counts for each of the unique</span>
+<span class="sd">            values. If ``collect`` is provided, a Table is returned with all original</span>
+<span class="sd">            columns, each containing values calculated by first grouping rows according to</span>
+<span class="sd">            to values in the ``labels`` column, then applying ``collect`` to each set of</span>
+<span class="sd">            grouped values in the other columns.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            The grouped columns will appear first in the result table. If ``collect`` does not</span>
+<span class="sd">            accept arguments with one of the column types, that column will be empty in the resulting</span>
+<span class="sd">            table.</span>
+
+<span class="sd">        &gt;&gt;&gt; marbles = Table().with_columns([</span>
+<span class="sd">        ...    &quot;Color&quot;, [&quot;Red&quot;, &quot;Green&quot;, &quot;Blue&quot;, &quot;Red&quot;, &quot;Green&quot;, &quot;Green&quot;],</span>
+<span class="sd">        ...    &quot;Shape&quot;, [&quot;Round&quot;, &quot;Rectangular&quot;, &quot;Rectangular&quot;, &quot;Round&quot;, &quot;Rectangular&quot;, &quot;Round&quot;],</span>
+<span class="sd">        ...    &quot;Amount&quot;, [4, 6, 12, 7, 9, 2],</span>
+<span class="sd">        ...    &quot;Price&quot;, [1.30, 1.30, 2.00, 1.75, 1.40, 1.00]])</span>
+<span class="sd">        &gt;&gt;&gt; marbles</span>
+<span class="sd">        Color | Shape       | Amount | Price</span>
+<span class="sd">        Red   | Round       | 4      | 1.3</span>
+<span class="sd">        Green | Rectangular | 6      | 1.3</span>
+<span class="sd">        Blue  | Rectangular | 12     | 2</span>
+<span class="sd">        Red   | Round       | 7      | 1.75</span>
+<span class="sd">        Green | Rectangular | 9      | 1.4</span>
+<span class="sd">        Green | Round       | 2      | 1</span>
+<span class="sd">        &gt;&gt;&gt; marbles.groups([&quot;Color&quot;, &quot;Shape&quot;])</span>
+<span class="sd">        Color | Shape       | count</span>
+<span class="sd">        Blue  | Rectangular | 1</span>
+<span class="sd">        Green | Rectangular | 2</span>
+<span class="sd">        Green | Round       | 1</span>
+<span class="sd">        Red   | Round       | 2</span>
+<span class="sd">        &gt;&gt;&gt; marbles.groups([&quot;Color&quot;, &quot;Shape&quot;], sum)</span>
+<span class="sd">        Color | Shape       | Amount sum | Price sum</span>
+<span class="sd">        Blue  | Rectangular | 12         | 2</span>
+<span class="sd">        Green | Rectangular | 15         | 2.7</span>
+<span class="sd">        Green | Round       | 2          | 1</span>
+<span class="sd">        Red   | Round       | 11         | 3.05</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">collect</span> <span class="o">=</span> <span class="n">_zero_on_type_error</span><span class="p">(</span><span class="n">collect</span><span class="p">)</span>
         <span class="n">columns</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_as_labels</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>

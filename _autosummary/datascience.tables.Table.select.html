@@ -59,12 +59,12 @@
 <dl class="method">
 <dt id="datascience.tables.Table.select">
 <code class="descclassname">Table.</code><code class="descname">select</code><span class="sig-paren">(</span><em>column_label_or_labels</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.select" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a Table with selected column or columns by label.</p>
+<dd><p>Return a Table with selected column or columns by label or index.</p>
 <dl class="docutils">
 <dt>Args:</dt>
 <dd><code class="docutils literal"><span class="pre">column_label_or_labels</span></code> (string or list of strings): The header
-names of the columns to be selected. <code class="docutils literal"><span class="pre">column_label_or_labels</span></code> must
-be an existing header name.</dd>
+names or indices of the columns to be selected. <code class="docutils literal"><span class="pre">column_label_or_labels</span></code> must
+be an existing header name, or a valid column index.</dd>
 <dt>Returns:</dt>
 <dd>An instance of <code class="docutils literal"><span class="pre">Table</span></code> containing only selected columns.</dd>
 </dl>
@@ -87,6 +87,16 @@ be an existing header name.</dd>
 <span class="go">6</span>
 <span class="go">5</span>
 <span class="go">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">prices</span>
+<span class="go">6</span>
+<span class="go">5</span>
+<span class="go">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="go">calories | burgers</span>
+<span class="go">743      | cheeseburger</span>
+<span class="go">651      | hamburger</span>
+<span class="go">582      | veggie burger</span>
 </pre></div>
 </div>
 </dd></dl>

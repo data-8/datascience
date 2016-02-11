@@ -60,10 +60,52 @@
 <dt id="datascience.tables.Table.group">
 <code class="descclassname">Table.</code><code class="descname">group</code><span class="sig-paren">(</span><em>column_or_label</em>, <em>collect=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.group" title="Permalink to this definition">¶</a></dt>
 <dd><p>Group rows by unique values in a column; count or aggregate others.</p>
-<p>column_or_label &#8211; values to group (label, index, or column)
-collect &#8211; a function applied to values in other columns for each group</p>
-<p>The grouped column will appear first in the result table. If no collect
-function is provided, only counts are shown.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><p class="first"><code class="docutils literal"><span class="pre">column_or_label</span></code>: values to group (column label or index, or array)</p>
+<p class="last"><code class="docutils literal"><span class="pre">collect</span></code>: a function applied to values in other columns for each group</p>
+</dd>
+<dt>Returns:</dt>
+<dd>A Table with each row corresponding to a unique value in <code class="docutils literal"><span class="pre">column_or_label</span></code>,
+where the first column contains the unique values from <code class="docutils literal"><span class="pre">column_or_label</span></code>, and the
+second contains counts for each of the unique values. If <code class="docutils literal"><span class="pre">collect</span></code> is
+provided, a Table is returned with all original columns, each containing values
+calculated by first grouping rows according to <code class="docutils literal"><span class="pre">column_or_label</span></code>, then applying
+<code class="docutils literal"><span class="pre">collect</span></code> to each set of grouped values in the other columns.</dd>
+<dt>Note:</dt>
+<dd>The grouped column will appear first in the result table. If <code class="docutils literal"><span class="pre">collect</span></code> does not
+accept arguments with one of the column types, that column will be empty in the resulting
+table.</dd>
+</dl>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">marbles</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">([</span>
+<span class="gp">... </span>   <span class="s2">&quot;Color&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Red&quot;</span><span class="p">,</span> <span class="s2">&quot;Green&quot;</span><span class="p">,</span> <span class="s2">&quot;Blue&quot;</span><span class="p">,</span> <span class="s2">&quot;Red&quot;</span><span class="p">,</span> <span class="s2">&quot;Green&quot;</span><span class="p">,</span> <span class="s2">&quot;Green&quot;</span><span class="p">],</span>
+<span class="gp">... </span>   <span class="s2">&quot;Shape&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Round&quot;</span><span class="p">,</span> <span class="s2">&quot;Rectangular&quot;</span><span class="p">,</span> <span class="s2">&quot;Rectangular&quot;</span><span class="p">,</span> <span class="s2">&quot;Round&quot;</span><span class="p">,</span> <span class="s2">&quot;Rectangular&quot;</span><span class="p">,</span> <span class="s2">&quot;Round&quot;</span><span class="p">],</span>
+<span class="gp">... </span>   <span class="s2">&quot;Amount&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+<span class="gp">... </span>   <span class="s2">&quot;Price&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.30</span><span class="p">,</span> <span class="mf">1.30</span><span class="p">,</span> <span class="mf">2.00</span><span class="p">,</span> <span class="mf">1.75</span><span class="p">,</span> <span class="mf">1.40</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">marbles</span>
+<span class="go">Color | Shape       | Amount | Price</span>
+<span class="go">Red   | Round       | 4      | 1.3</span>
+<span class="go">Green | Rectangular | 6      | 1.3</span>
+<span class="go">Blue  | Rectangular | 12     | 2</span>
+<span class="go">Red   | Round       | 7      | 1.75</span>
+<span class="go">Green | Rectangular | 9      | 1.4</span>
+<span class="go">Green | Round       | 2      | 1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">marbles</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;Color&quot;</span><span class="p">)</span> <span class="c1"># just gives counts</span>
+<span class="go">Color | count</span>
+<span class="go">Blue  | 1</span>
+<span class="go">Green | 3</span>
+<span class="go">Red   | 2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">marbles</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;Color&quot;</span><span class="p">,</span> <span class="nb">max</span><span class="p">)</span> <span class="c1"># takes the max of each grouping, in each column</span>
+<span class="go">Color | Shape max   | Amount max | Price max</span>
+<span class="go">Blue  | Rectangular | 12         | 2</span>
+<span class="go">Green | Round       | 9          | 1.4</span>
+<span class="go">Red   | Round       | 7          | 1.75</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">marbles</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;Shape&quot;</span><span class="p">,</span> <span class="nb">sum</span><span class="p">)</span> <span class="c1"># sum doesn&#39;t make sense for strings</span>
+<span class="go">Shape       | Color sum | Amount sum | Price sum</span>
+<span class="go">Rectangular |           | 27         | 4.7</span>
+<span class="go">Round       |           | 13         | 4.05</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </div>

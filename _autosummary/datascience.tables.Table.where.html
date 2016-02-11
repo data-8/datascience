@@ -59,7 +59,47 @@
 <dl class="method">
 <dt id="datascience.tables.Table.where">
 <code class="descclassname">Table.</code><code class="descname">where</code><span class="sig-paren">(</span><em>column_or_label</em>, <em>value=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.where"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.where" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a Table of rows for which the column is value or a non-zero value.</p>
+<dd><p>Return a Table of rows for which the column is <code class="docutils literal"><span class="pre">value</span></code> or a non-zero value.</p>
+<p>If <code class="docutils literal"><span class="pre">column_or_label</span></code> contains Boolean values, returns rows corresponding to True.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><p class="first"><code class="docutils literal"><span class="pre">column_or_label</span></code>: The header name of a column in the table or an array.</p>
+<p class="last"><code class="docutils literal"><span class="pre">value</span></code>: Value for comparison with items in <code class="docutils literal"><span class="pre">column_or_label</span></code>.</p>
+</dd>
+<dt>Returns:</dt>
+<dd>An instance of <code class="docutils literal"><span class="pre">Table</span></code> containing rows for which the <code class="docutils literal"><span class="pre">column_or_label</span></code>
+column or <code class="docutils literal"><span class="pre">column_or_label</span></code> itself is non-zero or True, or is equal to <code class="docutils literal"><span class="pre">value</span></code>,
+if provided.</dd>
+</dl>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">marbles</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">([</span>
+<span class="gp">... </span>   <span class="s2">&quot;Color&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Red&quot;</span><span class="p">,</span> <span class="s2">&quot;Green&quot;</span><span class="p">,</span> <span class="s2">&quot;Blue&quot;</span><span class="p">,</span> <span class="s2">&quot;Red&quot;</span><span class="p">,</span> <span class="s2">&quot;Green&quot;</span><span class="p">,</span> <span class="s2">&quot;Green&quot;</span><span class="p">],</span>
+<span class="gp">... </span>   <span class="s2">&quot;Shape&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Round&quot;</span><span class="p">,</span> <span class="s2">&quot;Rectangular&quot;</span><span class="p">,</span> <span class="s2">&quot;Rectangular&quot;</span><span class="p">,</span> <span class="s2">&quot;Round&quot;</span><span class="p">,</span> <span class="s2">&quot;Rectangular&quot;</span><span class="p">,</span> <span class="s2">&quot;Round&quot;</span><span class="p">],</span>
+<span class="gp">... </span>   <span class="s2">&quot;Amount&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+<span class="gp">... </span>   <span class="s2">&quot;Price&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.30</span><span class="p">,</span> <span class="mf">1.20</span><span class="p">,</span> <span class="mf">2.00</span><span class="p">,</span> <span class="mf">1.75</span><span class="p">,</span> <span class="mf">1.40</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">marbles</span>
+<span class="go">Color | Shape       | Amount | Price</span>
+<span class="go">Red   | Round       | 4      | 1.3</span>
+<span class="go">Green | Rectangular | 6      | 1.2</span>
+<span class="go">Blue  | Rectangular | 12     | 2</span>
+<span class="go">Red   | Round       | 7      | 1.75</span>
+<span class="go">Green | Rectangular | 9      | 1.4</span>
+<span class="go">Green | Round       | 2      | 1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">marbles</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s2">&quot;Shape&quot;</span><span class="p">,</span> <span class="s2">&quot;Round&quot;</span><span class="p">)</span>
+<span class="go">Color | Shape | Amount | Price</span>
+<span class="go">Red   | Round | 4      | 1.3</span>
+<span class="go">Red   | Round | 7      | 1.75</span>
+<span class="go">Green | Round | 2      | 1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">marbles</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">marbles</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;Shape&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Round&quot;</span><span class="p">)</span> <span class="c1"># equivalent to the previous example</span>
+<span class="go">Color | Shape | Amount | Price</span>
+<span class="go">Red   | Round | 4      | 1.3</span>
+<span class="go">Red   | Round | 7      | 1.75</span>
+<span class="go">Green | Round | 2      | 1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">marbles</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">marbles</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;Price&quot;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1.5</span><span class="p">)</span>
+<span class="go">Color | Shape       | Amount | Price</span>
+<span class="go">Blue  | Rectangular | 12     | 2</span>
+<span class="go">Red   | Round       | 7      | 1.75</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </div>

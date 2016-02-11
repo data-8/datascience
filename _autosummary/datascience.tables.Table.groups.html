@@ -59,7 +59,51 @@
 <dl class="method">
 <dt id="datascience.tables.Table.groups">
 <code class="descclassname">Table.</code><code class="descname">groups</code><span class="sig-paren">(</span><em>labels</em>, <em>collect=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.groups" title="Permalink to this definition">¶</a></dt>
-<dd><p>Group rows by multiple columns, aggregating values.</p>
+<dd><p>Group rows by multiple columns, count or aggregate others.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><p class="first"><code class="docutils literal"><span class="pre">labels</span></code>: list of column names (or indices) to group on</p>
+<p class="last"><code class="docutils literal"><span class="pre">collect</span></code>: a function applied to values in other columns for each group</p>
+</dd>
+<dt>Returns: A Table with each row corresponding to a unique combination of values in</dt>
+<dd>the columns specified in <code class="docutils literal"><span class="pre">labels</span></code>, where the first columns are those
+specified in <code class="docutils literal"><span class="pre">labels</span></code>, followed by a column of counts for each of the unique
+values. If <code class="docutils literal"><span class="pre">collect</span></code> is provided, a Table is returned with all original
+columns, each containing values calculated by first grouping rows according to
+to values in the <code class="docutils literal"><span class="pre">labels</span></code> column, then applying <code class="docutils literal"><span class="pre">collect</span></code> to each set of
+grouped values in the other columns.</dd>
+<dt>Note:</dt>
+<dd>The grouped columns will appear first in the result table. If <code class="docutils literal"><span class="pre">collect</span></code> does not
+accept arguments with one of the column types, that column will be empty in the resulting
+table.</dd>
+</dl>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">marbles</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">([</span>
+<span class="gp">... </span>   <span class="s2">&quot;Color&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Red&quot;</span><span class="p">,</span> <span class="s2">&quot;Green&quot;</span><span class="p">,</span> <span class="s2">&quot;Blue&quot;</span><span class="p">,</span> <span class="s2">&quot;Red&quot;</span><span class="p">,</span> <span class="s2">&quot;Green&quot;</span><span class="p">,</span> <span class="s2">&quot;Green&quot;</span><span class="p">],</span>
+<span class="gp">... </span>   <span class="s2">&quot;Shape&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Round&quot;</span><span class="p">,</span> <span class="s2">&quot;Rectangular&quot;</span><span class="p">,</span> <span class="s2">&quot;Rectangular&quot;</span><span class="p">,</span> <span class="s2">&quot;Round&quot;</span><span class="p">,</span> <span class="s2">&quot;Rectangular&quot;</span><span class="p">,</span> <span class="s2">&quot;Round&quot;</span><span class="p">],</span>
+<span class="gp">... </span>   <span class="s2">&quot;Amount&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+<span class="gp">... </span>   <span class="s2">&quot;Price&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.30</span><span class="p">,</span> <span class="mf">1.30</span><span class="p">,</span> <span class="mf">2.00</span><span class="p">,</span> <span class="mf">1.75</span><span class="p">,</span> <span class="mf">1.40</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">marbles</span>
+<span class="go">Color | Shape       | Amount | Price</span>
+<span class="go">Red   | Round       | 4      | 1.3</span>
+<span class="go">Green | Rectangular | 6      | 1.3</span>
+<span class="go">Blue  | Rectangular | 12     | 2</span>
+<span class="go">Red   | Round       | 7      | 1.75</span>
+<span class="go">Green | Rectangular | 9      | 1.4</span>
+<span class="go">Green | Round       | 2      | 1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">marbles</span><span class="o">.</span><span class="n">groups</span><span class="p">([</span><span class="s2">&quot;Color&quot;</span><span class="p">,</span> <span class="s2">&quot;Shape&quot;</span><span class="p">])</span>
+<span class="go">Color | Shape       | count</span>
+<span class="go">Blue  | Rectangular | 1</span>
+<span class="go">Green | Rectangular | 2</span>
+<span class="go">Green | Round       | 1</span>
+<span class="go">Red   | Round       | 2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">marbles</span><span class="o">.</span><span class="n">groups</span><span class="p">([</span><span class="s2">&quot;Color&quot;</span><span class="p">,</span> <span class="s2">&quot;Shape&quot;</span><span class="p">],</span> <span class="nb">sum</span><span class="p">)</span>
+<span class="go">Color | Shape       | Amount sum | Price sum</span>
+<span class="go">Blue  | Rectangular | 12         | 2</span>
+<span class="go">Green | Rectangular | 15         | 2.7</span>
+<span class="go">Green | Round       | 2          | 1</span>
+<span class="go">Red   | Round       | 11         | 3.05</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </div>
