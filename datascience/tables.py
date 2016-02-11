@@ -1006,7 +1006,7 @@ class Table(collections.abc.MutableMapping):
         names = [op.__name__ for op in ops]
         ops = [_zero_on_type_error(op) for op in ops]
         columns = [[op(column) for op in ops] for column in self.columns]
-        table = Table(columns, self.labels)
+        table = Table().with_columns(zip(self.labels, columns))
         stats = table._unused_label('statistic')
         table[stats] = names
         table.move_to_start(stats)
