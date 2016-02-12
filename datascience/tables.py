@@ -1735,7 +1735,7 @@ class Table(collections.abc.MutableMapping):
 
         n = len(y_labels)
         colors = list(itertools.islice(itertools.cycle(self.chart_colors), n))
-        if overlay:
+        if overlay and n > 1:
             _, axis = plt.subplots(figsize=(width, height))
             axis.set_xlabel(x_label)
             for label, color in zip(y_labels, colors):
@@ -1868,7 +1868,7 @@ class Table(collections.abc.MutableMapping):
         n = len(columns)
         colors = [rgb_color + (self.default_hist_alpha,) for rgb_color in
             itertools.islice(itertools.cycle(self.chart_colors), n)]
-        if overlay:
+        if overlay and n > 1:
             if counted_values is None:
                 values = list(columns.values())[::-1] # Reverse to match legend
             else:
@@ -1881,8 +1881,7 @@ class Table(collections.abc.MutableMapping):
             _vertical_x(axis, ticks)
             if vargs['normed']:
                 axis.yaxis.set_major_formatter(percentage)
-            if n > 1:
-                plt.legend(columns.keys())
+            plt.legend(columns.keys())
             self.plots.append(axis)
         else:
             _, axes = plt.subplots(n, 1, figsize=(6, 4 * n))
