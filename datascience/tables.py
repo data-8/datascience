@@ -511,12 +511,12 @@ class Table(collections.abc.MutableMapping):
         return table
 
     def select(self, column_label_or_labels):
-        """Return a Table with selected column or columns by label.
+        """Return a Table with selected column or columns by label or index.
 
         Args:
             ``column_label_or_labels`` (string or list of strings): The header
-            names of the columns to be selected. ``column_label_or_labels`` must
-            be an existing header name.
+            names or indices of the columns to be selected. ``column_label_or_labels`` must
+            be an existing header name, or a valid column index.
 
         Returns:
             An instance of ``Table`` containing only selected columns.
@@ -540,6 +540,16 @@ class Table(collections.abc.MutableMapping):
         6
         5
         5
+        >>> t.select(1)
+        prices
+        6
+        5
+        5
+        >>> t.select([2, 0])
+        calories | burgers
+        743      | cheeseburger
+        651      | hamburger
+        582      | veggie burger
         """
         labels = self._as_labels(column_label_or_labels)
         table = Table()
@@ -557,19 +567,156 @@ class Table(collections.abc.MutableMapping):
         raise NotImplementedError()
 
     def drop(self, column_label_or_labels):
-        """Return a Table with only columns other than selected label or labels."""
+        """Return a Table with only columns other than selected label or labels.
+        
+        Args:
+            ``column_label_or_labels`` (string or list of strings): The header
+            names or indices of the columns to be dropped. ``column_label_or_labels`` must
+            be an existing header name, or a valid column index.
+
+        Returns:
+            An instance of ``Table`` with given columns removed.
+        
+        >>> t = Table().with_columns([
+        ...     'burgers',  ['cheeseburger', 'hamburger', 'veggie burger'],
+        ...     'prices',   [6, 5, 5],
+        ...     'calories', [743, 651, 582]])
+        >>> t
+        burgers       | prices | calories
+        cheeseburger  | 6      | 743
+        hamburger     | 5      | 651
+        veggie burger | 5      | 582
+        >>> t.drop('prices')
+        burgers       | calories
+        cheeseburger  | 743
+        hamburger     | 651
+        veggie burger | 582
+        >>> t.drop(['burgers', 'calories'])
+        prices
+        6
+        5
+        5
+        >>> t.drop([0, 2])
+        prices
+        6
+        5
+        5
+        >>> t.drop(1)
+        burgers       | calories
+        cheeseburger  | 743
+        hamburger     | 651
+        veggie burger | 582
+        """
         exclude = _as_labels(column_label_or_labels)
         return self.select([c for (i, c) in enumerate(self.labels) if i not in exclude and c not in exclude])
 
     def where(self, column_or_label, value=None):
-        """Return a Table of rows for which the column is value or a non-zero value."""
+        """Return a Table of rows for which the column is ``value`` or a non-zero value.
+        
+        If ``column_or_label`` contains Boolean values, returns rows corresponding to True.
+
+        Args:
+            ``column_or_label``: The header name of a column in the table or an array.
+
+            ``value``: Value for comparison with items in ``column_or_label``.
+
+        Returns:
+            An instance of ``Table`` containing rows for which the ``column_or_label``
+            column or ``column_or_label`` itself is non-zero or True, or is equal to ``value``,
+            if provided.
+
+        >>> marbles = Table().with_columns([
+        ...    "Color", ["Red", "Green", "Blue", "Red", "Green", "Green"],
+        ...    "Shape", ["Round", "Rectangular", "Rectangular", "Round", "Rectangular", "Round"],
+        ...    "Amount", [4, 6, 12, 7, 9, 2],
+        ...    "Price", [1.30, 1.20, 2.00, 1.75, 1.40, 1.00]])
+        >>> marbles
+        Color | Shape       | Amount | Price
+        Red   | Round       | 4      | 1.3
+        Green | Rectangular | 6      | 1.2
+        Blue  | Rectangular | 12     | 2
+        Red   | Round       | 7      | 1.75
+        Green | Rectangular | 9      | 1.4
+        Green | Round       | 2      | 1
+        >>> marbles.where("Shape", "Round")
+        Color | Shape | Amount | Price
+        Red   | Round | 4      | 1.3
+        Red   | Round | 7      | 1.75
+        Green | Round | 2      | 1
+        >>> marbles.where(marbles.column("Shape") == "Round") # equivalent to the previous example
+        Color | Shape | Amount | Price
+        Red   | Round | 4      | 1.3
+        Red   | Round | 7      | 1.75
+        Green | Round | 2      | 1
+        >>> marbles.where(marbles.column("Price") > 1.5)
+        Color | Shape       | Amount | Price
+        Blue  | Rectangular | 12     | 2
+        Red   | Round       | 7      | 1.75
+        """
         column = self._get_column(column_or_label)
         if value is not None:
             column = column == value
         return self.take(np.nonzero(column)[0])
 
     def sort(self, column_or_label, descending=False, distinct=False):
-        """Return a Table of sorted rows by the values in a column."""
+        """Return a Table of rows sorted according to the values in a column.
+        
+        Args:
+            ``column_or_label``: the column whose values are used for sorting.
+        
+            ``descending``: if True, sorting will be in descending, rather than 
+            ascending order.
+
+            ``distinct``: if True, repeated values in ``column_or_label`` will be omitted.
+
+        Returns:
+            An instance of ``Table`` containing rows sorted based on the values in ``column_or_label``.
+
+        >>> marbles = Table().with_columns([
+        ...    "Color", ["Red", "Green", "Blue", "Red", "Green", "Green"],
+        ...    "Shape", ["Round", "Rectangular", "Rectangular", "Round", "Rectangular", "Round"],
+        ...    "Amount", [4, 6, 12, 7, 9, 2],
+        ...    "Price", [1.30, 1.30, 2.00, 1.75, 1.40, 1.00]])
+        >>> marbles
+        Color | Shape       | Amount | Price
+        Red   | Round       | 4      | 1.3
+        Green | Rectangular | 6      | 1.3
+        Blue  | Rectangular | 12     | 2
+        Red   | Round       | 7      | 1.75
+        Green | Rectangular | 9      | 1.4
+        Green | Round       | 2      | 1
+        >>> marbles.sort("Amount")
+        Color | Shape       | Amount | Price
+        Green | Round       | 2      | 1
+        Red   | Round       | 4      | 1.3
+        Green | Rectangular | 6      | 1.3
+        Red   | Round       | 7      | 1.75
+        Green | Rectangular | 9      | 1.4
+        Blue  | Rectangular | 12     | 2
+        >>> marbles.sort("Amount", descending = True)
+        Color | Shape       | Amount | Price
+        Blue  | Rectangular | 12     | 2
+        Green | Rectangular | 9      | 1.4
+        Red   | Round       | 7      | 1.75
+        Green | Rectangular | 6      | 1.3
+        Red   | Round       | 4      | 1.3
+        Green | Round       | 2      | 1
+        >>> marbles.sort(3) # the Price column
+        Color | Shape       | Amount | Price
+        Green | Round       | 2      | 1
+        Red   | Round       | 4      | 1.3
+        Green | Rectangular | 6      | 1.3
+        Green | Rectangular | 9      | 1.4
+        Red   | Round       | 7      | 1.75
+        Blue  | Rectangular | 12     | 2
+        >>> marbles.sort(3, distinct = True)
+        Color | Shape       | Amount | Price
+        Green | Round       | 2      | 1
+        Red   | Round       | 4      | 1.3
+        Green | Rectangular | 9      | 1.4
+        Red   | Round       | 7      | 1.75
+        Blue  | Rectangular | 12     | 2
+        """
         column = self._get_column(column_or_label)
         if distinct:
             _, row_numbers = np.unique(column, return_index=True)
@@ -583,11 +730,51 @@ class Table(collections.abc.MutableMapping):
     def group(self, column_or_label, collect=None):
         """Group rows by unique values in a column; count or aggregate others.
 
-        column_or_label -- values to group (label, index, or column)
-        collect -- a function applied to values in other columns for each group
+        Args:
+            ``column_or_label``: values to group (column label or index, or array)
+            
+            ``collect``: a function applied to values in other columns for each group
 
-        The grouped column will appear first in the result table. If no collect
-        function is provided, only counts are shown.
+        Returns:
+            A Table with each row corresponding to a unique value in ``column_or_label``,
+            where the first column contains the unique values from ``column_or_label``, and the
+            second contains counts for each of the unique values. If ``collect`` is
+            provided, a Table is returned with all original columns, each containing values
+            calculated by first grouping rows according to ``column_or_label``, then applying
+            ``collect`` to each set of grouped values in the other columns.
+
+        Note:
+            The grouped column will appear first in the result table. If ``collect`` does not
+            accept arguments with one of the column types, that column will be empty in the resulting
+            table.
+
+        >>> marbles = Table().with_columns([
+        ...    "Color", ["Red", "Green", "Blue", "Red", "Green", "Green"],
+        ...    "Shape", ["Round", "Rectangular", "Rectangular", "Round", "Rectangular", "Round"],
+        ...    "Amount", [4, 6, 12, 7, 9, 2],
+        ...    "Price", [1.30, 1.30, 2.00, 1.75, 1.40, 1.00]])
+        >>> marbles
+        Color | Shape       | Amount | Price
+        Red   | Round       | 4      | 1.3
+        Green | Rectangular | 6      | 1.3
+        Blue  | Rectangular | 12     | 2
+        Red   | Round       | 7      | 1.75
+        Green | Rectangular | 9      | 1.4
+        Green | Round       | 2      | 1
+        >>> marbles.group("Color") # just gives counts
+        Color | count
+        Blue  | 1
+        Green | 3
+        Red   | 2
+        >>> marbles.group("Color", max) # takes the max of each grouping, in each column
+        Color | Shape max   | Amount max | Price max
+        Blue  | Rectangular | 12         | 2
+        Green | Round       | 9          | 1.4
+        Red   | Round       | 7          | 1.75
+        >>> marbles.group("Shape", sum) # sum doesn't make sense for strings
+        Shape       | Color sum | Amount sum | Price sum
+        Rectangular |           | 27         | 4.7
+        Round       |           | 13         | 4.05
         """
         self = self.copy(shallow=True)
         collect = _zero_on_type_error(collect)
@@ -622,7 +809,52 @@ class Table(collections.abc.MutableMapping):
         return grouped
 
     def groups(self, labels, collect=None):
-        """Group rows by multiple columns, aggregating values."""
+        """Group rows by multiple columns, count or aggregate others.
+
+        Args:
+            ``labels``: list of column names (or indices) to group on
+            
+            ``collect``: a function applied to values in other columns for each group
+
+        Returns: A Table with each row corresponding to a unique combination of values in
+            the columns specified in ``labels``, where the first columns are those
+            specified in ``labels``, followed by a column of counts for each of the unique
+            values. If ``collect`` is provided, a Table is returned with all original
+            columns, each containing values calculated by first grouping rows according to
+            to values in the ``labels`` column, then applying ``collect`` to each set of
+            grouped values in the other columns.
+
+        Note:
+            The grouped columns will appear first in the result table. If ``collect`` does not
+            accept arguments with one of the column types, that column will be empty in the resulting
+            table.
+
+        >>> marbles = Table().with_columns([
+        ...    "Color", ["Red", "Green", "Blue", "Red", "Green", "Green"],
+        ...    "Shape", ["Round", "Rectangular", "Rectangular", "Round", "Rectangular", "Round"],
+        ...    "Amount", [4, 6, 12, 7, 9, 2],
+        ...    "Price", [1.30, 1.30, 2.00, 1.75, 1.40, 1.00]])
+        >>> marbles
+        Color | Shape       | Amount | Price
+        Red   | Round       | 4      | 1.3
+        Green | Rectangular | 6      | 1.3
+        Blue  | Rectangular | 12     | 2
+        Red   | Round       | 7      | 1.75
+        Green | Rectangular | 9      | 1.4
+        Green | Round       | 2      | 1
+        >>> marbles.groups(["Color", "Shape"])
+        Color | Shape       | count
+        Blue  | Rectangular | 1
+        Green | Rectangular | 2
+        Green | Round       | 1
+        Red   | Round       | 2
+        >>> marbles.groups(["Color", "Shape"], sum)
+        Color | Shape       | Amount sum | Price sum
+        Blue  | Rectangular | 12         | 2
+        Green | Rectangular | 15         | 2.7
+        Green | Round       | 2          | 1
+        Red   | Round       | 11         | 3.05
+        """
         collect = _zero_on_type_error(collect)
         columns = []
         labels = self._as_labels(labels)
@@ -774,7 +1006,7 @@ class Table(collections.abc.MutableMapping):
         names = [op.__name__ for op in ops]
         ops = [_zero_on_type_error(op) for op in ops]
         columns = [[op(column) for op in ops] for column in self.columns]
-        table = Table(columns, self.labels)
+        table = Table().with_columns(zip(self.labels, columns))
         stats = table._unused_label('statistic')
         table[stats] = names
         table.move_to_start(stats)
