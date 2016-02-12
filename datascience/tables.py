@@ -1527,7 +1527,7 @@ class Table(collections.abc.MutableMapping):
     def _split_column_and_labels(self, column_or_label):
         """Return the specified column and labels of other columns."""
         column = None if column_or_label is None else self._get_column(column_or_label)
-        labels = [label for label in self.labels if label != column_or_label]
+        labels = [label for i, label in enumerate(self.labels) if column_or_label not in (i, label)]
         return column, labels
 
     def pivot_hist(self, pivot_column_label, value_column_label, overlay=True, **vargs):
