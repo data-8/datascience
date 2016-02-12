@@ -568,7 +568,7 @@ class Table(collections.abc.MutableMapping):
 
     def drop(self, column_label_or_labels):
         """Return a Table with only columns other than selected label or labels.
-        
+
         Args:
             ``column_label_or_labels`` (string or list of strings): The header
             names or indices of the columns to be dropped. ``column_label_or_labels`` must
@@ -576,7 +576,7 @@ class Table(collections.abc.MutableMapping):
 
         Returns:
             An instance of ``Table`` with given columns removed.
-        
+
         >>> t = Table().with_columns([
         ...     'burgers',  ['cheeseburger', 'hamburger', 'veggie burger'],
         ...     'prices',   [6, 5, 5],
@@ -612,7 +612,7 @@ class Table(collections.abc.MutableMapping):
 
     def where(self, column_or_label, value=None):
         """Return a Table of rows for which the column is ``value`` or a non-zero value.
-        
+
         If ``column_or_label`` contains Boolean values, returns rows corresponding to True.
 
         Args:
@@ -660,11 +660,11 @@ class Table(collections.abc.MutableMapping):
 
     def sort(self, column_or_label, descending=False, distinct=False):
         """Return a Table of rows sorted according to the values in a column.
-        
+
         Args:
             ``column_or_label``: the column whose values are used for sorting.
-        
-            ``descending``: if True, sorting will be in descending, rather than 
+
+            ``descending``: if True, sorting will be in descending, rather than
             ascending order.
 
             ``distinct``: if True, repeated values in ``column_or_label`` will be omitted.
@@ -732,7 +732,7 @@ class Table(collections.abc.MutableMapping):
 
         Args:
             ``column_or_label``: values to group (column label or index, or array)
-            
+
             ``collect``: a function applied to values in other columns for each group
 
         Returns:
@@ -813,7 +813,7 @@ class Table(collections.abc.MutableMapping):
 
         Args:
             ``labels``: list of column names (or indices) to group on
-            
+
             ``collect``: a function applied to values in other columns for each group
 
         Returns: A Table with each row corresponding to a unique combination of values in
@@ -1881,7 +1881,8 @@ class Table(collections.abc.MutableMapping):
             _vertical_x(axis, ticks)
             if vargs['normed']:
                 axis.yaxis.set_major_formatter(percentage)
-            plt.legend(columns.keys())
+            if n > 1:
+                plt.legend(columns.keys())
             self.plots.append(axis)
         else:
             _, axes = plt.subplots(n, 1, figsize=(6, 4 * n))
