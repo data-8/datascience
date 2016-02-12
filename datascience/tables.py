@@ -1742,7 +1742,7 @@ class Table(collections.abc.MutableMapping):
                 draw(axis, label, color)
             if ticks is not None:
                 annotate(axis, ticks)
-            axis.legend(y_labels, bbox_to_anchor=(1.5, 1.0))
+            axis.legend(y_labels, loc=2, bbox_to_anchor=(1.05, 1))
             self.plots.append(axis)
         else:
             fig, axes = plt.subplots(n, 1, figsize=(width, height*n))
@@ -1881,10 +1881,13 @@ class Table(collections.abc.MutableMapping):
             _vertical_x(axis, ticks)
             if vargs['normed']:
                 axis.yaxis.set_major_formatter(percentage)
-            plt.legend(columns.keys())
+            plt.legend(columns.keys(), loc=2, bbox_to_anchor=(1.05, 1))
             self.plots.append(axis)
         else:
             _, axes = plt.subplots(n, 1, figsize=(6, 4 * n))
+            # Use stepfilled when there are too many bins
+            if isinstance(bins, numbers.Integral) and bins > 76 or hasattr(bins, '__len__') and len(bins) > 76:
+                vargs.setdefault('histtype', 'stepfilled')
             if n == 1:
                 axes = [axes]
             for axis, label, color in zip(axes, columns.keys(), colors):
