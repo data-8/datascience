@@ -2,7 +2,6 @@ import doctest
 import re
 import pytest
 import numpy as np
-from nose.tools import assert_raises
 from numpy.testing import assert_array_equal
 from datascience import *
 import pandas as pd
@@ -1043,5 +1042,6 @@ def test_array_roundtrip(table):
 
 def test_url_parse():
     """Test that Tables parses URLs correctly"""
-    url = 'https://data8.berkeley.edu/something/something/dark/side'
-    assert_raises(ValueError, Table.read_table, url)
+    with pytest.raises(ValueError):
+        url = 'https://data8.berkeley.edu/something/something/dark/side'
+        Table.read_table(url)
