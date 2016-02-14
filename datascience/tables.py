@@ -2093,7 +2093,7 @@ def _is_non_string_iterable(value):
 def _vertical_x(axis, ticks):
     """Switch labels to vertical if they are long."""
     if max([len(str(tick)) for tick in ticks]) > 5:
-        axis.set_xticklabels(ticks, rotation='vertical')
+        plt.setp(axis.get_xticklabels(), rotation='vertical')
 
 ###################
 # Slicing support #
