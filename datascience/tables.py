@@ -1793,7 +1793,7 @@ class Table(collections.abc.MutableMapping):
         for label, column in zip(pvt_labels,vals):
             t[label] = column
 
-    def hist(self, select=None, overlay=True, bins=None, counts=None, **vargs):
+    def hist(self, select=None, overlay=True, bins=None, counts=None, unit=None, **vargs):
         """Plots one histogram for each column in the table.
 
         Every column must be numerical.
@@ -1878,11 +1878,16 @@ class Table(collections.abc.MutableMapping):
                 values = np.repeat(counted_values, n).reshape(-1,n)
             vargs.setdefault('histtype', 'stepfilled')
             figure = plt.figure(figsize=(6, 4))
-            _, ticks, _ = plt.hist(values, color=colors, **vargs)
+            plt.hist(values, color=colors, **vargs)
             axis = figure.get_axes()[0]
-            _vertical_x(axis, ticks)
+            _vertical_x(axis)
             if vargs['normed']:
+                axis.set_ylabel('Percent per ' + (unit if unit else 'unit'))
                 axis.yaxis.set_major_formatter(percentage)
+            else:
+                axis.set_ylabel('Count')
+            if unit:
+                axis.set_xlabel('(' + unit + ')', fontsize=16)
             plt.legend(columns.keys(), loc=2, bbox_to_anchor=(1.05, 1))
             self.plots.append(axis)
         else:
@@ -1893,17 +1898,21 @@ class Table(collections.abc.MutableMapping):
             if n == 1:
                 axes = [axes]
             for axis, label, color in zip(axes, columns.keys(), colors):
+                if vargs['normed']:
+                    axis.set_ylabel('Percent per ' + (unit if unit else 'unit'))
+                    axis.yaxis.set_major_formatter(percentage)
+                else:
+                    axis.set_ylabel('Count')
+                x_unit = ' (' + unit + ')' if unit else ''
                 if counted_values is None:
                     values = columns[label]
-                    axis.set_xlabel(label, fontsize=16)
+                    axis.set_xlabel(label + x_unit, fontsize=16)
                 else:
                     values = counted_values
-                    axis.set_xlabel(counted_label, fontsize=16)
+                    axis.set_xlabel(counted_label + x_unit, fontsize=16)
                     vargs['weights'] = columns[label]
-                _, ticks, _ = axis.hist(values, color=color, **vargs)
-                _vertical_x(axis, ticks)
-                if vargs['normed']:
-                    axis.yaxis.set_major_formatter(percentage)
+                axis.hist(values, color=color, **vargs)
+                _vertical_x(axis)
                 self.plots.append(axis)
 
     def boxplot(self, **vargs):
@@ -2092,9 +2101,13 @@ def _is_non_string_iterable(value):
         return True
     return False
 
-def _vertical_x(axis, ticks):
+def _vertical_x(axis, ticks=None, max_width=5):
     """Switch labels to vertical if they are long."""
-    if max([len(str(tick)) for tick in ticks]) > 5:
+    if ticks is None:
+        ticks = axis.get_xticks()
+    if (np.array(ticks) == np.rint(ticks)).all():
+        ticks = np.rint(ticks).astype(np.int)
+    if max([len(str(tick)) for tick in ticks]) > max_width:
         axis.set_xticklabels(ticks, rotation='vertical')
 
 ###################
