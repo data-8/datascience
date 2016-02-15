@@ -1855,7 +1855,7 @@ class Table(collections.abc.MutableMapping):
 
         if 'normed' not in vargs:
             vargs['normed'] = True
-        percentage = plt.FuncFormatter(lambda x, _: "{:g}%".format(100*x))
+        percentage = plt.FuncFormatter(lambda x, _: "{:g}".format(100*x))
 
         counted_values = counted_label = None
         if counts is not None:
@@ -1869,11 +1869,13 @@ class Table(collections.abc.MutableMapping):
         colors = [rgb_color + (self.default_hist_alpha,) for rgb_color in
             itertools.islice(itertools.cycle(self.chart_colors), n)]
         if overlay and n > 1:
-            if counted_values is None:
-                values = list(columns.values())[::-1] # Reverse to match legend
-            else:
+            # Reverse because legend prints bottom-to-top
+            column_keys = list(columns.keys())[::-1]
+            values = list(columns.values())[::-1]
+            colors = list(colors)[::-1]
+            if counted_values is not None:
+                vargs['weights'] = values
                 values = np.repeat(counted_values, n).reshape(-1,n)
-                vargs['weights'] = list(columns.values())[::-1] # Reverse to match legend
             vargs.setdefault('histtype', 'stepfilled')
             figure = plt.figure(figsize=(6, 4))
             _, ticks, _ = plt.hist(values, color=colors, **vargs)
