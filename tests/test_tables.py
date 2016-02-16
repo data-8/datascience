@@ -1038,3 +1038,10 @@ def test_array_roundtrip(table):
 
     for (c0, c1) in zip(t.columns, table.columns):
         assert_equal(c0, c1)
+
+
+def test_url_parse():
+    """Test that Tables parses URLs correctly"""
+    with pytest.raises(ValueError):
+        url = 'https://data8.berkeley.edu/something/something/dark/side'
+        Table.read_table(url)

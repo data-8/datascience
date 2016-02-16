@@ -117,8 +117,12 @@ class Table(collections.abc.MutableMapping):
         # Look for .csv at the end of the path; use "," as a separator if found
         try:
             path = urllib.parse.urlparse(filepath_or_buffer).path
+            if 'data8.berkeley.edu' in filepath_or_buffer:
+                raise ValueError('data8.berkeley.edu requires authentication, '
+                                 'which is not supported.')
         except AttributeError:
             path = filepath_or_buffer
+
         try:
             if 'sep' not in vargs and path.endswith('.csv'):
                 vargs['sep'] = ','
