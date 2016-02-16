@@ -1,7 +1,7 @@
 .PHONY: help docs serve_docs install test deploy_docs
 
 DOCS_DIR = docs
-GH_REMOTE = https://github.com/dsten/datascience
+GH_REMOTE = $(shell git remote -v | grep "origin.*(fetch)" | grep -E "\S+\\.\S+" -o)
 DEPLOY_DOCS_MESSAGE = Build docs
 
 help:
