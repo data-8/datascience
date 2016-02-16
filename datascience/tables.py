@@ -25,6 +25,7 @@ import datascience.util as _util
 
 class Table(collections.abc.MutableMapping):
     """A sequence of string-labeled columns."""
+    plots = []
 
     def __init__(self, labels=None, _deprecated=None, *, formatter=_formats.default_formatter):
         """Create an empty table with column labels.
@@ -42,7 +43,6 @@ class Table(collections.abc.MutableMapping):
         self._columns = collections.OrderedDict()
         self._formats = dict()
         self.formatter = formatter
-        self.plots = []
 
         if _deprecated is not None:
             warnings.warn("Two-argument __init__ is deprecated. Use Table().with_columns(...)", FutureWarning)
@@ -1743,7 +1743,7 @@ class Table(collections.abc.MutableMapping):
             if ticks is not None:
                 annotate(axis, ticks)
             axis.legend(y_labels, loc=2, bbox_to_anchor=(1.05, 1))
-            self.plots.append(axis)
+            Table.plots.append(axis)
         else:
             fig, axes = plt.subplots(n, 1, figsize=(width, height*n))
             if not isinstance(axes, collections.Iterable):
@@ -1754,7 +1754,7 @@ class Table(collections.abc.MutableMapping):
                 axis.set_xlabel(x_label, fontsize=16)
                 if ticks is not None:
                     annotate(axis, ticks)
-                self.plots.append(axis)
+                Table.plots.append(axis)
 
     def _split_column_and_labels(self, column_or_label):
         """Return the specified column and labels of other columns."""
@@ -1889,7 +1889,7 @@ class Table(collections.abc.MutableMapping):
             if unit:
                 axis.set_xlabel('(' + unit + ')', fontsize=16)
             plt.legend(columns.keys(), loc=2, bbox_to_anchor=(1.05, 1))
-            self.plots.append(axis)
+            Table.plots.append(axis)
         else:
             _, axes = plt.subplots(n, 1, figsize=(6, 4 * n))
             # Use stepfilled when there are too many bins
@@ -1913,7 +1913,7 @@ class Table(collections.abc.MutableMapping):
                     vargs['weights'] = columns[label]
                 axis.hist(values, color=color, **vargs)
                 _vertical_x(axis)
-                self.plots.append(axis)
+                Table.plots.append(axis)
 
     def boxplot(self, **vargs):
         """Plots a boxplot for the table.
