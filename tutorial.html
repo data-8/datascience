@@ -460,17 +460,17 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 
 <span class="gp">In [47]: </span><span class="n">normal_data</span>
 <span class="gh">Out[47]: </span><span class="go"></span>
-<span class="go">data1    | data2</span>
-<span class="go">-1.49089 | 7.40005</span>
-<span class="go">1.571    | 3.00549</span>
-<span class="go">0.292517 | 0.478378</span>
-<span class="go">-0.28468 | 2.26498</span>
-<span class="go">-1.65209 | 4.08187</span>
-<span class="go">3.6179   | 9.03437</span>
-<span class="go">2.5214   | 5.54871</span>
-<span class="go">1.01594  | 6.84663</span>
-<span class="go">0.668681 | 5.42633</span>
-<span class="go">0.254308 | 4.16927</span>
+<span class="go">data1     | data2</span>
+<span class="go">-0.203871 | 7.4119</span>
+<span class="go">-0.71162  | 6.11066</span>
+<span class="go">3.9378    | 0.708848</span>
+<span class="go">1.11725   | 8.47792</span>
+<span class="go">-0.586315 | 3.67065</span>
+<span class="go">-1.22799  | 7.15093</span>
+<span class="go">-0.547162 | 6.77921</span>
+<span class="go">4.40843   | -0.494535</span>
+<span class="go">1.62983   | 0.342614</span>
+<span class="go">-1.53796  | 2.17756</span>
 <span class="go">... (90 rows omitted)</span>
 </pre></div>
 </div>
@@ -522,17 +522,17 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 converting to a pandas dataframe with <a class="reference internal" href="_autosummary/datascience.tables.Table.to_df.html#datascience.tables.Table.to_df" title="datascience.tables.Table.to_df"><code class="xref py py-meth docutils literal"><span class="pre">to_df()</span></code></a>:</p>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [56]: </span><span class="n">normal_data</span>
 <span class="gh">Out[56]: </span><span class="go"></span>
-<span class="go">data1    | data2</span>
-<span class="go">-1.49089 | 7.40005</span>
-<span class="go">1.571    | 3.00549</span>
-<span class="go">0.292517 | 0.478378</span>
-<span class="go">-0.28468 | 2.26498</span>
-<span class="go">-1.65209 | 4.08187</span>
-<span class="go">3.6179   | 9.03437</span>
-<span class="go">2.5214   | 5.54871</span>
-<span class="go">1.01594  | 6.84663</span>
-<span class="go">0.668681 | 5.42633</span>
-<span class="go">0.254308 | 4.16927</span>
+<span class="go">data1     | data2</span>
+<span class="go">-0.203871 | 7.4119</span>
+<span class="go">-0.71162  | 6.11066</span>
+<span class="go">3.9378    | 0.708848</span>
+<span class="go">1.11725   | 8.47792</span>
+<span class="go">-0.586315 | 3.67065</span>
+<span class="go">-1.22799  | 7.15093</span>
+<span class="go">-0.547162 | 6.77921</span>
+<span class="go">4.40843   | -0.494535</span>
+<span class="go">1.62983   | 0.342614</span>
+<span class="go">-1.53796  | 2.17756</span>
 <span class="go">... (90 rows omitted)</span>
 
 <span class="go"># index = False prevents row numbers from appearing in the resulting CSV</span>
@@ -642,8 +642,8 @@ non-smokers.</p>
 
 <span class="gp">In [73]: </span><span class="n">bootstrapped_diff_means</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
 <span class="gh">Out[73]: </span><span class="go"></span>
-<span class="go">array([ 0.05132471, -0.65044106, -1.09990402, -0.115118  , -0.46713896,</span>
-<span class="go">       -0.32274479, -0.07100873,  1.01574722, -1.21578073,  1.0922437 ])</span>
+<span class="go">array([ 0.08031446, -0.4158691 ,  0.28075323, -0.23605588,  0.43820101,</span>
+<span class="go">        0.09918796,  0.43936499,  0.93365632,  0.254969  ,  0.60056675])</span>
 
 <span class="gp">In [74]: </span><span class="n">num_diffs_greater</span> <span class="o">=</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">bootstrapped_diff_means</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">observed_diff</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
