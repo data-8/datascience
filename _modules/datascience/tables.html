@@ -166,8 +166,12 @@
         <span class="c1"># Look for .csv at the end of the path; use &quot;,&quot; as a separator if found</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">path</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">urlparse</span><span class="p">(</span><span class="n">filepath_or_buffer</span><span class="p">)</span><span class="o">.</span><span class="n">path</span>
+            <span class="k">if</span> <span class="s1">&#39;data8.berkeley.edu&#39;</span> <span class="ow">in</span> <span class="n">filepath_or_buffer</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;data8.berkeley.edu requires authentication, &#39;</span>
+                                 <span class="s1">&#39;which is not supported.&#39;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="n">path</span> <span class="o">=</span> <span class="n">filepath_or_buffer</span>
+
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="s1">&#39;sep&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">vargs</span> <span class="ow">and</span> <span class="n">path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">):</span>
                 <span class="n">vargs</span><span class="p">[</span><span class="s1">&#39;sep&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span>
