@@ -1428,6 +1428,7 @@ class Table(collections.abc.MutableMapping):
         ]
         fmts = [self._formats.get(k, self.formatter.format_column(k, v[:max_rows])) for
             k, v in self._columns.items()]
+        fmts = [(lambda f: lambda v, label=False: v.as_html() if hasattr(v, 'as_html') else f(v))(f) for f in fmts]
         for row in itertools.islice(self.rows, max_rows):
             lines += [
                 (2, '<tr>'),
