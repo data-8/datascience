@@ -137,7 +137,7 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
             lon_diff = bounds['max_lon'] - bounds['min_lon']
             area, max_area = lat_diff*lon_diff, 180*360
             if area:
-                factor = 1 + max(0, 1 - self._width/1000)/2 + max(0, 1-area**0.5)/3
+                factor = 1 + max(0, 1 - self._width/1000)/2 + max(0, 1-area**0.5)/2
                 zoom = math.log(area/max_area)/-factor
             else:
                 zoom = self._default_zoom
