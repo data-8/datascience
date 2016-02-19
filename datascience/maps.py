@@ -124,7 +124,6 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
             midpoint(bounds['min_lon'], bounds['max_lon'])
         )
 
-        # TODO(Alvin): uncomment with new Folium release
         # self._folium_map.fit_bounds(
         #     [bounds['min_long'], bounds['min_lat']],
         #     [bounds['max_long'], bounds['max_lat']]
@@ -134,11 +133,11 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         # rough approximation, assuming max_zoom is 18
         import math
         try:
-            factor = 1.2
             lat_diff = bounds['max_lat'] - bounds['min_lat']
             lon_diff = bounds['max_lon'] - bounds['min_lon']
             area, max_area = lat_diff*lon_diff, 180*360
             if area:
+                factor = 1 + max(0, 1 - self._width/1000)/2 + max(0, 1-area**0.5)/2
                 zoom = math.log(area/max_area)/-factor
             else:
                 zoom = self._default_zoom
@@ -173,6 +172,15 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
             bound_check(lat_lon)
 
         return bounds
+
+    @property
+    def features(self):
+        feature_list = []
+        for key, value in self._features.items():
+            f = collections.OrderedDict([('id', key), ('feature', value)])
+            f.update(value.properties)
+            feature_list.append(f)
+        return feature_list
 
     def format(self, **kwargs):
         """Apply formatting."""
