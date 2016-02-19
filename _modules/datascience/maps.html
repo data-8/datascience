@@ -173,7 +173,6 @@
             <span class="n">midpoint</span><span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;min_lon&#39;</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;max_lon&#39;</span><span class="p">])</span>
         <span class="p">)</span>
 
-        <span class="c1"># TODO(Alvin): uncomment with new Folium release</span>
         <span class="c1"># self._folium_map.fit_bounds(</span>
         <span class="c1">#     [bounds[&#39;min_long&#39;], bounds[&#39;min_lat&#39;]],</span>
         <span class="c1">#     [bounds[&#39;max_long&#39;], bounds[&#39;max_lat&#39;]]</span>
@@ -183,11 +182,11 @@
         <span class="c1"># rough approximation, assuming max_zoom is 18</span>
         <span class="kn">import</span> <span class="nn">math</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">factor</span> <span class="o">=</span> <span class="mf">1.2</span>
             <span class="n">lat_diff</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;max_lat&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;min_lat&#39;</span><span class="p">]</span>
             <span class="n">lon_diff</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;max_lon&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;min_lon&#39;</span><span class="p">]</span>
             <span class="n">area</span><span class="p">,</span> <span class="n">max_area</span> <span class="o">=</span> <span class="n">lat_diff</span><span class="o">*</span><span class="n">lon_diff</span><span class="p">,</span> <span class="mi">180</span><span class="o">*</span><span class="mi">360</span>
             <span class="k">if</span> <span class="n">area</span><span class="p">:</span>
+                <span class="n">factor</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="o">/</span><span class="mi">1000</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="o">-</span><span class="n">area</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
                 <span class="n">zoom</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">area</span><span class="o">/</span><span class="n">max_area</span><span class="p">)</span><span class="o">/-</span><span class="n">factor</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">zoom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_zoom</span>
@@ -222,6 +221,15 @@
             <span class="n">bound_check</span><span class="p">(</span><span class="n">lat_lon</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">bounds</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">features</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">feature_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_features</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">([(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">key</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;feature&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">)])</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">properties</span><span class="p">)</span>
+            <span class="n">feature_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">feature_list</span>
 
 <div class="viewcode-block" id="Map.format"><a class="viewcode-back" href="../../maps.html#datascience.maps.Map.format">[docs]</a>    <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Apply formatting.&quot;&quot;&quot;</span>
