@@ -1723,7 +1723,7 @@ class Table(collections.abc.MutableMapping):
                 minx, maxx = np.min(xdata),np.max(xdata)
                 axis.plot([minx,maxx],[m*minx+b,m*maxx+b], color=color)
 
-        self._visualize(column_for_x, y_labels, xdata, overlay, draw, _vertical_x)
+        self._visualize(column_for_x, y_labels, None, overlay, draw, _vertical_x)
 
     def _visualize(self, x_label, y_labels, ticks, overlay, draw, annotate, width=6, height=4):
         """Generic visualization that overlays or separates the draw function.
