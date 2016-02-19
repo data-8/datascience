@@ -133,11 +133,11 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         # rough approximation, assuming max_zoom is 18
         import math
         try:
+            factor = 1 + max(0, 1 - (self._width/1000)**0.5)
             lat_diff = bounds['max_lat'] - bounds['min_lat']
             lon_diff = bounds['max_lon'] - bounds['min_lon']
             area, max_area = lat_diff*lon_diff, 180*360
             if area:
-                factor = 1 + max(0, 1-area**0.5)
                 zoom = math.log(area/max_area)/-factor
             else:
                 zoom = self._default_zoom
