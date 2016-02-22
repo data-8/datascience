@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>datascience.util &mdash; datascience 0.5.7 documentation</title>
+    <title>datascience.util &mdash; datascience 0.5.8 documentation</title>
     
     <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.5.7',
+        VERSION:     '0.5.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.5.7 documentation" href="../../index.html" />
+    <link rel="top" title="datascience 0.5.8 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body role="document">
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.5.7 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.5.8 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -78,7 +78,7 @@
         <span class="k">return</span> <span class="k">lambda</span> <span class="n">arr</span><span class="p">:</span> <span class="n">percentile</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">arr</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;higher&#39;</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="plot_cdf_area"><a class="viewcode-back" href="../../util.html#datascience.util.plot_cdf_area">[docs]</a><span class="k">def</span> <span class="nf">plot_cdf_area</span><span class="p">(</span><span class="n">rbound</span><span class="p">,</span> <span class="n">lbound</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sd</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="plot_cdf_area"><a class="viewcode-back" href="../../util.html#datascience.util.plot_cdf_area">[docs]</a><span class="k">def</span> <span class="nf">plot_cdf_area</span><span class="p">(</span><span class="n">rbound</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">lbound</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sd</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Plots a normal curve with specified parameters and area below curve shaded</span>
 <span class="sd">    between ``lbound`` and ``rbound``.</span>
 
@@ -91,20 +91,31 @@
 
 <span class="sd">        ``sd`` (numeric): standard deviation of normal distribution</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">INF</span> <span class="o">=</span> <span class="mf">3.5</span> <span class="o">*</span> <span class="n">sd</span>
+    <span class="n">shade</span> <span class="o">=</span> <span class="n">rbound</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">lbound</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span>
+    <span class="n">shade_left</span> <span class="o">=</span> <span class="n">rbound</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">lbound</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span>
+    <span class="n">inf</span> <span class="o">=</span> <span class="mf">3.5</span> <span class="o">*</span> <span class="n">sd</span>
+    <span class="n">step</span> <span class="o">=</span> <span class="mf">0.1</span>
+    <span class="n">rlabel</span> <span class="o">=</span> <span class="n">rbound</span>
     <span class="n">llabel</span> <span class="o">=</span> <span class="n">lbound</span>
+    <span class="k">if</span> <span class="n">rbound</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">rbound</span> <span class="o">=</span> <span class="n">inf</span> <span class="o">+</span> <span class="n">mean</span>
+        <span class="n">rlabel</span> <span class="o">=</span> <span class="s2">&quot;$\infty$&quot;</span>
     <span class="k">if</span> <span class="n">lbound</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="n">lbound</span> <span class="o">=</span> <span class="o">-</span><span class="n">INF</span> <span class="o">+</span> <span class="n">mean</span>
+        <span class="n">lbound</span> <span class="o">=</span> <span class="o">-</span><span class="n">inf</span> <span class="o">+</span> <span class="n">mean</span>
         <span class="n">llabel</span> <span class="o">=</span> <span class="s2">&quot;-$\infty$&quot;</span>
-    <span class="n">pdf_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="n">INF</span> <span class="o">+</span> <span class="n">mean</span><span class="p">,</span> <span class="n">INF</span> <span class="o">+</span> <span class="n">mean</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">pdf_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="n">inf</span> <span class="o">+</span> <span class="n">mean</span><span class="p">,</span> <span class="n">inf</span> <span class="o">+</span> <span class="n">mean</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pdf_range</span><span class="p">,</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">pdf_range</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">mean</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">sd</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">cdf_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">lbound</span><span class="p">,</span> <span class="n">rbound</span> <span class="o">+</span> <span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">cdf_range</span><span class="p">,</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">cdf_range</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">mean</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">sd</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gold&#39;</span><span class="p">)</span>
+    <span class="n">cdf_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">lbound</span><span class="p">,</span> <span class="n">rbound</span> <span class="o">+</span> <span class="n">step</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">shade</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">cdf_range</span><span class="p">,</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">cdf_range</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">mean</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">sd</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gold&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">shade_left</span><span class="p">:</span>
+        <span class="n">cdf_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="n">inf</span><span class="o">+</span><span class="n">mean</span><span class="p">,</span> <span class="n">lbound</span> <span class="o">+</span> <span class="n">step</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">cdf_range</span><span class="p">,</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">cdf_range</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">mean</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">sd</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;darkblue&#39;</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">sd</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.25</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;$\phi$(z)&#39;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;$\phi$(z)&#39;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Normal Curve ~ ($\mu$ = {0}, $\sigma$ = {1}) &quot;</span>
-              <span class="s2">&quot;{2} &lt; z &lt; {3}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">sd</span><span class="p">,</span> <span class="n">llabel</span><span class="p">,</span> <span class="n">rbound</span><span class="p">),</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+              <span class="s2">&quot;{2} &lt; z &lt; {3}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">sd</span><span class="p">,</span> <span class="n">llabel</span><span class="p">,</span> <span class="n">rlabel</span><span class="p">),</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
 </div>
@@ -182,7 +193,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.5.7 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.5.8 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
