@@ -120,7 +120,9 @@
     <span class="n">_default_zoom</span> <span class="o">=</span> <span class="mi">12</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="p">(),</span> <span class="n">ids</span><span class="o">=</span><span class="p">(),</span> <span class="n">width</span><span class="o">=</span><span class="mi">960</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">set</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="n">features</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Sequence</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">features</span><span class="p">):</span>
                 <span class="n">features</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="n">features</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
@@ -273,9 +275,6 @@
 <span class="sd">        legend_name: string, default None</span>
 <span class="sd">            Title for data legend. If not passed, defaults to columns[1].</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># TODO Unfortunately, this method doesn&#39;t work inside a notebook.</span>
-        <span class="c1"># See: https://github.com/python-visualization/folium/issues/176</span>
-
         <span class="c1"># Set values and ids to both be simple sequences by inspecting values</span>
         <span class="n">id_name</span><span class="p">,</span> <span class="n">value_name</span> <span class="o">=</span> <span class="s1">&#39;IDs&#39;</span><span class="p">,</span> <span class="s1">&#39;values&#39;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Mapping</span><span class="p">):</span>
@@ -283,7 +282,7 @@
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="s1">&#39;columns&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
                 <span class="n">table</span> <span class="o">=</span> <span class="n">values</span>
                 <span class="n">ids</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">columns</span>
-                <span class="n">id_name</span><span class="p">,</span> <span class="n">value_name</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">column_labels</span>
+                <span class="n">id_name</span><span class="p">,</span> <span class="n">value_name</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">labels</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">dictionary</span> <span class="o">=</span> <span class="n">values</span>
                 <span class="n">ids</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dictionary</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span> <span class="nb">list</span><span class="p">(</span><span class="n">dictionary</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
