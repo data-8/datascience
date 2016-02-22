@@ -1,6 +1,6 @@
 """Utility functions"""
 
-__all__ = ['percentile', 'plot_cdf_area', 'table_apply']
+__all__ = ['percentile', 'plot_cdf_area', 'plot_normal_cdf', 'table_apply']
 
 
 import numpy as np
