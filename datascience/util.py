@@ -29,7 +29,7 @@ def percentile(p, arr=None):
         return lambda arr: percentile(p, arr)
     return np.percentile(arr, p, interpolation='higher')
 
-def plot_cdf_area(rbound, lbound=None, mean=0, sd=1):
+def plot_cdf_area(rbound=None, lbound=None, mean=0, sd=1):
     """Plots a normal curve with specified parameters and area below curve shaded
     between ``lbound`` and ``rbound``.
 
@@ -42,20 +42,31 @@ def plot_cdf_area(rbound, lbound=None, mean=0, sd=1):
 
         ``sd`` (numeric): standard deviation of normal distribution
     """
-    INF = 3.5 * sd
+    shade = rbound is not None or lbound is not None
+    shade_left = rbound is not None and lbound is not None
+    inf = 3.5 * sd
+    step = 0.1
+    rlabel = rbound
     llabel = lbound
+    if rbound is None:
+        rbound = inf + mean
+        rlabel = "$\infty$"
     if lbound is None:
-        lbound = -INF + mean
+        lbound = -inf + mean
         llabel = "-$\infty$"
-    pdf_range = np.arange(-INF + mean, INF + mean, 0.1)
+    pdf_range = np.arange(-inf + mean, inf + mean, step)
     plt.plot(pdf_range, stats.norm.pdf(pdf_range, loc=mean, scale=sd), color='k', lw=1)
-    cdf_range = np.arange(lbound, rbound + .1, 0.1)
-    plt.fill_between(cdf_range, stats.norm.pdf(cdf_range, loc=mean, scale=sd), color='gold')
+    cdf_range = np.arange(lbound, rbound + step, step)
+    if shade:
+        plt.fill_between(cdf_range, stats.norm.pdf(cdf_range, loc=mean, scale=sd), color='gold')
+    if shade_left:
+        cdf_range = np.arange(-inf+mean, lbound + step, step)
+        plt.fill_between(cdf_range, stats.norm.pdf(cdf_range, loc=mean, scale=sd), color='darkblue')
     plt.ylim(0, stats.norm.pdf(0, loc=0, scale=sd) * 1.25)
     plt.xlabel('z')
-    plt.ylabel('$\phi$(z)', rotation=0)
+    plt.ylabel('$\phi$(z)', rotation=90)
     plt.title("Normal Curve ~ ($\mu$ = {0}, $\sigma$ = {1}) "
-              "{2} < z < {3}".format(mean, sd, llabel, rbound), fontsize=16)
+              "{2} < z < {3}".format(mean, sd, llabel, rlabel), fontsize=16)
     plt.show()
 
 
