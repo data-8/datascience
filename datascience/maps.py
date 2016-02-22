@@ -71,7 +71,7 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
     _default_zoom = 12
 
     def __init__(self, features=(), ids=(), width=960, height=500, **kwargs):
-        if isinstance(features, (tuple, set, list)):
+        if isinstance(features, collections.abc.Sequence):
             if len(ids) == len(features):
                 features = dict(zip(ids, features))
             else:
@@ -79,7 +79,7 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
                 features = dict(enumerate(features))
         elif isinstance(features, _MapFeature):
             features = {0: features}
-        assert isinstance(features, dict), 'Map takes a list or dict of features'
+        assert isinstance(features, collections.abc.Mapping), 'Map takes a list or dict of features'
         self._features = features
         self._attrs = {
             'tiles': 'OpenStreetMap',
@@ -224,9 +224,6 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         legend_name: string, default None
             Title for data legend. If not passed, defaults to columns[1].
         """
-        # TODO Unfortunately, this method doesn't work inside a notebook.
-        # See: https://github.com/python-visualization/folium/issues/176
-
         # Set values and ids to both be simple sequences by inspecting values
         id_name, value_name = 'IDs', 'values'
         if isinstance(values, collections.abc.Mapping):
@@ -234,7 +231,7 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
             if hasattr(values, 'columns') and len(values.columns) == 2:
                 table = values
                 ids, values = table.columns
-                id_name, value_name = table.column_labels
+                id_name, value_name = table.labels
             else:
                 dictionary = values
                 ids, values = list(dictionary.keys()), list(dictionary.values())
