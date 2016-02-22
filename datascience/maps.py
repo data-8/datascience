@@ -71,7 +71,7 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
     _default_zoom = 12
 
     def __init__(self, features=(), ids=(), width=960, height=500, **kwargs):
-        if isinstance(features, np.array):
+        if isinstance(features, np.ndarray):
             features = list(features)
         if isinstance(features, collections.abc.Sequence):
             if len(ids) == len(features):
