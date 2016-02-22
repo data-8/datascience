@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Utility Functions (datascience.util) &mdash; datascience 0.5.8 documentation</title>
+    <title>Utility Functions (datascience.util) &mdash; datascience 0.5.9 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.5.8',
+        VERSION:     '0.5.9',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.5.8 documentation" href="index.html" />
+    <link rel="top" title="datascience 0.5.9 documentation" href="index.html" />
     <link rel="prev" title="Formats (datascience.formats)" href="formats.html" /> 
   </head>
   <body role="document">
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="formats.html" title="Formats (datascience.formats)"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.5.8 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.5.9 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -70,7 +70,22 @@ least as great as p% of the values in the array)</p>
 
 <dl class="function">
 <dt id="datascience.util.plot_cdf_area">
-<code class="descclassname">datascience.util.</code><code class="descname">plot_cdf_area</code><span class="sig-paren">(</span><em>rbound=None</em>, <em>lbound=None</em>, <em>mean=0</em>, <em>sd=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#plot_cdf_area"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.util.plot_cdf_area" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">datascience.util.</code><code class="descname">plot_cdf_area</code><span class="sig-paren">(</span><em>rbound=None</em>, <em>lbound=None</em>, <em>mean=0</em>, <em>sd=1</em><span class="sig-paren">)</span><a class="headerlink" href="#datascience.util.plot_cdf_area" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots a normal curve with specified parameters and area below curve shaded
+between <code class="docutils literal"><span class="pre">lbound</span></code> and <code class="docutils literal"><span class="pre">rbound</span></code>.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><p class="first"><code class="docutils literal"><span class="pre">rbound</span></code> (numeric): right boundary of shaded region</p>
+<p><code class="docutils literal"><span class="pre">lbound</span></code> (numeric): left boundary of shaded region; by default is negative infinity</p>
+<p><code class="docutils literal"><span class="pre">mean</span></code> (numeric): mean/expectation of normal distribution</p>
+<p class="last"><code class="docutils literal"><span class="pre">sd</span></code> (numeric): standard deviation of normal distribution</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="datascience.util.plot_normal_cdf">
+<code class="descclassname">datascience.util.</code><code class="descname">plot_normal_cdf</code><span class="sig-paren">(</span><em>rbound=None</em>, <em>lbound=None</em>, <em>mean=0</em>, <em>sd=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#plot_normal_cdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.util.plot_normal_cdf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots a normal curve with specified parameters and area below curve shaded
 between <code class="docutils literal"><span class="pre">lbound</span></code> and <code class="docutils literal"><span class="pre">rbound</span></code>.</p>
 <dl class="docutils">
@@ -151,7 +166,7 @@ shape == shape(table), or shape (1, table.shape[1])</dd>
         <li class="right" >
           <a href="formats.html" title="Formats (datascience.formats)"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.5.8 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.5.9 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
