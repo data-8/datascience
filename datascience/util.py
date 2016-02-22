@@ -29,7 +29,8 @@ def percentile(p, arr=None):
         return lambda arr: percentile(p, arr)
     return np.percentile(arr, p, interpolation='higher')
 
-def plot_cdf_area(rbound=None, lbound=None, mean=0, sd=1):
+
+def plot_normal_cdf(rbound=None, lbound=None, mean=0, sd=1):
     """Plots a normal curve with specified parameters and area below curve shaded
     between ``lbound`` and ``rbound``.
 
@@ -68,6 +69,10 @@ def plot_cdf_area(rbound=None, lbound=None, mean=0, sd=1):
     plt.title("Normal Curve ~ ($\mu$ = {0}, $\sigma$ = {1}) "
               "{2} < z < {3}".format(mean, sd, llabel, rlabel), fontsize=16)
     plt.show()
+
+
+# Old name
+plot_cdf_area = plot_normal_cdf
 
 
 def table_apply(table, func, subset=None):
