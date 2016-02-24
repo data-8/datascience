@@ -1717,13 +1717,16 @@ class Table(collections.abc.MutableMapping):
             y_labels = self._as_labels(select)
 
         def draw(axis, label, color):
+            if 'color' in options:
+                color = options.pop('color')
             axis.scatter(xdata, self[label], color=color, **options)
             if fit_line:
                 m,b = np.polyfit(xdata, self[label], 1)
                 minx, maxx = np.min(xdata),np.max(xdata)
                 axis.plot([minx,maxx],[m*minx+b,m*maxx+b], color=color)
 
-        self._visualize(column_for_x, y_labels, None, overlay, draw, _vertical_x)
+        x_label = self._as_label(column_for_x)
+        self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x)
 
     def _visualize(self, x_label, y_labels, ticks, overlay, draw, annotate, width=6, height=4):
         """Generic visualization that overlays or separates the draw function.
