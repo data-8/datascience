@@ -657,6 +657,11 @@ class Table(collections.abc.MutableMapping):
         Color | Shape       | Amount | Price
         Blue  | Rectangular | 12     | 2
         Red   | Round       | 7      | 1.75
+        >>> from datascience.predicates import above
+        >>> marbles.where("Price", above(1.5))
+        Color | Shape       | Amount | Price
+        Blue  | Rectangular | 12     | 2
+        Red   | Round       | 7      | 1.75
         """
         column = self._get_column(column_or_label)
         if value_or_predicate is not None:
