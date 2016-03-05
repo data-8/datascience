@@ -623,7 +623,8 @@ class Table(collections.abc.MutableMapping):
         Args:
             ``column_or_label``: The header name of a column in the table or an array.
 
-            ``value_or_predicate``: Value for comparison with items in ``column_or_label``.
+            ``value_or_predicate``: Value to compare to items in column
+            or function to apply to items in column.
 
         Returns:
             An instance of ``Table`` containing rows for which the ``column_or_label``
