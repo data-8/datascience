@@ -22,6 +22,7 @@ import IPython
 import datascience.maps as _maps
 import datascience.formats as _formats
 import datascience.util as _util
+import datascience.predicates as _predicates
 
 class Table(collections.abc.MutableMapping):
     """A sequence of string-labeled columns."""
@@ -614,7 +615,7 @@ class Table(collections.abc.MutableMapping):
         exclude = _as_labels(column_label_or_labels)
         return self.select([c for (i, c) in enumerate(self.labels) if i not in exclude and c not in exclude])
 
-    def where(self, column_or_label, value=None):
+    def where(self, column_or_label, value_or_predicate=None):
         """Return a Table of rows for which the column is ``value`` or a non-zero value.
 
         If ``column_or_label`` contains Boolean values, returns rows corresponding to True.
@@ -622,7 +623,7 @@ class Table(collections.abc.MutableMapping):
         Args:
             ``column_or_label``: The header name of a column in the table or an array.
 
-            ``value``: Value for comparison with items in ``column_or_label``.
+            ``value_or_predicate``: Value for comparison with items in ``column_or_label``.
 
         Returns:
             An instance of ``Table`` containing rows for which the ``column_or_label``
@@ -658,8 +659,12 @@ class Table(collections.abc.MutableMapping):
         Red   | Round       | 7      | 1.75
         """
         column = self._get_column(column_or_label)
-        if value is not None:
-            column = column == value
+        if value_or_predicate is not None:
+            if not callable(value_or_predicate):
+                predicate = _predicates.equal(value_or_predicate)
+            else:
+                predicate = value_or_predicate
+            column = [predicate(x) for x in column]
         return self.take(np.nonzero(column)[0])
 
     def sort(self, column_or_label, descending=False, distinct=False):
@@ -1726,7 +1731,7 @@ class Table(collections.abc.MutableMapping):
                 axis.plot([minx,maxx],[m*minx+b,m*maxx+b], color=color)
 
         x_label = self._as_label(column_for_x)
-        self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x)
+        self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x, height=6)
 
     def _visualize(self, x_label, y_labels, ticks, overlay, draw, annotate, width=6, height=4):
         """Generic visualization that overlays or separates the draw function.
