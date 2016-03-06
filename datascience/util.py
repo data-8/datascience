@@ -1,6 +1,7 @@
 """Utility functions"""
 
-__all__ = ['percentile', 'plot_cdf_area', 'plot_normal_cdf', 'table_apply']
+__all__ = ['percentile', 'plot_cdf_area', 'plot_normal_cdf', 'table_apply',
+           'minimize']
 
 
 import numpy as np
@@ -9,7 +10,8 @@ import matplotlib
 matplotlib.use('agg', warn=False)
 import matplotlib.pyplot as plt
 from scipy import stats
-
+from scipy import optimize
+import functools
 
 def percentile(p, arr=None):
     """Returns the pth percentile of the input array (the value that is at
@@ -116,3 +118,16 @@ def table_apply(table, func, subset=None):
         df = pd.DataFrame(df).T
     tab = Table.from_df(df)
     return tab
+
+def minimize(f, start=None, **vargs):
+    if start is None:
+        start = [0 for _ in f.__code__.co_varnames]
+
+    @functools.wraps(f)
+    def wrapper(args):
+        return f(*args)
+
+    result = optimize.minimize(wrapper, start, **vargs)
+    assert result.success, 'optimization failed'
+    return [np.round(x, 7) for x in result.x]
+

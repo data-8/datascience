@@ -40,3 +40,6 @@ def test_table_apply():
     newtab = util.table_apply(tab, lambda a: a+1, subset=['b', 'c'])
     assert all(newtab['a'] == tab['a'])
     assert all(newtab['b'] == tab['b'] + 1)
+
+def test_minimize():
+    assert [2, 1] == list(ds.minimize(lambda x, y: (x-2)**2 + (y-1)**2))
