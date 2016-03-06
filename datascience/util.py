@@ -129,5 +129,5 @@ def minimize(f, start=None, **vargs):
 
     result = optimize.minimize(wrapper, start, **vargs)
     assert result.success, 'optimization failed'
-    return [np.round(x, 7) for x in result.x]
+    return np.round(result.x, 7)
 
