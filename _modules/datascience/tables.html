@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>datascience.tables &mdash; datascience 0.5.9 documentation</title>
+    <title>datascience.tables &mdash; datascience 0.5.10 documentation</title>
     
     <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.5.9',
+        VERSION:     '0.5.10',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.5.9 documentation" href="../../index.html" />
+    <link rel="top" title="datascience 0.5.10 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body role="document">
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.5.9 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.5.10 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -1766,13 +1766,16 @@
             <span class="n">y_labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_as_labels</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s1">&#39;color&#39;</span> <span class="ow">in</span> <span class="n">options</span><span class="p">:</span>
+                <span class="n">color</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">)</span>
             <span class="n">axis</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="bp">self</span><span class="p">[</span><span class="n">label</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">fit_line</span><span class="p">:</span>
                 <span class="n">m</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="bp">self</span><span class="p">[</span><span class="n">label</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
                 <span class="n">minx</span><span class="p">,</span> <span class="n">maxx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">xdata</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">xdata</span><span class="p">)</span>
                 <span class="n">axis</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">minx</span><span class="p">,</span><span class="n">maxx</span><span class="p">],[</span><span class="n">m</span><span class="o">*</span><span class="n">minx</span><span class="o">+</span><span class="n">b</span><span class="p">,</span><span class="n">m</span><span class="o">*</span><span class="n">maxx</span><span class="o">+</span><span class="n">b</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_visualize</span><span class="p">(</span><span class="n">column_for_x</span><span class="p">,</span> <span class="n">y_labels</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="n">overlay</span><span class="p">,</span> <span class="n">draw</span><span class="p">,</span> <span class="n">_vertical_x</span><span class="p">)</span>
+        <span class="n">x_label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_as_label</span><span class="p">(</span><span class="n">column_for_x</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_visualize</span><span class="p">(</span><span class="n">x_label</span><span class="p">,</span> <span class="n">y_labels</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="n">overlay</span><span class="p">,</span> <span class="n">draw</span><span class="p">,</span> <span class="n">_vertical_x</span><span class="p">)</span>
 </div>
     <span class="k">def</span> <span class="nf">_visualize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_label</span><span class="p">,</span> <span class="n">y_labels</span><span class="p">,</span> <span class="n">ticks</span><span class="p">,</span> <span class="n">overlay</span><span class="p">,</span> <span class="n">draw</span><span class="p">,</span> <span class="n">annotate</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Generic visualization that overlays or separates the draw function.</span>
@@ -2365,7 +2368,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.5.9 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.5.10 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
