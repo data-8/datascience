@@ -121,7 +121,7 @@ def table_apply(table, func, subset=None):
 
 def minimize(f, start=None, **vargs):
     if start is None:
-        start = [0 for _ in f.__code__.co_varnames]
+        start = [0] * f.__code__.co_argcount
 
     @functools.wraps(f)
     def wrapper(args):
