@@ -136,5 +136,9 @@ def minimize(f, start=None, **vargs):
         return f(*args)
 
     result = optimize.minimize(wrapper, start, **vargs)
-    return np.round(result.x, 7)
+    rounded = np.round(result.x, 7)
+    if len(start) == 1:
+        return rounded.item(0)
+    else:
+        return rounded
 
