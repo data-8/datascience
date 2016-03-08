@@ -658,8 +658,8 @@ class Table(collections.abc.MutableMapping):
         Color | Shape       | Amount | Price
         Blue  | Rectangular | 12     | 2
         Red   | Round       | 7      | 1.75
-        >>> from datascience.predicates import above
-        >>> marbles.where("Price", above(1.5))
+        >>> from datascience.predicates import are
+        >>> marbles.where("Price", are.above(1.5))
         Color | Shape       | Amount | Price
         Blue  | Rectangular | 12     | 2
         Red   | Round       | 7      | 1.75
@@ -667,7 +667,7 @@ class Table(collections.abc.MutableMapping):
         column = self._get_column(column_or_label)
         if value_or_predicate is not None:
             if not callable(value_or_predicate):
-                predicate = _predicates.equal(value_or_predicate)
+                predicate = _predicates.are.equal_to(value_or_predicate)
             else:
                 predicate = value_or_predicate
             column = [predicate(x) for x in column]

@@ -248,7 +248,7 @@ def test_where_conditions(t):
 
 def test_where_predicates(t):
     t['totals'] = t['points'] * t['count']
-    test = t.where('totals', between(9, 11))
+    test = t.where('totals', are.between(9, 11))
     assert_equal(test, """
     letter | count | points | totals
     a      | 9     | 1      | 9

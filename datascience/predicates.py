@@ -1,8 +1,8 @@
 """Predicate functions."""
 
-all = ['both', 'either', 'Is']
+all = ['both', 'either', 'are']
 
-class Is:
+class are:
     """Predicate class."""
 
     @staticmethod
@@ -52,14 +52,14 @@ class Is:
 def _not(f):
     return lambda x: not f(x)
 
-Is.not_equal_to = _not(Is.equal_to)
-Is.not_above = Is.below_or_equal_to
-Is.not_below = Is.above_or_equal_to
-Is.not_below_or_equal_to = Is.above
-Is.not_above_or_equal_to = Is.below
-Is.not_strictly_between = _not(Is.strictly_between)
-Is.not_between = _not(Is.between)
-Is.not_between_or_equal_to = _not(Is.between_or_equal_to)
+are.not_equal_to = _not(are.equal_to)
+are.not_above = are.below_or_equal_to
+are.not_below = are.above_or_equal_to
+are.not_below_or_equal_to = are.above
+are.not_above_or_equal_to = are.below
+are.not_strictly_between = _not(are.strictly_between)
+are.not_between = _not(are.between)
+are.not_between_or_equal_to = _not(are.between_or_equal_to)
 
 ###############
 # Combination #
@@ -77,7 +77,7 @@ def either(f, g):
 
 def _wrap_equal_to(f):
     if not callable(f):
-        return Is.equal_to(f)
+        return are.equal_to(f)
     else:
         return f
 
