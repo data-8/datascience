@@ -1,63 +1,83 @@
 """Predicate functions."""
 
-def both(f, g):
-    """Both f and g."""
-    f, g = _wrap_equal(f), _wrap_equal(g)
-    return lambda x: f(x) and g(x)
+all = ['both', 'either', 'Is']
 
-def either(f, g):
-    """Either f or g."""
-    f, g = _wrap_equal(f), _wrap_equal(g)
-    return lambda x: f(x) or g(x)
+class Is:
+    """Predicate class."""
 
-def equal(y):
-    """Equal to y."""
-    return lambda x: x == y
+    @staticmethod
+    def equal_to(y):
+        """Equal to y."""
+        return lambda x: x == y
 
-def above(y):
-    """Greater than y."""
-    return lambda x: x > y
+    @staticmethod
+    def above(y):
+        """Greater than y."""
+        return lambda x: x > y
 
-def below(y):
-    """Less than y."""
-    return lambda x: x < y
+    @staticmethod
+    def below(y):
+        """Less than y."""
+        return lambda x: x < y
 
-def above_or_equal(y):
-    """Greater than or equal to y."""
-    return lambda x: x >= y
+    @staticmethod
+    def above_or_equal_to(y):
+        """Greater than or equal to y."""
+        return lambda x: x >= y
 
-def below_or_equal(y):
-    """Less than or equal to y."""
-    return lambda x: x <= y
+    @staticmethod
+    def below_or_equal_to(y):
+        """Less than or equal to y."""
+        return lambda x: x <= y
 
-def strictly_between(y, z):
-    """Greater than y and less than z."""
-    return lambda x: y < x < z
+    @staticmethod
+    def strictly_between(y, z):
+        """Greater than y and less than z."""
+        return lambda x: y < x < z
 
-def between(y, z):
-    """Greater than or equal to y and less than z."""
-    return lambda x: y <= x < z
+    @staticmethod
+    def between(y, z):
+        """Greater than or equal to y and less than z."""
+        return lambda x: y <= x < z
 
-def between_or_equal(y, z):
-    """Greater than or equal to y and less than or equal to z."""
-    return lambda x: y <= x <= z
+    @staticmethod
+    def between_or_equal_to(y, z):
+        """Greater than or equal to y and less than or equal to z."""
+        return lambda x: y <= x <= z
+
+############
+# Negation #
+############
 
 def _not(f):
     return lambda x: not f(x)
 
-def _wrap_equal(f):
+Is.not_equal_to = _not(Is.equal_to)
+Is.not_above = Is.below_or_equal_to
+Is.not_below = Is.above_or_equal_to
+Is.not_below_or_equal_to = Is.above
+Is.not_above_or_equal_to = Is.below
+Is.not_strictly_between = _not(Is.strictly_between)
+Is.not_between = _not(Is.between)
+Is.not_between_or_equal_to = _not(Is.between_or_equal_to)
+
+###############
+# Combination #
+###############
+
+def both(f, g):
+    """Both f and g."""
+    f, g = _wrap_equal_to(f), _wrap_equal_to(g)
+    return lambda x: f(x) and g(x)
+
+def either(f, g):
+    """Either f or g."""
+    f, g = _wrap_equal_to(f), _wrap_equal_to(g)
+    return lambda x: f(x) or g(x)
+
+def _wrap_equal_to(f):
     if not callable(f):
-        return equal(f)
+        return Is.equal_to(f)
     else:
         return f
-
-not_equal = _not(equal)
-not_above = below_or_equal
-not_below = above_or_equal
-not_below_or_equal = above
-not_above_or_equal = below
-not_strictly_between = _not(strictly_between)
-not_between = _not(between)
-not_between_or_equal = _not(between_or_equal)
-
 
