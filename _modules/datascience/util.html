@@ -185,7 +185,11 @@
         <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
 
     <span class="n">result</span> <span class="o">=</span> <span class="n">optimize</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">wrapper</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+    <span class="n">rounded</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">start</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">rounded</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">rounded</span>
 </pre></div></div>
 
           </div>
