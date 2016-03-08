@@ -44,3 +44,5 @@ def test_table_apply():
 def test_minimize():
     assert (2 == ds.minimize(lambda x: (x-2)**2)) == True
     assert [2, 1] == list(ds.minimize(lambda x, y: (x-2)**2 + (y-1)**2))
+    assert (2 == ds.minimize(lambda x: (x-2)**2, 1)) == True
+    assert [2, 1] == list(ds.minimize(lambda x, y: (x-2)**2 + (y-1)**2, [1, 1]))

@@ -130,6 +130,8 @@ def minimize(f, start=None, **vargs):
         arg_count = f.__code__.co_argcount
         assert arg_count > 0, "Please pass starting values explicitly"
         start = [0] * arg_count
+    if not hasattr(start, '__len__'):
+        start = [start]
 
     @functools.wraps(f)
     def wrapper(args):
