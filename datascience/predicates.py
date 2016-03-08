@@ -81,3 +81,5 @@ def _wrap_equal_to(f):
     else:
         return f
 
+are.both = both
+are.either = either
