@@ -42,4 +42,5 @@ def test_table_apply():
     assert all(newtab['b'] == tab['b'] + 1)
 
 def test_minimize():
+    assert 2 == ds.minimize(lambda x: (x-2)**2)
     assert [2, 1] == list(ds.minimize(lambda x, y: (x-2)**2 + (y-1)**2))

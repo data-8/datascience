@@ -120,8 +120,16 @@ def table_apply(table, func, subset=None):
     return tab
 
 def minimize(f, start=None, **vargs):
+    """Minimize a function f of one or more arguments.
+
+    Returns either:
+        (a) the minimizing argument of a one-argument function
+        (b) an array of minimizing arguments of a multi-argument function
+    """
     if start is None:
-        start = [0] * f.__code__.co_argcount
+        arg_count = f.__code__.co_argcount
+        assert arg_count > 0, "Please pass starting values explicitly"
+        start = [0] * arg_count
 
     @functools.wraps(f)
     def wrapper(args):

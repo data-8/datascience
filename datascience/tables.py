@@ -1726,7 +1726,7 @@ class Table(collections.abc.MutableMapping):
                 axis.plot([minx,maxx],[m*minx+b,m*maxx+b], color=color)
 
         x_label = self._as_label(column_for_x)
-        self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x)
+        self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x, width=5, height=5)
 
     def _visualize(self, x_label, y_labels, ticks, overlay, draw, annotate, width=6, height=4):
         """Generic visualization that overlays or separates the draw function.
