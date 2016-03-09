@@ -152,5 +152,5 @@ def minimize(f, start=None, smooth=False, log=None, **vargs):
     result = optimize.minimize(wrapper, start, **vargs)
     if log is not None:
         log(result)
-    return np.round(result.x, 7)
+    return result.x
 
