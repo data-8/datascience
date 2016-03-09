@@ -104,6 +104,8 @@ between <code class="docutils literal"><span class="pre">lbound</span></code> an
 <dd><p>Applies a function to each column and returns a Table.</p>
 <p>Uses pandas <cite>apply</cite> under the hood, then converts back to a Table</p>
 <dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
 <dt>table <span class="classifier-delimiter">:</span> <span class="classifier">instance of Table</span></dt>
 <dd>The table to apply your function to</dd>
 <dt>func <span class="classifier-delimiter">:</span> <span class="classifier">function</span></dt>
@@ -111,6 +113,8 @@ between <code class="docutils literal"><span class="pre">lbound</span></code> an
 <dt>subset <span class="classifier-delimiter">:</span> <span class="classifier">list | None</span></dt>
 <dd>A list of columns to apply the function to. If None, function
 will be applied to all columns in table</dd>
+</dl>
+</dd>
 </dl>
 <dl class="docutils">
 <dt>tab <span class="classifier-delimiter">:</span> <span class="classifier">instance of Table</span></dt>
@@ -121,9 +125,16 @@ shape == shape(table), or shape (1, table.shape[1])</dd>
 
 <dl class="function">
 <dt id="datascience.util.minimize">
-<code class="descclassname">datascience.util.</code><code class="descname">minimize</code><span class="sig-paren">(</span><em>f</em>, <em>start=None</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#minimize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.util.minimize" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">datascience.util.</code><code class="descname">minimize</code><span class="sig-paren">(</span><em>f</em>, <em>start=None</em>, <em>smooth=False</em>, <em>log=None</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#minimize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.util.minimize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Minimize a function f of one or more arguments.</p>
 <dl class="docutils">
+<dt>Args:</dt>
+<dd><p class="first">f: A function that takes numbers and returns a number</p>
+<p>start: A starting value or list of starting values</p>
+<p>smooth: Whether to assume that f is smooth and use first-order info</p>
+<p>log: Logging function called on the result of optimization (e.g. print)</p>
+<p class="last">vargs: Other named arguments passed to scipy.optimize.minimize</p>
+</dd>
 <dt>Returns either:</dt>
 <dd><ol class="first last loweralpha simple">
 <li>the minimizing argument of a one-argument function</li>
