@@ -82,15 +82,14 @@ def table_apply(table, func, subset=None):
 
     Uses pandas `apply` under the hood, then converts back to a Table
 
-    Parameters
-    ----------
-    table : instance of Table
-        The table to apply your function to
-    func : function
-        Any function that will work with DataFrame.apply
-    subset : list | None
-        A list of columns to apply the function to. If None, function
-        will be applied to all columns in table
+    Args:
+        table : instance of Table
+            The table to apply your function to
+        func : function
+            Any function that will work with DataFrame.apply
+        subset : list | None
+            A list of columns to apply the function to. If None, function
+            will be applied to all columns in table
 
     Returns
     -------
@@ -119,8 +118,19 @@ def table_apply(table, func, subset=None):
     tab = Table.from_df(df)
     return tab
 
-def minimize(f, start=None, **vargs):
+def minimize(f, start=None, smooth=False, log=None, **vargs):
     """Minimize a function f of one or more arguments.
+
+    Args:
+        f: A function that takes numbers and returns a number
+
+        start: A starting value or list of starting values
+
+        smooth: Whether to assume that f is smooth and use first-order info
+
+        log: Logging function called on the result of optimization (e.g. print)
+
+        vargs: Other named arguments passed to scipy.optimize.minimize
 
     Returns either:
         (a) the minimizing argument of a one-argument function
@@ -137,10 +147,10 @@ def minimize(f, start=None, **vargs):
     def wrapper(args):
         return f(*args)
 
+    if not smooth and 'method' not in vargs:
+        vargs['method'] = 'Powell'
     result = optimize.minimize(wrapper, start, **vargs)
-    rounded = np.round(result.x, 7)
-    if len(start) == 1:
-        return rounded.item(0)
-    else:
-        return rounded
+    if log is not None:
+        log(result)
+    return np.round(result.x, 7)
 
