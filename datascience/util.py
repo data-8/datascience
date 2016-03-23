@@ -3,7 +3,6 @@
 __all__ = ['percentile', 'plot_cdf_area', 'plot_normal_cdf', 'table_apply',
            'minimize']
 
-
 import numpy as np
 import pandas as pd
 import matplotlib
@@ -12,6 +11,7 @@ import matplotlib.pyplot as plt
 from scipy import stats
 from scipy import optimize
 import functools
+
 
 def percentile(p, arr=None):
     """Returns the pth percentile of the input array (the value that is at
@@ -117,6 +117,7 @@ def table_apply(table, func, subset=None):
         df = pd.DataFrame(df).T
     tab = Table.from_df(df)
     return tab
+
 
 def minimize(f, start=None, smooth=False, log=None, array=False, **vargs):
     """Minimize a function f of one or more arguments.
