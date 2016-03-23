@@ -1,6 +1,7 @@
 """Utility functions"""
 
-__all__ = ['percentile', 'plot_cdf_area', 'plot_normal_cdf', 'table_apply']
+__all__ = ['percentile', 'plot_cdf_area', 'plot_normal_cdf', 'table_apply',
+           'minimize']
 
 
 import numpy as np
@@ -9,7 +10,8 @@ import matplotlib
 matplotlib.use('agg', warn=False)
 import matplotlib.pyplot as plt
 from scipy import stats
-
+from scipy import optimize
+import functools
 
 def percentile(p, arr=None):
     """Returns the pth percentile of the input array (the value that is at
@@ -80,15 +82,14 @@ def table_apply(table, func, subset=None):
 
     Uses pandas `apply` under the hood, then converts back to a Table
 
-    Parameters
-    ----------
-    table : instance of Table
-        The table to apply your function to
-    func : function
-        Any function that will work with DataFrame.apply
-    subset : list | None
-        A list of columns to apply the function to. If None, function
-        will be applied to all columns in table
+    Args:
+        table : instance of Table
+            The table to apply your function to
+        func : function
+            Any function that will work with DataFrame.apply
+        subset : list | None
+            A list of columns to apply the function to. If None, function
+            will be applied to all columns in table
 
     Returns
     -------
@@ -116,3 +117,40 @@ def table_apply(table, func, subset=None):
         df = pd.DataFrame(df).T
     tab = Table.from_df(df)
     return tab
+
+def minimize(f, start=None, smooth=False, log=None, **vargs):
+    """Minimize a function f of one or more arguments.
+
+    Args:
+        f: A function that takes numbers and returns a number
+
+        start: A starting value or list of starting values
+
+        smooth: Whether to assume that f is smooth and use first-order info
+
+        log: Logging function called on the result of optimization (e.g. print)
+
+        vargs: Other named arguments passed to scipy.optimize.minimize
+
+    Returns either:
+        (a) the minimizing argument of a one-argument function
+        (b) an array of minimizing arguments of a multi-argument function
+    """
+    if start is None:
+        arg_count = f.__code__.co_argcount
+        assert arg_count > 0, "Please pass starting values explicitly"
+        start = [0] * arg_count
+    if not hasattr(start, '__len__'):
+        start = [start]
+
+    @functools.wraps(f)
+    def wrapper(args):
+        return f(*args)
+
+    if not smooth and 'method' not in vargs:
+        vargs['method'] = 'Powell'
+    result = optimize.minimize(wrapper, start, **vargs)
+    if log is not None:
+        log(result)
+    return result.x
+

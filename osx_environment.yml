@@ -23,7 +23,7 @@ dependencies:
 - pytz=2015.7=py35_0
 - qt=4.8.7=1
 - readline=6.2=2
-- scipy=0.16.1=np110py35_0
+- scipy=0.16.1=np110py35_1
 - simplegeneric=0.8.1=py35_0
 - sip=4.16.9=py35_0
 - six=1.10.0=py35_0
