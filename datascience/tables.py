@@ -1577,21 +1577,22 @@ class Table(collections.abc.MutableMapping):
         options = self.default_options.copy()
         options.update(vargs)
 
-        xticks, labels = self._split_column_and_labels(column_for_xticks)
+        x_data, y_labels = self._split_column_and_labels(column_for_xticks)
         if select is not None:
-            labels = self._as_labels(select)
+            y_labels = self._as_labels(select)
 
-        if xticks is not None:
-            self = self.sort(xticks)
-            xticks = np.sort(xticks)
+        if x_data is not None:
+            self = self.sort(x_data)
+            x_data = np.sort(x_data)
 
         def draw(axis, label, color):
-            if xticks is None:
+            if x_data is None:
                 axis.plot(self[label], color=color, **options)
             else:
-                axis.plot(xticks, self[label], color=color, **options)
+                axis.plot(x_data, self[label], color=color, **options)
 
-        self._visualize(column_for_xticks, labels, xticks, overlay, draw, _vertical_x)
+        x_label = self._as_label(column_for_xticks)
+        self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x)
 
     def bar(self, column_for_categories=None, select=None, overlay=True, **vargs):
         """Plot bar charts for the table.
@@ -1751,17 +1752,18 @@ class Table(collections.abc.MutableMapping):
         """
         options = self.default_options.copy()
         options.update(vargs)
-        xdata, y_labels =  self._split_column_and_labels(column_for_x)
+
+        x_data, y_labels =  self._split_column_and_labels(column_for_x)
         if select is not None:
             y_labels = self._as_labels(select)
 
         def draw(axis, label, color):
             if 'color' in options:
                 color = options.pop('color')
-            axis.scatter(xdata, self[label], color=color, **options)
+            axis.scatter(x_data, self[label], color=color, **options)
             if fit_line:
-                m,b = np.polyfit(xdata, self[label], 1)
-                minx, maxx = np.min(xdata),np.max(xdata)
+                m,b = np.polyfit(x_data, self[label], 1)
+                minx, maxx = np.min(x_data),np.max(x_data)
                 axis.plot([minx,maxx],[m*minx+b,m*maxx+b], color=color)
 
         x_label = self._as_label(column_for_x)
