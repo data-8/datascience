@@ -649,7 +649,7 @@ class Table(collections.abc.MutableMapping):
         Red   | Round | 4      | 1.3
         Red   | Round | 7      | 1.75
         Green | Round | 2      | 1
-        >>> marbles.where(marbles.column("Shape") == "Round") # equivalent to the previous example
+        >>> marbles.where(marbles.column("Shape") == "Round") # equivalent to previous example
         Color | Shape | Amount | Price
         Red   | Round | 4      | 1.3
         Red   | Round | 7      | 1.75
@@ -658,8 +658,11 @@ class Table(collections.abc.MutableMapping):
         Color | Shape       | Amount | Price
         Blue  | Rectangular | 12     | 2
         Red   | Round       | 7      | 1.75
+
+        You can also use predicates to simplify single-column comparisons.
+
         >>> from datascience.predicates import are
-        >>> marbles.where("Price", are.above(1.5))
+        >>> marbles.where("Price", are.above(1.5)) # equivalent to previous example
         Color | Shape       | Amount | Price
         Blue  | Rectangular | 12     | 2
         Red   | Round       | 7      | 1.75

@@ -118,7 +118,7 @@ def table_apply(table, func, subset=None):
     tab = Table.from_df(df)
     return tab
 
-def minimize(f, start=None, smooth=False, log=None, **vargs):
+def minimize(f, start=None, smooth=False, log=None, array=False, **vargs):
     """Minimize a function f of one or more arguments.
 
     Args:
@@ -137,20 +137,27 @@ def minimize(f, start=None, smooth=False, log=None, **vargs):
         (b) an array of minimizing arguments of a multi-argument function
     """
     if start is None:
+        assert not array, "Please pass starting values explicitly when array=True"
         arg_count = f.__code__.co_argcount
-        assert arg_count > 0, "Please pass starting values explicitly"
+        assert arg_count > 0, "Please pass starting values explicitly for variadic functions"
         start = [0] * arg_count
     if not hasattr(start, '__len__'):
         start = [start]
 
-    @functools.wraps(f)
-    def wrapper(args):
-        return f(*args)
+    if array:
+        objective = f
+    else:
+        @functools.wraps(f)
+        def objective(args):
+            return f(*args)
 
     if not smooth and 'method' not in vargs:
         vargs['method'] = 'Powell'
-    result = optimize.minimize(wrapper, start, **vargs)
+    result = optimize.minimize(objective, start, **vargs)
     if log is not None:
         log(result)
-    return result.x
+    if len(start) == 1:
+        return result.x.item(0)
+    else:
+        return result.x
 
