@@ -308,7 +308,7 @@ class Table(collections.abc.MutableMapping):
         >>> t.apply(lambda x, y: x * y, ['count', 'points'])
         array([ 9,  6,  6, 10])
 
-        Whole rows can be passed to a function as well.
+        Whole rows are passed to the function if no columns are specified.
 
         >>> t.apply(lambda row: row.item('count') * 2)
         array([18,  6,  6,  2])
