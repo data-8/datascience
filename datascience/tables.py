@@ -273,9 +273,10 @@ class Table(collections.abc.MutableMapping):
         """Return the index of a column."""
         return self.labels.index(column_label)
 
-    def apply(self, fn, column_label):
+    def apply(self, fn, column_label=None):
         """Returns an array where ``fn`` is applied to each set of elements
-        by row from the specified columns in ``column_label``.
+        by row from the specified columns in ``column_label``. If no
+        column_label is specified, then each row is passed to fn.
 
         Args:
             ``fn`` (function): The function to be applied to elements specified
@@ -302,13 +303,21 @@ class Table(collections.abc.MutableMapping):
         b      | 3     | 2
         c      | 3     | 2
         z      | 1     | 10
-        >>> t.apply(lambda x, y: x * y, ['count', 'points'])
-        array([ 9,  6,  6, 10])
         >>> t.apply(lambda x: x - 1, 'points')
         array([0, 1, 1, 9])
+        >>> t.apply(lambda x, y: x * y, ['count', 'points'])
+        array([ 9,  6,  6, 10])
+
+        Whole rows can be passed to a function as well.
+
+        >>> t.apply(lambda row: row.item('count') * 2)
+        array([18,  6,  6,  2])
         """
-        rows = zip(*self.select(column_label).columns)
-        return np.array([fn(*row) for row in rows])
+        if column_label is None:
+            return np.array([fn(row) for row in self.rows])
+        else:
+            rows = zip(*self.select(column_label).columns)
+            return np.array([fn(*row) for row in rows])
 
     ############
     # Mutation #
