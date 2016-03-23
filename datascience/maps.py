@@ -416,9 +416,13 @@ class Marker(_MapFeature):
         return cls(lat, lon)
 
     @classmethod
-    def map(cls, latitudes, longitudes, labels=None, colors=None, **kwargs):
-        """Return markers from columns of coordinates, labels, & colors."""
+    def map(cls, latitudes, longitudes, labels=None, colors=None, radii=None, **kwargs):
+        """Return markers from columns of coordinates, labels, & colors.
+
+        The radii column is not applicable to markers, but sets circle radius.
+        """
         assert len(latitudes) == len(longitudes)
+        assert radii is None or hasattr(cls, '_has_radius'), "A " + cls.__name__ + " has no radius"
         inputs = [latitudes, longitudes]
         if labels is not None:
             assert len(labels) == len(latitudes)
@@ -428,6 +432,9 @@ class Marker(_MapFeature):
         if colors is not None:
             assert len(colors) == len(latitudes)
             inputs.append(colors)
+        if radii is not None:
+            assert len(radii) == len(latitudes)
+            inputs.append(radii)
         ms = [cls(*args, **kwargs) for args in zip(*inputs)]
         return Map(ms)
 
@@ -448,10 +455,22 @@ class Circle(Marker):
 
     fill_opacity: float, default 0.6
         Circle fill opacity
+
+    For example, to draw three circles:
+
+    t = Table().with_columns([
+            'lat', [37.8, 38, 37.9],
+            'lon', [-122, -122.1, -121.9],
+            'label', ['one', 'two', 'three'],
+            'color', ['red', 'green', 'blue'],
+            'radius', [3000, 4000, 5000],
+        ])
+    Circle.map_table(t)
     """
 
     _map_method_name = 'circle_marker'
     _color_param = 'fill_color'
+    _has_radius = True
 
     def __init__(self, lat, lon, popup='', color='blue', radius=10, **kwargs):
         super().__init__(lat, lon, popup, color, radius=radius, line_color=None, **kwargs)
