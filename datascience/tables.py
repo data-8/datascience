@@ -149,8 +149,11 @@ class Table(collections.abc.MutableMapping):
     @classmethod
     def from_df(cls, df):
         """Convert a Pandas DataFrame into a Table."""
+        t = cls()
         labels = df.columns
-        return cls().with_columns([(label, df[label].values) for label in labels])
+        for label in df.columns:
+            t.append_column(label, df[label])
+        return t
 
     @classmethod
     def from_array(cls, arr):
