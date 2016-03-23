@@ -5,7 +5,6 @@ from datascience import util
 import numpy as np
 
 
-
 def test_doctests():
     results = doctest.testmod(util)
     assert results.failed == 0
@@ -41,8 +40,28 @@ def test_table_apply():
     assert all(newtab['a'] == tab['a'])
     assert all(newtab['b'] == tab['b'] + 1)
 
+
+def _round_eq(a, b):
+    if hasattr(a, '__len__'):
+        return all(a == np.round(b))
+    else:
+        return (a == np.round(b)) == True
+
+
 def test_minimize():
-    assert (2 == ds.minimize(lambda x: (x-2)**2)) == True
-    assert [2, 1] == list(ds.minimize(lambda x, y: (x-2)**2 + (y-1)**2))
-    assert (2 == ds.minimize(lambda x: (x-2)**2, 1)) == True
-    assert [2, 1] == list(ds.minimize(lambda x, y: (x-2)**2 + (y-1)**2, [1, 1]))
+    assert _round_eq(2, ds.minimize(lambda x: (x-2)**2))
+    assert _round_eq([2, 1], list(ds.minimize(lambda x, y: (x-2)**2 + (y-1)**2)))
+    assert _round_eq(2, ds.minimize(lambda x: (x-2)**2, 1))
+    assert _round_eq([2, 1], list(ds.minimize(lambda x, y: (x-2)**2 + (y-1)**2, [1, 1])))
+
+
+def test_minimize_smooth():
+    assert _round_eq(2, ds.minimize(lambda x: (x-2)**2, smooth=True))
+    assert _round_eq([2, 1], list(ds.minimize(lambda x, y: (x-2)**2 + (y-1)**2, smooth=True)))
+    assert _round_eq(2, ds.minimize(lambda x: (x-2)**2, 1, smooth=True))
+    assert _round_eq([2, 1], list(ds.minimize(lambda x, y: (x-2)**2 + (y-1)**2, [1, 1], smooth=True)))
+
+
+def test_minimize_array():
+    assert _round_eq(2, ds.minimize(lambda x: (x[0]-2)**2, [0], array=True))
+    assert _round_eq([2, 1], list(ds.minimize(lambda x: (x[0]-2)**2 + (x[1]-1)**2, [0, 0], array=True)))

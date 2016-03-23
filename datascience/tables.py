@@ -22,6 +22,7 @@ import IPython
 import datascience.maps as _maps
 import datascience.formats as _formats
 import datascience.util as _util
+import datascience.predicates as _predicates
 
 class Table(collections.abc.MutableMapping):
     """A sequence of string-labeled columns."""
@@ -614,7 +615,7 @@ class Table(collections.abc.MutableMapping):
         exclude = _as_labels(column_label_or_labels)
         return self.select([c for (i, c) in enumerate(self.labels) if i not in exclude and c not in exclude])
 
-    def where(self, column_or_label, value=None):
+    def where(self, column_or_label, value_or_predicate=None, other=None):
         """Return a Table of rows for which the column is ``value`` or a non-zero value.
 
         If ``column_or_label`` contains Boolean values, returns rows corresponding to True.
@@ -622,7 +623,8 @@ class Table(collections.abc.MutableMapping):
         Args:
             ``column_or_label``: The header name of a column in the table or an array.
 
-            ``value``: Value for comparison with items in ``column_or_label``.
+            ``value_or_predicate``: Value to compare to items in column
+            or function to apply to items in column.
 
         Returns:
             An instance of ``Table`` containing rows for which the ``column_or_label``
@@ -633,7 +635,7 @@ class Table(collections.abc.MutableMapping):
         ...    "Color", ["Red", "Green", "Blue", "Red", "Green", "Green"],
         ...    "Shape", ["Round", "Rectangular", "Rectangular", "Round", "Rectangular", "Round"],
         ...    "Amount", [4, 6, 12, 7, 9, 2],
-        ...    "Price", [1.30, 1.20, 2.00, 1.75, 1.40, 1.00]])
+        ...    "Price", [1.30, 1.20, 2.00, 1.75, 1.40, 3.00]])
         >>> marbles
         Color | Shape       | Amount | Price
         Red   | Round       | 4      | 1.3
@@ -641,25 +643,50 @@ class Table(collections.abc.MutableMapping):
         Blue  | Rectangular | 12     | 2
         Red   | Round       | 7      | 1.75
         Green | Rectangular | 9      | 1.4
-        Green | Round       | 2      | 1
+        Green | Round       | 2      | 3
         >>> marbles.where("Shape", "Round")
         Color | Shape | Amount | Price
         Red   | Round | 4      | 1.3
         Red   | Round | 7      | 1.75
-        Green | Round | 2      | 1
-        >>> marbles.where(marbles.column("Shape") == "Round") # equivalent to the previous example
+        Green | Round | 2      | 3
+        >>> marbles.where(marbles.column("Shape") == "Round") # equivalent to previous example
         Color | Shape | Amount | Price
         Red   | Round | 4      | 1.3
         Red   | Round | 7      | 1.75
-        Green | Round | 2      | 1
+        Green | Round | 2      | 3
         >>> marbles.where(marbles.column("Price") > 1.5)
         Color | Shape       | Amount | Price
         Blue  | Rectangular | 12     | 2
         Red   | Round       | 7      | 1.75
+        Green | Round       | 2      | 3
+
+        You can also use predicates to simplify single-column comparisons.
+
+        >>> from datascience.predicates import are
+        >>> marbles.where("Price", are.above(1.5)) # equivalent to previous example
+        Color | Shape       | Amount | Price
+        Blue  | Rectangular | 12     | 2
+        Red   | Round       | 7      | 1.75
+        Green | Round       | 2      | 3
+
+        And apply some predicates to compare columns.
+
+        >>> marbles.where("Price", are.above, "Amount")
+        Color | Shape | Amount | Price
+        Green | Round | 2      | 3
         """
         column = self._get_column(column_or_label)
-        if value is not None:
-            column = column == value
+        if other is not None:
+            assert callable(value_or_predicate), "Predicate required for 3-arg where"
+            predicate = value_or_predicate
+            other = self._get_column(other)
+            column = [predicate(y)(x) for x, y in zip(column, other)]
+        elif value_or_predicate is not None:
+            if not callable(value_or_predicate):
+                predicate = _predicates.are.equal_to(value_or_predicate)
+            else:
+                predicate = value_or_predicate
+            column = [predicate(x) for x in column]
         return self.take(np.nonzero(column)[0])
 
     def sort(self, column_or_label, descending=False, distinct=False):
