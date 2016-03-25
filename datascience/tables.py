@@ -1778,7 +1778,7 @@ class Table(collections.abc.MutableMapping):
                     axis.annotate(label, (x, y),
                         xytext=(-8, 8),
                         textcoords='offset points', ha='right', va='bottom',
-                        bbox=dict(boxstyle='round,pad=0.5', fc='white'))
+                        bbox=dict(boxstyle='round,pad=0.5', fc='white', alpha=0.8))
 
         x_label = self._as_label(column_for_x)
         self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x, width=5, height=5)
