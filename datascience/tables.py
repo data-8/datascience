@@ -1706,7 +1706,8 @@ class Table(collections.abc.MutableMapping):
 
         self._visualize('', labels, yticks, overlay, draw, annotate, height=height)
 
-    def scatter(self, column_for_x, select=None, overlay=True, fit_line=False, **vargs):
+    def scatter(self, column_for_x, select=None, overlay=True, fit_line=False,
+        colors=None, labels=None, **vargs):
         """Creates scatterplots, optionally adding a line of best fit.
 
         Each plot uses the values in `column_for_x` for horizontal positions.
@@ -1729,6 +1730,10 @@ class Table(collections.abc.MutableMapping):
                 See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.scatter
                 for additional arguments that can be passed into vargs. These
                 include: `marker` and `norm`, to name a couple.
+
+            ``colors``: A column of colors (labels or numeric values)
+
+            ``labels``: A column of text labels to annotate dots
 
         >>> table = Table().with_columns([
         ...     'x', [9, 3, 3, 1],
@@ -1758,13 +1763,23 @@ class Table(collections.abc.MutableMapping):
             y_labels = self._as_labels(select)
 
         def draw(axis, label, color):
-            if 'color' in options:
+            if colors is not None:
+                color = self[colors]
+            elif 'color' in options:
                 color = options.pop('color')
-            axis.scatter(x_data, self[label], color=color, **options)
+            y_data = self[label]
+            axis.scatter(x_data, y_data, color=color, **options)
             if fit_line:
                 m,b = np.polyfit(x_data, self[label], 1)
                 minx, maxx = np.min(x_data),np.max(x_data)
                 axis.plot([minx,maxx],[m*minx+b,m*maxx+b], color=color)
+            if labels is not None:
+                for x, y, label in zip(x_data, y_data, self[labels]):
+                    axis.annotate(label, (x, y),
+                        xytext=(-20, 20),
+                        textcoords='offset points', ha='right', va='bottom',
+                        bbox=dict(boxstyle='round,pad=0.5', fc='white', alpha=0.5),
+                        arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
 
         x_label = self._as_label(column_for_x)
         self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x, width=5, height=5)
