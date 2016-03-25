@@ -1776,10 +1776,9 @@ class Table(collections.abc.MutableMapping):
             if labels is not None:
                 for x, y, label in zip(x_data, y_data, self[labels]):
                     axis.annotate(label, (x, y),
-                        xytext=(-20, 20),
+                        xytext=(-8, 8),
                         textcoords='offset points', ha='right', va='bottom',
-                        bbox=dict(boxstyle='round,pad=0.5', fc='white', alpha=0.5),
-                        arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
+                        bbox=dict(boxstyle='round,pad=0.5', fc='white'))
 
         x_label = self._as_label(column_for_x)
         self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x, width=5, height=5)
