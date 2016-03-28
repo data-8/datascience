@@ -149,8 +149,11 @@ class Table(collections.abc.MutableMapping):
     @classmethod
     def from_df(cls, df):
         """Convert a Pandas DataFrame into a Table."""
+        t = cls()
         labels = df.columns
-        return cls().with_columns([(label, df[label].values) for label in labels])
+        for label in df.columns:
+            t.append_column(label, df[label])
+        return t
 
     @classmethod
     def from_array(cls, arr):
@@ -273,9 +276,10 @@ class Table(collections.abc.MutableMapping):
         """Return the index of a column."""
         return self.labels.index(column_label)
 
-    def apply(self, fn, column_label):
+    def apply(self, fn, column_label=None):
         """Returns an array where ``fn`` is applied to each set of elements
-        by row from the specified columns in ``column_label``.
+        by row from the specified columns in ``column_label``. If no
+        column_label is specified, then each row is passed to fn.
 
         Args:
             ``fn`` (function): The function to be applied to elements specified
@@ -302,13 +306,21 @@ class Table(collections.abc.MutableMapping):
         b      | 3     | 2
         c      | 3     | 2
         z      | 1     | 10
-        >>> t.apply(lambda x, y: x * y, ['count', 'points'])
-        array([ 9,  6,  6, 10])
         >>> t.apply(lambda x: x - 1, 'points')
         array([0, 1, 1, 9])
+        >>> t.apply(lambda x, y: x * y, ['count', 'points'])
+        array([ 9,  6,  6, 10])
+
+        Whole rows are passed to the function if no columns are specified.
+
+        >>> t.apply(lambda row: row.item('count') * 2)
+        array([18,  6,  6,  2])
         """
-        rows = zip(*self.select(column_label).columns)
-        return np.array([fn(*row) for row in rows])
+        if column_label is None:
+            return np.array([fn(row) for row in self.rows])
+        else:
+            rows = zip(*self.select(column_label).columns)
+            return np.array([fn(*row) for row in rows])
 
     ############
     # Mutation #
@@ -1565,21 +1577,22 @@ class Table(collections.abc.MutableMapping):
         options = self.default_options.copy()
         options.update(vargs)
 
-        xticks, labels = self._split_column_and_labels(column_for_xticks)
+        x_data, y_labels = self._split_column_and_labels(column_for_xticks)
         if select is not None:
-            labels = self._as_labels(select)
+            y_labels = self._as_labels(select)
 
-        if xticks is not None:
-            self = self.sort(xticks)
-            xticks = np.sort(xticks)
+        if x_data is not None:
+            self = self.sort(x_data)
+            x_data = np.sort(x_data)
 
         def draw(axis, label, color):
-            if xticks is None:
+            if x_data is None:
                 axis.plot(self[label], color=color, **options)
             else:
-                axis.plot(xticks, self[label], color=color, **options)
+                axis.plot(x_data, self[label], color=color, **options)
 
-        self._visualize(column_for_xticks, labels, xticks, overlay, draw, _vertical_x)
+        x_label = self._as_label(column_for_xticks)
+        self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x)
 
     def bar(self, column_for_categories=None, select=None, overlay=True, **vargs):
         """Plot bar charts for the table.
@@ -1693,7 +1706,8 @@ class Table(collections.abc.MutableMapping):
 
         self._visualize('', labels, yticks, overlay, draw, annotate, height=height)
 
-    def scatter(self, column_for_x, select=None, overlay=True, fit_line=False, **vargs):
+    def scatter(self, column_for_x, select=None, overlay=True, fit_line=False,
+        colors=None, labels=None, **vargs):
         """Creates scatterplots, optionally adding a line of best fit.
 
         Each plot uses the values in `column_for_x` for horizontal positions.
@@ -1717,6 +1731,10 @@ class Table(collections.abc.MutableMapping):
                 for additional arguments that can be passed into vargs. These
                 include: `marker` and `norm`, to name a couple.
 
+            ``colors``: A column of colors (labels or numeric values)
+
+            ``labels``: A column of text labels to annotate dots
+
         >>> table = Table().with_columns([
         ...     'x', [9, 3, 3, 1],
         ...     'y', [1, 2, 2, 10],
@@ -1739,18 +1757,29 @@ class Table(collections.abc.MutableMapping):
         """
         options = self.default_options.copy()
         options.update(vargs)
-        xdata, y_labels =  self._split_column_and_labels(column_for_x)
+
+        x_data, y_labels =  self._split_column_and_labels(column_for_x)
         if select is not None:
             y_labels = self._as_labels(select)
 
         def draw(axis, label, color):
-            if 'color' in options:
+            if colors is not None:
+                color = self[colors]
+            elif 'color' in options:
                 color = options.pop('color')
-            axis.scatter(xdata, self[label], color=color, **options)
+            y_data = self[label]
+            axis.scatter(x_data, y_data, color=color, **options)
             if fit_line:
-                m,b = np.polyfit(xdata, self[label], 1)
-                minx, maxx = np.min(xdata),np.max(xdata)
+                m,b = np.polyfit(x_data, self[label], 1)
+                minx, maxx = np.min(x_data),np.max(x_data)
                 axis.plot([minx,maxx],[m*minx+b,m*maxx+b], color=color)
+            if labels is not None:
+                for x, y, label in zip(x_data, y_data, self[labels]):
+                    axis.annotate(label, (x, y),
+                        xytext=(-20, 20),
+                        textcoords='offset points', ha='right', va='bottom',
+                        bbox=dict(boxstyle='round,pad=0.5', fc='white', alpha=0.7),
+                        arrowprops = dict(arrowstyle = '->', connectionstyle = 'arc3,rad=0', color='black'))
 
         x_label = self._as_label(column_for_x)
         self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x, width=5, height=5)

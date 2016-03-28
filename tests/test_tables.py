@@ -451,6 +451,7 @@ def test_apply(t):
     t = t.copy()
     assert_array_equal(t.apply(lambda x, y: x * y, ['count', 'points']), np.array([9, 6, 6, 10]))
     assert_array_equal(t.apply(lambda x: x * x, 'points'), np.array([1, 4, 4, 100]))
+    assert_array_equal(t.apply(lambda row: row.item('count') * 2), np.array([18, 6, 6, 2]))
     with(pytest.raises(KeyError)):
         t.apply(lambda x, y: x + y, ['count', 'score'])
 
