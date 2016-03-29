@@ -2,7 +2,7 @@
 
 import functools
 
-all = ['are']
+__all__ = ['are']
 
 class are:
     """Predicate functions. The class is named "are" for calls to where.
