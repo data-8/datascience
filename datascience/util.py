@@ -34,6 +34,9 @@ def percentile(p, arr=None):
         return lambda arr: percentile(p, arr)
     if hasattr(p, '__iter__'):
         return np.array([percentile(x, arr) for x in p])
+    if p == 0:
+        return min(arr)
+    assert 0 < p <= 100, 'Percentile requires a percent'
     i = (p/100) * len(arr)
     return sorted(arr)[math.ceil(i) - 1]
 

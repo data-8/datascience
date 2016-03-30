@@ -11,6 +11,7 @@ def test_doctests():
 
 
 def test_percentile():
+    assert ds.percentile(0, [1, 3, 5, 9]) == 1
     assert ds.percentile(25, [1, 3, 5, 9]) == 1
     assert ds.percentile(26, [1, 3, 5, 9]) == 3
     assert ds.percentile(55, [1, 3, 5, 9]) == 5
