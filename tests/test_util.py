@@ -21,7 +21,7 @@ def test_percentile():
     assert f1([1, 3, 5, 9]) == 5
 
     f2 = ds.percentile([65, 85])
-    assert np.all(f2([1, 3, 5, 9]) == np.array([5, 9]))
+    assert np.all(f2([9, 5, 3, 1]) == np.array([5, 9]))
 
 
 def test_table_apply():

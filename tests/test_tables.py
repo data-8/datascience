@@ -913,12 +913,12 @@ def test_join_with_strings(table):
     """)
 
 def test_percentile(numbers_table):
-    assert_equal(numbers_table.percentile(67), """
+    assert_equal(numbers_table.percentile(76), """
     count | points
     9     | 10
     """)
 
-    assert_equal(numbers_table.percentile(66), """
+    assert_equal(numbers_table.percentile(75), """
     count | points
     3     | 2
     """)

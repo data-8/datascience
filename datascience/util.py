@@ -35,7 +35,7 @@ def percentile(p, arr=None):
     if hasattr(p, '__iter__'):
         return np.array([percentile(x, arr) for x in p])
     i = (p/100) * len(arr)
-    return arr[math.ceil(i) - 1]
+    return sorted(arr)[math.ceil(i) - 1]
 
 
 def plot_normal_cdf(rbound=None, lbound=None, mean=0, sd=1):

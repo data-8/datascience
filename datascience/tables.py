@@ -1111,7 +1111,7 @@ class Table(collections.abc.MutableMapping):
         3     | 2
         3     | 2
         1     | 10
-        >>> table.percentile(67)
+        >>> table.percentile(80)
         count | points
         9     | 10
         """
