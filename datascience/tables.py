@@ -1173,9 +1173,9 @@ class Table(collections.abc.MutableMapping):
         sample = self._with_columns(columns)
         return sample
 
-    def sample_from_distribution(self, k, distribution, proportions=False):
-        """Returns a new table with the same number of rows. The values in
-        the distribution column are interpreted as a multinomial distribution.
+    def sample_from_distribution(self, distribution, k, proportions=False):
+        """Returns a new table with the same number of rows and a new column.
+        The values in the distribution column are define a multinomial.
         They are replaced by sample counts/proportions in the output.
 
         >>> sizes = Table(['size', 'count']).with_rows([
@@ -1183,16 +1183,16 @@ class Table(collections.abc.MutableMapping):
         ...     ['medium', 100],
         ...     ['big', 50],
         ... ])
-        >>> sizes.sample_from_distribution(20, 'count') # doctest: +SKIP
-        size   | count
-        small  | 252
-        medium | 505
-        big    | 243
-        >>> sizes.sample_from_distribution(20, 'count', True) # doctest: +SKIP
-        size   | count
-        small  | 0.255
-        medium | 0.506
-        big    | 0.239
+        >>> sizes.sample_from_distribution('count', 1000) # doctest: +SKIP
+        size   | count | count sample
+        small  | 50    | 239
+        medium | 100   | 496
+        big    | 50    | 265
+        >>> sizes.sample_from_distribution('count', 1000, True) # doctest: +SKIP
+        size   | count | count sample
+        small  | 50    | 0.24
+        medium | 100   | 0.51
+        big    | 50    | 0.25
         """
         dist = self._get_column(distribution)
         total = sum(dist)
@@ -1201,7 +1201,8 @@ class Table(collections.abc.MutableMapping):
         sample = np.random.multinomial(k, dist)
         if proportions:
             sample = sample / sum(sample)
-        return self.with_column(self._as_label(distribution), sample)
+        label = self._unused_label(self._as_label(distribution) + ' sample')
+        return self.with_column(label, sample)
 
     def split(self, k):
         """Returns a tuple of two tables where the first table contains
