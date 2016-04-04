@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>datascience.tables &mdash; datascience 0.5.18 documentation</title>
+    <title>datascience.tables &mdash; datascience 0.5.19 documentation</title>
     
     <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.5.18',
+        VERSION:     '0.5.19',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.5.18 documentation" href="../../index.html" />
+    <link rel="top" title="datascience 0.5.19 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body role="document">
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.5.18 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.5.19 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -1222,6 +1222,37 @@
         <span class="n">sample</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_columns</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">sample</span>
 </div>
+    <span class="k">def</span> <span class="nf">sample_from_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distribution</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">proportions</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a new table with the same number of rows and a new column.</span>
+<span class="sd">        The values in the distribution column are define a multinomial.</span>
+<span class="sd">        They are replaced by sample counts/proportions in the output.</span>
+
+<span class="sd">        &gt;&gt;&gt; sizes = Table([&#39;size&#39;, &#39;count&#39;]).with_rows([</span>
+<span class="sd">        ...     [&#39;small&#39;, 50],</span>
+<span class="sd">        ...     [&#39;medium&#39;, 100],</span>
+<span class="sd">        ...     [&#39;big&#39;, 50],</span>
+<span class="sd">        ... ])</span>
+<span class="sd">        &gt;&gt;&gt; sizes.sample_from_distribution(&#39;count&#39;, 1000) # doctest: +SKIP</span>
+<span class="sd">        size   | count | count sample</span>
+<span class="sd">        small  | 50    | 239</span>
+<span class="sd">        medium | 100   | 496</span>
+<span class="sd">        big    | 50    | 265</span>
+<span class="sd">        &gt;&gt;&gt; sizes.sample_from_distribution(&#39;count&#39;, 1000, True) # doctest: +SKIP</span>
+<span class="sd">        size   | count | count sample</span>
+<span class="sd">        small  | 50    | 0.24</span>
+<span class="sd">        medium | 100   | 0.51</span>
+<span class="sd">        big    | 50    | 0.25</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_column</span><span class="p">(</span><span class="n">distribution</span><span class="p">)</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">total</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">dist</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">),</span> <span class="s1">&#39;Counts or a distribution required&#39;</span>
+        <span class="n">dist</span> <span class="o">=</span> <span class="n">dist</span><span class="o">/</span><span class="nb">sum</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span>
+        <span class="n">sample</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multinomial</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">dist</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">proportions</span><span class="p">:</span>
+            <span class="n">sample</span> <span class="o">=</span> <span class="n">sample</span> <span class="o">/</span> <span class="nb">sum</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unused_label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_as_label</span><span class="p">(</span><span class="n">distribution</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; sample&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_column</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">sample</span><span class="p">)</span>
+
 <div class="viewcode-block" id="Table.split"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.split.html#datascience.tables.Table.split">[docs]</a>    <span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns a tuple of two tables where the first table contains</span>
 <span class="sd">        ``k`` rows randomly sampled and the second contains the remaining rows.</span>
@@ -2424,7 +2455,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.5.18 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.5.19 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
