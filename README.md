@@ -1,6 +1,6 @@
 # datascience
 
-A library for introductory data science.
+A Berkeley library for introductory data science.
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/dsten/datascience?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![Documentation Status](https://readthedocs.org/projects/datascience/badge/?version=v0.5.1)](http://datascience.readthedocs.org/en/v0.5.1/?badge=v0.5.1)
@@ -9,6 +9,8 @@ A library for introductory data science.
 *written by Professor [John DeNero](http://denero.org), Professor
 [David Culler](http://www.cs.berkeley.edu/~culler),
 [Sam Lau](https://github.com/samlau95), and [Alvin Wan](http://alvinwan.com)*
+
+For an example of usage, see the [Berkeley Data 8 class](http://databears.berkeley.edu/content/csinfostat-c8-foundations-data-science).
 
 [![Build Status](https://travis-ci.org/data-8/datascience.svg?branch=master)](https://travis-ci.org/data-8/datascience)
 [![Coverage Status](https://coveralls.io/repos/dsten/datascience/badge.svg?branch=master&service=github)](https://coveralls.io/github/dsten/datascience?branch=master)
