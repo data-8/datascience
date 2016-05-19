@@ -49,6 +49,17 @@ def numbers_table():
         'points', [1, 2, 2, 10],
         ])
 
+@pytest.fixture(scope='function')
+def categories_table():
+    """Setup a table with a column to serve as pivot keys and
+    a columns of values to bin for each key."""
+    return Table(['key', 'val']).with_rows([
+            ['a', 1],
+            ['a', 1],
+            ['a', 2],
+            ['b', 1],
+            ['b', 2],
+            ['b', 2]])
 
 @pytest.fixture(scope='module')
 def t():
@@ -910,6 +921,15 @@ def test_percentile(numbers_table):
     assert_equal(numbers_table.percentile(66), """
     count | points
     3     | 2
+    """)
+
+def test_pivot_bin(categories_table):
+    assert_equal(categories_table.pivot_bin('key', 'val', bins=[0, 1, 2, 3]), """
+    bin  | a    | b
+    0    | 0    | 0
+    1    | 2    | 1
+    2    | 1    | 2
+    3    | 0    | 0
     """)
 
 ##################

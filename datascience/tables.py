@@ -712,15 +712,15 @@ class Table(collections.abc.MutableMapping):
         """
         pivot_columns = _as_labels(pivot_columns)
         selected = self.select(pivot_columns + [value_column])
-        grouped=selected.groups(pivot_columns)
-
+        grouped=selected.groups(pivot_columns, collect=lambda x:x ) 
+        
         # refine bins by taking a histogram over all the data
         if bins is not None:
             vargs['bins'] = bins
         _, rbins = np.histogram(self[value_column],**vargs)
         # create a table with these bins a first column and counts for each group
         vargs['bins'] = rbins
-        binned = Table([rbins],['bin'])
+        binned = Table().with_column('bin',rbins)
         for group in grouped.rows:
             col_label = "-".join(map(str,group[0:-1]))
             col_vals = group[-1]
