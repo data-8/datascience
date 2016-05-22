@@ -1608,7 +1608,12 @@ class Table(collections.abc.MutableMapping):
         options = self.default_options.copy()
         options.update(vargs)
 
-        x_data, y_labels = self._split_column_and_labels(column_for_xticks)
+        if column_for_xticks is not None:
+            x_data, y_labels = self._split_column_and_labels(column_for_xticks)
+            x_label = self._as_label(column_for_xticks)
+        else:
+            x_data, y_labels = None, self.labels
+            x_label = None
         if select is not None:
             y_labels = self._as_labels(select)
 
@@ -1622,7 +1627,6 @@ class Table(collections.abc.MutableMapping):
             else:
                 axis.plot(x_data, self[label], color=color, **options)
 
-        x_label = self._as_label(column_for_xticks)
         self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x)
 
     def bar(self, column_for_categories=None, select=None, overlay=True, **vargs):
@@ -1832,7 +1836,8 @@ class Table(collections.abc.MutableMapping):
         colors = list(itertools.islice(itertools.cycle(self.chart_colors), n))
         if overlay and n > 1:
             _, axis = plt.subplots(figsize=(width, height))
-            axis.set_xlabel(x_label)
+            if x_label is not None:
+                axis.set_xlabel(x_label)
             for label, color in zip(y_labels, colors):
                 draw(axis, label, color)
             if ticks is not None:
@@ -1846,7 +1851,8 @@ class Table(collections.abc.MutableMapping):
             for axis, y_label, color in zip(axes, y_labels, colors):
                 draw(axis, y_label, color)
                 axis.set_ylabel(y_label, fontsize=16)
-                axis.set_xlabel(x_label, fontsize=16)
+                if x_label is not None:
+                    axis.set_xlabel(x_label, fontsize=16)
                 if ticks is not None:
                     annotate(axis, ticks)
                 Table.plots.append(axis)
