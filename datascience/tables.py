@@ -1801,7 +1801,7 @@ class Table(collections.abc.MutableMapping):
             y_data = self[label]
             axis.scatter(x_data, y_data, color=color, **options)
             if fit_line:
-                m,b = np.polyfit(x_data, self[label], 1)
+                m, b = np.polyfit(x_data, self[label], 1)
                 minx, maxx = np.min(x_data),np.max(x_data)
                 axis.plot([minx,maxx],[m*minx+b,m*maxx+b], color=color)
             if labels is not None:
