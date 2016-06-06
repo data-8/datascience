@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Start Here: datascience Tutorial &mdash; datascience 0.5.19 documentation</title>
+    <title>Start Here: datascience Tutorial &mdash; datascience 0.5.20 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.5.19',
+        VERSION:     '0.5.20',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.5.19 documentation" href="index.html" />
+    <link rel="top" title="datascience 0.5.20 documentation" href="index.html" />
     <link rel="next" title="Tables (datascience.tables)" href="tables.html" />
     <link rel="prev" title="Welcome to datascience’s documentation!" href="index.html" /> 
   </head>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="index.html" title="Welcome to datascience’s documentation!"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.5.19 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.5.20 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -171,11 +171,11 @@ discouraged because dictionaries do not preserve column order.</p>
 <span class="gp">   ...: </span>
 
 <span class="gp">In [8]: </span><span class="k">print</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-<span class="go">count | points | letter</span>
-<span class="go">9     | 1      | a</span>
-<span class="go">3     | 2      | b</span>
-<span class="go">3     | 2      | c</span>
-<span class="go">1     | 10     | z</span>
+<span class="go">letter | points | count</span>
+<span class="go">a      | 1      | 9</span>
+<span class="go">b      | 2      | 3</span>
+<span class="go">c      | 2      | 3</span>
+<span class="go">z      | 10     | 1</span>
 </pre></div>
 </div>
 </div>
@@ -187,19 +187,19 @@ and returns an array. Alternatively, <a class="reference internal" href="_autosu
 returns a list of columns (arrays).</p>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [9]: </span><span class="n">t</span>
 <span class="gh">Out[9]: </span><span class="go"></span>
-<span class="go">count | points | letter</span>
-<span class="go">9     | 1      | a</span>
-<span class="go">3     | 2      | b</span>
-<span class="go">3     | 2      | c</span>
-<span class="go">1     | 10     | z</span>
+<span class="go">letter | points | count</span>
+<span class="go">a      | 1      | 9</span>
+<span class="go">b      | 2      | 3</span>
+<span class="go">c      | 2      | 3</span>
+<span class="go">z      | 10     | 1</span>
 
 <span class="gp">In [10]: </span><span class="n">t</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s1">&#39;letter&#39;</span><span class="p">)</span>
-<span class="go">                                                                                                             Out[10]: </span>
+<span class="go">                                                                                                                 Out[10]: </span>
 <span class="go">array([&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;z&#39;], </span>
 <span class="go">      dtype=&#39;&lt;U1&#39;)</span>
 
 <span class="gp">In [11]: </span><span class="n">t</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="go">                                                                                                                                                                       Out[11]: array([ 1,  2,  2, 10])</span>
+<span class="go">                                                                                                                                                                           Out[11]: array([ 1,  2,  2, 10])</span>
 </pre></div>
 </div>
 <p>You can use bracket notation as a shorthand for this method:</p>
@@ -218,28 +218,28 @@ list-like <code class="xref py py-class docutils literal"><span class="pre">Rows
 tuple-like <code class="xref py py-class docutils literal"><span class="pre">Row</span></code> objects.</p>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [14]: </span><span class="n">t</span><span class="o">.</span><span class="n">rows</span>
 <span class="gh">Out[14]: </span><span class="go"></span>
-<span class="go">Rows(count | points | letter</span>
-<span class="go">9     | 1      | a</span>
-<span class="go">3     | 2      | b</span>
-<span class="go">3     | 2      | c</span>
-<span class="go">1     | 10     | z)</span>
+<span class="go">Rows(letter | points | count</span>
+<span class="go">a      | 1      | 9</span>
+<span class="go">b      | 2      | 3</span>
+<span class="go">c      | 2      | 3</span>
+<span class="go">z      | 10     | 1)</span>
 
 <span class="gp">In [15]: </span><span class="n">t</span><span class="o">.</span><span class="n">rows</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="go">                                                                                                                    Out[15]: Row(count=9, points=1, letter=&#39;a&#39;)</span>
+<span class="go">                                                                                                                        Out[15]: Row(letter=&#39;a&#39;, points=1, count=9)</span>
 
 <span class="gp">In [16]: </span><span class="n">t</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="go">                                                                                                                                                                Out[16]: Row(count=9, points=1, letter=&#39;a&#39;)</span>
+<span class="go">                                                                                                                                                                    Out[16]: Row(letter=&#39;a&#39;, points=1, count=9)</span>
 
 <span class="gp">In [17]: </span><span class="n">second</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">rows</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
 <span class="gp">In [18]: </span><span class="n">second</span>
-<span class="gh">Out[18]: </span><span class="go">Row(count=3, points=2, letter=&#39;b&#39;)</span>
+<span class="gh">Out[18]: </span><span class="go">Row(letter=&#39;b&#39;, points=2, count=3)</span>
 
 <span class="gp">In [19]: </span><span class="n">second</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="go">                                            Out[19]: 3</span>
+<span class="go">                                            Out[19]: &#39;b&#39;</span>
 
 <span class="gp">In [20]: </span><span class="n">second</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-<span class="go">                                                       Out[20]: 2</span>
+<span class="go">                                                         Out[20]: 2</span>
 </pre></div>
 </div>
 <p>To get the number of rows, use <a class="reference internal" href="_autosummary/datascience.tables.Table.num_rows.html#datascience.tables.Table.num_rows" title="datascience.tables.Table.num_rows"><code class="xref py py-attr docutils literal"><span class="pre">num_rows</span></code></a>.</p>
@@ -255,35 +255,35 @@ reference (<a class="reference internal" href="tables.html#tables-overview"><spa
 <p>Adding a column with <a class="reference internal" href="_autosummary/datascience.tables.Table.with_column.html#datascience.tables.Table.with_column" title="datascience.tables.Table.with_column"><code class="xref py py-meth docutils literal"><span class="pre">with_column()</span></code></a>:</p>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [22]: </span><span class="n">t</span>
 <span class="gh">Out[22]: </span><span class="go"></span>
-<span class="go">count | points | letter</span>
-<span class="go">9     | 1      | a</span>
-<span class="go">3     | 2      | b</span>
-<span class="go">3     | 2      | c</span>
-<span class="go">1     | 10     | z</span>
+<span class="go">letter | points | count</span>
+<span class="go">a      | 1      | 9</span>
+<span class="go">b      | 2      | 3</span>
+<span class="go">c      | 2      | 3</span>
+<span class="go">z      | 10     | 1</span>
 
 <span class="gp">In [23]: </span><span class="n">t</span><span class="o">.</span><span class="n">with_column</span><span class="p">(</span><span class="s1">&#39;vowel?&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;yes&#39;</span><span class="p">,</span> <span class="s1">&#39;no&#39;</span><span class="p">,</span> <span class="s1">&#39;no&#39;</span><span class="p">,</span> <span class="s1">&#39;no&#39;</span><span class="p">])</span>
-<span class="go">                                                                                                              Out[23]: </span>
-<span class="go">count | points | letter | vowel?</span>
-<span class="go">9     | 1      | a      | yes</span>
-<span class="go">3     | 2      | b      | no</span>
-<span class="go">3     | 2      | c      | no</span>
-<span class="go">1     | 10     | z      | no</span>
+<span class="go">                                                                                                                  Out[23]: </span>
+<span class="go">letter | points | count | vowel?</span>
+<span class="go">a      | 1      | 9     | yes</span>
+<span class="go">b      | 2      | 3     | no</span>
+<span class="go">c      | 2      | 3     | no</span>
+<span class="go">z      | 10     | 1     | no</span>
 
 <span class="gp">In [24]: </span><span class="n">t</span> <span class="c1"># .with_column returns a new table without modifying the original</span>
-<span class="go">                                                                                                                                                                                                                                                                              Out[24]: </span>
-<span class="go">count | points | letter</span>
-<span class="go">9     | 1      | a</span>
-<span class="go">3     | 2      | b</span>
-<span class="go">3     | 2      | c</span>
-<span class="go">1     | 10     | z</span>
+<span class="go">                                                                                                                                                                                                                                                                                  Out[24]: </span>
+<span class="go">letter | points | count</span>
+<span class="go">a      | 1      | 9</span>
+<span class="go">b      | 2      | 3</span>
+<span class="go">c      | 2      | 3</span>
+<span class="go">z      | 10     | 1</span>
 
 <span class="gp">In [25]: </span><span class="n">t</span><span class="o">.</span><span class="n">with_column</span><span class="p">(</span><span class="s1">&#39;2 * count&#39;</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="c1"># A simple way to operate on columns</span>
-<span class="go">                                                                                                                                                                                                                                                                                                                                                                                            Out[25]: </span>
-<span class="go">count | points | letter | 2 * count</span>
-<span class="go">9     | 1      | a      | 18</span>
-<span class="go">3     | 2      | b      | 6</span>
-<span class="go">3     | 2      | c      | 6</span>
-<span class="go">1     | 10     | z      | 2</span>
+<span class="go">                                                                                                                                                                                                                                                                                                                                                                                                    Out[25]: </span>
+<span class="go">letter | points | count | 2 * count</span>
+<span class="go">a      | 1      | 9     | 18</span>
+<span class="go">b      | 2      | 3     | 6</span>
+<span class="go">c      | 2      | 3     | 6</span>
+<span class="go">z      | 10     | 1     | 2</span>
 </pre></div>
 </div>
 <p>Selecting columns with <a class="reference internal" href="_autosummary/datascience.tables.Table.select.html#datascience.tables.Table.select" title="datascience.tables.Table.select"><code class="xref py py-meth docutils literal"><span class="pre">select()</span></code></a>:</p>
@@ -307,81 +307,81 @@ reference (<a class="reference internal" href="tables.html#tables-overview"><spa
 <p>Renaming columns with <a class="reference internal" href="_autosummary/datascience.tables.Table.relabeled.html#datascience.tables.Table.relabeled" title="datascience.tables.Table.relabeled"><code class="xref py py-meth docutils literal"><span class="pre">relabeled()</span></code></a>:</p>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [28]: </span><span class="n">t</span>
 <span class="gh">Out[28]: </span><span class="go"></span>
-<span class="go">count | points | letter</span>
-<span class="go">9     | 1      | a</span>
-<span class="go">3     | 2      | b</span>
-<span class="go">3     | 2      | c</span>
-<span class="go">1     | 10     | z</span>
+<span class="go">letter | points | count</span>
+<span class="go">a      | 1      | 9</span>
+<span class="go">b      | 2      | 3</span>
+<span class="go">c      | 2      | 3</span>
+<span class="go">z      | 10     | 1</span>
 
 <span class="gp">In [29]: </span><span class="n">t</span><span class="o">.</span><span class="n">relabeled</span><span class="p">(</span><span class="s1">&#39;points&#39;</span><span class="p">,</span> <span class="s1">&#39;other name&#39;</span><span class="p">)</span>
-<span class="go">                                                                                                              Out[29]: </span>
-<span class="go">count | other name | letter</span>
-<span class="go">9     | 1          | a</span>
-<span class="go">3     | 2          | b</span>
-<span class="go">3     | 2          | c</span>
-<span class="go">1     | 10         | z</span>
+<span class="go">                                                                                                                  Out[29]: </span>
+<span class="go">letter | other name | count</span>
+<span class="go">a      | 1          | 9</span>
+<span class="go">b      | 2          | 3</span>
+<span class="go">c      | 2          | 3</span>
+<span class="go">z      | 10         | 1</span>
 
 <span class="gp">In [30]: </span><span class="n">t</span>
-<span class="go">                                                                                                                                                                                                                                                Out[30]: </span>
-<span class="go">count | points | letter</span>
-<span class="go">9     | 1      | a</span>
-<span class="go">3     | 2      | b</span>
-<span class="go">3     | 2      | c</span>
-<span class="go">1     | 10     | z</span>
+<span class="go">                                                                                                                                                                                                                                                        Out[30]: </span>
+<span class="go">letter | points | count</span>
+<span class="go">a      | 1      | 9</span>
+<span class="go">b      | 2      | 3</span>
+<span class="go">c      | 2      | 3</span>
+<span class="go">z      | 10     | 1</span>
 
 <span class="gp">In [31]: </span><span class="n">t</span><span class="o">.</span><span class="n">relabeled</span><span class="p">([</span><span class="s1">&#39;letter&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="s1">&#39;points&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">])</span>
-<span class="go">                                                                                                                                                                                                                                                                                                                                                              Out[31]: </span>
-<span class="go">y    | z    | x</span>
-<span class="go">9    | 1    | a</span>
-<span class="go">3    | 2    | b</span>
-<span class="go">3    | 2    | c</span>
-<span class="go">1    | 10   | z</span>
+<span class="go">                                                                                                                                                                                                                                                                                                                                                                          Out[31]: </span>
+<span class="go">x    | z    | y</span>
+<span class="go">a    | 1    | 9</span>
+<span class="go">b    | 2    | 3</span>
+<span class="go">c    | 2    | 3</span>
+<span class="go">z    | 10   | 1</span>
 </pre></div>
 </div>
 <p>Selecting out rows by index with <a class="reference internal" href="_autosummary/datascience.tables.Table.take.html#datascience.tables.Table.take" title="datascience.tables.Table.take"><code class="xref py py-meth docutils literal"><span class="pre">take()</span></code></a> and
 conditionally with <a class="reference internal" href="_autosummary/datascience.tables.Table.where.html#datascience.tables.Table.where" title="datascience.tables.Table.where"><code class="xref py py-meth docutils literal"><span class="pre">where()</span></code></a>:</p>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [32]: </span><span class="n">t</span>
 <span class="gh">Out[32]: </span><span class="go"></span>
-<span class="go">count | points | letter</span>
-<span class="go">9     | 1      | a</span>
-<span class="go">3     | 2      | b</span>
-<span class="go">3     | 2      | c</span>
-<span class="go">1     | 10     | z</span>
+<span class="go">letter | points | count</span>
+<span class="go">a      | 1      | 9</span>
+<span class="go">b      | 2      | 3</span>
+<span class="go">c      | 2      | 3</span>
+<span class="go">z      | 10     | 1</span>
 
 <span class="gp">In [33]: </span><span class="n">t</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># the third row</span>
-<span class="go">                                                                                                              Out[33]: </span>
-<span class="go">count | points | letter</span>
-<span class="go">3     | 2      | c</span>
+<span class="go">                                                                                                                  Out[33]: </span>
+<span class="go">letter | points | count</span>
+<span class="go">c      | 2      | 3</span>
 
 <span class="gp">In [34]: </span><span class="n">t</span><span class="o">.</span><span class="n">take</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="c1"># the first and second rows</span>
-<span class="go">                                                                                                                                                                   Out[34]: </span>
-<span class="go">count | points | letter</span>
-<span class="go">9     | 1      | a</span>
-<span class="go">3     | 2      | b</span>
+<span class="go">                                                                                                                                                                        Out[34]: </span>
+<span class="go">letter | points | count</span>
+<span class="go">a      | 1      | 9</span>
+<span class="go">b      | 2      | 3</span>
 </pre></div>
 </div>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [35]: </span><span class="n">t</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;points&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="c1"># rows where points == 2</span>
 <span class="gh">Out[35]: </span><span class="go"></span>
-<span class="go">count | points | letter</span>
-<span class="go">3     | 2      | b</span>
-<span class="go">3     | 2      | c</span>
+<span class="go">letter | points | count</span>
+<span class="go">b      | 2      | 3</span>
+<span class="go">c      | 2      | 3</span>
 
 <span class="gp">In [36]: </span><span class="n">t</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="c1"># rows where count &lt; 8</span>
-<span class="go">                                                                        Out[36]: </span>
-<span class="go">count | points | letter</span>
-<span class="go">3     | 2      | b</span>
-<span class="go">3     | 2      | c</span>
-<span class="go">1     | 10     | z</span>
+<span class="go">                                                                          Out[36]: </span>
+<span class="go">letter | points | count</span>
+<span class="go">b      | 2      | 3</span>
+<span class="go">c      | 2      | 3</span>
+<span class="go">z      | 10     | 1</span>
 
 <span class="gp">In [37]: </span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">8</span> <span class="c1"># .where actually takes in an array of booleans</span>
-<span class="go">                                                                                                                                                                   Out[37]: array([False,  True,  True,  True], dtype=bool)</span>
+<span class="go">                                                                                                                                                                        Out[37]: array([False,  True,  True,  True], dtype=bool)</span>
 
 <span class="gp">In [38]: </span><span class="n">t</span><span class="o">.</span><span class="n">where</span><span class="p">([</span><span class="bp">False</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="bp">True</span><span class="p">])</span> <span class="c1"># same as the last line</span>
-<span class="go">                                                                                                                                                                                                                            Out[38]: </span>
-<span class="go">count | points | letter</span>
-<span class="go">3     | 2      | b</span>
-<span class="go">3     | 2      | c</span>
-<span class="go">1     | 10     | z</span>
+<span class="go">                                                                                                                                                                                                                                 Out[38]: </span>
+<span class="go">letter | points | count</span>
+<span class="go">b      | 2      | 3</span>
+<span class="go">c      | 2      | 3</span>
+<span class="go">z      | 10     | 1</span>
 </pre></div>
 </div>
 <p>Operate on table data with <a class="reference internal" href="_autosummary/datascience.tables.Table.sort.html#datascience.tables.Table.sort" title="datascience.tables.Table.sort"><code class="xref py py-meth docutils literal"><span class="pre">sort()</span></code></a>,
@@ -389,27 +389,27 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 <a class="reference internal" href="_autosummary/datascience.tables.Table.pivot.html#datascience.tables.Table.pivot" title="datascience.tables.Table.pivot"><code class="xref py py-meth docutils literal"><span class="pre">pivot()</span></code></a></p>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [39]: </span><span class="n">t</span>
 <span class="gh">Out[39]: </span><span class="go"></span>
-<span class="go">count | points | letter</span>
-<span class="go">9     | 1      | a</span>
-<span class="go">3     | 2      | b</span>
-<span class="go">3     | 2      | c</span>
-<span class="go">1     | 10     | z</span>
+<span class="go">letter | points | count</span>
+<span class="go">a      | 1      | 9</span>
+<span class="go">b      | 2      | 3</span>
+<span class="go">c      | 2      | 3</span>
+<span class="go">z      | 10     | 1</span>
 
 <span class="gp">In [40]: </span><span class="n">t</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">)</span>
-<span class="go">                                                                                                              Out[40]: </span>
-<span class="go">count | points | letter</span>
-<span class="go">1     | 10     | z</span>
-<span class="go">3     | 2      | b</span>
-<span class="go">3     | 2      | c</span>
-<span class="go">9     | 1      | a</span>
+<span class="go">                                                                                                                  Out[40]: </span>
+<span class="go">letter | points | count</span>
+<span class="go">z      | 10     | 1</span>
+<span class="go">b      | 2      | 3</span>
+<span class="go">c      | 2      | 3</span>
+<span class="go">a      | 1      | 9</span>
 
 <span class="gp">In [41]: </span><span class="n">t</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">&#39;letter&#39;</span><span class="p">,</span> <span class="n">descending</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
-<span class="go">                                                                                                                                                                                                                            Out[41]: </span>
-<span class="go">count | points | letter</span>
-<span class="go">1     | 10     | z</span>
-<span class="go">3     | 2      | c</span>
-<span class="go">3     | 2      | b</span>
-<span class="go">9     | 1      | a</span>
+<span class="go">                                                                                                                                                                                                                                    Out[41]: </span>
+<span class="go">letter | points | count</span>
+<span class="go">z      | 10     | 1</span>
+<span class="go">c      | 2      | 3</span>
+<span class="go">b      | 2      | 3</span>
+<span class="go">a      | 1      | 9</span>
 </pre></div>
 </div>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="go"># You may pass a reducing function into the collect arg</span>
@@ -456,162 +456,162 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 
 <span class="gp">In [47]: </span><span class="n">normal_data</span>
 <span class="gh">Out[47]: </span><span class="go"></span>
-<span class="go">data1    | data2</span>
-<span class="go">2.04421  | 7.12675</span>
-<span class="go">-2.77739 | 5.27409</span>
-<span class="go">3.87366  | 3.36905</span>
-<span class="go">3.53039  | 10.9489</span>
-<span class="go">1.85187  | 4.40383</span>
-<span class="go">-1.64129 | 2.21656</span>
-<span class="go">1.94962  | 3.53449</span>
-<span class="go">6.01073  | 4.35145</span>
-<span class="go">0.538423 | 10.0527</span>
-<span class="go">-1.81474 | 6.53208</span>
+<span class="go">data1     | data2</span>
+<span class="go">4.38092   | 6.07326</span>
+<span class="go">0.68802   | 1.59824</span>
+<span class="go">1.18138   | 1.17951</span>
+<span class="go">1.5014    | 10.4707</span>
+<span class="go">1.02668   | 4.37425</span>
+<span class="go">5.74127   | 2.4997</span>
+<span class="go">0.389289  | 5.95373</span>
+<span class="go">2.28841   | -0.085697</span>
+<span class="go">-0.604607 | 4.9121</span>
+<span class="go">-0.309662 | 2.96601</span>
 <span class="go">... (90 rows omitted)</span>
 </pre></div>
 </div>
 <p>Draw histograms with <a class="reference internal" href="_autosummary/datascience.tables.Table.hist.html#datascience.tables.Table.hist" title="datascience.tables.Table.hist"><code class="xref py py-meth docutils literal"><span class="pre">hist()</span></code></a>:</p>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [48]: </span><span class="n">normal_data</span><span class="o">.</span><span class="n">hist</span><span class="p">()</span>
-<span class="go">[array([  7.12675265,   5.27409159,   3.36904901,  10.94887624,</span>
-<span class="go">         4.40382765,   2.21656311,   3.53449143,   4.35145212,</span>
-<span class="go">        10.05267045,   6.53208247,   9.19951845,   5.63919474,</span>
-<span class="go">         3.61967465,   3.14495282,   3.4378458 ,   4.40239291,</span>
-<span class="go">         6.30714049,   1.97685322,   6.7382323 ,   1.69472601,</span>
-<span class="go">         4.77249978,   3.11492579,   6.35335904,  -2.10814216,</span>
-<span class="go">         8.03395737,   5.16698774,  -0.5070737 ,   2.99207005,</span>
-<span class="go">         5.91139138,   0.23318067,   4.03699907,   4.81383153,</span>
-<span class="go">         3.16013498,   3.75881975,   5.03895367,   1.5392998 ,</span>
-<span class="go">         7.07418853,  -4.78855709,   1.14268662,   0.01992732,</span>
-<span class="go">         0.12412943,   7.56010944,  -2.6438223 ,   0.66213216,</span>
-<span class="go">         4.97064356,   4.58541051,   0.57191036,   3.99948301,</span>
-<span class="go">         6.4723997 ,   2.28313302,   8.10382194,   8.87440922,</span>
-<span class="go">         2.11767382,  -1.67443093,   1.39505804,   0.27951485,</span>
-<span class="go">         4.78211267,  -2.4164344 ,   1.39678716,   4.01590675,</span>
-<span class="go">         6.37971027,  -0.16322358,   3.69021332,   5.44999218,</span>
-<span class="go">         3.58734864,   2.99583609,   1.10565489,   9.39359057,</span>
-<span class="go">         5.83870347,   7.44127135,   8.7855223 ,   8.04033618,</span>
-<span class="go">         1.89342141,   5.63832541,   5.86597849,   1.21702731,</span>
-<span class="go">        -1.74647157,   2.48699137,   7.55868075,   6.96642534,</span>
-<span class="go">         3.43165674,   9.09891907,   4.22625375,   1.46460388,</span>
-<span class="go">         0.94442726,   1.53728608,   5.852533  ,   3.59766377,</span>
-<span class="go">         6.04338747,   3.53472366,   4.54256724,   4.70546385,</span>
-<span class="go">        -1.3889862 ,   5.09132454,   6.29105904,   3.20130789,</span>
-<span class="go">         2.82008492,   0.80802736,   5.27500108,   0.97154566]), array([ 2.04420739, -2.77739289,  3.87366301,  3.53039358,  1.85186738,</span>
-<span class="go">       -1.64128919,  1.94961706,  6.01073069,  0.53842301, -1.81474039,</span>
-<span class="go">       -0.22114262,  2.82850268,  0.26219473, -0.57186659,  1.3572711 ,</span>
-<span class="go">        1.86929138, -0.68981384,  1.81486657,  1.182201  ,  3.90735582,</span>
-<span class="go">       -1.69041834,  1.83271694, -1.5967014 ,  0.73240231,  2.50490445,</span>
-<span class="go">        0.27148113, -2.53932199,  3.15496258,  0.74496909,  1.87726926,</span>
-<span class="go">       -0.74495205, -1.58404849,  4.94657348,  1.01088653,  3.26789571,</span>
-<span class="go">        2.18503438, -0.16864426,  0.83381912, -1.19185026,  3.60137773,</span>
-<span class="go">        2.89316129,  3.41679315,  0.24800852,  2.94535681,  2.17305547,</span>
-<span class="go">       -2.12130459,  2.92736811, -2.17198856, -0.18503249,  2.00075408,</span>
-<span class="go">        1.2107758 ,  4.81364445, -1.80974982,  0.37422708,  0.65008099,</span>
-<span class="go">        4.24355816,  0.90561277, -2.40987319,  1.4080885 ,  3.06940676,</span>
-<span class="go">        3.02018552,  1.0051892 ,  1.32070231,  1.69192952, -1.88951545,</span>
-<span class="go">        1.75728336,  1.55603811,  2.0059805 , -0.07664276,  4.20008372,</span>
-<span class="go">        2.48771195,  1.75809092,  2.07563923, -0.71822479,  2.14470649,</span>
-<span class="go">        2.01758957,  1.95022061,  1.91641318,  1.29977583,  3.18743726,</span>
-<span class="go">       -1.75048287,  5.07265237,  4.01099811,  0.26186341,  0.0883968 ,</span>
-<span class="go">        2.01202864,  0.3040672 ,  3.33554135,  4.1649342 ,  3.55967538,</span>
-<span class="go">        0.76820387, -0.86110449,  2.47379868,  0.28409024, -1.29487871,</span>
-<span class="go">        1.34899262,  0.90348597,  4.17302201,  2.40151137,  1.67961798])] [(1.0, 0.784, 0.0, 0.7), (0.0, 0.102, 0.267, 0.7)] {&#39;normed&#39;: True, &#39;histtype&#39;: &#39;stepfilled&#39;}</span>
+<span class="go">[array([  6.07325791,   1.59823791,   1.17951088,  10.47068196,</span>
+<span class="go">         4.37424972,   2.49970239,   5.95372754,  -0.08569701,</span>
+<span class="go">         4.91209937,   2.96601138,   4.40768658,   4.67053844,</span>
+<span class="go">         6.12451622,   2.19526746,   5.16990645,   2.95726555,</span>
+<span class="go">         1.67025056,   3.10150178,  -0.77563674,   9.12405339,</span>
+<span class="go">         4.99558   ,   4.84899633,   6.62563603,   0.46812312,</span>
+<span class="go">         5.0606828 ,   3.64650611,   0.08604847,   8.57163974,</span>
+<span class="go">         2.77476011,   4.02469712,   1.58802216,   3.71946615,</span>
+<span class="go">         7.41940013,   9.16843026,   5.99434799,   6.5981139 ,</span>
+<span class="go">         4.83708079,   0.09850575,   3.96882519,   0.41903141,</span>
+<span class="go">         4.50484783,   7.20388204,   7.38208561,   0.19582339,</span>
+<span class="go">         8.29677966,   3.17182564,   0.47035165,   5.28052655,</span>
+<span class="go">        -1.15625754,   3.82961605,   9.20014899,  -0.12089707,</span>
+<span class="go">         3.38948233,   5.33465115,   2.40881322,   3.2038562 ,</span>
+<span class="go">         1.96456993,   5.34097396,   5.86567009,   5.56712092,</span>
+<span class="go">         4.33057694,   6.13298873,   0.55998894,   3.2299329 ,</span>
+<span class="go">         5.05243292,   9.95165758,   9.45035154,   6.99190891,</span>
+<span class="go">         3.69612938,   7.82737653,   8.31797817,  -0.88037891,</span>
+<span class="go">         0.54461015,   4.19164632,   4.3040197 ,   4.25123633,</span>
+<span class="go">         5.54979059,   8.03500308,   3.91677047,   0.08153828,</span>
+<span class="go">         4.92619595,   4.32252991,   0.79650687,   1.5170192 ,</span>
+<span class="go">         7.07104922,  -1.79728134,  -1.66063134,   4.93247596,</span>
+<span class="go">         4.48894331,   1.63949473,   3.79811759,   0.56949789,</span>
+<span class="go">         3.48773058,   8.94835186,   1.15898272,   2.65972618,</span>
+<span class="go">         4.94776788,   1.0774926 ,   5.56105343,   4.98684206]), array([ 4.38092302,  0.68802017,  1.18137788,  1.50139875,  1.02667574,</span>
+<span class="go">        5.74126906,  0.38928883,  2.28840687, -0.60460722, -0.30966179,</span>
+<span class="go">        0.34228057,  4.1648886 ,  1.96759325,  2.60853754,  5.18152656,</span>
+<span class="go">        2.42322433, -0.27737533,  2.91316542, -0.24540952,  1.64075044,</span>
+<span class="go">       -0.06907286,  3.09924574,  1.44795053, -0.28879413, -2.20739113,</span>
+<span class="go">        3.35454874,  1.49472673,  3.71703178, -0.73272606,  0.93882426,</span>
+<span class="go">        0.35969937,  1.19101686,  0.75406569, -1.37956845, -1.6914895 ,</span>
+<span class="go">       -0.60130486,  3.84376504,  0.23724222,  0.88614398, -1.68851376,</span>
+<span class="go">       -2.54803611,  0.93402998,  1.11701444,  2.87726672,  2.64991002,</span>
+<span class="go">        5.40814116, -2.62945422,  3.41957106,  1.38197145,  4.48636606,</span>
+<span class="go">        5.16027938,  2.5879842 ,  1.75035304,  2.28417872,  1.73194512,</span>
+<span class="go">        1.63547826,  1.02764247,  1.43898315,  2.73158414,  1.26221328,</span>
+<span class="go">       -0.71368947, -1.37592138,  2.37502022, -1.85128795,  0.67913749,</span>
+<span class="go">        3.46389681,  5.87336639,  2.14827684,  0.17756836,  4.81820364,</span>
+<span class="go">        3.80095907, -0.73547875,  2.27728599,  4.01280723,  1.23614163,</span>
+<span class="go">        2.53923892, -2.4911852 , -1.08440719,  0.18907459, -0.28622388,</span>
+<span class="go">        0.9929248 ,  2.8787967 ,  0.96648956,  4.55861581,  1.626346  ,</span>
+<span class="go">       -3.13999817,  4.50331851, -1.92812393, -0.21421259,  2.1086384 ,</span>
+<span class="go">        3.11156845,  1.12270639, -1.61126162, -1.96601172,  0.81368969,</span>
+<span class="go">        0.91375739,  3.04254223, -0.61201915, -2.05540993,  1.76104129])] [(1.0, 0.784, 0.0, 0.7), (0.0, 0.102, 0.267, 0.7)] {&#39;normed&#39;: True, &#39;histtype&#39;: &#39;stepfilled&#39;}</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/hist.png"><img alt="_images/hist.png" src="_images/hist.png" style="width: 4in;" /></a>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [49]: </span><span class="n">normal_data</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">bins</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-<span class="go">[array([  7.12675265,   5.27409159,   3.36904901,  10.94887624,</span>
-<span class="go">         4.40382765,   2.21656311,   3.53449143,   4.35145212,</span>
-<span class="go">        10.05267045,   6.53208247,   9.19951845,   5.63919474,</span>
-<span class="go">         3.61967465,   3.14495282,   3.4378458 ,   4.40239291,</span>
-<span class="go">         6.30714049,   1.97685322,   6.7382323 ,   1.69472601,</span>
-<span class="go">         4.77249978,   3.11492579,   6.35335904,  -2.10814216,</span>
-<span class="go">         8.03395737,   5.16698774,  -0.5070737 ,   2.99207005,</span>
-<span class="go">         5.91139138,   0.23318067,   4.03699907,   4.81383153,</span>
-<span class="go">         3.16013498,   3.75881975,   5.03895367,   1.5392998 ,</span>
-<span class="go">         7.07418853,  -4.78855709,   1.14268662,   0.01992732,</span>
-<span class="go">         0.12412943,   7.56010944,  -2.6438223 ,   0.66213216,</span>
-<span class="go">         4.97064356,   4.58541051,   0.57191036,   3.99948301,</span>
-<span class="go">         6.4723997 ,   2.28313302,   8.10382194,   8.87440922,</span>
-<span class="go">         2.11767382,  -1.67443093,   1.39505804,   0.27951485,</span>
-<span class="go">         4.78211267,  -2.4164344 ,   1.39678716,   4.01590675,</span>
-<span class="go">         6.37971027,  -0.16322358,   3.69021332,   5.44999218,</span>
-<span class="go">         3.58734864,   2.99583609,   1.10565489,   9.39359057,</span>
-<span class="go">         5.83870347,   7.44127135,   8.7855223 ,   8.04033618,</span>
-<span class="go">         1.89342141,   5.63832541,   5.86597849,   1.21702731,</span>
-<span class="go">        -1.74647157,   2.48699137,   7.55868075,   6.96642534,</span>
-<span class="go">         3.43165674,   9.09891907,   4.22625375,   1.46460388,</span>
-<span class="go">         0.94442726,   1.53728608,   5.852533  ,   3.59766377,</span>
-<span class="go">         6.04338747,   3.53472366,   4.54256724,   4.70546385,</span>
-<span class="go">        -1.3889862 ,   5.09132454,   6.29105904,   3.20130789,</span>
-<span class="go">         2.82008492,   0.80802736,   5.27500108,   0.97154566]), array([ 2.04420739, -2.77739289,  3.87366301,  3.53039358,  1.85186738,</span>
-<span class="go">       -1.64128919,  1.94961706,  6.01073069,  0.53842301, -1.81474039,</span>
-<span class="go">       -0.22114262,  2.82850268,  0.26219473, -0.57186659,  1.3572711 ,</span>
-<span class="go">        1.86929138, -0.68981384,  1.81486657,  1.182201  ,  3.90735582,</span>
-<span class="go">       -1.69041834,  1.83271694, -1.5967014 ,  0.73240231,  2.50490445,</span>
-<span class="go">        0.27148113, -2.53932199,  3.15496258,  0.74496909,  1.87726926,</span>
-<span class="go">       -0.74495205, -1.58404849,  4.94657348,  1.01088653,  3.26789571,</span>
-<span class="go">        2.18503438, -0.16864426,  0.83381912, -1.19185026,  3.60137773,</span>
-<span class="go">        2.89316129,  3.41679315,  0.24800852,  2.94535681,  2.17305547,</span>
-<span class="go">       -2.12130459,  2.92736811, -2.17198856, -0.18503249,  2.00075408,</span>
-<span class="go">        1.2107758 ,  4.81364445, -1.80974982,  0.37422708,  0.65008099,</span>
-<span class="go">        4.24355816,  0.90561277, -2.40987319,  1.4080885 ,  3.06940676,</span>
-<span class="go">        3.02018552,  1.0051892 ,  1.32070231,  1.69192952, -1.88951545,</span>
-<span class="go">        1.75728336,  1.55603811,  2.0059805 , -0.07664276,  4.20008372,</span>
-<span class="go">        2.48771195,  1.75809092,  2.07563923, -0.71822479,  2.14470649,</span>
-<span class="go">        2.01758957,  1.95022061,  1.91641318,  1.29977583,  3.18743726,</span>
-<span class="go">       -1.75048287,  5.07265237,  4.01099811,  0.26186341,  0.0883968 ,</span>
-<span class="go">        2.01202864,  0.3040672 ,  3.33554135,  4.1649342 ,  3.55967538,</span>
-<span class="go">        0.76820387, -0.86110449,  2.47379868,  0.28409024, -1.29487871,</span>
-<span class="go">        1.34899262,  0.90348597,  4.17302201,  2.40151137,  1.67961798])] [(1.0, 0.784, 0.0, 0.7), (0.0, 0.102, 0.267, 0.7)] {&#39;bins&#39;: range(-5, 10), &#39;normed&#39;: True, &#39;histtype&#39;: &#39;stepfilled&#39;}</span>
+<span class="go">[array([  6.07325791,   1.59823791,   1.17951088,  10.47068196,</span>
+<span class="go">         4.37424972,   2.49970239,   5.95372754,  -0.08569701,</span>
+<span class="go">         4.91209937,   2.96601138,   4.40768658,   4.67053844,</span>
+<span class="go">         6.12451622,   2.19526746,   5.16990645,   2.95726555,</span>
+<span class="go">         1.67025056,   3.10150178,  -0.77563674,   9.12405339,</span>
+<span class="go">         4.99558   ,   4.84899633,   6.62563603,   0.46812312,</span>
+<span class="go">         5.0606828 ,   3.64650611,   0.08604847,   8.57163974,</span>
+<span class="go">         2.77476011,   4.02469712,   1.58802216,   3.71946615,</span>
+<span class="go">         7.41940013,   9.16843026,   5.99434799,   6.5981139 ,</span>
+<span class="go">         4.83708079,   0.09850575,   3.96882519,   0.41903141,</span>
+<span class="go">         4.50484783,   7.20388204,   7.38208561,   0.19582339,</span>
+<span class="go">         8.29677966,   3.17182564,   0.47035165,   5.28052655,</span>
+<span class="go">        -1.15625754,   3.82961605,   9.20014899,  -0.12089707,</span>
+<span class="go">         3.38948233,   5.33465115,   2.40881322,   3.2038562 ,</span>
+<span class="go">         1.96456993,   5.34097396,   5.86567009,   5.56712092,</span>
+<span class="go">         4.33057694,   6.13298873,   0.55998894,   3.2299329 ,</span>
+<span class="go">         5.05243292,   9.95165758,   9.45035154,   6.99190891,</span>
+<span class="go">         3.69612938,   7.82737653,   8.31797817,  -0.88037891,</span>
+<span class="go">         0.54461015,   4.19164632,   4.3040197 ,   4.25123633,</span>
+<span class="go">         5.54979059,   8.03500308,   3.91677047,   0.08153828,</span>
+<span class="go">         4.92619595,   4.32252991,   0.79650687,   1.5170192 ,</span>
+<span class="go">         7.07104922,  -1.79728134,  -1.66063134,   4.93247596,</span>
+<span class="go">         4.48894331,   1.63949473,   3.79811759,   0.56949789,</span>
+<span class="go">         3.48773058,   8.94835186,   1.15898272,   2.65972618,</span>
+<span class="go">         4.94776788,   1.0774926 ,   5.56105343,   4.98684206]), array([ 4.38092302,  0.68802017,  1.18137788,  1.50139875,  1.02667574,</span>
+<span class="go">        5.74126906,  0.38928883,  2.28840687, -0.60460722, -0.30966179,</span>
+<span class="go">        0.34228057,  4.1648886 ,  1.96759325,  2.60853754,  5.18152656,</span>
+<span class="go">        2.42322433, -0.27737533,  2.91316542, -0.24540952,  1.64075044,</span>
+<span class="go">       -0.06907286,  3.09924574,  1.44795053, -0.28879413, -2.20739113,</span>
+<span class="go">        3.35454874,  1.49472673,  3.71703178, -0.73272606,  0.93882426,</span>
+<span class="go">        0.35969937,  1.19101686,  0.75406569, -1.37956845, -1.6914895 ,</span>
+<span class="go">       -0.60130486,  3.84376504,  0.23724222,  0.88614398, -1.68851376,</span>
+<span class="go">       -2.54803611,  0.93402998,  1.11701444,  2.87726672,  2.64991002,</span>
+<span class="go">        5.40814116, -2.62945422,  3.41957106,  1.38197145,  4.48636606,</span>
+<span class="go">        5.16027938,  2.5879842 ,  1.75035304,  2.28417872,  1.73194512,</span>
+<span class="go">        1.63547826,  1.02764247,  1.43898315,  2.73158414,  1.26221328,</span>
+<span class="go">       -0.71368947, -1.37592138,  2.37502022, -1.85128795,  0.67913749,</span>
+<span class="go">        3.46389681,  5.87336639,  2.14827684,  0.17756836,  4.81820364,</span>
+<span class="go">        3.80095907, -0.73547875,  2.27728599,  4.01280723,  1.23614163,</span>
+<span class="go">        2.53923892, -2.4911852 , -1.08440719,  0.18907459, -0.28622388,</span>
+<span class="go">        0.9929248 ,  2.8787967 ,  0.96648956,  4.55861581,  1.626346  ,</span>
+<span class="go">       -3.13999817,  4.50331851, -1.92812393, -0.21421259,  2.1086384 ,</span>
+<span class="go">        3.11156845,  1.12270639, -1.61126162, -1.96601172,  0.81368969,</span>
+<span class="go">        0.91375739,  3.04254223, -0.61201915, -2.05540993,  1.76104129])] [(1.0, 0.784, 0.0, 0.7), (0.0, 0.102, 0.267, 0.7)] {&#39;normed&#39;: True, &#39;bins&#39;: range(-5, 10), &#39;histtype&#39;: &#39;stepfilled&#39;}</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/hist_binned.png"><img alt="_images/hist_binned.png" src="_images/hist_binned.png" style="width: 4in;" /></a>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [50]: </span><span class="n">normal_data</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">bins</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">overlay</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
-<span class="go">[array([  7.12675265,   5.27409159,   3.36904901,  10.94887624,</span>
-<span class="go">         4.40382765,   2.21656311,   3.53449143,   4.35145212,</span>
-<span class="go">        10.05267045,   6.53208247,   9.19951845,   5.63919474,</span>
-<span class="go">         3.61967465,   3.14495282,   3.4378458 ,   4.40239291,</span>
-<span class="go">         6.30714049,   1.97685322,   6.7382323 ,   1.69472601,</span>
-<span class="go">         4.77249978,   3.11492579,   6.35335904,  -2.10814216,</span>
-<span class="go">         8.03395737,   5.16698774,  -0.5070737 ,   2.99207005,</span>
-<span class="go">         5.91139138,   0.23318067,   4.03699907,   4.81383153,</span>
-<span class="go">         3.16013498,   3.75881975,   5.03895367,   1.5392998 ,</span>
-<span class="go">         7.07418853,  -4.78855709,   1.14268662,   0.01992732,</span>
-<span class="go">         0.12412943,   7.56010944,  -2.6438223 ,   0.66213216,</span>
-<span class="go">         4.97064356,   4.58541051,   0.57191036,   3.99948301,</span>
-<span class="go">         6.4723997 ,   2.28313302,   8.10382194,   8.87440922,</span>
-<span class="go">         2.11767382,  -1.67443093,   1.39505804,   0.27951485,</span>
-<span class="go">         4.78211267,  -2.4164344 ,   1.39678716,   4.01590675,</span>
-<span class="go">         6.37971027,  -0.16322358,   3.69021332,   5.44999218,</span>
-<span class="go">         3.58734864,   2.99583609,   1.10565489,   9.39359057,</span>
-<span class="go">         5.83870347,   7.44127135,   8.7855223 ,   8.04033618,</span>
-<span class="go">         1.89342141,   5.63832541,   5.86597849,   1.21702731,</span>
-<span class="go">        -1.74647157,   2.48699137,   7.55868075,   6.96642534,</span>
-<span class="go">         3.43165674,   9.09891907,   4.22625375,   1.46460388,</span>
-<span class="go">         0.94442726,   1.53728608,   5.852533  ,   3.59766377,</span>
-<span class="go">         6.04338747,   3.53472366,   4.54256724,   4.70546385,</span>
-<span class="go">        -1.3889862 ,   5.09132454,   6.29105904,   3.20130789,</span>
-<span class="go">         2.82008492,   0.80802736,   5.27500108,   0.97154566]), array([ 2.04420739, -2.77739289,  3.87366301,  3.53039358,  1.85186738,</span>
-<span class="go">       -1.64128919,  1.94961706,  6.01073069,  0.53842301, -1.81474039,</span>
-<span class="go">       -0.22114262,  2.82850268,  0.26219473, -0.57186659,  1.3572711 ,</span>
-<span class="go">        1.86929138, -0.68981384,  1.81486657,  1.182201  ,  3.90735582,</span>
-<span class="go">       -1.69041834,  1.83271694, -1.5967014 ,  0.73240231,  2.50490445,</span>
-<span class="go">        0.27148113, -2.53932199,  3.15496258,  0.74496909,  1.87726926,</span>
-<span class="go">       -0.74495205, -1.58404849,  4.94657348,  1.01088653,  3.26789571,</span>
-<span class="go">        2.18503438, -0.16864426,  0.83381912, -1.19185026,  3.60137773,</span>
-<span class="go">        2.89316129,  3.41679315,  0.24800852,  2.94535681,  2.17305547,</span>
-<span class="go">       -2.12130459,  2.92736811, -2.17198856, -0.18503249,  2.00075408,</span>
-<span class="go">        1.2107758 ,  4.81364445, -1.80974982,  0.37422708,  0.65008099,</span>
-<span class="go">        4.24355816,  0.90561277, -2.40987319,  1.4080885 ,  3.06940676,</span>
-<span class="go">        3.02018552,  1.0051892 ,  1.32070231,  1.69192952, -1.88951545,</span>
-<span class="go">        1.75728336,  1.55603811,  2.0059805 , -0.07664276,  4.20008372,</span>
-<span class="go">        2.48771195,  1.75809092,  2.07563923, -0.71822479,  2.14470649,</span>
-<span class="go">        2.01758957,  1.95022061,  1.91641318,  1.29977583,  3.18743726,</span>
-<span class="go">       -1.75048287,  5.07265237,  4.01099811,  0.26186341,  0.0883968 ,</span>
-<span class="go">        2.01202864,  0.3040672 ,  3.33554135,  4.1649342 ,  3.55967538,</span>
-<span class="go">        0.76820387, -0.86110449,  2.47379868,  0.28409024, -1.29487871,</span>
-<span class="go">        1.34899262,  0.90348597,  4.17302201,  2.40151137,  1.67961798])] [(1.0, 0.784, 0.0, 0.7), (0.0, 0.102, 0.267, 0.7)] {&#39;bins&#39;: range(-5, 10), &#39;normed&#39;: True, &#39;histtype&#39;: &#39;stepfilled&#39;}</span>
+<span class="go">[array([  6.07325791,   1.59823791,   1.17951088,  10.47068196,</span>
+<span class="go">         4.37424972,   2.49970239,   5.95372754,  -0.08569701,</span>
+<span class="go">         4.91209937,   2.96601138,   4.40768658,   4.67053844,</span>
+<span class="go">         6.12451622,   2.19526746,   5.16990645,   2.95726555,</span>
+<span class="go">         1.67025056,   3.10150178,  -0.77563674,   9.12405339,</span>
+<span class="go">         4.99558   ,   4.84899633,   6.62563603,   0.46812312,</span>
+<span class="go">         5.0606828 ,   3.64650611,   0.08604847,   8.57163974,</span>
+<span class="go">         2.77476011,   4.02469712,   1.58802216,   3.71946615,</span>
+<span class="go">         7.41940013,   9.16843026,   5.99434799,   6.5981139 ,</span>
+<span class="go">         4.83708079,   0.09850575,   3.96882519,   0.41903141,</span>
+<span class="go">         4.50484783,   7.20388204,   7.38208561,   0.19582339,</span>
+<span class="go">         8.29677966,   3.17182564,   0.47035165,   5.28052655,</span>
+<span class="go">        -1.15625754,   3.82961605,   9.20014899,  -0.12089707,</span>
+<span class="go">         3.38948233,   5.33465115,   2.40881322,   3.2038562 ,</span>
+<span class="go">         1.96456993,   5.34097396,   5.86567009,   5.56712092,</span>
+<span class="go">         4.33057694,   6.13298873,   0.55998894,   3.2299329 ,</span>
+<span class="go">         5.05243292,   9.95165758,   9.45035154,   6.99190891,</span>
+<span class="go">         3.69612938,   7.82737653,   8.31797817,  -0.88037891,</span>
+<span class="go">         0.54461015,   4.19164632,   4.3040197 ,   4.25123633,</span>
+<span class="go">         5.54979059,   8.03500308,   3.91677047,   0.08153828,</span>
+<span class="go">         4.92619595,   4.32252991,   0.79650687,   1.5170192 ,</span>
+<span class="go">         7.07104922,  -1.79728134,  -1.66063134,   4.93247596,</span>
+<span class="go">         4.48894331,   1.63949473,   3.79811759,   0.56949789,</span>
+<span class="go">         3.48773058,   8.94835186,   1.15898272,   2.65972618,</span>
+<span class="go">         4.94776788,   1.0774926 ,   5.56105343,   4.98684206]), array([ 4.38092302,  0.68802017,  1.18137788,  1.50139875,  1.02667574,</span>
+<span class="go">        5.74126906,  0.38928883,  2.28840687, -0.60460722, -0.30966179,</span>
+<span class="go">        0.34228057,  4.1648886 ,  1.96759325,  2.60853754,  5.18152656,</span>
+<span class="go">        2.42322433, -0.27737533,  2.91316542, -0.24540952,  1.64075044,</span>
+<span class="go">       -0.06907286,  3.09924574,  1.44795053, -0.28879413, -2.20739113,</span>
+<span class="go">        3.35454874,  1.49472673,  3.71703178, -0.73272606,  0.93882426,</span>
+<span class="go">        0.35969937,  1.19101686,  0.75406569, -1.37956845, -1.6914895 ,</span>
+<span class="go">       -0.60130486,  3.84376504,  0.23724222,  0.88614398, -1.68851376,</span>
+<span class="go">       -2.54803611,  0.93402998,  1.11701444,  2.87726672,  2.64991002,</span>
+<span class="go">        5.40814116, -2.62945422,  3.41957106,  1.38197145,  4.48636606,</span>
+<span class="go">        5.16027938,  2.5879842 ,  1.75035304,  2.28417872,  1.73194512,</span>
+<span class="go">        1.63547826,  1.02764247,  1.43898315,  2.73158414,  1.26221328,</span>
+<span class="go">       -0.71368947, -1.37592138,  2.37502022, -1.85128795,  0.67913749,</span>
+<span class="go">        3.46389681,  5.87336639,  2.14827684,  0.17756836,  4.81820364,</span>
+<span class="go">        3.80095907, -0.73547875,  2.27728599,  4.01280723,  1.23614163,</span>
+<span class="go">        2.53923892, -2.4911852 , -1.08440719,  0.18907459, -0.28622388,</span>
+<span class="go">        0.9929248 ,  2.8787967 ,  0.96648956,  4.55861581,  1.626346  ,</span>
+<span class="go">       -3.13999817,  4.50331851, -1.92812393, -0.21421259,  2.1086384 ,</span>
+<span class="go">        3.11156845,  1.12270639, -1.61126162, -1.96601172,  0.81368969,</span>
+<span class="go">        0.91375739,  3.04254223, -0.61201915, -2.05540993,  1.76104129])] [(1.0, 0.784, 0.0, 0.7), (0.0, 0.102, 0.267, 0.7)] {&#39;normed&#39;: True, &#39;bins&#39;: range(-5, 10), &#39;histtype&#39;: &#39;stepfilled&#39;}</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/hist_overlay.png"><img alt="_images/hist_overlay.png" src="_images/hist_overlay.png" style="width: 4in;" /></a>
@@ -633,11 +633,11 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 <p>Use <a class="reference internal" href="_autosummary/datascience.tables.Table.barh.html#datascience.tables.Table.barh" title="datascience.tables.Table.barh"><code class="xref py py-meth docutils literal"><span class="pre">barh()</span></code></a> to display categorical data.</p>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [54]: </span><span class="n">t</span>
 <span class="gh">Out[54]: </span><span class="go"></span>
-<span class="go">count | points | letter</span>
-<span class="go">9     | 1      | a</span>
-<span class="go">3     | 2      | b</span>
-<span class="go">3     | 2      | c</span>
-<span class="go">1     | 10     | z</span>
+<span class="go">letter | points | count</span>
+<span class="go">a      | 1      | 9</span>
+<span class="go">b      | 2      | 3</span>
+<span class="go">c      | 2      | 3</span>
+<span class="go">z      | 10     | 1</span>
 
 <span class="gp">In [55]: </span><span class="n">t</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="s1">&#39;letter&#39;</span><span class="p">)</span>
 </pre></div>
@@ -650,17 +650,17 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 converting to a pandas dataframe with <a class="reference internal" href="_autosummary/datascience.tables.Table.to_df.html#datascience.tables.Table.to_df" title="datascience.tables.Table.to_df"><code class="xref py py-meth docutils literal"><span class="pre">to_df()</span></code></a>:</p>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [56]: </span><span class="n">normal_data</span>
 <span class="gh">Out[56]: </span><span class="go"></span>
-<span class="go">data1    | data2</span>
-<span class="go">2.04421  | 7.12675</span>
-<span class="go">-2.77739 | 5.27409</span>
-<span class="go">3.87366  | 3.36905</span>
-<span class="go">3.53039  | 10.9489</span>
-<span class="go">1.85187  | 4.40383</span>
-<span class="go">-1.64129 | 2.21656</span>
-<span class="go">1.94962  | 3.53449</span>
-<span class="go">6.01073  | 4.35145</span>
-<span class="go">0.538423 | 10.0527</span>
-<span class="go">-1.81474 | 6.53208</span>
+<span class="go">data1     | data2</span>
+<span class="go">4.38092   | 6.07326</span>
+<span class="go">0.68802   | 1.59824</span>
+<span class="go">1.18138   | 1.17951</span>
+<span class="go">1.5014    | 10.4707</span>
+<span class="go">1.02668   | 4.37425</span>
+<span class="go">5.74127   | 2.4997</span>
+<span class="go">0.389289  | 5.95373</span>
+<span class="go">2.28841   | -0.085697</span>
+<span class="go">-0.604607 | 4.9121</span>
+<span class="go">-0.309662 | 2.96601</span>
 <span class="go">... (90 rows omitted)</span>
 
 <span class="go"># index = False prevents row numbers from appearing in the resulting CSV</span>
@@ -953,7 +953,7 @@ non-smokers.</p>
         <li class="right" >
           <a href="index.html" title="Welcome to datascience’s documentation!"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.5.19 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.5.20 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
