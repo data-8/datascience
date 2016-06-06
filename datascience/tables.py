@@ -987,8 +987,8 @@ class Table(collections.abc.MutableMapping):
         """
         pivot_columns = _as_labels(pivot_columns)
         selected = self.select(pivot_columns + [value_column])
-        grouped=selected.groups(pivot_columns, collect=lambda x:x ) 
-        
+        grouped = selected.groups(pivot_columns, collect=lambda x:x)
+
         # refine bins by taking a histogram over all the data
         if bins is not None:
             vargs['bins'] = bins
@@ -1962,7 +1962,7 @@ class Table(collections.abc.MutableMapping):
         if counts is not None:
             counted_values = self._get_column(counts)
             counted_label = 'counts'
-            if isinstance(counts, collections.Hashable) and counts in self.labels:
+            if isinstance(counts, str) and counts in self.labels:
                 columns.pop(counts)
                 counted_label = counts
 
