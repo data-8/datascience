@@ -457,29 +457,161 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 <span class="gp">In [47]: </span><span class="n">normal_data</span>
 <span class="gh">Out[47]: </span><span class="go"></span>
 <span class="go">data1    | data2</span>
-<span class="go">0.210735 | 3.93048</span>
-<span class="go">0.124118 | 2.86161</span>
-<span class="go">1.98434  | 3.91554</span>
-<span class="go">-2.19334 | 3.93274</span>
-<span class="go">2.10721  | 5.31826</span>
-<span class="go">-1.01086 | 6.06091</span>
-<span class="go">0.913476 | 6.06478</span>
-<span class="go">5.03604  | 1.42804</span>
-<span class="go">2.54532  | 2.95825</span>
-<span class="go">0.159368 | 6.83645</span>
+<span class="go">2.04421  | 7.12675</span>
+<span class="go">-2.77739 | 5.27409</span>
+<span class="go">3.87366  | 3.36905</span>
+<span class="go">3.53039  | 10.9489</span>
+<span class="go">1.85187  | 4.40383</span>
+<span class="go">-1.64129 | 2.21656</span>
+<span class="go">1.94962  | 3.53449</span>
+<span class="go">6.01073  | 4.35145</span>
+<span class="go">0.538423 | 10.0527</span>
+<span class="go">-1.81474 | 6.53208</span>
 <span class="go">... (90 rows omitted)</span>
 </pre></div>
 </div>
 <p>Draw histograms with <a class="reference internal" href="_autosummary/datascience.tables.Table.hist.html#datascience.tables.Table.hist" title="datascience.tables.Table.hist"><code class="xref py py-meth docutils literal"><span class="pre">hist()</span></code></a>:</p>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [48]: </span><span class="n">normal_data</span><span class="o">.</span><span class="n">hist</span><span class="p">()</span>
+<span class="go">[array([  7.12675265,   5.27409159,   3.36904901,  10.94887624,</span>
+<span class="go">         4.40382765,   2.21656311,   3.53449143,   4.35145212,</span>
+<span class="go">        10.05267045,   6.53208247,   9.19951845,   5.63919474,</span>
+<span class="go">         3.61967465,   3.14495282,   3.4378458 ,   4.40239291,</span>
+<span class="go">         6.30714049,   1.97685322,   6.7382323 ,   1.69472601,</span>
+<span class="go">         4.77249978,   3.11492579,   6.35335904,  -2.10814216,</span>
+<span class="go">         8.03395737,   5.16698774,  -0.5070737 ,   2.99207005,</span>
+<span class="go">         5.91139138,   0.23318067,   4.03699907,   4.81383153,</span>
+<span class="go">         3.16013498,   3.75881975,   5.03895367,   1.5392998 ,</span>
+<span class="go">         7.07418853,  -4.78855709,   1.14268662,   0.01992732,</span>
+<span class="go">         0.12412943,   7.56010944,  -2.6438223 ,   0.66213216,</span>
+<span class="go">         4.97064356,   4.58541051,   0.57191036,   3.99948301,</span>
+<span class="go">         6.4723997 ,   2.28313302,   8.10382194,   8.87440922,</span>
+<span class="go">         2.11767382,  -1.67443093,   1.39505804,   0.27951485,</span>
+<span class="go">         4.78211267,  -2.4164344 ,   1.39678716,   4.01590675,</span>
+<span class="go">         6.37971027,  -0.16322358,   3.69021332,   5.44999218,</span>
+<span class="go">         3.58734864,   2.99583609,   1.10565489,   9.39359057,</span>
+<span class="go">         5.83870347,   7.44127135,   8.7855223 ,   8.04033618,</span>
+<span class="go">         1.89342141,   5.63832541,   5.86597849,   1.21702731,</span>
+<span class="go">        -1.74647157,   2.48699137,   7.55868075,   6.96642534,</span>
+<span class="go">         3.43165674,   9.09891907,   4.22625375,   1.46460388,</span>
+<span class="go">         0.94442726,   1.53728608,   5.852533  ,   3.59766377,</span>
+<span class="go">         6.04338747,   3.53472366,   4.54256724,   4.70546385,</span>
+<span class="go">        -1.3889862 ,   5.09132454,   6.29105904,   3.20130789,</span>
+<span class="go">         2.82008492,   0.80802736,   5.27500108,   0.97154566]), array([ 2.04420739, -2.77739289,  3.87366301,  3.53039358,  1.85186738,</span>
+<span class="go">       -1.64128919,  1.94961706,  6.01073069,  0.53842301, -1.81474039,</span>
+<span class="go">       -0.22114262,  2.82850268,  0.26219473, -0.57186659,  1.3572711 ,</span>
+<span class="go">        1.86929138, -0.68981384,  1.81486657,  1.182201  ,  3.90735582,</span>
+<span class="go">       -1.69041834,  1.83271694, -1.5967014 ,  0.73240231,  2.50490445,</span>
+<span class="go">        0.27148113, -2.53932199,  3.15496258,  0.74496909,  1.87726926,</span>
+<span class="go">       -0.74495205, -1.58404849,  4.94657348,  1.01088653,  3.26789571,</span>
+<span class="go">        2.18503438, -0.16864426,  0.83381912, -1.19185026,  3.60137773,</span>
+<span class="go">        2.89316129,  3.41679315,  0.24800852,  2.94535681,  2.17305547,</span>
+<span class="go">       -2.12130459,  2.92736811, -2.17198856, -0.18503249,  2.00075408,</span>
+<span class="go">        1.2107758 ,  4.81364445, -1.80974982,  0.37422708,  0.65008099,</span>
+<span class="go">        4.24355816,  0.90561277, -2.40987319,  1.4080885 ,  3.06940676,</span>
+<span class="go">        3.02018552,  1.0051892 ,  1.32070231,  1.69192952, -1.88951545,</span>
+<span class="go">        1.75728336,  1.55603811,  2.0059805 , -0.07664276,  4.20008372,</span>
+<span class="go">        2.48771195,  1.75809092,  2.07563923, -0.71822479,  2.14470649,</span>
+<span class="go">        2.01758957,  1.95022061,  1.91641318,  1.29977583,  3.18743726,</span>
+<span class="go">       -1.75048287,  5.07265237,  4.01099811,  0.26186341,  0.0883968 ,</span>
+<span class="go">        2.01202864,  0.3040672 ,  3.33554135,  4.1649342 ,  3.55967538,</span>
+<span class="go">        0.76820387, -0.86110449,  2.47379868,  0.28409024, -1.29487871,</span>
+<span class="go">        1.34899262,  0.90348597,  4.17302201,  2.40151137,  1.67961798])] [(1.0, 0.784, 0.0, 0.7), (0.0, 0.102, 0.267, 0.7)] {&#39;normed&#39;: True, &#39;histtype&#39;: &#39;stepfilled&#39;}</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/hist.png"><img alt="_images/hist.png" src="_images/hist.png" style="width: 4in;" /></a>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [49]: </span><span class="n">normal_data</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">bins</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="go">[array([  7.12675265,   5.27409159,   3.36904901,  10.94887624,</span>
+<span class="go">         4.40382765,   2.21656311,   3.53449143,   4.35145212,</span>
+<span class="go">        10.05267045,   6.53208247,   9.19951845,   5.63919474,</span>
+<span class="go">         3.61967465,   3.14495282,   3.4378458 ,   4.40239291,</span>
+<span class="go">         6.30714049,   1.97685322,   6.7382323 ,   1.69472601,</span>
+<span class="go">         4.77249978,   3.11492579,   6.35335904,  -2.10814216,</span>
+<span class="go">         8.03395737,   5.16698774,  -0.5070737 ,   2.99207005,</span>
+<span class="go">         5.91139138,   0.23318067,   4.03699907,   4.81383153,</span>
+<span class="go">         3.16013498,   3.75881975,   5.03895367,   1.5392998 ,</span>
+<span class="go">         7.07418853,  -4.78855709,   1.14268662,   0.01992732,</span>
+<span class="go">         0.12412943,   7.56010944,  -2.6438223 ,   0.66213216,</span>
+<span class="go">         4.97064356,   4.58541051,   0.57191036,   3.99948301,</span>
+<span class="go">         6.4723997 ,   2.28313302,   8.10382194,   8.87440922,</span>
+<span class="go">         2.11767382,  -1.67443093,   1.39505804,   0.27951485,</span>
+<span class="go">         4.78211267,  -2.4164344 ,   1.39678716,   4.01590675,</span>
+<span class="go">         6.37971027,  -0.16322358,   3.69021332,   5.44999218,</span>
+<span class="go">         3.58734864,   2.99583609,   1.10565489,   9.39359057,</span>
+<span class="go">         5.83870347,   7.44127135,   8.7855223 ,   8.04033618,</span>
+<span class="go">         1.89342141,   5.63832541,   5.86597849,   1.21702731,</span>
+<span class="go">        -1.74647157,   2.48699137,   7.55868075,   6.96642534,</span>
+<span class="go">         3.43165674,   9.09891907,   4.22625375,   1.46460388,</span>
+<span class="go">         0.94442726,   1.53728608,   5.852533  ,   3.59766377,</span>
+<span class="go">         6.04338747,   3.53472366,   4.54256724,   4.70546385,</span>
+<span class="go">        -1.3889862 ,   5.09132454,   6.29105904,   3.20130789,</span>
+<span class="go">         2.82008492,   0.80802736,   5.27500108,   0.97154566]), array([ 2.04420739, -2.77739289,  3.87366301,  3.53039358,  1.85186738,</span>
+<span class="go">       -1.64128919,  1.94961706,  6.01073069,  0.53842301, -1.81474039,</span>
+<span class="go">       -0.22114262,  2.82850268,  0.26219473, -0.57186659,  1.3572711 ,</span>
+<span class="go">        1.86929138, -0.68981384,  1.81486657,  1.182201  ,  3.90735582,</span>
+<span class="go">       -1.69041834,  1.83271694, -1.5967014 ,  0.73240231,  2.50490445,</span>
+<span class="go">        0.27148113, -2.53932199,  3.15496258,  0.74496909,  1.87726926,</span>
+<span class="go">       -0.74495205, -1.58404849,  4.94657348,  1.01088653,  3.26789571,</span>
+<span class="go">        2.18503438, -0.16864426,  0.83381912, -1.19185026,  3.60137773,</span>
+<span class="go">        2.89316129,  3.41679315,  0.24800852,  2.94535681,  2.17305547,</span>
+<span class="go">       -2.12130459,  2.92736811, -2.17198856, -0.18503249,  2.00075408,</span>
+<span class="go">        1.2107758 ,  4.81364445, -1.80974982,  0.37422708,  0.65008099,</span>
+<span class="go">        4.24355816,  0.90561277, -2.40987319,  1.4080885 ,  3.06940676,</span>
+<span class="go">        3.02018552,  1.0051892 ,  1.32070231,  1.69192952, -1.88951545,</span>
+<span class="go">        1.75728336,  1.55603811,  2.0059805 , -0.07664276,  4.20008372,</span>
+<span class="go">        2.48771195,  1.75809092,  2.07563923, -0.71822479,  2.14470649,</span>
+<span class="go">        2.01758957,  1.95022061,  1.91641318,  1.29977583,  3.18743726,</span>
+<span class="go">       -1.75048287,  5.07265237,  4.01099811,  0.26186341,  0.0883968 ,</span>
+<span class="go">        2.01202864,  0.3040672 ,  3.33554135,  4.1649342 ,  3.55967538,</span>
+<span class="go">        0.76820387, -0.86110449,  2.47379868,  0.28409024, -1.29487871,</span>
+<span class="go">        1.34899262,  0.90348597,  4.17302201,  2.40151137,  1.67961798])] [(1.0, 0.784, 0.0, 0.7), (0.0, 0.102, 0.267, 0.7)] {&#39;bins&#39;: range(-5, 10), &#39;normed&#39;: True, &#39;histtype&#39;: &#39;stepfilled&#39;}</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/hist_binned.png"><img alt="_images/hist_binned.png" src="_images/hist_binned.png" style="width: 4in;" /></a>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [50]: </span><span class="n">normal_data</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">bins</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">overlay</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+<span class="go">[array([  7.12675265,   5.27409159,   3.36904901,  10.94887624,</span>
+<span class="go">         4.40382765,   2.21656311,   3.53449143,   4.35145212,</span>
+<span class="go">        10.05267045,   6.53208247,   9.19951845,   5.63919474,</span>
+<span class="go">         3.61967465,   3.14495282,   3.4378458 ,   4.40239291,</span>
+<span class="go">         6.30714049,   1.97685322,   6.7382323 ,   1.69472601,</span>
+<span class="go">         4.77249978,   3.11492579,   6.35335904,  -2.10814216,</span>
+<span class="go">         8.03395737,   5.16698774,  -0.5070737 ,   2.99207005,</span>
+<span class="go">         5.91139138,   0.23318067,   4.03699907,   4.81383153,</span>
+<span class="go">         3.16013498,   3.75881975,   5.03895367,   1.5392998 ,</span>
+<span class="go">         7.07418853,  -4.78855709,   1.14268662,   0.01992732,</span>
+<span class="go">         0.12412943,   7.56010944,  -2.6438223 ,   0.66213216,</span>
+<span class="go">         4.97064356,   4.58541051,   0.57191036,   3.99948301,</span>
+<span class="go">         6.4723997 ,   2.28313302,   8.10382194,   8.87440922,</span>
+<span class="go">         2.11767382,  -1.67443093,   1.39505804,   0.27951485,</span>
+<span class="go">         4.78211267,  -2.4164344 ,   1.39678716,   4.01590675,</span>
+<span class="go">         6.37971027,  -0.16322358,   3.69021332,   5.44999218,</span>
+<span class="go">         3.58734864,   2.99583609,   1.10565489,   9.39359057,</span>
+<span class="go">         5.83870347,   7.44127135,   8.7855223 ,   8.04033618,</span>
+<span class="go">         1.89342141,   5.63832541,   5.86597849,   1.21702731,</span>
+<span class="go">        -1.74647157,   2.48699137,   7.55868075,   6.96642534,</span>
+<span class="go">         3.43165674,   9.09891907,   4.22625375,   1.46460388,</span>
+<span class="go">         0.94442726,   1.53728608,   5.852533  ,   3.59766377,</span>
+<span class="go">         6.04338747,   3.53472366,   4.54256724,   4.70546385,</span>
+<span class="go">        -1.3889862 ,   5.09132454,   6.29105904,   3.20130789,</span>
+<span class="go">         2.82008492,   0.80802736,   5.27500108,   0.97154566]), array([ 2.04420739, -2.77739289,  3.87366301,  3.53039358,  1.85186738,</span>
+<span class="go">       -1.64128919,  1.94961706,  6.01073069,  0.53842301, -1.81474039,</span>
+<span class="go">       -0.22114262,  2.82850268,  0.26219473, -0.57186659,  1.3572711 ,</span>
+<span class="go">        1.86929138, -0.68981384,  1.81486657,  1.182201  ,  3.90735582,</span>
+<span class="go">       -1.69041834,  1.83271694, -1.5967014 ,  0.73240231,  2.50490445,</span>
+<span class="go">        0.27148113, -2.53932199,  3.15496258,  0.74496909,  1.87726926,</span>
+<span class="go">       -0.74495205, -1.58404849,  4.94657348,  1.01088653,  3.26789571,</span>
+<span class="go">        2.18503438, -0.16864426,  0.83381912, -1.19185026,  3.60137773,</span>
+<span class="go">        2.89316129,  3.41679315,  0.24800852,  2.94535681,  2.17305547,</span>
+<span class="go">       -2.12130459,  2.92736811, -2.17198856, -0.18503249,  2.00075408,</span>
+<span class="go">        1.2107758 ,  4.81364445, -1.80974982,  0.37422708,  0.65008099,</span>
+<span class="go">        4.24355816,  0.90561277, -2.40987319,  1.4080885 ,  3.06940676,</span>
+<span class="go">        3.02018552,  1.0051892 ,  1.32070231,  1.69192952, -1.88951545,</span>
+<span class="go">        1.75728336,  1.55603811,  2.0059805 , -0.07664276,  4.20008372,</span>
+<span class="go">        2.48771195,  1.75809092,  2.07563923, -0.71822479,  2.14470649,</span>
+<span class="go">        2.01758957,  1.95022061,  1.91641318,  1.29977583,  3.18743726,</span>
+<span class="go">       -1.75048287,  5.07265237,  4.01099811,  0.26186341,  0.0883968 ,</span>
+<span class="go">        2.01202864,  0.3040672 ,  3.33554135,  4.1649342 ,  3.55967538,</span>
+<span class="go">        0.76820387, -0.86110449,  2.47379868,  0.28409024, -1.29487871,</span>
+<span class="go">        1.34899262,  0.90348597,  4.17302201,  2.40151137,  1.67961798])] [(1.0, 0.784, 0.0, 0.7), (0.0, 0.102, 0.267, 0.7)] {&#39;bins&#39;: range(-5, 10), &#39;normed&#39;: True, &#39;histtype&#39;: &#39;stepfilled&#39;}</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/hist_overlay.png"><img alt="_images/hist_overlay.png" src="_images/hist_overlay.png" style="width: 4in;" /></a>
@@ -519,16 +651,16 @@ converting to a pandas dataframe with <a class="reference internal" href="_autos
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [56]: </span><span class="n">normal_data</span>
 <span class="gh">Out[56]: </span><span class="go"></span>
 <span class="go">data1    | data2</span>
-<span class="go">0.210735 | 3.93048</span>
-<span class="go">0.124118 | 2.86161</span>
-<span class="go">1.98434  | 3.91554</span>
-<span class="go">-2.19334 | 3.93274</span>
-<span class="go">2.10721  | 5.31826</span>
-<span class="go">-1.01086 | 6.06091</span>
-<span class="go">0.913476 | 6.06478</span>
-<span class="go">5.03604  | 1.42804</span>
-<span class="go">2.54532  | 2.95825</span>
-<span class="go">0.159368 | 6.83645</span>
+<span class="go">2.04421  | 7.12675</span>
+<span class="go">-2.77739 | 5.27409</span>
+<span class="go">3.87366  | 3.36905</span>
+<span class="go">3.53039  | 10.9489</span>
+<span class="go">1.85187  | 4.40383</span>
+<span class="go">-1.64129 | 2.21656</span>
+<span class="go">1.94962  | 3.53449</span>
+<span class="go">6.01073  | 4.35145</span>
+<span class="go">0.538423 | 10.0527</span>
+<span class="go">-1.81474 | 6.53208</span>
 <span class="go">... (90 rows omitted)</span>
 
 <span class="go"># index = False prevents row numbers from appearing in the resulting CSV</span>
