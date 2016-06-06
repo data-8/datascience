@@ -1,6 +1,8 @@
 """Predicate functions."""
 
 import functools
+import numbers
+import numpy as np
 
 __all__ = ['are']
 
@@ -81,7 +83,7 @@ class are:
     @staticmethod
     def equal_to(y):
         """Equal to y."""
-        return _combinable(lambda x: x == y)
+        return _combinable(lambda x: _equal_or_float_equal(x, y))
 
     @staticmethod
     def above(y):
@@ -96,12 +98,12 @@ class are:
     @staticmethod
     def above_or_equal_to(y):
         """Greater than or equal to y."""
-        return _combinable(lambda x: x >= y)
+        return _combinable(lambda x: x >= y or _equal_or_float_equal(x, y))
 
     @staticmethod
     def below_or_equal_to(y):
         """Less than or equal to y."""
-        return _combinable(lambda x: x <= y)
+        return _combinable(lambda x: x <= y or _equal_or_float_equal(x, y))
 
     @staticmethod
     def strictly_between(y, z):
@@ -111,12 +113,12 @@ class are:
     @staticmethod
     def between(y, z):
         """Greater than or equal to y and less than z."""
-        return _combinable(lambda x: y <= x < z)
+        return _combinable(lambda x: (y <= x < z) or _equal_or_float_equal(x, y))
 
     @staticmethod
     def between_or_equal_to(y, z):
         """Greater than or equal to y and less than or equal to z."""
-        return _combinable(lambda x: y <= x <= z)
+        return _combinable(lambda x: (y <= x <= z) or _equal_or_float_equal(x, y) or _equal_or_float_equal(x, z))
 
 ###############
 # Combination #
@@ -149,6 +151,12 @@ class _combinable:
 
 def _not(f):
     return lambda *args: -f(*args)
+
+def _equal_or_float_equal(x, y):
+    if isinstance(x, numbers.Real):
+        return x == y or np.nextafter(x, 1) == y or np.nextafter(x, 0) == y
+    else:
+        return x == y
 
 are.not_equal_to = _not(are.equal_to)
 are.not_above = are.below_or_equal_to
