@@ -1,7 +1,7 @@
 """Utility functions"""
 
-__all__ = ['percentile', 'plot_cdf_area', 'plot_normal_cdf', 'table_apply',
-           'minimize']
+__all__ = ['make_array', 'percentile', 'plot_cdf_area', 'plot_normal_cdf',
+           'table_apply', 'minimize']
 
 import numpy as np
 import pandas as pd
@@ -12,6 +12,25 @@ from scipy import stats
 from scipy import optimize
 import functools
 import math
+
+
+def make_array(*elements):
+    """Returns an array containing all the arguments passed to this function.
+    A simple way to make an array with a few elements.
+
+    As with any array, all arguments should have the same type.
+
+    >>> make_array(0)
+    array([0])
+    >>> make_array(2, 3, 4)
+    array([2, 3, 4])
+    >>> make_array("foo", "bar")
+    array(['foo', 'bar'], 
+          dtype='<U3')
+    >>> make_array()
+    array([], dtype=float64)
+    """
+    return np.array(elements)
 
 
 def percentile(p, arr=None):

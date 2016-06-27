@@ -7,6 +7,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 None yet.
 
+## v0.6.0
+### Changed
+- Added `make_array` to make arrays without lists. (#224)
+- `Table.select`, `drop`, and `with_columns` now accept variable arguments in addition to lists. (#224)
+
 ## v0.5.3
 ### Changed
 - Allow charting methods to select particular columns and default to
