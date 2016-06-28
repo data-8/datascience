@@ -527,13 +527,15 @@ class Table(collections.abc.MutableMapping):
             self._add_column_and_format(table, label, column)
         return table
 
-    def select(self, column_label_or_labels):
+    def select(self, *column_label_or_labels):
         """Return a Table with selected column or columns by label or index.
 
         Args:
-            ``column_label_or_labels`` (string or list of strings): The header
-            names or indices of the columns to be selected. ``column_label_or_labels`` must
-            be an existing header name, or a valid column index.
+            ``column_label_or_labels`` (string, list of strings, or several
+            separate argument strings): The header names or indices of the
+            columns to be selected. ``column_label_or_labels`` must
+            be an existing header name, or a valid column index, or a list
+            thereof.
 
         Returns:
             An instance of ``Table`` containing only selected columns.
@@ -557,6 +559,11 @@ class Table(collections.abc.MutableMapping):
         6
         5
         5
+        >>> t.select('burgers', 'calories')
+        burgers       | calories
+        cheeseburger  | 743
+        hamburger     | 651
+        veggie burger | 582
         >>> t.select(1)
         prices
         6
@@ -567,8 +574,13 @@ class Table(collections.abc.MutableMapping):
         743      | cheeseburger
         651      | hamburger
         582      | veggie burger
+        >>> t.select(2, 0)
+        calories | burgers
+        743      | cheeseburger
+        651      | hamburger
+        582      | veggie burger
         """
-        labels = self._as_labels(column_label_or_labels)
+        labels = self._varargs_as_labels(column_label_or_labels)
         table = Table()
         for label in labels:
             self._add_column_and_format(table, label, np.copy(self[label]))
@@ -583,7 +595,7 @@ class Table(collections.abc.MutableMapping):
     def exclude(self):
         raise NotImplementedError()
 
-    def drop(self, column_label_or_labels):
+    def drop(self, *column_label_or_labels):
         """Return a Table with only columns other than selected label or labels.
 
         Args:
@@ -613,7 +625,17 @@ class Table(collections.abc.MutableMapping):
         6
         5
         5
+        >>> t.drop('burgers', 'calories')
+        prices
+        6
+        5
+        5
         >>> t.drop([0, 2])
+        prices
+        6
+        5
+        5
+        >>> t.drop(0, 2)
         prices
         6
         5
@@ -624,7 +646,7 @@ class Table(collections.abc.MutableMapping):
         hamburger     | 651
         veggie burger | 582
         """
-        exclude = _as_labels(column_label_or_labels)
+        exclude = _varargs_labels_as_list(column_label_or_labels)
         return self.select([c for (i, c) in enumerate(self.labels) if i not in exclude and c not in exclude])
 
     def where(self, column_or_label, value_or_predicate=None, other=None):
@@ -1068,6 +1090,11 @@ class Table(collections.abc.MutableMapping):
         """Convert single label to list and convert indices to labels."""
         return [self._as_label(s) for s in _as_labels(label_or_labels)]
 
+    def _varargs_as_labels(self, label_list):
+        """Converts a list of labels or singleton list of list of labels into
+        a list of labels.  Useful when labels are passed as varargs."""
+        return self._as_labels(_varargs_labels_as_list(label_list))
+
     def _unused_label(self, label):
         """Generate an unused label."""
         original = label
@@ -1327,7 +1354,7 @@ class Table(collections.abc.MutableMapping):
         new_table.append_column(label, values)
         return new_table
 
-    def with_columns(self, labels_and_values):
+    def with_columns(self, *labels_and_values):
         """Return a table with additional or replaced columns.
 
         Args:
@@ -1341,6 +1368,13 @@ class Table(collections.abc.MutableMapping):
         letter | count
         c      | 2
         d      | 4
+        >>> Table().with_columns(
+        ...     'letter', ['c', 'd'],
+        ...     'count',  [2, 4],
+        ... )
+        letter | count
+        c      | 2
+        d      | 4
         >>> Table().with_columns([
         ...     ['letter', ['c', 'd']],
         ...     ['count',  [2, 4]],
@@ -1348,11 +1382,38 @@ class Table(collections.abc.MutableMapping):
         letter | count
         c      | 2
         d      | 4
+        >>> Table().with_columns(
+        ...     ['letter', ['c', 'd']],
+        ...     ['count',  [2, 4]],
+        ... )
+        letter | count
+        c      | 2
+        d      | 4
+        >>> Table().with_columns([
+        ...     ['letter', ['c', 'd']],
+        ... ])
+        letter
+        c
+        d
+        >>> Table().with_columns(
+        ...     'letter', ['c', 'd'],
+        ... )
+        letter
+        c
+        d
+        >>> Table().with_columns(
+        ...     ['letter', ['c', 'd']],
+        ... )
+        letter
+        c
+        d
         >>> Table().with_columns({'letter': ['c', 'd']})
         letter
         c
         d
         """
+        if len(labels_and_values) == 1:
+            labels_and_values = labels_and_values[0]
         if isinstance(labels_and_values, collections.abc.Mapping):
             labels_and_values = list(labels_and_values.items())
         if not isinstance(labels_and_values, collections.abc.Sequence):
@@ -2175,6 +2236,20 @@ def _as_labels(column_label_or_labels):
         return [column_label_or_labels]
     else:
         return column_label_or_labels
+
+def _varargs_labels_as_list(label_list):
+    """Return a list of labels for a list of labels or singleton list of list
+    of labels."""
+    if len(label_list) == 0:
+        return []
+    elif not _is_non_string_iterable(label_list[0]):
+        # Assume everything is a label.  If not, it'll be caught later.
+        return label_list
+    elif len(label_list) == 1:
+        return label_list[0]
+    else:
+        raise ValueError("Labels {} contain more than list.".format(label_list),
+                         "Pass just one list of labels.")
 
 def _assert_same(values):
     """Assert that all values are identical and return the unique value."""
