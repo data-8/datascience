@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Utility Functions (datascience.util) &mdash; datascience 0.5.20 documentation</title>
+    <title>Utility Functions (datascience.util) &mdash; datascience 0.6.0 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.5.20',
+        VERSION:     '0.6.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.5.20 documentation" href="index.html" />
+    <link rel="top" title="datascience 0.6.0 documentation" href="index.html" />
     <link rel="prev" title="Formats (datascience.formats)" href="formats.html" /> 
   </head>
   <body role="document">
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="formats.html" title="Formats (datascience.formats)"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.5.20 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.6.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -51,6 +51,25 @@
   <div class="section" id="module-datascience.util">
 <span id="utility-functions-datascience-util"></span><h1>Utility Functions (<code class="docutils literal"><span class="pre">datascience.util</span></code>)<a class="headerlink" href="#module-datascience.util" title="Permalink to this headline">¶</a></h1>
 <p>Utility functions</p>
+<dl class="function">
+<dt id="datascience.util.make_array">
+<code class="descclassname">datascience.util.</code><code class="descname">make_array</code><span class="sig-paren">(</span><em>*elements</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#make_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.util.make_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an array containing all the arguments passed to this function.
+A simple way to make an array with a few elements.</p>
+<p>As with any array, all arguments should have the same type.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">make_array</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">array([0])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">make_array</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="go">array([2, 3, 4])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">make_array</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">,</span> <span class="s2">&quot;bar&quot;</span><span class="p">)</span>
+<span class="go">array([&#39;foo&#39;, &#39;bar&#39;], </span>
+<span class="go">      dtype=&#39;&lt;U3&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">make_array</span><span class="p">()</span>
+<span class="go">array([], dtype=float64)</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <dl class="function">
 <dt id="datascience.util.percentile">
 <code class="descclassname">datascience.util.</code><code class="descname">percentile</code><span class="sig-paren">(</span><em>p</em>, <em>arr=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#percentile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.util.percentile" title="Permalink to this definition">¶</a></dt>
@@ -193,7 +212,7 @@ shape == shape(table), or shape (1, table.shape[1])</dd>
         <li class="right" >
           <a href="formats.html" title="Formats (datascience.formats)"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.5.20 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.6.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
