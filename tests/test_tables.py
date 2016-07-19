@@ -1066,7 +1066,15 @@ def test_array_roundtrip(table):
     assert isinstance(arr, np.ndarray)
 
     t = Table.from_array(arr)
+    for (c0, c1) in zip(t.columns, table.columns):
+        assert_equal(c0, c1)
 
+    # Now test using the ndarray attribute
+    arr = table.values
+    assert isinstance(arr, np.ndarray)
+
+    t = Table().with_columns([(nm, vals)
+                              for nm, vals in zip(table.labels, arr.T)])
     for (c0, c1) in zip(t.columns, table.columns):
         assert_equal(c0, c1)
 

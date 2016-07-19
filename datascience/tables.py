@@ -266,11 +266,20 @@ class Table(collections.abc.MutableMapping):
         """
         return self._columns[self._as_label(index_or_label)]
 
-    # Deprecated
-    def values(self, label):
-        """Returns the values of a column as an array. [Deprecated]"""
-        warnings.warn("values is deprecated; use column", FutureWarning)
-        return self.column(label)
+    @property
+    def values(self):
+        """Return data in `self` as a numpy array.
+
+        If all columns are the same dtype, the resulting array
+        will have this dtype. If there are >1 dtypes in columns,
+        then the resulting array will have dtype `object`.
+        """
+        dtypes = [col.dtype for col in self.columns]
+        if len(set(dtypes)) > 1:
+            dtype = object
+        else:
+            dtype = None
+        return np.array(self.rows, dtype=dtype)
 
     def column_index(self, column_label):
         """Return the index of a column."""
@@ -1616,7 +1625,7 @@ class Table(collections.abc.MutableMapping):
         self.to_df().to_csv(filename, index=False)
 
     def to_array(self):
-        """Convert the table to a NumPy array."""
+        """Convert the table to a structured NumPy array."""
         dt = np.dtype(list(zip(self.labels, (c.dtype for c in self.columns))))
         arr = np.empty_like(self.columns[0], dt)
         for label in self.labels:
