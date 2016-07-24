@@ -7,6 +7,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 None yet.
 
+## v0.7.0
+### Changed
+- Added predicates for string comparison: `containing` and `contained_in`. (#231)
+
 ## v0.6.0
 ### Changed
 - Added `make_array` to make arrays without lists. (#224)

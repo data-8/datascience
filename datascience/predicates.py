@@ -78,6 +78,25 @@ class are:
     >>> t.where('Waists', are.not_between_or_equal_to(30, 38))
     Sizes | Waists
     XL    | 42
+    >>> t.where('Sizes', are.containing('L'))
+    Sizes | Waists
+    L     | 38
+    XL    | 42
+    >>> t.where('Sizes', are.not_containing('L'))
+    Sizes | Waists
+    S     | 30
+    M     | 34
+    >>> t.where('Sizes', are.contained_in('MXL'))
+    Sizes | Waists
+    M     | 34
+    L     | 38
+    XL    | 42
+    >>> t.where('Sizes', are.contained_in('L'))
+    Sizes | Waists
+    L     | 38
+    >>> t.where('Sizes', are.not_contained_in('MXL'))
+    Sizes | Waists
+    S     | 30
     """
 
     @staticmethod
@@ -119,6 +138,16 @@ class are:
     def between_or_equal_to(y, z):
         """Greater than or equal to y and less than or equal to z."""
         return _combinable(lambda x: (y <= x <= z) or _equal_or_float_equal(x, y) or _equal_or_float_equal(x, z))
+
+    @staticmethod
+    def containing(substring):
+        """A string that contains within it the given substring."""
+        return _combinable(lambda x: substring in x)
+
+    @staticmethod
+    def contained_in(superstring):
+        """A string that is part of the given superstring."""
+        return _combinable(lambda x: x in superstring)
 
 ###############
 # Combination #
@@ -166,3 +195,5 @@ are.not_above_or_equal_to = are.below
 are.not_strictly_between = _not(are.strictly_between)
 are.not_between = _not(are.between)
 are.not_between_or_equal_to = _not(are.between_or_equal_to)
+are.not_containing = _not(are.containing)
+are.not_contained_in = _not(are.contained_in)

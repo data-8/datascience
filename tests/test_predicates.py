@@ -61,3 +61,13 @@ def test_between_or_equal_to():
     p = are.between_or_equal_to(3, 3)
     ps = [p(x) for x in range(1, 6)]
     assert ps == [False, False, True, False, False]
+
+
+############
+# Doctests #
+############
+
+
+def test_doctests():
+    results = doctest.testmod(predicates)
+    assert results.failed == 0
