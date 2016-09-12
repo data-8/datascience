@@ -2049,7 +2049,6 @@ class Table(collections.abc.MutableMapping):
                 values = np.repeat(counted_values, n).reshape(-1,n)
             vargs.setdefault('histtype', 'stepfilled')
             figure = plt.figure(figsize=(6, 4))
-            print(values, colors, vargs)
             plt.hist(values, color=colors, **vargs)
             axis = figure.get_axes()[0]
             _vertical_x(axis)
