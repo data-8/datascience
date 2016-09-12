@@ -279,7 +279,7 @@ class Table(collections.abc.MutableMapping):
             dtype = object
         else:
             dtype = None
-        return np.array(self.rows, dtype=dtype)
+        return np.array(self.columns, dtype=dtype).T
 
     def column_index(self, column_label):
         """Return the index of a column."""
