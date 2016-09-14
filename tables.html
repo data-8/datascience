@@ -202,7 +202,7 @@ methods (mostly visualizations).</p>
 <td>Return a copy of a Table.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.select.html#datascience.tables.Table.select" title="datascience.tables.Table.select"><code class="xref py py-obj docutils literal"><span class="pre">Table.select</span></code></a>(*column_label_or_labels)</td>
-<td>Return a Table with selected column or columns by label or index.</td>
+<td>Returns a new <code class="docutils literal"><span class="pre">Table</span></code> with only the columns in <code class="docutils literal"><span class="pre">column_label_or_labels</span></code>.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.drop.html#datascience.tables.Table.drop" title="datascience.tables.Table.drop"><code class="xref py py-obj docutils literal"><span class="pre">Table.drop</span></code></a>(*column_label_or_labels)</td>
 <td>Return a Table with only columns other than selected label or labels.</td>
@@ -214,7 +214,7 @@ methods (mostly visualizations).</p>
 <td>Return a new Table without a sequence of rows excluded by number.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.where.html#datascience.tables.Table.where" title="datascience.tables.Table.where"><code class="xref py py-obj docutils literal"><span class="pre">Table.where</span></code></a>(column_or_label[,&nbsp;...])</td>
-<td>Return a Table of rows for which the column is <code class="docutils literal"><span class="pre">value</span></code> or a non-zero value.</td>
+<td>Return a new <code class="docutils literal"><span class="pre">Table</span></code> containing rows where <code class="docutils literal"><span class="pre">value_or_predicate</span></code> returns True for values in <code class="docutils literal"><span class="pre">column_or_label</span></code>.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.sort.html#datascience.tables.Table.sort" title="datascience.tables.Table.sort"><code class="xref py py-obj docutils literal"><span class="pre">Table.sort</span></code></a>(column_or_label[,&nbsp;descending,&nbsp;...])</td>
 <td>Return a Table of rows sorted according to the values in a column.</td>

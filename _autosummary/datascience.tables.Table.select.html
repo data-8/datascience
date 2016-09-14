@@ -59,56 +59,53 @@
 <dl class="method">
 <dt id="datascience.tables.Table.select">
 <code class="descclassname">Table.</code><code class="descname">select</code><span class="sig-paren">(</span><em>*column_label_or_labels</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.select" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a Table with selected column or columns by label or index.</p>
+<dd><p>Returns a new <code class="docutils literal"><span class="pre">Table</span></code> with only the columns in
+<code class="docutils literal"><span class="pre">column_label_or_labels</span></code>.</p>
 <dl class="docutils">
 <dt>Args:</dt>
-<dd><code class="docutils literal"><span class="pre">column_label_or_labels</span></code> (string, list of strings, or several
-separate argument strings): The header names or indices of the
-columns to be selected. <code class="docutils literal"><span class="pre">column_label_or_labels</span></code> must
-be an existing header name, or a valid column index, or a list
-thereof.</dd>
+<dd><code class="docutils literal"><span class="pre">column_label_or_labels</span></code>: Columns to select from the <code class="docutils literal"><span class="pre">Table</span></code> as
+either column labels (<code class="docutils literal"><span class="pre">str</span></code>) or column indices (<code class="docutils literal"><span class="pre">int</span></code>).</dd>
 <dt>Returns:</dt>
-<dd>An instance of <code class="docutils literal"><span class="pre">Table</span></code> containing only selected columns.</dd>
+<dd>An new instance of <code class="docutils literal"><span class="pre">Table</span></code> containing only selected columns.
+The columns of the new <code class="docutils literal"><span class="pre">Table</span></code> are in the order given in
+<code class="docutils literal"><span class="pre">column_label_or_labels</span></code>.</dd>
+<dt>Raises:</dt>
+<dd><code class="docutils literal"><span class="pre">KeyError</span></code> if any of <code class="docutils literal"><span class="pre">column_label_or_labels</span></code> are not in the
+table.</dd>
 </dl>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">([</span>
-<span class="gp">... </span>    <span class="s1">&#39;burgers&#39;</span><span class="p">,</span>  <span class="p">[</span><span class="s1">&#39;cheeseburger&#39;</span><span class="p">,</span> <span class="s1">&#39;hamburger&#39;</span><span class="p">,</span> <span class="s1">&#39;veggie burger&#39;</span><span class="p">],</span>
-<span class="gp">... </span>    <span class="s1">&#39;prices&#39;</span><span class="p">,</span>   <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
-<span class="gp">... </span>    <span class="s1">&#39;calories&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">743</span><span class="p">,</span> <span class="mi">651</span><span class="p">,</span> <span class="mi">582</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span>
-<span class="go">burgers       | prices | calories</span>
-<span class="go">cheeseburger  | 6      | 743</span>
-<span class="go">hamburger     | 5      | 651</span>
-<span class="go">veggie burger | 5      | 582</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;burgers&#39;</span><span class="p">,</span> <span class="s1">&#39;calories&#39;</span><span class="p">])</span>
-<span class="go">burgers       | calories</span>
-<span class="go">cheeseburger  | 743</span>
-<span class="go">hamburger     | 651</span>
-<span class="go">veggie burger | 582</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;prices&#39;</span><span class="p">)</span>
-<span class="go">prices</span>
-<span class="go">6</span>
-<span class="go">5</span>
-<span class="go">5</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;burgers&#39;</span><span class="p">,</span> <span class="s1">&#39;calories&#39;</span><span class="p">)</span>
-<span class="go">burgers       | calories</span>
-<span class="go">cheeseburger  | 743</span>
-<span class="go">hamburger     | 651</span>
-<span class="go">veggie burger | 582</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="go">prices</span>
-<span class="go">6</span>
-<span class="go">5</span>
-<span class="go">5</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-<span class="go">calories | burgers</span>
-<span class="go">743      | cheeseburger</span>
-<span class="go">651      | hamburger</span>
-<span class="go">582      | veggie burger</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<span class="go">calories | burgers</span>
-<span class="go">743      | cheeseburger</span>
-<span class="go">651      | hamburger</span>
-<span class="go">582      | veggie burger</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">flowers</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="s1">&#39;Number of petals&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="s1">&#39;Name&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;lotus&#39;</span><span class="p">,</span> <span class="s1">&#39;sunflower&#39;</span><span class="p">,</span> <span class="s1">&#39;rose&#39;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="s1">&#39;Weight&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">flowers</span>
+<span class="go">Number of petals | Name      | Weight</span>
+<span class="go">8                | lotus     | 10</span>
+<span class="go">34               | sunflower | 5</span>
+<span class="go">5                | rose      | 6</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">flowers</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;Number of petals&#39;</span><span class="p">,</span> <span class="s1">&#39;Weight&#39;</span><span class="p">)</span>
+<span class="go">Number of petals | Weight</span>
+<span class="go">8                | 10</span>
+<span class="go">34               | 5</span>
+<span class="go">5                | 6</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">flowers</span>  <span class="c1"># original table unchanged</span>
+<span class="go">Number of petals | Name      | Weight</span>
+<span class="go">8                | lotus     | 10</span>
+<span class="go">34               | sunflower | 5</span>
+<span class="go">5                | rose      | 6</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">flowers</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">Number of petals | Weight</span>
+<span class="go">8                | 10</span>
+<span class="go">34               | 5</span>
+<span class="go">5                | 6</span>
 </pre></div>
 </div>
 </dd></dl>

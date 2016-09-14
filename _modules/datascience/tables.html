@@ -71,6 +71,7 @@
 <span class="kn">import</span> <span class="nn">datascience.maps</span> <span class="kn">as</span> <span class="nn">_maps</span>
 <span class="kn">import</span> <span class="nn">datascience.formats</span> <span class="kn">as</span> <span class="nn">_formats</span>
 <span class="kn">import</span> <span class="nn">datascience.util</span> <span class="kn">as</span> <span class="nn">_util</span>
+<span class="kn">from</span> <span class="nn">datascience.util</span> <span class="kn">import</span> <span class="n">make_array</span>
 <span class="kn">import</span> <span class="nn">datascience.predicates</span> <span class="kn">as</span> <span class="nn">_predicates</span>
 
 <span class="k">class</span> <span class="nc">Table</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">):</span>
@@ -586,57 +587,52 @@
         <span class="k">return</span> <span class="n">table</span>
 </div>
 <div class="viewcode-block" id="Table.select"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.select.html#datascience.tables.Table.select">[docs]</a>    <span class="k">def</span> <span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">column_label_or_labels</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return a Table with selected column or columns by label or index.</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a new ``Table`` with only the columns in</span>
+<span class="sd">        ``column_label_or_labels``.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            ``column_label_or_labels`` (string, list of strings, or several</span>
-<span class="sd">            separate argument strings): The header names or indices of the</span>
-<span class="sd">            columns to be selected. ``column_label_or_labels`` must</span>
-<span class="sd">            be an existing header name, or a valid column index, or a list</span>
-<span class="sd">            thereof.</span>
+<span class="sd">            ``column_label_or_labels``: Columns to select from the ``Table`` as</span>
+<span class="sd">            either column labels (``str``) or column indices (``int``).</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            An instance of ``Table`` containing only selected columns.</span>
+<span class="sd">            An new instance of ``Table`` containing only selected columns.</span>
+<span class="sd">            The columns of the new ``Table`` are in the order given in</span>
+<span class="sd">            ``column_label_or_labels``.</span>
 
-<span class="sd">        &gt;&gt;&gt; t = Table().with_columns([</span>
-<span class="sd">        ...     &#39;burgers&#39;,  [&#39;cheeseburger&#39;, &#39;hamburger&#39;, &#39;veggie burger&#39;],</span>
-<span class="sd">        ...     &#39;prices&#39;,   [6, 5, 5],</span>
-<span class="sd">        ...     &#39;calories&#39;, [743, 651, 582]])</span>
-<span class="sd">        &gt;&gt;&gt; t</span>
-<span class="sd">        burgers       | prices | calories</span>
-<span class="sd">        cheeseburger  | 6      | 743</span>
-<span class="sd">        hamburger     | 5      | 651</span>
-<span class="sd">        veggie burger | 5      | 582</span>
-<span class="sd">        &gt;&gt;&gt; t.select([&#39;burgers&#39;, &#39;calories&#39;])</span>
-<span class="sd">        burgers       | calories</span>
-<span class="sd">        cheeseburger  | 743</span>
-<span class="sd">        hamburger     | 651</span>
-<span class="sd">        veggie burger | 582</span>
-<span class="sd">        &gt;&gt;&gt; t.select(&#39;prices&#39;)</span>
-<span class="sd">        prices</span>
-<span class="sd">        6</span>
-<span class="sd">        5</span>
-<span class="sd">        5</span>
-<span class="sd">        &gt;&gt;&gt; t.select(&#39;burgers&#39;, &#39;calories&#39;)</span>
-<span class="sd">        burgers       | calories</span>
-<span class="sd">        cheeseburger  | 743</span>
-<span class="sd">        hamburger     | 651</span>
-<span class="sd">        veggie burger | 582</span>
-<span class="sd">        &gt;&gt;&gt; t.select(1)</span>
-<span class="sd">        prices</span>
-<span class="sd">        6</span>
-<span class="sd">        5</span>
-<span class="sd">        5</span>
-<span class="sd">        &gt;&gt;&gt; t.select([2, 0])</span>
-<span class="sd">        calories | burgers</span>
-<span class="sd">        743      | cheeseburger</span>
-<span class="sd">        651      | hamburger</span>
-<span class="sd">        582      | veggie burger</span>
-<span class="sd">        &gt;&gt;&gt; t.select(2, 0)</span>
-<span class="sd">        calories | burgers</span>
-<span class="sd">        743      | cheeseburger</span>
-<span class="sd">        651      | hamburger</span>
-<span class="sd">        582      | veggie burger</span>
+<span class="sd">        Raises:</span>
+<span class="sd">            ``KeyError`` if any of ``column_label_or_labels`` are not in the</span>
+<span class="sd">            table.</span>
+
+<span class="sd">        &gt;&gt;&gt; flowers = Table().with_columns(</span>
+<span class="sd">        ...     &#39;Number of petals&#39;, make_array(8, 34, 5),</span>
+<span class="sd">        ...     &#39;Name&#39;, make_array(&#39;lotus&#39;, &#39;sunflower&#39;, &#39;rose&#39;),</span>
+<span class="sd">        ...     &#39;Weight&#39;, make_array(10, 5, 6)</span>
+<span class="sd">        ... )</span>
+
+<span class="sd">        &gt;&gt;&gt; flowers</span>
+<span class="sd">        Number of petals | Name      | Weight</span>
+<span class="sd">        8                | lotus     | 10</span>
+<span class="sd">        34               | sunflower | 5</span>
+<span class="sd">        5                | rose      | 6</span>
+
+<span class="sd">        &gt;&gt;&gt; flowers.select(&#39;Number of petals&#39;, &#39;Weight&#39;)</span>
+<span class="sd">        Number of petals | Weight</span>
+<span class="sd">        8                | 10</span>
+<span class="sd">        34               | 5</span>
+<span class="sd">        5                | 6</span>
+
+<span class="sd">        &gt;&gt;&gt; flowers  # original table unchanged</span>
+<span class="sd">        Number of petals | Name      | Weight</span>
+<span class="sd">        8                | lotus     | 10</span>
+<span class="sd">        34               | sunflower | 5</span>
+<span class="sd">        5                | rose      | 6</span>
+
+<span class="sd">        &gt;&gt;&gt; flowers.select(0, 2)</span>
+<span class="sd">        Number of petals | Weight</span>
+<span class="sd">        8                | 10</span>
+<span class="sd">        34               | 5</span>
+<span class="sd">        5                | 6</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_varargs_as_labels</span><span class="p">(</span><span class="n">column_label_or_labels</span><span class="p">)</span>
         <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span>
@@ -708,64 +704,84 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="n">c</span> <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">exclude</span> <span class="ow">and</span> <span class="n">c</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">exclude</span><span class="p">])</span>
 </div>
 <div class="viewcode-block" id="Table.where"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.where.html#datascience.tables.Table.where">[docs]</a>    <span class="k">def</span> <span class="nf">where</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_or_label</span><span class="p">,</span> <span class="n">value_or_predicate</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return a Table of rows for which the column is ``value`` or a non-zero value.</span>
-
-<span class="sd">        If ``column_or_label`` contains Boolean values, returns rows corresponding to True.</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a new ``Table`` containing rows where ``value_or_predicate``</span>
+<span class="sd">        returns True for values in ``column_or_label``.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            ``column_or_label``: The header name of a column in the table or an array.</span>
+<span class="sd">            ``column_or_label``: A column of the ``Table`` either as a label</span>
+<span class="sd">            (``str``) or an index (``int``). Can also be an array of booleans;</span>
+<span class="sd">            only the rows where the array value is ``True`` are kept.</span>
 
-<span class="sd">            ``value_or_predicate``: Value to compare to items in column</span>
-<span class="sd">            or function to apply to items in column.</span>
+<span class="sd">            ``value_or_predicate``: If a function, it is applied to every value</span>
+<span class="sd">            in ``column_or_label``. Only the rows where ``value_or_predicate``</span>
+<span class="sd">            returns True are kept. If a single value, only the rows where the</span>
+<span class="sd">            values in ``column_or_label`` are equal to ``value_or_predicate``</span>
+<span class="sd">            are kept.</span>
+
+<span class="sd">            ``other``: Optional additional column label for</span>
+<span class="sd">            ``value_or_predicate`` to make pairwise comparisons. See the</span>
+<span class="sd">            examples below for usage. When ``other`` is supplied,</span>
+<span class="sd">            ``value_or_predicate`` must be a callable function.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            An instance of ``Table`` containing rows for which the ``column_or_label``</span>
-<span class="sd">            column or ``column_or_label`` itself is non-zero or True, or is equal to ``value``,</span>
-<span class="sd">            if provided.</span>
+<span class="sd">            If ``value_or_predicate`` is a function, returns a new ``Table``</span>
+<span class="sd">            containing only the rows where ``value_or_predicate(val)`` is True</span>
+<span class="sd">            for the ``val``s in ``column_or_label``.</span>
 
-<span class="sd">        &gt;&gt;&gt; marbles = Table().with_columns([</span>
-<span class="sd">        ...    &quot;Color&quot;, [&quot;Red&quot;, &quot;Green&quot;, &quot;Blue&quot;, &quot;Red&quot;, &quot;Green&quot;, &quot;Green&quot;],</span>
-<span class="sd">        ...    &quot;Shape&quot;, [&quot;Round&quot;, &quot;Rectangular&quot;, &quot;Rectangular&quot;, &quot;Round&quot;, &quot;Rectangular&quot;, &quot;Round&quot;],</span>
-<span class="sd">        ...    &quot;Amount&quot;, [4, 6, 12, 7, 9, 2],</span>
-<span class="sd">        ...    &quot;Price&quot;, [1.30, 1.20, 2.00, 1.75, 1.40, 3.00]])</span>
+<span class="sd">            If ``value_or_predicate`` is a value, returns a new ``Table``</span>
+<span class="sd">            containing only the rows where the values in ``column_or_label``</span>
+<span class="sd">            are equal to ``value_or_predicate``.</span>
+
+<span class="sd">            If ``column_or_label`` is an array of booleans, returns a new</span>
+<span class="sd">            ``Table`` containing only the rows where ``column_or_label`` is</span>
+<span class="sd">            ``True``.</span>
+
+<span class="sd">        &gt;&gt;&gt; marbles = Table().with_columns(</span>
+<span class="sd">        ...    &quot;Color&quot;, make_array(&quot;Red&quot;, &quot;Green&quot;, &quot;Blue&quot;, &quot;Red&quot;, &quot;Green&quot;, &quot;Green&quot;),</span>
+<span class="sd">        ...    &quot;Shape&quot;, make_array(&quot;Round&quot;, &quot;Rectangular&quot;, &quot;Rectangular&quot;, &quot;Round&quot;, &quot;Rectangular&quot;, &quot;Round&quot;),</span>
+<span class="sd">        ...    &quot;Amount&quot;, make_array(4, 6, 12, 7, 9, 2),</span>
+<span class="sd">        ...    &quot;Price&quot;, make_array(1.30, 1.20, 2.00, 1.75, 0, 3.00))</span>
+
 <span class="sd">        &gt;&gt;&gt; marbles</span>
 <span class="sd">        Color | Shape       | Amount | Price</span>
 <span class="sd">        Red   | Round       | 4      | 1.3</span>
 <span class="sd">        Green | Rectangular | 6      | 1.2</span>
 <span class="sd">        Blue  | Rectangular | 12     | 2</span>
 <span class="sd">        Red   | Round       | 7      | 1.75</span>
-<span class="sd">        Green | Rectangular | 9      | 1.4</span>
-<span class="sd">        Green | Round       | 2      | 3</span>
-<span class="sd">        &gt;&gt;&gt; marbles.where(&quot;Shape&quot;, &quot;Round&quot;)</span>
-<span class="sd">        Color | Shape | Amount | Price</span>
-<span class="sd">        Red   | Round | 4      | 1.3</span>
-<span class="sd">        Red   | Round | 7      | 1.75</span>
-<span class="sd">        Green | Round | 2      | 3</span>
-<span class="sd">        &gt;&gt;&gt; marbles.where(marbles.column(&quot;Shape&quot;) == &quot;Round&quot;) # equivalent to previous example</span>
-<span class="sd">        Color | Shape | Amount | Price</span>
-<span class="sd">        Red   | Round | 4      | 1.3</span>
-<span class="sd">        Red   | Round | 7      | 1.75</span>
-<span class="sd">        Green | Round | 2      | 3</span>
-<span class="sd">        &gt;&gt;&gt; marbles.where(marbles.column(&quot;Price&quot;) &gt; 1.5)</span>
-<span class="sd">        Color | Shape       | Amount | Price</span>
-<span class="sd">        Blue  | Rectangular | 12     | 2</span>
-<span class="sd">        Red   | Round       | 7      | 1.75</span>
+<span class="sd">        Green | Rectangular | 9      | 0</span>
 <span class="sd">        Green | Round       | 2      | 3</span>
 
-<span class="sd">        You can also use predicates to simplify single-column comparisons.</span>
+<span class="sd">        Use a value to select matching rows</span>
+
+<span class="sd">        &gt;&gt;&gt; marbles.where(&quot;Price&quot;, 1.3)</span>
+<span class="sd">        Color | Shape | Amount | Price</span>
+<span class="sd">        Red   | Round | 4      | 1.3</span>
+
+<span class="sd">        In general, a higher order predicate function such as the functions in</span>
+<span class="sd">        ``datascience.predicates.are`` can be used.</span>
 
 <span class="sd">        &gt;&gt;&gt; from datascience.predicates import are</span>
-<span class="sd">        &gt;&gt;&gt; marbles.where(&quot;Price&quot;, are.above(1.5)) # equivalent to previous example</span>
+<span class="sd">        &gt;&gt;&gt; # equivalent to previous example</span>
+<span class="sd">        &gt;&gt;&gt; marbles.where(&quot;Price&quot;, are.equal_to(1.3))</span>
+<span class="sd">        Color | Shape | Amount | Price</span>
+<span class="sd">        Red   | Round | 4      | 1.3</span>
+
+<span class="sd">        &gt;&gt;&gt; marbles.where(&quot;Price&quot;, are.above(1.5))</span>
 <span class="sd">        Color | Shape       | Amount | Price</span>
 <span class="sd">        Blue  | Rectangular | 12     | 2</span>
 <span class="sd">        Red   | Round       | 7      | 1.75</span>
 <span class="sd">        Green | Round       | 2      | 3</span>
 
-<span class="sd">        And apply some predicates to compare columns.</span>
+<span class="sd">        Use the optional argument ``other`` to apply predicates to compare</span>
+<span class="sd">        columns.</span>
 
 <span class="sd">        &gt;&gt;&gt; marbles.where(&quot;Price&quot;, are.above, &quot;Amount&quot;)</span>
 <span class="sd">        Color | Shape | Amount | Price</span>
 <span class="sd">        Green | Round | 2      | 3</span>
+
+<span class="sd">        &gt;&gt;&gt; marbles.where(&quot;Price&quot;, are.equal_to, &quot;Amount&quot;) # empty table</span>
+<span class="sd">        Color | Shape | Amount | Price</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">column</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_column</span><span class="p">(</span><span class="n">column_or_label</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">other</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
