@@ -584,14 +584,6 @@ class Table(collections.abc.MutableMapping):
         8                | 10
         34               | 5
         5                | 6
-
-        >>> # You may also pass in a list
-        >>> flowers.select(['Number of petals', 'Weight'])
-        Number of petals | Weight
-        8                | 10
-        34               | 5
-        5                | 6
-
         """
         labels = self._varargs_as_labels(column_label_or_labels)
         table = Table()
