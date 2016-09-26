@@ -98,8 +98,11 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         """
         Copies the current Map into a new one and returns it.
         """
-        return Map(features=self._features, width=self._width,
+        
+        m = Map(features=self._features, width=self._width,
                    height=self._height, **self._attrs)
+        m._folium_map = self._folium_map
+        return m
 
     def __getitem__(self, id):
         return self._features[id]
