@@ -3,14 +3,14 @@
 A Berkeley library for introductory data science.
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/dsten/datascience?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-[![Documentation Status](https://readthedocs.org/projects/datascience/badge/?version=v0.5.1)](http://datascience.readthedocs.org/en/v0.5.1/?badge=v0.5.1)
+[![Documentation Status](https://readthedocs.org/projects/datascience/badge/?version=master)](http://datascience.readthedocs.org/en/master/?badge=master)
 
 
 *written by Professor [John DeNero](http://denero.org), Professor
 [David Culler](http://www.cs.berkeley.edu/~culler),
 [Sam Lau](https://github.com/samlau95), and [Alvin Wan](http://alvinwan.com)*
 
-For an example of usage, see the [Berkeley Data 8 class](http://databears.berkeley.edu/content/csinfostat-c8-foundations-data-science).
+For an example of usage, see the [Berkeley Data 8 class](http://data8.org/).
 
 [![Build Status](https://travis-ci.org/data-8/datascience.svg?branch=master)](https://travis-ci.org/data-8/datascience)
 [![Coverage Status](https://coveralls.io/repos/dsten/datascience/badge.svg?branch=master&service=github)](https://coveralls.io/github/dsten/datascience?branch=master)
@@ -22,6 +22,31 @@ Use `pip`:
 ```
 pip install datascience
 ```
+
+## Changelog
+
+This project adheres to [Semantic Versioning](http://semver.org/).
+
+### [Unreleased]
+None yet.
+
+### v0.8.0
+**Breaking changes**
+
+- Change default behavior of `table.sample` to `with_replacement=True` instead
+  of `False`. (3717b67)
+
+**Additions**
+
+- Added `Map.copy`.
+- Added `Map.overlay` which overlays a feature(s) on a new copy of Map.
+  (315bb63e)
+
+### v0.7.1
+- Remove rogue print from `table.hist`
+
+### v0.7.0
+- Added predicates for string comparison: `containing` and `contained_in`. (#231)
 
 ## Documentation
 
