@@ -15,6 +15,8 @@ import json
 import functools
 import random
 
+from .tables import Table
+
 _number = (int, float, np.number)
 
 
@@ -91,6 +93,13 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         self._width = width
         self._height = height
         self._attrs.update(kwargs)
+
+    def copy(self):
+        """
+        Copies the current Map into a new one and returns it.
+        """
+        return Map(features=self._features, width=self._width,
+                   height=self._height, **self._attrs)
 
     def __getitem__(self, id):
         return self._features[id]
@@ -256,6 +265,51 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         colored = self.format()
         colored._folium_map = m
         return colored
+
+    def overlay(self, feature, color='Blue', opacity=0.6):
+        """
+        Overlays ``feature`` on the map. Returns a new Map.
+
+        Args:
+            ``feature``: a ``Table`` of map features, a list of map features,
+                a Map, a Region, or a circle marker map table. The features will
+                be overlayed on the Map with specified ``color``.
+
+            ``color`` (``str``): Color of feature. Defaults to 'Blue'
+
+            ``opacity`` (``float``): Opacity of overlain feature. Defaults to
+                0.6.
+
+        Returns:
+            A new ``Map`` with the overlain ``feature``.
+        """
+        result = self.copy()
+        if type(feature) == Table:
+            # if table of features e.g. Table.from_records(taz_map.features)
+            if 'feature' in feature:
+                feature = feature['feature']
+
+            # if marker table e.g. table with columns: latitudes,longitudes,popup,color,radius
+            else:
+                feature = Circle.map_table(feature)
+
+        if type(feature) in [list, np.ndarray]:
+            for f in feature:
+                f._attrs['fill_color'] = color
+                f._attrs['fill_opacity'] = opacity
+                f.draw_on(result._folium_map)
+
+        elif type(feature) == Map:
+            for i in range(len(feature._features)):
+                f = feature._features[i]
+                f._attrs['fill_color'] = color
+                f._attrs['fill_opacity'] = opacity
+                f.draw_on(result._folium_map)
+        elif type(feature) == Region:
+            feature._attrs['fill_color'] = color
+            feature._attrs['fill_opacity'] = opacity
+            feature.draw_on(result._folium_map)
+        return result
 
     @classmethod
     def read_geojson(cls, path_or_json_or_string):
