@@ -132,6 +132,5 @@ Visualizations
     Table.barh
     Table.pivot_hist
     Table.hist
-    Table.points
     Table.scatter
     Table.boxplot

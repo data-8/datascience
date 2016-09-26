@@ -19,7 +19,6 @@ import matplotlib.pyplot as plt
 import pandas
 import IPython
 
-import datascience.maps as _maps
 import datascience.formats as _formats
 import datascience.util as _util
 from datascience.util import make_array
@@ -2154,16 +2153,6 @@ class Table(collections.abc.MutableMapping):
         vargs['labels'] = columns.keys()
         values = list(columns.values())
         plt.boxplot(values, **vargs)
-
-    # Deprecated
-    def points(self, column__lat, column__long, labels=None, colors=None, **kwargs) :
-        """Draw points from latitude and longitude columns. [Deprecated]"""
-        warnings.warn("points is deprecated. Use Circle.map", FutureWarning)
-        latitudes = self._get_column(column__lat)
-        longitudes = self._get_column(column__long)
-        if labels is not None : labels = self._get_column(labels)
-        if colors is not None : colors = self._get_column(colors)
-        return _maps.Circle.map(latitudes, longitudes, labels=labels, colors=colors, **kwargs)
 
 
     ###########
