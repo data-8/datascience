@@ -320,7 +320,7 @@ From the text:
 
 .. ipython:: python
 
-    baby = Table.read_table('http://data8.org/textbook/notebooks/baby.csv')
+    baby = Table.read_table('https://github.com/data-8/textbook/raw/9aa0a167bc514749338cd7754f2b339fd095ee9b/notebooks/baby.csv')
     baby # Let's take a peek at the table
 
     # Select out columns we want.
