@@ -19,7 +19,6 @@ import matplotlib.pyplot as plt
 import pandas
 import IPython
 
-import datascience.maps as _maps
 import datascience.formats as _formats
 import datascience.util as _util
 from datascience.util import make_array
@@ -1170,7 +1169,7 @@ class Table(collections.abc.MutableMapping):
         percentiles = [[_util.percentile(p, column)] for column in self.columns]
         return self._with_columns(percentiles)
 
-    def sample(self, k=None, with_replacement=False, weights=None):
+    def sample(self, k=None, with_replacement=True, weights=None):
         """Returns a new table where k rows are randomly sampled from the
         original table.
 
@@ -1179,8 +1178,8 @@ class Table(collections.abc.MutableMapping):
                 sampled. If an integer, k rows from the original table are
                 sampled.
 
-            with_replacement (bool): If False (default), samples the rows
-                without replacement. If True, samples the rows with replacement.
+            with_replacement (bool): If True (default), samples the rows with
+                replacement. If False, samples the rows without replacement.
 
             weights (list/array or None): If None (default), samples the rows
                 using a uniform random distribution. If a list/array is passed
@@ -1204,9 +1203,15 @@ class Table(collections.abc.MutableMapping):
         >>> jobs.sample() # doctest: +SKIP
         job  | wage
         b    | 20
-        c    | 15
+        b    | 20
         a    | 10
         d    | 8
+        >>> jobs.sample(with_replacement=True) # doctest: +SKIP
+        job  | wage
+        d    | 8
+        b    | 20
+        c    | 15
+        a    | 10
         >>> jobs.sample(k = 2) # doctest: +SKIP
         job  | wage
         b    | 20
@@ -2148,16 +2153,6 @@ class Table(collections.abc.MutableMapping):
         vargs['labels'] = columns.keys()
         values = list(columns.values())
         plt.boxplot(values, **vargs)
-
-    # Deprecated
-    def points(self, column__lat, column__long, labels=None, colors=None, **kwargs) :
-        """Draw points from latitude and longitude columns. [Deprecated]"""
-        warnings.warn("points is deprecated. Use Circle.map", FutureWarning)
-        latitudes = self._get_column(column__lat)
-        longitudes = self._get_column(column__long)
-        if labels is not None : labels = self._get_column(labels)
-        if colors is not None : colors = self._get_column(colors)
-        return _maps.Circle.map(latitudes, longitudes, labels=labels, colors=colors, **kwargs)
 
 
     ###########
