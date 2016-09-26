@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Start Here: datascience Tutorial &mdash; datascience 0.7.1 documentation</title>
+    <title>Start Here: datascience Tutorial &mdash; datascience 0.8.0 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.7.1',
+        VERSION:     '0.8.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.7.1 documentation" href="index.html" />
+    <link rel="top" title="datascience 0.8.0 documentation" href="index.html" />
     <link rel="next" title="Tables (datascience.tables)" href="tables.html" />
     <link rel="prev" title="Welcome to datascience’s documentation!" href="index.html" /> 
   </head>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="index.html" title="Welcome to datascience’s documentation!"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.7.1 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.8.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -456,17 +456,17 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 
 <span class="gp">In [47]: </span><span class="n">normal_data</span>
 <span class="gh">Out[47]: </span><span class="go"></span>
-<span class="go">data1     | data2</span>
-<span class="go">0.440061  | 9.16124</span>
-<span class="go">-1.50215  | 5.11643</span>
-<span class="go">2.80111   | 3.83612</span>
-<span class="go">0.467294  | 0.680751</span>
-<span class="go">0.0563648 | 5.61325</span>
-<span class="go">-3.05411  | 3.88782</span>
-<span class="go">1.6617    | 3.32643</span>
-<span class="go">-2.37157  | 0.14007</span>
-<span class="go">-1.68321  | 1.88446</span>
-<span class="go">-0.860898 | 2.26218</span>
+<span class="go">data1    | data2</span>
+<span class="go">3.50482  | 4.91309</span>
+<span class="go">3.29143  | 0.309977</span>
+<span class="go">4.36892  | 6.0898</span>
+<span class="go">4.20558  | 0.854864</span>
+<span class="go">2.57346  | 3.20856</span>
+<span class="go">1.55557  | 7.16786</span>
+<span class="go">1.84476  | 6.65936</span>
+<span class="go">-1.75818 | 4.21274</span>
+<span class="go">1.14841  | 6.3331</span>
+<span class="go">2.00224  | 6.40209</span>
 <span class="go">... (90 rows omitted)</span>
 </pre></div>
 </div>
@@ -518,17 +518,17 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 converting to a pandas dataframe with <a class="reference internal" href="_autosummary/datascience.tables.Table.to_df.html#datascience.tables.Table.to_df" title="datascience.tables.Table.to_df"><code class="xref py py-meth docutils literal"><span class="pre">to_df()</span></code></a>:</p>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [56]: </span><span class="n">normal_data</span>
 <span class="gh">Out[56]: </span><span class="go"></span>
-<span class="go">data1     | data2</span>
-<span class="go">0.440061  | 9.16124</span>
-<span class="go">-1.50215  | 5.11643</span>
-<span class="go">2.80111   | 3.83612</span>
-<span class="go">0.467294  | 0.680751</span>
-<span class="go">0.0563648 | 5.61325</span>
-<span class="go">-3.05411  | 3.88782</span>
-<span class="go">1.6617    | 3.32643</span>
-<span class="go">-2.37157  | 0.14007</span>
-<span class="go">-1.68321  | 1.88446</span>
-<span class="go">-0.860898 | 2.26218</span>
+<span class="go">data1    | data2</span>
+<span class="go">3.50482  | 4.91309</span>
+<span class="go">3.29143  | 0.309977</span>
+<span class="go">4.36892  | 6.0898</span>
+<span class="go">4.20558  | 0.854864</span>
+<span class="go">2.57346  | 3.20856</span>
+<span class="go">1.55557  | 7.16786</span>
+<span class="go">1.84476  | 6.65936</span>
+<span class="go">-1.75818 | 4.21274</span>
+<span class="go">1.14841  | 6.3331</span>
+<span class="go">2.00224  | 6.40209</span>
 <span class="go">... (90 rows omitted)</span>
 
 <span class="go"># index = False prevents row numbers from appearing in the resulting CSV</span>
@@ -550,60 +550,40 @@ the baby, in ounces; <code class="docutils literal"><span class="pre">gest_days<
 is, the number of days the baby was in the womb. There is also data on
 maternal age, maternal height, maternal pregnancy weight, and whether or not
 the mother was a smoker.</div></blockquote>
-<div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [58]: </span><span class="n">baby</span> <span class="o">=</span> <span class="n">Table</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="s1">&#39;http://data8.org/textbook/notebooks/baby.csv&#39;</span><span class="p">)</span>
+<div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [58]: </span><span class="n">baby</span> <span class="o">=</span> <span class="n">Table</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="s1">&#39;https://github.com/data-8/textbook/raw/9aa0a167bc514749338cd7754f2b339fd095ee9b/notebooks/baby.csv&#39;</span><span class="p">)</span>
 
 <span class="gp">In [59]: </span><span class="n">baby</span> <span class="c1"># Let&#39;s take a peek at the table</span>
 <span class="gh">Out[59]: </span><span class="go"></span>
-<span class="go">Birth Weight | Gestational Days | Maternal Age | Maternal Height | Maternal Pregnancy Weight | Maternal Smoker</span>
-<span class="go">120          | 284              | 27           | 62              | 100                       | False</span>
-<span class="go">113          | 282              | 33           | 64              | 135                       | False</span>
-<span class="go">128          | 279              | 28           | 64              | 115                       | True</span>
-<span class="go">108          | 282              | 23           | 67              | 125                       | True</span>
-<span class="go">136          | 286              | 25           | 62              | 93                        | False</span>
-<span class="go">138          | 244              | 33           | 62              | 178                       | False</span>
-<span class="go">132          | 245              | 23           | 65              | 140                       | False</span>
-<span class="go">120          | 289              | 25           | 62              | 125                       | False</span>
-<span class="go">143          | 299              | 30           | 66              | 136                       | True</span>
-<span class="go">140          | 351              | 27           | 68              | 120                       | False</span>
+<span class="go">birthwt | gest_days | mat_age | mat_ht | mat_pw | m_smoker</span>
+<span class="go">120     | 284       | 27      | 62     | 100    | 0</span>
+<span class="go">113     | 282       | 33      | 64     | 135    | 0</span>
+<span class="go">128     | 279       | 28      | 64     | 115    | 1</span>
+<span class="go">108     | 282       | 23      | 67     | 125    | 1</span>
+<span class="go">136     | 286       | 25      | 62     | 93     | 0</span>
+<span class="go">138     | 244       | 33      | 62     | 178    | 0</span>
+<span class="go">132     | 245       | 23      | 65     | 140    | 0</span>
+<span class="go">120     | 289       | 25      | 62     | 125    | 0</span>
+<span class="go">143     | 299       | 30      | 66     | 136    | 1</span>
+<span class="go">140     | 351       | 27      | 68     | 120    | 0</span>
 <span class="go">... (1164 rows omitted)</span>
 
 <span class="go"># Select out columns we want.</span>
 <span class="gp">In [60]: </span><span class="n">smoker_and_wt</span> <span class="o">=</span> <span class="n">baby</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;m_smoker&#39;</span><span class="p">,</span> <span class="s1">&#39;birthwt&#39;</span><span class="p">])</span>
-<span class="go">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ---------------------------------------------------------------------------</span>
-<span class="go">KeyError                                  Traceback (most recent call last)</span>
-<span class="go">&lt;ipython-input-60-98d2eeccb488&gt; in &lt;module&gt;()</span>
-<span class="go">----&gt; 1 smoker_and_wt = baby.select([&#39;m_smoker&#39;, &#39;birthwt&#39;])</span>
-
-<span class="go">../datascience/tables.py in select(self, *column_label_or_labels)</span>
-<span class="go">    589         table = Table()</span>
-<span class="go">    590         for label in labels:</span>
-<span class="go">--&gt; 591             self._add_column_and_format(table, label, np.copy(self[label]))</span>
-<span class="go">    592         return table</span>
-<span class="go">    593 </span>
-
-<span class="go">../datascience/tables.py in __getitem__(self, index_or_label)</span>
-<span class="go">    168     def __getitem__(self, index_or_label):</span>
-<span class="go">    169         label = self._as_label(index_or_label)</span>
-<span class="go">--&gt; 170         return self.column(label)</span>
-<span class="go">    171 </span>
-<span class="go">    172     def __setitem__(self, label, values):</span>
-
-<span class="go">../datascience/tables.py in column(self, index_or_label)</span>
-<span class="go">    266             An instance of ``numpy.array``.</span>
-<span class="go">    267         &quot;&quot;&quot;</span>
-<span class="go">--&gt; 268         return self._columns[self._as_label(index_or_label)]</span>
-<span class="go">    269 </span>
-<span class="go">    270     @property</span>
-
-<span class="go">KeyError: &#39;m_smoker&#39;</span>
 
 <span class="gp">In [61]: </span><span class="n">smoker_and_wt</span>
-<span class="go">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ---------------------------------------------------------------------------</span>
-<span class="go">NameError                                 Traceback (most recent call last)</span>
-<span class="go">&lt;ipython-input-61-1c8046ed122a&gt; in &lt;module&gt;()</span>
-<span class="go">----&gt; 1 smoker_and_wt</span>
-
-<span class="go">NameError: name &#39;smoker_and_wt&#39; is not defined</span>
+<span class="gh">Out[61]: </span><span class="go"></span>
+<span class="go">m_smoker | birthwt</span>
+<span class="go">0        | 120</span>
+<span class="go">0        | 113</span>
+<span class="go">1        | 128</span>
+<span class="go">1        | 108</span>
+<span class="go">0        | 136</span>
+<span class="go">0        | 138</span>
+<span class="go">0        | 132</span>
+<span class="go">0        | 120</span>
+<span class="go">1        | 143</span>
+<span class="go">0        | 140</span>
+<span class="go">... (1164 rows omitted)</span>
 </pre></div>
 </div>
 <p>Let&#8217;s compare the number of smokers to non-smokers.</p>
@@ -617,67 +597,26 @@ non-smokers.</p>
 <span class="go"># We do this by grabbing the rows that correspond to mothers that don&#39;t</span>
 <span class="go"># smoke, then plotting a histogram of just the birthweights.</span>
 <span class="gp">In [63]: </span><span class="n">smoker_and_wt</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;m_smoker&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;birthwt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">hist</span><span class="p">()</span>
-<span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
-<span class="nn">&lt;ipython-input-63-ac023d72d786&gt;</span> in <span class="ni">&lt;module&gt;</span><span class="nt">()</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">smoker_and_wt</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;m_smoker&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;birthwt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">hist</span><span class="p">()</span>
 
-<span class="ne">NameError</span>: name &#39;smoker_and_wt&#39; is not defined
-
-<span class="c1"># Smokers</span>
+<span class="go"># Smokers</span>
 <span class="gp">In [64]: </span><span class="n">smoker_and_wt</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;m_smoker&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;birthwt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">hist</span><span class="p">()</span>
-<span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
-<span class="nn">&lt;ipython-input-64-14a160d7b1d6&gt;</span> in <span class="ni">&lt;module&gt;</span><span class="nt">()</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">smoker_and_wt</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;m_smoker&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;birthwt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">hist</span><span class="p">()</span>
-
-<span class="ne">NameError</span>: name &#39;smoker_and_wt&#39; is not defined
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/not_m_smoker_weights.png"><img alt="_images/not_m_smoker_weights.png" src="_images/not_m_smoker_weights.png" style="width: 4in;" /></a>
 <a class="reference internal image-reference" href="_images/m_smoker_weights.png"><img alt="_images/m_smoker_weights.png" src="_images/m_smoker_weights.png" style="width: 4in;" /></a>
 <p>What&#8217;s the difference in mean birth weight of the two categories?</p>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [65]: </span><span class="n">nonsmoking_mean</span> <span class="o">=</span> <span class="n">smoker_and_wt</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;m_smoker&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s1">&#39;birthwt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-<span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
-<span class="nn">&lt;ipython-input-65-f41eeafe6bd7&gt;</span> in <span class="ni">&lt;module&gt;</span><span class="nt">()</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">nonsmoking_mean</span> <span class="o">=</span> <span class="n">smoker_and_wt</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;m_smoker&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s1">&#39;birthwt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-
-<span class="ne">NameError</span>: name &#39;smoker_and_wt&#39; is not defined
 
 <span class="gp">In [66]: </span><span class="n">smoking_mean</span> <span class="o">=</span> <span class="n">smoker_and_wt</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;m_smoker&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s1">&#39;birthwt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-<span class="go">                                                                                                                                                                                                                                                                                                                                            ---------------------------------------------------------------------------</span>
-<span class="go">NameError                                 Traceback (most recent call last)</span>
-<span class="go">&lt;ipython-input-66-025a08c0d2c6&gt; in &lt;module&gt;()</span>
-<span class="go">----&gt; 1 smoking_mean = smoker_and_wt.where(&#39;m_smoker&#39;, 1).column(&#39;birthwt&#39;).mean()</span>
-
-<span class="go">NameError: name &#39;smoker_and_wt&#39; is not defined</span>
 
 <span class="gp">In [67]: </span><span class="n">observed_diff</span> <span class="o">=</span> <span class="n">nonsmoking_mean</span> <span class="o">-</span> <span class="n">smoking_mean</span>
-<span class="go">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ---------------------------------------------------------------------------</span>
-<span class="go">NameError                                 Traceback (most recent call last)</span>
-<span class="go">&lt;ipython-input-67-1dc0201ce02b&gt; in &lt;module&gt;()</span>
-<span class="go">----&gt; 1 observed_diff = nonsmoking_mean - smoking_mean</span>
-
-<span class="go">NameError: name &#39;nonsmoking_mean&#39; is not defined</span>
 
 <span class="gp">In [68]: </span><span class="n">observed_diff</span>
-<span class="go">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ---------------------------------------------------------------------------</span>
-<span class="go">NameError                                 Traceback (most recent call last)</span>
-<span class="go">&lt;ipython-input-68-dbee69efdaa6&gt; in &lt;module&gt;()</span>
-<span class="go">----&gt; 1 observed_diff</span>
-
-<span class="go">NameError: name &#39;observed_diff&#39; is not defined</span>
+<span class="gh">Out[68]: </span><span class="go">9.2661425720249184</span>
 </pre></div>
 </div>
 <p>Let&#8217;s do the bootstrap test on the two categories.</p>
 <div class="highlight-ipython"><div class="highlight"><pre><span class="gp">In [69]: </span><span class="n">num_nonsmokers</span> <span class="o">=</span> <span class="n">smoker_and_wt</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;m_smoker&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">num_rows</span>
-<span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
-<span class="nn">&lt;ipython-input-69-66887dbcfe42&gt;</span> in <span class="ni">&lt;module&gt;</span><span class="nt">()</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">num_nonsmokers</span> <span class="o">=</span> <span class="n">smoker_and_wt</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;m_smoker&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">num_rows</span>
-
-<span class="ne">NameError</span>: name &#39;smoker_and_wt&#39; is not defined
 
 <span class="gp">In [70]: </span><span class="k">def</span> <span class="nf">bootstrap_once</span><span class="p">():</span>
 <span class="gp">   ....: </span>    <span class="sd">&quot;&quot;&quot;</span>
@@ -696,56 +635,18 @@ non-smokers.</p>
 <span class="gp">In [72]: </span><span class="n">bootstrapped_diff_means</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
 <span class="gp">   ....: </span>    <span class="p">[</span> <span class="n">bootstrap_once</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">repetitions</span><span class="p">)</span> <span class="p">])</span>
 <span class="gp">   ....: </span>
-<span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">NameError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
-<span class="nn">&lt;ipython-input-72-167c9ef03394&gt;</span> in <span class="ni">&lt;module&gt;</span><span class="nt">()</span>
-<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="n">bootstrapped_diff_means</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-<span class="nn">----&gt; 2     [ bootstrap_once() for _</span> in <span class="ni">range</span><span class="nt">(repetitions) ])</span>
-
-<span class="nn">&lt;ipython-input-72-167c9ef03394&gt;</span> in <span class="ni">&lt;listcomp&gt;</span><span class="nt">(.0)</span>
-<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="n">bootstrapped_diff_means</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-<span class="nn">----&gt; 2     [ bootstrap_once() for _</span> in <span class="ni">range</span><span class="nt">(repetitions) ])</span>
-
-<span class="nn">&lt;ipython-input-70-0af534563c70&gt;</span> in <span class="ni">bootstrap_once</span><span class="nt">()</span>
-<span class="g g-Whitespace">      </span><span class="mi">5</span>     <span class="n">We</span> <span class="n">then</span> <span class="n">split</span> <span class="n">according</span> <span class="n">to</span> <span class="n">the</span> <span class="n">number</span> <span class="n">of</span> <span class="n">nonsmokers</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">original</span> <span class="n">sample</span><span class="o">.</span>
-<span class="g g-Whitespace">      </span><span class="mi">6</span>     <span class="s2">&quot;&quot;&quot;</span>
-<span class="ne">----&gt; </span><span class="mi">7</span><span class="s2">     resample = smoker_and_wt.sample(with_replacement = True)</span>
-<span class="g g-Whitespace">      </span><span class="mi">8</span><span class="s2">     bootstrap_diff = resample.column(&#39;birthwt&#39;)[:num_nonsmokers].mean() -         resample.column(&#39;birthwt&#39;)[num_nonsmokers:].mean()</span>
-<span class="g g-Whitespace">      </span><span class="mi">9</span><span class="s2">     return bootstrap_diff</span>
-
-<span class="ne">NameError</span>: name &#39;smoker_and_wt&#39; is not defined
 
 <span class="gp">In [73]: </span><span class="n">bootstrapped_diff_means</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
-<span class="go">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ---------------------------------------------------------------------------</span>
-<span class="go">NameError                                 Traceback (most recent call last)</span>
-<span class="go">&lt;ipython-input-73-7ce34a8f5ddf&gt; in &lt;module&gt;()</span>
-<span class="go">----&gt; 1 bootstrapped_diff_means[:10]</span>
-
-<span class="go">NameError: name &#39;bootstrapped_diff_means&#39; is not defined</span>
+<span class="gh">Out[73]: </span><span class="go"></span>
+<span class="go">array([-0.99169676, -0.33576489, -0.73184637, -0.85824154, -1.07565245,</span>
+<span class="go">       -1.18192483,  1.34370248, -0.99921081, -0.13194387,  1.22736262])</span>
 
 <span class="gp">In [74]: </span><span class="n">num_diffs_greater</span> <span class="o">=</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">bootstrapped_diff_means</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">observed_diff</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-<span class="go">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ---------------------------------------------------------------------------</span>
-<span class="go">NameError                                 Traceback (most recent call last)</span>
-<span class="go">&lt;ipython-input-74-fea00db6f1ce&gt; in &lt;module&gt;()</span>
-<span class="go">----&gt; 1 num_diffs_greater = (abs(bootstrapped_diff_means) &gt; abs(observed_diff)).sum()</span>
-
-<span class="go">NameError: name &#39;bootstrapped_diff_means&#39; is not defined</span>
 
 <span class="gp">In [75]: </span><span class="n">p_value</span> <span class="o">=</span> <span class="n">num_diffs_greater</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">bootstrapped_diff_means</span><span class="p">)</span>
-<span class="go">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         ---------------------------------------------------------------------------</span>
-<span class="go">NameError                                 Traceback (most recent call last)</span>
-<span class="go">&lt;ipython-input-75-053c4de37c34&gt; in &lt;module&gt;()</span>
-<span class="go">----&gt; 1 p_value = num_diffs_greater / len(bootstrapped_diff_means)</span>
-
-<span class="go">NameError: name &#39;num_diffs_greater&#39; is not defined</span>
 
 <span class="gp">In [76]: </span><span class="n">p_value</span>
-<span class="go">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ---------------------------------------------------------------------------</span>
-<span class="go">NameError                                 Traceback (most recent call last)</span>
-<span class="go">&lt;ipython-input-76-1336a4a7d880&gt; in &lt;module&gt;()</span>
-<span class="go">----&gt; 1 p_value</span>
-
-<span class="go">NameError: name &#39;p_value&#39; is not defined</span>
+<span class="gh">Out[76]: </span><span class="go">0.0</span>
 </pre></div>
 </div>
 </div>
@@ -821,7 +722,7 @@ non-smokers.</p>
         <li class="right" >
           <a href="index.html" title="Welcome to datascience’s documentation!"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.7.1 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.8.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

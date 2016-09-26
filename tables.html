@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Tables (datascience.tables) &mdash; datascience 0.7.1 documentation</title>
+    <title>Tables (datascience.tables) &mdash; datascience 0.8.0 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.7.1',
+        VERSION:     '0.8.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.7.1 documentation" href="index.html" />
+    <link rel="top" title="datascience 0.8.0 documentation" href="index.html" />
     <link rel="next" title="datascience.tables.Table.__init__" href="_autosummary/datascience.tables.Table.__init__.html" />
     <link rel="prev" title="Start Here: datascience Tutorial" href="tutorial.html" /> 
   </head>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="tutorial.html" title="Start Here: datascience Tutorial"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.7.1 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.8.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -90,8 +90,14 @@ methods (mostly visualizations).</p>
 <tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.__init__.html#datascience.tables.Table.__init__" title="datascience.tables.Table.__init__"><code class="xref py py-obj docutils literal"><span class="pre">Table.__init__</span></code></a>([labels,&nbsp;_deprecated,&nbsp;formatter])</td>
 <td>Create an empty table with column labels.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.from_records.html#datascience.tables.Table.from_records" title="datascience.tables.Table.from_records"><code class="xref py py-obj docutils literal"><span class="pre">Table.from_records</span></code></a>(records)</td>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.empty.html#datascience.tables.Table.empty" title="datascience.tables.Table.empty"><code class="xref py py-obj docutils literal"><span class="pre">Table.empty</span></code></a>([labels])</td>
+<td>Create an empty table.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.from_records.html#datascience.tables.Table.from_records" title="datascience.tables.Table.from_records"><code class="xref py py-obj docutils literal"><span class="pre">Table.from_records</span></code></a>(records)</td>
 <td>Create a table from a sequence of records (dicts with fixed keys).</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.from_columns_dict.html#datascience.tables.Table.from_columns_dict" title="datascience.tables.Table.from_columns_dict"><code class="xref py py-obj docutils literal"><span class="pre">Table.from_columns_dict</span></code></a>(columns)</td>
+<td>Create a table from a mapping of column labels to column values.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.read_table.html#datascience.tables.Table.read_table" title="datascience.tables.Table.read_table"><code class="xref py py-obj docutils literal"><span class="pre">Table.read_table</span></code></a>(filepath_or_buffer,&nbsp;*args,&nbsp;...)</td>
 <td>Read a table from a file or web address.</td>
@@ -303,13 +309,10 @@ methods (mostly visualizations).</p>
 <tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.hist.html#datascience.tables.Table.hist" title="datascience.tables.Table.hist"><code class="xref py py-obj docutils literal"><span class="pre">Table.hist</span></code></a>([select,&nbsp;overlay,&nbsp;bins,&nbsp;counts,&nbsp;unit])</td>
 <td>Plots one histogram for each column in the table.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.points.html#datascience.tables.Table.points" title="datascience.tables.Table.points"><code class="xref py py-obj docutils literal"><span class="pre">Table.points</span></code></a>(column__lat,&nbsp;column__long[,&nbsp;...])</td>
-<td>Draw points from latitude and longitude columns.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.scatter.html#datascience.tables.Table.scatter" title="datascience.tables.Table.scatter"><code class="xref py py-obj docutils literal"><span class="pre">Table.scatter</span></code></a>(column_for_x[,&nbsp;select,&nbsp;...])</td>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.scatter.html#datascience.tables.Table.scatter" title="datascience.tables.Table.scatter"><code class="xref py py-obj docutils literal"><span class="pre">Table.scatter</span></code></a>(column_for_x[,&nbsp;select,&nbsp;...])</td>
 <td>Creates scatterplots, optionally adding a line of best fit.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.boxplot.html#datascience.tables.Table.boxplot" title="datascience.tables.Table.boxplot"><code class="xref py py-obj docutils literal"><span class="pre">Table.boxplot</span></code></a>(**vargs)</td>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.boxplot.html#datascience.tables.Table.boxplot" title="datascience.tables.Table.boxplot"><code class="xref py py-obj docutils literal"><span class="pre">Table.boxplot</span></code></a>(**vargs)</td>
 <td>Plots a boxplot for the table.</td>
 </tr>
 </tbody>
@@ -367,7 +370,7 @@ methods (mostly visualizations).</p>
         <li class="right" >
           <a href="tutorial.html" title="Start Here: datascience Tutorial"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.7.1 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.8.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

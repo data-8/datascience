@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>datascience.maps &mdash; datascience 0.7.1 documentation</title>
+    <title>datascience.maps &mdash; datascience 0.8.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.1',
+        VERSION:     '0.8.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.7.1 documentation" href="../../index.html" />
+    <link rel="top" title="datascience 0.8.0 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body role="document">
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.7.1 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.8.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -63,6 +63,8 @@
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">import</span> <span class="nn">random</span>
+
+<span class="kn">from</span> <span class="nn">.tables</span> <span class="kn">import</span> <span class="n">Table</span>
 
 <span class="n">_number</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>
 
@@ -141,6 +143,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_height</span> <span class="o">=</span> <span class="n">height</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
 
+<div class="viewcode-block" id="Map.copy"><a class="viewcode-back" href="../../maps.html#datascience.maps.Map.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Copies the current Map into a new one and returns it.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Map</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_features</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">,</span>
+                   <span class="n">height</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_height</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="p">)</span>
+</div>
     <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_features</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
 
@@ -305,6 +314,51 @@
         <span class="n">colored</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span><span class="p">()</span>
         <span class="n">colored</span><span class="o">.</span><span class="n">_folium_map</span> <span class="o">=</span> <span class="n">m</span>
         <span class="k">return</span> <span class="n">colored</span>
+</div>
+<div class="viewcode-block" id="Map.overlay"><a class="viewcode-back" href="../../maps.html#datascience.maps.Map.overlay">[docs]</a>    <span class="k">def</span> <span class="nf">overlay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;Blue&#39;</span><span class="p">,</span> <span class="n">opacity</span><span class="o">=</span><span class="mf">0.6</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overlays ``feature`` on the map. Returns a new Map.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ``feature``: a ``Table`` of map features, a list of map features,</span>
+<span class="sd">                a Map, a Region, or a circle marker map table. The features will</span>
+<span class="sd">                be overlayed on the Map with specified ``color``.</span>
+
+<span class="sd">            ``color`` (``str``): Color of feature. Defaults to &#39;Blue&#39;</span>
+
+<span class="sd">            ``opacity`` (``float``): Opacity of overlain feature. Defaults to</span>
+<span class="sd">                0.6.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A new ``Map`` with the overlain ``feature``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span> <span class="o">==</span> <span class="n">Table</span><span class="p">:</span>
+            <span class="c1"># if table of features e.g. Table.from_records(taz_map.features)</span>
+            <span class="k">if</span> <span class="s1">&#39;feature&#39;</span> <span class="ow">in</span> <span class="n">feature</span><span class="p">:</span>
+                <span class="n">feature</span> <span class="o">=</span> <span class="n">feature</span><span class="p">[</span><span class="s1">&#39;feature&#39;</span><span class="p">]</span>
+
+            <span class="c1"># if marker table e.g. table with columns: latitudes,longitudes,popup,color,radius</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">feature</span> <span class="o">=</span> <span class="n">Circle</span><span class="o">.</span><span class="n">map_table</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">feature</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">_attrs</span><span class="p">[</span><span class="s1">&#39;fill_color&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">color</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">_attrs</span><span class="p">[</span><span class="s1">&#39;fill_opacity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">opacity</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">draw_on</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">_folium_map</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span> <span class="o">==</span> <span class="n">Map</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">_features</span><span class="p">)):</span>
+                <span class="n">f</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">_features</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">_attrs</span><span class="p">[</span><span class="s1">&#39;fill_color&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">color</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">_attrs</span><span class="p">[</span><span class="s1">&#39;fill_opacity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">opacity</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">draw_on</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">_folium_map</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span> <span class="o">==</span> <span class="n">Region</span><span class="p">:</span>
+            <span class="n">feature</span><span class="o">.</span><span class="n">_attrs</span><span class="p">[</span><span class="s1">&#39;fill_color&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">color</span>
+            <span class="n">feature</span><span class="o">.</span><span class="n">_attrs</span><span class="p">[</span><span class="s1">&#39;fill_opacity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">opacity</span>
+            <span class="n">feature</span><span class="o">.</span><span class="n">draw_on</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">_folium_map</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
 </div>
     <span class="nd">@classmethod</span>
 <div class="viewcode-block" id="Map.read_geojson"><a class="viewcode-back" href="../../maps.html#datascience.maps.Map.read_geojson">[docs]</a>    <span class="k">def</span> <span class="nf">read_geojson</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">path_or_json_or_string</span><span class="p">):</span>
@@ -641,7 +695,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.7.1 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.8.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
