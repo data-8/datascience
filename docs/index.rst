@@ -5,7 +5,7 @@ Welcome to datascience's documentation!
 :Date: |today|
 
 The ``datascience`` package was written for use in Berkeley's DS 8 course and
-contains useful functionality for investigating and graphically displaying data.
+contains useful functionality for investigating and graphically displaying data. Hello world
 
 .. toctree::
     :maxdepth: 2
