@@ -1332,7 +1332,7 @@ class Table(collections.abc.MutableMapping):
 
         Args:
             ``label`` (str): The column label. If an existing label is used,
-            the existing column will be replaced in the new table.
+                the existing column will be replaced in the new table.
 
             ``values`` (single value or sequence): If a single value, every
                 value in the new column is ``values``. If sequence of values,
@@ -1356,8 +1356,8 @@ class Table(collections.abc.MutableMapping):
         d      | 4
         >>> alphabet.with_column('permutes', make_array('a', 'g'))
         letter | count | permutes
-        c      | 1     | a
-        d      | 2     | g
+        c      | 2     | a
+        d      | 4     | g
         >>> alphabet
         letter | count
         c      | 2
@@ -1411,13 +1411,12 @@ class Table(collections.abc.MutableMapping):
             when passed only one label-value pair.
 
 
-        >>> players = Table().with_columns('player_id',
-        ...     make_array(110234, 110234), 'wOBA', make_array(.354, .236))
+        >>> players = Table().with_columns('player_id', make_array(110234, 110234), 'wOBA', make_array(.354, .236))
         >>> players
         player_id | wOBA
         110234    | 0.354
         110234    | 0.236
-        >>> players = players.with_columns('salaries', 'N/A', 'season', 2016))
+        >>> players = players.with_columns('salaries', 'N/A', 'season', 2016)
         >>> players
         player_id | wOBA  | salaries | season
         110234    | 0.354 | N/A      | 2016
