@@ -1411,7 +1411,8 @@ class Table(collections.abc.MutableMapping):
             when passed only one label-value pair.
 
 
-        >>> players = Table().with_columns('player_id', make_array(110234, 110234), 'wOBA', make_array(.354, .236))
+        >>> players = Table().with_columns('player_id',
+        ...     make_array(110234, 110234), 'wOBA', make_array(.354, .236))
         >>> players
         player_id | wOBA
         110234    | 0.354
