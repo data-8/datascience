@@ -1412,11 +1412,11 @@ class Table(collections.abc.MutableMapping):
 
 
         >>> players = Table().with_columns('player_id',
-        ...     make_array(110234, 110234), 'wOBA', make_array(.354, .236))
+        ...     make_array(110234, 110235), 'wOBA', make_array(.354, .236))
         >>> players
         player_id | wOBA
         110234    | 0.354
-        110234    | 0.236
+        110235    | 0.236
         >>> players = players.with_columns('salaries', 'N/A', 'season', 2016)
         >>> players
         player_id | wOBA  | salaries | season
@@ -1426,9 +1426,9 @@ class Table(collections.abc.MutableMapping):
         ...     make_array('$500,000', '$15,500,000'))
         >>> players.with_columns('salaries', salaries.column('salary'),
         ...     'years', make_array(6, 1))
-        player_id | wOBA  | salaries    | years
-        110234    | 0.354 | $500,000    | 6
-        110234    | 0.236 | $15,500,000 | 1
+        player_id | wOBA  | salaries    | season | years
+        110234    | 0.354 | $500,000    | 2016   | 6
+        110235    | 0.236 | $15,500,000 | 2016   | 1
         >>> players.with_columns(2, make_array('$600,000', '$20,000,000'))
         Traceback (most recent call last):
             ...
