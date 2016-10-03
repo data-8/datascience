@@ -1391,11 +1391,10 @@ class Table(collections.abc.MutableMapping):
         Traceback (most recent call last):
             ...
         ValueError: The column label must be a string, but a int was given
-        >>> alphabet.append_column('bad_col', make_array(1))
+        >>> alphabet.with_column('bad_col', make_array(1))
         Traceback (most recent call last):
             ...
-        ValueError: Column length mismatch. New column does not have the same
-        number of rows as table.
+        ValueError: Column length mismatch. New column does not have the same number of rows as table.
         """
         new_table = self.copy()
         new_table.append_column(label, values)
@@ -1454,16 +1453,10 @@ class Table(collections.abc.MutableMapping):
         Traceback (most recent call last):
             ...
         ValueError: The column label must be a string, but a int was given
-        >>> players.with_columns(2, make_array('$600,000'))
+        >>> players.with_columns('salaries', make_array('$600,000'))
         Traceback (most recent call last):
             ...
-        ValueError: Column length mismatch. New column does not have the same
-        number of rows as table.
-        >>> players.with_columns('salaries',
-        ...     make_array('$600,000', '$20,000,000'), 'new_column')
-        AssertionErrorTraceback (most recent call last)
-            ...
-        AssertionError: Even length sequence required
+        ValueError: Column length mismatch. New column does not have the same number of rows as table.
         """
         if len(labels_and_values) == 1:
             labels_and_values = labels_and_values[0]
