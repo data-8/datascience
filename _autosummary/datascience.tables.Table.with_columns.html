@@ -64,60 +64,80 @@
 <dt>Args:</dt>
 <dd><dl class="first last docutils">
 <dt><code class="docutils literal"><span class="pre">labels_and_values</span></code>: An alternating list of labels and values or</dt>
-<dd>a list of label-values pairs.</dd>
+<dd>a list of label-value pairs. If one of the labels is in
+existing table, then every value in the corresponding column is
+set to that value. If label has only a single value (<code class="docutils literal"><span class="pre">int</span></code>),
+every row of corresponding column takes on that value.</dd>
 </dl>
 </dd>
+<dt>Raises:</dt>
+<dd><dl class="first last docutils">
+<dt><code class="docutils literal"><span class="pre">ValueError</span></code>: If</dt>
+<dd><ul class="first last">
+<li><dl class="first docutils">
+<dt>any label in <code class="docutils literal"><span class="pre">labels_and_values</span></code> is not a valid column</dt>
+<dd><p class="first last">name, i.e if label is not of type (str).</p>
+</dd>
 </dl>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">([</span>
-<span class="gp">... </span>    <span class="s1">&#39;letter&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">],</span>
-<span class="gp">... </span>    <span class="s1">&#39;count&#39;</span><span class="p">,</span>  <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
-<span class="gp">... </span><span class="p">])</span>
-<span class="go">letter | count</span>
-<span class="go">c      | 2</span>
-<span class="go">d      | 4</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="s1">&#39;letter&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">],</span>
-<span class="gp">... </span>    <span class="s1">&#39;count&#39;</span><span class="p">,</span>  <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
-<span class="gp">... </span><span class="p">)</span>
-<span class="go">letter | count</span>
-<span class="go">c      | 2</span>
-<span class="go">d      | 4</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">([</span>
-<span class="gp">... </span>    <span class="p">[</span><span class="s1">&#39;letter&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">]],</span>
-<span class="gp">... </span>    <span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">,</span>  <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]],</span>
-<span class="gp">... </span><span class="p">])</span>
-<span class="go">letter | count</span>
-<span class="go">c      | 2</span>
-<span class="go">d      | 4</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="p">[</span><span class="s1">&#39;letter&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">]],</span>
-<span class="gp">... </span>    <span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">,</span>  <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]],</span>
-<span class="gp">... </span><span class="p">)</span>
-<span class="go">letter | count</span>
-<span class="go">c      | 2</span>
-<span class="go">d      | 4</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">([</span>
-<span class="gp">... </span>    <span class="p">[</span><span class="s1">&#39;letter&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">]],</span>
-<span class="gp">... </span><span class="p">])</span>
-<span class="go">letter</span>
-<span class="go">c</span>
-<span class="go">d</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="s1">&#39;letter&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">],</span>
-<span class="gp">... </span><span class="p">)</span>
-<span class="go">letter</span>
-<span class="go">c</span>
-<span class="go">d</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="p">[</span><span class="s1">&#39;letter&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">]],</span>
-<span class="gp">... </span><span class="p">)</span>
-<span class="go">letter</span>
-<span class="go">c</span>
-<span class="go">d</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">({</span><span class="s1">&#39;letter&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">]})</span>
-<span class="go">letter</span>
-<span class="go">c</span>
-<span class="go">d</span>
+</li>
+<li><dl class="first docutils">
+<dt>if any value in <code class="docutils literal"><span class="pre">labels_and_values</span></code> is a list/array and</dt>
+<dd><p class="first last">does not have the same length as the number of rows in the
+table.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+<dt><code class="docutils literal"><span class="pre">AssertionError</span></code>:</dt>
+<dd><ul class="first last">
+<li><dl class="first docutils">
+<dt>&#8216;incorrect columns format&#8217;, if passed more than one sequence</dt>
+<dd><p class="first last">(iterables) for  <code class="docutils literal"><span class="pre">labels_and_values</span></code>.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>&#8216;even length sequence required&#8217; if missing a pair in</dt>
+<dd><p class="first last">label-value pairs.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>Copy of original table with new or replaced columns. Columns added
+in order of labels. Equivalent to <code class="docutils literal"><span class="pre">with_column(label,</span> <span class="pre">value)</span></code>
+when passed only one label-value pair.</dd>
+</dl>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">players</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span><span class="s1">&#39;player_id&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">make_array</span><span class="p">(</span><span class="mi">110234</span><span class="p">,</span> <span class="mi">110235</span><span class="p">),</span> <span class="s1">&#39;wOBA&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="o">.</span><span class="mi">354</span><span class="p">,</span> <span class="o">.</span><span class="mi">236</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">players</span>
+<span class="go">player_id | wOBA</span>
+<span class="go">110234    | 0.354</span>
+<span class="go">110235    | 0.236</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">players</span> <span class="o">=</span> <span class="n">players</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span><span class="s1">&#39;salaries&#39;</span><span class="p">,</span> <span class="s1">&#39;N/A&#39;</span><span class="p">,</span> <span class="s1">&#39;season&#39;</span><span class="p">,</span> <span class="mi">2016</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">players</span>
+<span class="go">player_id | wOBA  | salaries | season</span>
+<span class="go">110234    | 0.354 | N/A      | 2016</span>
+<span class="go">110235    | 0.236 | N/A      | 2016</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">salaries</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_column</span><span class="p">(</span><span class="s1">&#39;salary&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;$500,000&#39;</span><span class="p">,</span> <span class="s1">&#39;$15,500,000&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">players</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span><span class="s1">&#39;salaries&#39;</span><span class="p">,</span> <span class="n">salaries</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s1">&#39;salary&#39;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="s1">&#39;years&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="go">player_id | wOBA  | salaries    | season | years</span>
+<span class="go">110234    | 0.354 | $500,000    | 2016   | 6</span>
+<span class="go">110235    | 0.236 | $15,500,000 | 2016   | 1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">players</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;$600,000&#39;</span><span class="p">,</span> <span class="s1">&#39;$20,000,000&#39;</span><span class="p">))</span>
+<span class="gt">Traceback (most recent call last):</span>
+    <span class="o">...</span>
+<span class="gr">ValueError</span>: <span class="n">The column label must be a string, but a int was given</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">players</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span><span class="s1">&#39;salaries&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;$600,000&#39;</span><span class="p">))</span>
+<span class="gt">Traceback (most recent call last):</span>
+    <span class="o">...</span>
+<span class="gr">ValueError</span>: <span class="n">Column length mismatch. New column does not have the same number of rows as table.</span>
 </pre></div>
 </div>
 </dd></dl>

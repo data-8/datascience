@@ -1398,36 +1398,52 @@
         <span class="k">return</span> <span class="bp">self</span>
 </div>
 <div class="viewcode-block" id="Table.with_column"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.with_column.html#datascience.tables.Table.with_column">[docs]</a>    <span class="k">def</span> <span class="nf">with_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return a table with an additional or replaced column.</span>
+        <span class="sd">&quot;&quot;&quot;Return a new table with an additional or replaced column.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            ``label`` (str): The column label. If an existing label is used,</span>
-<span class="sd">                that column will be replaced in the returned table.</span>
+<span class="sd">                the existing column will be replaced in the new table.</span>
 
 <span class="sd">            ``values`` (single value or sequence): If a single value, every</span>
-<span class="sd">                value in the new column is ``values``.</span>
-
-<span class="sd">                If a sequence, the new column contains the values in</span>
-<span class="sd">                ``values``. ``values`` must be the same length as the table.</span>
+<span class="sd">                value in the new column is ``values``. If sequence of values,</span>
+<span class="sd">                new column takes on values in ``values``.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            ``ValueError``: If</span>
 <span class="sd">                - ``label`` is not a valid column name</span>
-<span class="sd">                - ``values`` is a list/array and does not have the same length</span>
-<span class="sd">                  as the number of rows in the table.</span>
+<span class="sd">                - if ``label`` is not of type (str)</span>
+<span class="sd">                - ``values`` is a list/array that does not have the same</span>
+<span class="sd">                    length as the number of rows in the table.</span>
 
-<span class="sd">        &gt;&gt;&gt; tiles = Table().with_columns([</span>
-<span class="sd">        ...     &#39;letter&#39;, [&#39;c&#39;, &#39;d&#39;],</span>
-<span class="sd">        ...     &#39;count&#39;,  [2, 4],</span>
-<span class="sd">        ... ])</span>
-<span class="sd">        &gt;&gt;&gt; tiles.with_column(&#39;points&#39;, [3, 2])</span>
-<span class="sd">        letter | count | points</span>
-<span class="sd">        c      | 2     | 3</span>
-<span class="sd">        d      | 4     | 2</span>
-<span class="sd">        &gt;&gt;&gt; tiles.with_column(&#39;count&#39;, 1)</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            copy of original table with new or replaced column</span>
+
+<span class="sd">        &gt;&gt;&gt; alphabet = Table().with_column(&#39;letter&#39;, make_array(&#39;c&#39;,&#39;d&#39;))</span>
+<span class="sd">        &gt;&gt;&gt; alphabet = alphabet.with_column(&#39;count&#39;, make_array(2, 4))</span>
+<span class="sd">        &gt;&gt;&gt; alphabet</span>
+<span class="sd">        letter | count</span>
+<span class="sd">        c      | 2</span>
+<span class="sd">        d      | 4</span>
+<span class="sd">        &gt;&gt;&gt; alphabet.with_column(&#39;permutes&#39;, make_array(&#39;a&#39;, &#39;g&#39;))</span>
+<span class="sd">        letter | count | permutes</span>
+<span class="sd">        c      | 2     | a</span>
+<span class="sd">        d      | 4     | g</span>
+<span class="sd">        &gt;&gt;&gt; alphabet</span>
+<span class="sd">        letter | count</span>
+<span class="sd">        c      | 2</span>
+<span class="sd">        d      | 4</span>
+<span class="sd">        &gt;&gt;&gt; alphabet.with_column(&#39;count&#39;, 1)</span>
 <span class="sd">        letter | count</span>
 <span class="sd">        c      | 1</span>
 <span class="sd">        d      | 1</span>
+<span class="sd">        &gt;&gt;&gt; alphabet.with_column(1, make_array(1, 2))</span>
+<span class="sd">        Traceback (most recent call last):</span>
+<span class="sd">            ...</span>
+<span class="sd">        ValueError: The column label must be a string, but a int was given</span>
+<span class="sd">        &gt;&gt;&gt; alphabet.with_column(&#39;bad_col&#39;, make_array(1))</span>
+<span class="sd">        Traceback (most recent call last):</span>
+<span class="sd">            ...</span>
+<span class="sd">        ValueError: Column length mismatch. New column does not have the same number of rows as table.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">new_table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">new_table</span><span class="o">.</span><span class="n">append_column</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
@@ -1436,60 +1452,60 @@
 <div class="viewcode-block" id="Table.with_columns"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.with_columns.html#datascience.tables.Table.with_columns">[docs]</a>    <span class="k">def</span> <span class="nf">with_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">labels_and_values</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a table with additional or replaced columns.</span>
 
+
 <span class="sd">        Args:</span>
 <span class="sd">            ``labels_and_values``: An alternating list of labels and values or</span>
-<span class="sd">                a list of label-values pairs.</span>
+<span class="sd">                a list of label-value pairs. If one of the labels is in</span>
+<span class="sd">                existing table, then every value in the corresponding column is</span>
+<span class="sd">                set to that value. If label has only a single value (``int``),</span>
+<span class="sd">                every row of corresponding column takes on that value.</span>
 
-<span class="sd">        &gt;&gt;&gt; Table().with_columns([</span>
-<span class="sd">        ...     &#39;letter&#39;, [&#39;c&#39;, &#39;d&#39;],</span>
-<span class="sd">        ...     &#39;count&#39;,  [2, 4],</span>
-<span class="sd">        ... ])</span>
-<span class="sd">        letter | count</span>
-<span class="sd">        c      | 2</span>
-<span class="sd">        d      | 4</span>
-<span class="sd">        &gt;&gt;&gt; Table().with_columns(</span>
-<span class="sd">        ...     &#39;letter&#39;, [&#39;c&#39;, &#39;d&#39;],</span>
-<span class="sd">        ...     &#39;count&#39;,  [2, 4],</span>
-<span class="sd">        ... )</span>
-<span class="sd">        letter | count</span>
-<span class="sd">        c      | 2</span>
-<span class="sd">        d      | 4</span>
-<span class="sd">        &gt;&gt;&gt; Table().with_columns([</span>
-<span class="sd">        ...     [&#39;letter&#39;, [&#39;c&#39;, &#39;d&#39;]],</span>
-<span class="sd">        ...     [&#39;count&#39;,  [2, 4]],</span>
-<span class="sd">        ... ])</span>
-<span class="sd">        letter | count</span>
-<span class="sd">        c      | 2</span>
-<span class="sd">        d      | 4</span>
-<span class="sd">        &gt;&gt;&gt; Table().with_columns(</span>
-<span class="sd">        ...     [&#39;letter&#39;, [&#39;c&#39;, &#39;d&#39;]],</span>
-<span class="sd">        ...     [&#39;count&#39;,  [2, 4]],</span>
-<span class="sd">        ... )</span>
-<span class="sd">        letter | count</span>
-<span class="sd">        c      | 2</span>
-<span class="sd">        d      | 4</span>
-<span class="sd">        &gt;&gt;&gt; Table().with_columns([</span>
-<span class="sd">        ...     [&#39;letter&#39;, [&#39;c&#39;, &#39;d&#39;]],</span>
-<span class="sd">        ... ])</span>
-<span class="sd">        letter</span>
-<span class="sd">        c</span>
-<span class="sd">        d</span>
-<span class="sd">        &gt;&gt;&gt; Table().with_columns(</span>
-<span class="sd">        ...     &#39;letter&#39;, [&#39;c&#39;, &#39;d&#39;],</span>
-<span class="sd">        ... )</span>
-<span class="sd">        letter</span>
-<span class="sd">        c</span>
-<span class="sd">        d</span>
-<span class="sd">        &gt;&gt;&gt; Table().with_columns(</span>
-<span class="sd">        ...     [&#39;letter&#39;, [&#39;c&#39;, &#39;d&#39;]],</span>
-<span class="sd">        ... )</span>
-<span class="sd">        letter</span>
-<span class="sd">        c</span>
-<span class="sd">        d</span>
-<span class="sd">        &gt;&gt;&gt; Table().with_columns({&#39;letter&#39;: [&#39;c&#39;, &#39;d&#39;]})</span>
-<span class="sd">        letter</span>
-<span class="sd">        c</span>
-<span class="sd">        d</span>
+<span class="sd">        Raises:</span>
+<span class="sd">            ``ValueError``: If</span>
+<span class="sd">                - any label in ``labels_and_values`` is not a valid column</span>
+<span class="sd">                    name, i.e if label is not of type (str).</span>
+<span class="sd">                - if any value in ``labels_and_values`` is a list/array and</span>
+<span class="sd">                    does not have the same length as the number of rows in the</span>
+<span class="sd">                    table.</span>
+<span class="sd">            ``AssertionError``:</span>
+<span class="sd">                - &#39;incorrect columns format&#39;, if passed more than one sequence</span>
+<span class="sd">                    (iterables) for  ``labels_and_values``.</span>
+<span class="sd">                - &#39;even length sequence required&#39; if missing a pair in</span>
+<span class="sd">                    label-value pairs.</span>
+
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Copy of original table with new or replaced columns. Columns added</span>
+<span class="sd">            in order of labels. Equivalent to ``with_column(label, value)``</span>
+<span class="sd">            when passed only one label-value pair.</span>
+
+
+<span class="sd">        &gt;&gt;&gt; players = Table().with_columns(&#39;player_id&#39;,</span>
+<span class="sd">        ...     make_array(110234, 110235), &#39;wOBA&#39;, make_array(.354, .236))</span>
+<span class="sd">        &gt;&gt;&gt; players</span>
+<span class="sd">        player_id | wOBA</span>
+<span class="sd">        110234    | 0.354</span>
+<span class="sd">        110235    | 0.236</span>
+<span class="sd">        &gt;&gt;&gt; players = players.with_columns(&#39;salaries&#39;, &#39;N/A&#39;, &#39;season&#39;, 2016)</span>
+<span class="sd">        &gt;&gt;&gt; players</span>
+<span class="sd">        player_id | wOBA  | salaries | season</span>
+<span class="sd">        110234    | 0.354 | N/A      | 2016</span>
+<span class="sd">        110235    | 0.236 | N/A      | 2016</span>
+<span class="sd">        &gt;&gt;&gt; salaries = Table().with_column(&#39;salary&#39;,</span>
+<span class="sd">        ...     make_array(&#39;$500,000&#39;, &#39;$15,500,000&#39;))</span>
+<span class="sd">        &gt;&gt;&gt; players.with_columns(&#39;salaries&#39;, salaries.column(&#39;salary&#39;),</span>
+<span class="sd">        ...     &#39;years&#39;, make_array(6, 1))</span>
+<span class="sd">        player_id | wOBA  | salaries    | season | years</span>
+<span class="sd">        110234    | 0.354 | $500,000    | 2016   | 6</span>
+<span class="sd">        110235    | 0.236 | $15,500,000 | 2016   | 1</span>
+<span class="sd">        &gt;&gt;&gt; players.with_columns(2, make_array(&#39;$600,000&#39;, &#39;$20,000,000&#39;))</span>
+<span class="sd">        Traceback (most recent call last):</span>
+<span class="sd">            ...</span>
+<span class="sd">        ValueError: The column label must be a string, but a int was given</span>
+<span class="sd">        &gt;&gt;&gt; players.with_columns(&#39;salaries&#39;, make_array(&#39;$600,000&#39;))</span>
+<span class="sd">        Traceback (most recent call last):</span>
+<span class="sd">            ...</span>
+<span class="sd">        ValueError: Column length mismatch. New column does not have the same number of rows as table.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels_and_values</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">labels_and_values</span> <span class="o">=</span> <span class="n">labels_and_values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
