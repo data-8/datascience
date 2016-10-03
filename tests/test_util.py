@@ -6,7 +6,7 @@ import numpy as np
 
 
 def test_doctests():
-    results = doctest.testmod(util)
+    results = doctest.testmod(util, optionflags=doctest.NORMALIZE_WHITESPACE)
     assert results.failed == 0
 
 

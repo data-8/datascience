@@ -86,7 +86,7 @@ def assert_equal(string1, string2):
 
 
 def test_doctests():
-    results = doctest.testmod(tables)
+    results = doctest.testmod(tables, optionflags=doctest.NORMALIZE_WHITESPACE)
     assert results.failed == 0
 
 
@@ -463,7 +463,7 @@ def test_apply(t):
     assert_array_equal(t.apply(lambda x, y: x * y, ['count', 'points']), np.array([9, 6, 6, 10]))
     assert_array_equal(t.apply(lambda x: x * x, 'points'), np.array([1, 4, 4, 100]))
     assert_array_equal(t.apply(lambda row: row.item('count') * 2), np.array([18, 6, 6, 2]))
-    with(pytest.raises(KeyError)):
+    with(pytest.raises(ValueError)):
         t.apply(lambda x, y: x + y, ['count', 'score'])
 
 
@@ -605,7 +605,7 @@ def test_append_table(table):
 
 
 def test_append_different_table(table, u):
-    with pytest.raises(KeyError):
+    with pytest.raises(ValueError):
         table.append(u)
 
 
