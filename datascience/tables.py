@@ -19,9 +19,9 @@ import matplotlib.pyplot as plt
 import pandas
 import IPython
 
-import datascience.maps as _maps
 import datascience.formats as _formats
 import datascience.util as _util
+from datascience.util import make_array
 import datascience.predicates as _predicates
 
 class Table(collections.abc.MutableMapping):
@@ -279,7 +279,7 @@ class Table(collections.abc.MutableMapping):
             dtype = object
         else:
             dtype = None
-        return np.array(self.rows, dtype=dtype)
+        return np.array(self.columns, dtype=dtype).T
 
     def column_index(self, column_label):
         """Return the index of a column."""
@@ -537,57 +537,52 @@ class Table(collections.abc.MutableMapping):
         return table
 
     def select(self, *column_label_or_labels):
-        """Return a Table with selected column or columns by label or index.
+        """
+        Returns a new ``Table`` with only the columns in
+        ``column_label_or_labels``.
 
         Args:
-            ``column_label_or_labels`` (string, list of strings, or several
-            separate argument strings): The header names or indices of the
-            columns to be selected. ``column_label_or_labels`` must
-            be an existing header name, or a valid column index, or a list
-            thereof.
+            ``column_label_or_labels``: Columns to select from the ``Table`` as
+            either column labels (``str``) or column indices (``int``).
 
         Returns:
-            An instance of ``Table`` containing only selected columns.
+            An new instance of ``Table`` containing only selected columns.
+            The columns of the new ``Table`` are in the order given in
+            ``column_label_or_labels``.
 
-        >>> t = Table().with_columns([
-        ...     'burgers',  ['cheeseburger', 'hamburger', 'veggie burger'],
-        ...     'prices',   [6, 5, 5],
-        ...     'calories', [743, 651, 582]])
-        >>> t
-        burgers       | prices | calories
-        cheeseburger  | 6      | 743
-        hamburger     | 5      | 651
-        veggie burger | 5      | 582
-        >>> t.select(['burgers', 'calories'])
-        burgers       | calories
-        cheeseburger  | 743
-        hamburger     | 651
-        veggie burger | 582
-        >>> t.select('prices')
-        prices
-        6
-        5
-        5
-        >>> t.select('burgers', 'calories')
-        burgers       | calories
-        cheeseburger  | 743
-        hamburger     | 651
-        veggie burger | 582
-        >>> t.select(1)
-        prices
-        6
-        5
-        5
-        >>> t.select([2, 0])
-        calories | burgers
-        743      | cheeseburger
-        651      | hamburger
-        582      | veggie burger
-        >>> t.select(2, 0)
-        calories | burgers
-        743      | cheeseburger
-        651      | hamburger
-        582      | veggie burger
+        Raises:
+            ``KeyError`` if any of ``column_label_or_labels`` are not in the
+            table.
+
+        >>> flowers = Table().with_columns(
+        ...     'Number of petals', make_array(8, 34, 5),
+        ...     'Name', make_array('lotus', 'sunflower', 'rose'),
+        ...     'Weight', make_array(10, 5, 6)
+        ... )
+
+        >>> flowers
+        Number of petals | Name      | Weight
+        8                | lotus     | 10
+        34               | sunflower | 5
+        5                | rose      | 6
+
+        >>> flowers.select('Number of petals', 'Weight')
+        Number of petals | Weight
+        8                | 10
+        34               | 5
+        5                | 6
+
+        >>> flowers  # original table unchanged
+        Number of petals | Name      | Weight
+        8                | lotus     | 10
+        34               | sunflower | 5
+        5                | rose      | 6
+
+        >>> flowers.select(0, 2)
+        Number of petals | Weight
+        8                | 10
+        34               | 5
+        5                | 6
         """
         labels = self._varargs_as_labels(column_label_or_labels)
         table = Table()
@@ -659,64 +654,84 @@ class Table(collections.abc.MutableMapping):
         return self.select([c for (i, c) in enumerate(self.labels) if i not in exclude and c not in exclude])
 
     def where(self, column_or_label, value_or_predicate=None, other=None):
-        """Return a Table of rows for which the column is ``value`` or a non-zero value.
-
-        If ``column_or_label`` contains Boolean values, returns rows corresponding to True.
+        """
+        Return a new ``Table`` containing rows where ``value_or_predicate``
+        returns True for values in ``column_or_label``.
 
         Args:
-            ``column_or_label``: The header name of a column in the table or an array.
+            ``column_or_label``: A column of the ``Table`` either as a label
+            (``str``) or an index (``int``). Can also be an array of booleans;
+            only the rows where the array value is ``True`` are kept.
 
-            ``value_or_predicate``: Value to compare to items in column
-            or function to apply to items in column.
+            ``value_or_predicate``: If a function, it is applied to every value
+            in ``column_or_label``. Only the rows where ``value_or_predicate``
+            returns True are kept. If a single value, only the rows where the
+            values in ``column_or_label`` are equal to ``value_or_predicate``
+            are kept.
+
+            ``other``: Optional additional column label for
+            ``value_or_predicate`` to make pairwise comparisons. See the
+            examples below for usage. When ``other`` is supplied,
+            ``value_or_predicate`` must be a callable function.
 
         Returns:
-            An instance of ``Table`` containing rows for which the ``column_or_label``
-            column or ``column_or_label`` itself is non-zero or True, or is equal to ``value``,
-            if provided.
+            If ``value_or_predicate`` is a function, returns a new ``Table``
+            containing only the rows where ``value_or_predicate(val)`` is True
+            for the ``val``s in ``column_or_label``.
 
-        >>> marbles = Table().with_columns([
-        ...    "Color", ["Red", "Green", "Blue", "Red", "Green", "Green"],
-        ...    "Shape", ["Round", "Rectangular", "Rectangular", "Round", "Rectangular", "Round"],
-        ...    "Amount", [4, 6, 12, 7, 9, 2],
-        ...    "Price", [1.30, 1.20, 2.00, 1.75, 1.40, 3.00]])
+            If ``value_or_predicate`` is a value, returns a new ``Table``
+            containing only the rows where the values in ``column_or_label``
+            are equal to ``value_or_predicate``.
+
+            If ``column_or_label`` is an array of booleans, returns a new
+            ``Table`` containing only the rows where ``column_or_label`` is
+            ``True``.
+
+        >>> marbles = Table().with_columns(
+        ...    "Color", make_array("Red", "Green", "Blue", "Red", "Green", "Green"),
+        ...    "Shape", make_array("Round", "Rectangular", "Rectangular", "Round", "Rectangular", "Round"),
+        ...    "Amount", make_array(4, 6, 12, 7, 9, 2),
+        ...    "Price", make_array(1.30, 1.20, 2.00, 1.75, 0, 3.00))
+
         >>> marbles
         Color | Shape       | Amount | Price
         Red   | Round       | 4      | 1.3
         Green | Rectangular | 6      | 1.2
         Blue  | Rectangular | 12     | 2
         Red   | Round       | 7      | 1.75
-        Green | Rectangular | 9      | 1.4
-        Green | Round       | 2      | 3
-        >>> marbles.where("Shape", "Round")
-        Color | Shape | Amount | Price
-        Red   | Round | 4      | 1.3
-        Red   | Round | 7      | 1.75
-        Green | Round | 2      | 3
-        >>> marbles.where(marbles.column("Shape") == "Round") # equivalent to previous example
-        Color | Shape | Amount | Price
-        Red   | Round | 4      | 1.3
-        Red   | Round | 7      | 1.75
-        Green | Round | 2      | 3
-        >>> marbles.where(marbles.column("Price") > 1.5)
-        Color | Shape       | Amount | Price
-        Blue  | Rectangular | 12     | 2
-        Red   | Round       | 7      | 1.75
+        Green | Rectangular | 9      | 0
         Green | Round       | 2      | 3
 
-        You can also use predicates to simplify single-column comparisons.
+        Use a value to select matching rows
+
+        >>> marbles.where("Price", 1.3)
+        Color | Shape | Amount | Price
+        Red   | Round | 4      | 1.3
+
+        In general, a higher order predicate function such as the functions in
+        ``datascience.predicates.are`` can be used.
 
         >>> from datascience.predicates import are
-        >>> marbles.where("Price", are.above(1.5)) # equivalent to previous example
+        >>> # equivalent to previous example
+        >>> marbles.where("Price", are.equal_to(1.3))
+        Color | Shape | Amount | Price
+        Red   | Round | 4      | 1.3
+
+        >>> marbles.where("Price", are.above(1.5))
         Color | Shape       | Amount | Price
         Blue  | Rectangular | 12     | 2
         Red   | Round       | 7      | 1.75
         Green | Round       | 2      | 3
 
-        And apply some predicates to compare columns.
+        Use the optional argument ``other`` to apply predicates to compare
+        columns.
 
         >>> marbles.where("Price", are.above, "Amount")
         Color | Shape | Amount | Price
         Green | Round | 2      | 3
+
+        >>> marbles.where("Price", are.equal_to, "Amount") # empty table
+        Color | Shape | Amount | Price
         """
         column = self._get_column(column_or_label)
         if other is not None:
@@ -1154,7 +1169,7 @@ class Table(collections.abc.MutableMapping):
         percentiles = [[_util.percentile(p, column)] for column in self.columns]
         return self._with_columns(percentiles)
 
-    def sample(self, k=None, with_replacement=False, weights=None):
+    def sample(self, k=None, with_replacement=True, weights=None):
         """Returns a new table where k rows are randomly sampled from the
         original table.
 
@@ -1163,8 +1178,8 @@ class Table(collections.abc.MutableMapping):
                 sampled. If an integer, k rows from the original table are
                 sampled.
 
-            with_replacement (bool): If False (default), samples the rows
-                without replacement. If True, samples the rows with replacement.
+            with_replacement (bool): If True (default), samples the rows with
+                replacement. If False, samples the rows without replacement.
 
             weights (list/array or None): If None (default), samples the rows
                 using a uniform random distribution. If a list/array is passed
@@ -1188,9 +1203,15 @@ class Table(collections.abc.MutableMapping):
         >>> jobs.sample() # doctest: +SKIP
         job  | wage
         b    | 20
-        c    | 15
+        b    | 20
         a    | 10
         d    | 8
+        >>> jobs.sample(with_replacement=True) # doctest: +SKIP
+        job  | wage
+        d    | 8
+        b    | 20
+        c    | 15
+        a    | 10
         >>> jobs.sample(k = 2) # doctest: +SKIP
         job  | wage
         b    | 20
@@ -2072,7 +2093,6 @@ class Table(collections.abc.MutableMapping):
                 values = np.repeat(counted_values, n).reshape(-1,n)
             vargs.setdefault('histtype', 'stepfilled')
             figure = plt.figure(figsize=(6, 4))
-            print(values, colors, vargs)
             plt.hist(values, color=colors, **vargs)
             axis = figure.get_axes()[0]
             _vertical_x(axis)
@@ -2156,16 +2176,6 @@ class Table(collections.abc.MutableMapping):
         vargs['labels'] = columns.keys()
         values = list(columns.values())
         plt.boxplot(values, **vargs)
-
-    # Deprecated
-    def points(self, column__lat, column__long, labels=None, colors=None, **kwargs) :
-        """Draw points from latitude and longitude columns. [Deprecated]"""
-        warnings.warn("points is deprecated. Use Circle.map", FutureWarning)
-        latitudes = self._get_column(column__lat)
-        longitudes = self._get_column(column__long)
-        if labels is not None : labels = self._get_column(labels)
-        if colors is not None : colors = self._get_column(colors)
-        return _maps.Circle.map(latitudes, longitudes, labels=labels, colors=colors, **kwargs)
 
 
     ###########

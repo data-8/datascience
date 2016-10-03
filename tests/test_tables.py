@@ -999,7 +999,7 @@ def test_sample_weights_worepl(table):
     """
     iterations, i = 100,  0
     while i < iterations:
-        u = table.sample(table.num_rows)
+        u = table.sample(table.num_rows, with_replacement=False)
         assert len(set(u.rows)) == len(u.rows)
         i += 1
 
@@ -1010,7 +1010,7 @@ def test_sample_weights_with_none_k(table):
     """
     iterations, i = 100,  0
     while i < iterations:
-        u = table.sample()
+        u = table.sample(with_replacement=False)
         assert len(set(u.rows)) == len(u.rows)
         i += 1
 

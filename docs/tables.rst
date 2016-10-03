@@ -42,7 +42,9 @@ Creation
     :toctree: _autosummary
 
     Table.__init__
+    Table.empty
     Table.from_records
+    Table.from_columns_dict
     Table.read_table
     Table.from_df
     Table.from_array
@@ -132,6 +134,5 @@ Visualizations
     Table.barh
     Table.pivot_hist
     Table.hist
-    Table.points
     Table.scatter
     Table.boxplot
