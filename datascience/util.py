@@ -1,7 +1,7 @@
 """Utility functions"""
 
 __all__ = ['make_array', 'percentile', 'plot_cdf_area', 'plot_normal_cdf',
-           'table_apply', 'minimize']
+           'table_apply', 'proportions_from_distribution', 'minimize']
 
 import numpy as np
 import pandas as pd
@@ -25,7 +25,7 @@ def make_array(*elements):
     >>> make_array(2, 3, 4)
     array([2, 3, 4])
     >>> make_array("foo", "bar")
-    array(['foo', 'bar'], 
+    array(['foo', 'bar'],
           dtype='<U3')
     >>> make_array()
     array([], dtype=float64)
@@ -103,6 +103,42 @@ def plot_normal_cdf(rbound=None, lbound=None, mean=0, sd=1):
 
 # Old name
 plot_cdf_area = plot_normal_cdf
+
+
+def proportions_from_distribution(table, label, sample_size,
+                                  column_name='Random Sample'):
+    """
+    Adds a column named ``column_name`` containing the proportions of a random
+    draw using the distribution in ``label``.
+
+    This method uses ``np.random.multinomial`` to draw ``sample_size`` samples
+    from the distribution in ``table.column(label)``, then divides by
+    ``sample_size`` to create the resulting column of proportions.
+
+    Returns a new ``Table`` and does not modify ``table``.
+
+    Args:
+        ``table``: An instance of ``Table``.
+
+        ``label``: Label of column in ``table``. This column must contain a
+            distribution (the values must sum to 1).
+
+        ``sample_size``: The size of the sample to draw from the distribution.
+
+        ``column_name``: The name of the new column that contains the sampled
+            proportions. Defaults to ``'Random Sample'``.
+
+    Returns:
+        A copy of ``table`` with a column ``column_name`` containing the
+        sampled proportions. The proportions will sum to 1.
+
+    Throws:
+        ``ValueError``: If the ``label`` is not in the table, or if
+            ``table.column(label)`` does not sum to 1.
+    """
+    proportions = (np.random.multinomial(sample_size, table.column(label)) /
+                   sample_size)
+    return table.with_column('Random Sample', proportions)
 
 
 def table_apply(table, func, subset=None):

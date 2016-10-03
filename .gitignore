@@ -61,4 +61,5 @@ cache/
 
 docs/_build/
 docs/_autosummary/
+docs/_images/*.png
 docs/normal_data.csv
