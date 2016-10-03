@@ -1349,36 +1349,52 @@ class Table(collections.abc.MutableMapping):
         return self
 
     def with_column(self, label, values):
-        """Return a table with an additional or replaced column.
+        """Return a new table with an additional or replaced column.
 
         Args:
             ``label`` (str): The column label. If an existing label is used,
-                that column will be replaced in the returned table.
+                the existing column will be replaced in the new table.
 
             ``values`` (single value or sequence): If a single value, every
-                value in the new column is ``values``.
-
-                If a sequence, the new column contains the values in
-                ``values``. ``values`` must be the same length as the table.
+                value in the new column is ``values``. If sequence of values,
+                new column takes on values in ``values``.
 
         Raises:
             ``ValueError``: If
                 - ``label`` is not a valid column name
-                - ``values`` is a list/array and does not have the same length
-                  as the number of rows in the table.
+                - if ``label`` is not of type (str)
+                - ``values`` is a list/array that does not have the same
+                    length as the number of rows in the table.
 
-        >>> tiles = Table().with_columns([
-        ...     'letter', ['c', 'd'],
-        ...     'count',  [2, 4],
-        ... ])
-        >>> tiles.with_column('points', [3, 2])
-        letter | count | points
-        c      | 2     | 3
-        d      | 4     | 2
-        >>> tiles.with_column('count', 1)
+        Returns:
+            copy of original table with new or replaced column
+
+        >>> alphabet = Table().with_column('letter', make_array('c','d'))
+        >>> alphabet = alphabet.with_column('count', make_array(2, 4))
+        >>> alphabet
+        letter | count
+        c      | 2
+        d      | 4
+        >>> alphabet.with_column('permutes', make_array('a', 'g'))
+        letter | count | permutes
+        c      | 2     | a
+        d      | 4     | g
+        >>> alphabet
+        letter | count
+        c      | 2
+        d      | 4
+        >>> alphabet.with_column('count', 1)
         letter | count
         c      | 1
         d      | 1
+        >>> alphabet.with_column(1, make_array(1, 2))
+        Traceback (most recent call last):
+            ...
+        ValueError: The column label must be a string, but a int was given
+        >>> alphabet.with_column('bad_col', make_array(1))
+        Traceback (most recent call last):
+            ...
+        ValueError: Column length mismatch. New column does not have the same number of rows as table.
         """
         new_table = self.copy()
         new_table.append_column(label, values)
@@ -1387,60 +1403,60 @@ class Table(collections.abc.MutableMapping):
     def with_columns(self, *labels_and_values):
         """Return a table with additional or replaced columns.
 
+
         Args:
             ``labels_and_values``: An alternating list of labels and values or
-                a list of label-values pairs.
+                a list of label-value pairs. If one of the labels is in
+                existing table, then every value in the corresponding column is
+                set to that value. If label has only a single value (``int``),
+                every row of corresponding column takes on that value.
 
-        >>> Table().with_columns([
-        ...     'letter', ['c', 'd'],
-        ...     'count',  [2, 4],
-        ... ])
-        letter | count
-        c      | 2
-        d      | 4
-        >>> Table().with_columns(
-        ...     'letter', ['c', 'd'],
-        ...     'count',  [2, 4],
-        ... )
-        letter | count
-        c      | 2
-        d      | 4
-        >>> Table().with_columns([
-        ...     ['letter', ['c', 'd']],
-        ...     ['count',  [2, 4]],
-        ... ])
-        letter | count
-        c      | 2
-        d      | 4
-        >>> Table().with_columns(
-        ...     ['letter', ['c', 'd']],
-        ...     ['count',  [2, 4]],
-        ... )
-        letter | count
-        c      | 2
-        d      | 4
-        >>> Table().with_columns([
-        ...     ['letter', ['c', 'd']],
-        ... ])
-        letter
-        c
-        d
-        >>> Table().with_columns(
-        ...     'letter', ['c', 'd'],
-        ... )
-        letter
-        c
-        d
-        >>> Table().with_columns(
-        ...     ['letter', ['c', 'd']],
-        ... )
-        letter
-        c
-        d
-        >>> Table().with_columns({'letter': ['c', 'd']})
-        letter
-        c
-        d
+        Raises:
+            ``ValueError``: If
+                - any label in ``labels_and_values`` is not a valid column
+                    name, i.e if label is not of type (str).
+                - if any value in ``labels_and_values`` is a list/array and
+                    does not have the same length as the number of rows in the
+                    table.
+            ``AssertionError``:
+                - 'incorrect columns format', if passed more than one sequence
+                    (iterables) for  ``labels_and_values``.
+                - 'even length sequence required' if missing a pair in
+                    label-value pairs.
+
+
+        Returns:
+            Copy of original table with new or replaced columns. Columns added
+            in order of labels. Equivalent to ``with_column(label, value)``
+            when passed only one label-value pair.
+
+
+        >>> players = Table().with_columns('player_id',
+        ...     make_array(110234, 110235), 'wOBA', make_array(.354, .236))
+        >>> players
+        player_id | wOBA
+        110234    | 0.354
+        110235    | 0.236
+        >>> players = players.with_columns('salaries', 'N/A', 'season', 2016)
+        >>> players
+        player_id | wOBA  | salaries | season
+        110234    | 0.354 | N/A      | 2016
+        110235    | 0.236 | N/A      | 2016
+        >>> salaries = Table().with_column('salary',
+        ...     make_array('$500,000', '$15,500,000'))
+        >>> players.with_columns('salaries', salaries.column('salary'),
+        ...     'years', make_array(6, 1))
+        player_id | wOBA  | salaries    | season | years
+        110234    | 0.354 | $500,000    | 2016   | 6
+        110235    | 0.236 | $15,500,000 | 2016   | 1
+        >>> players.with_columns(2, make_array('$600,000', '$20,000,000'))
+        Traceback (most recent call last):
+            ...
+        ValueError: The column label must be a string, but a int was given
+        >>> players.with_columns('salaries', make_array('$600,000'))
+        Traceback (most recent call last):
+            ...
+        ValueError: Column length mismatch. New column does not have the same number of rows as table.
         """
         if len(labels_and_values) == 1:
             labels_and_values = labels_and_values[0]
