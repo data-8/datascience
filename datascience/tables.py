@@ -2382,6 +2382,11 @@ class _RowTaker(_RowSelector):
         A+           | 4
         A            | 4
         A-           | 3.7
+        >>> grades.take(np.arange(0,3))
+        letter grade | gpa
+        A+           | 4
+        A            | 4
+        A-           | 3.7
         >>> grades.take(10)
         Traceback (most recent call last):
             ...
