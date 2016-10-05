@@ -2340,20 +2340,25 @@ class _RowSelector(metaclass=abc.ABCMeta):
 
 class _RowTaker(_RowSelector):
     def __getitem__(self, row_indices_or_slice):
-        """Return a new Table of a sequence of rows taken by number.
+        """Return a new Table with selected rows taken by index.
 
         Args:
-            ``row_indices_or_slice`` (integer or list of integers or slice):
+            ``row_indices_or_slice`` (integer or array of integers):
             The row index, list of row indices or a slice of row indices to
             be selected.
 
         Returns:
-            A new instance of ``Table``.
+            A new instance of ``Table`` with selected rows in order
+            corresponding to ``row_indices_or_slice``.
 
-        >>> t = Table().with_columns([
-        ...     'letter grade', ['A+', 'A', 'A-', 'B+', 'B', 'B-'],
-        ...     'gpa', [4, 4, 3.7, 3.3, 3, 2.7]])
-        >>> t
+        Raises:
+            ``IndexError``, if any ``row_indices_or_slice`` is out of bounds
+            with respect to column length.
+
+        >>> grades = Table().with_columns('letter grade',
+        ...     make_array('A+', 'A', 'A-', 'B+', 'B', 'B-'),
+        ...     'gpa', make_array(4, 4, 3.7, 3.3, 3, 2.7))
+        >>> grades
         letter grade | gpa
         A+           | 4
         A            | 4
@@ -2361,44 +2366,26 @@ class _RowTaker(_RowSelector):
         B+           | 3.3
         B            | 3
         B-           | 2.7
-        >>> t.take(0)
+        >>> grades.take(0)
         letter grade | gpa
         A+           | 4
-        >>> t.take(5)
+        >>> grades.take(-1)
         letter grade | gpa
         B-           | 2.7
-        >>> t.take(-1)
-        letter grade | gpa
-        B-           | 2.7
-        >>> t.take([2, 1, 0])
+        >>> grades.take(make_array(2, 1, 0))
         letter grade | gpa
         A-           | 3.7
         A            | 4
         A+           | 4
-        >>> t.take([1, 5])
-        letter grade | gpa
-        A            | 4
-        B-           | 2.7
-        >>> t.take(range(3))
+        >>> grades.take[:3]
         letter grade | gpa
         A+           | 4
         A            | 4
         A-           | 3.7
-
-        Note that ``take`` also supports NumPy-like indexing and slicing:
-
-        >>> t.take[:3]
-        letter grade | gpa
-        A+           | 4
-        A            | 4
-        A-           | 3.7
-
-        >>> t.take[2, 1, 0]
-        letter grade | gpa
-        A-           | 3.7
-        A            | 4
-        A+           | 4
-
+        >>> grades.take(10)
+        Traceback (most recent call last):
+            ...
+        IndexError: index 10 is out of bounds for axis 0 with size 6
         """
         if isinstance(row_indices_or_slice, collections.Iterable):
             columns = [np.take(column, row_indices_or_slice, axis=0)
