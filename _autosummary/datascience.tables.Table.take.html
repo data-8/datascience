@@ -59,19 +59,23 @@
 <dl class="method">
 <dt id="datascience.tables.Table.take">
 <code class="descclassname">Table.</code><code class="descname">take</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.take"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.take" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a new Table of a sequence of rows taken by number.</p>
+<dd><p>Return a new Table with selected rows taken by index.</p>
 <dl class="docutils">
 <dt>Args:</dt>
-<dd><code class="docutils literal"><span class="pre">row_indices_or_slice</span></code> (integer or list of integers or slice):
+<dd><code class="docutils literal"><span class="pre">row_indices_or_slice</span></code> (integer or array of integers):
 The row index, list of row indices or a slice of row indices to
 be selected.</dd>
 <dt>Returns:</dt>
-<dd>A new instance of <code class="docutils literal"><span class="pre">Table</span></code>.</dd>
+<dd>A new instance of <code class="docutils literal"><span class="pre">Table</span></code> with selected rows in order
+corresponding to <code class="docutils literal"><span class="pre">row_indices_or_slice</span></code>.</dd>
+<dt>Raises:</dt>
+<dd><code class="docutils literal"><span class="pre">IndexError</span></code>, if any <code class="docutils literal"><span class="pre">row_indices_or_slice</span></code> is out of bounds
+with respect to column length.</dd>
 </dl>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">([</span>
-<span class="gp">... </span>    <span class="s1">&#39;letter grade&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;A+&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;A-&#39;</span><span class="p">,</span> <span class="s1">&#39;B+&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;B-&#39;</span><span class="p">],</span>
-<span class="gp">... </span>    <span class="s1">&#39;gpa&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mf">3.7</span><span class="p">,</span> <span class="mf">3.3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">2.7</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">grades</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span><span class="s1">&#39;letter grade&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;A+&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;A-&#39;</span><span class="p">,</span> <span class="s1">&#39;B+&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;B-&#39;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="s1">&#39;gpa&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mf">3.7</span><span class="p">,</span> <span class="mf">3.3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">2.7</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">grades</span>
 <span class="go">letter grade | gpa</span>
 <span class="go">A+           | 4</span>
 <span class="go">A            | 4</span>
@@ -79,44 +83,31 @@ be selected.</dd>
 <span class="go">B+           | 3.3</span>
 <span class="go">B            | 3</span>
 <span class="go">B-           | 2.7</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">grades</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="go">letter grade | gpa</span>
 <span class="go">A+           | 4</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">grades</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 <span class="go">letter grade | gpa</span>
 <span class="go">B-           | 2.7</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-<span class="go">letter grade | gpa</span>
-<span class="go">B-           | 2.7</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">take</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">grades</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">make_array</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 <span class="go">letter grade | gpa</span>
 <span class="go">A-           | 3.7</span>
 <span class="go">A            | 4</span>
 <span class="go">A+           | 4</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">take</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
-<span class="go">letter grade | gpa</span>
-<span class="go">A            | 4</span>
-<span class="go">B-           | 2.7</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">grades</span><span class="o">.</span><span class="n">take</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
 <span class="go">letter grade | gpa</span>
 <span class="go">A+           | 4</span>
 <span class="go">A            | 4</span>
 <span class="go">A-           | 3.7</span>
-</pre></div>
-</div>
-<p>Note that <code class="docutils literal"><span class="pre">take</span></code> also supports NumPy-like indexing and slicing:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">take</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">grades</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
 <span class="go">letter grade | gpa</span>
 <span class="go">A+           | 4</span>
 <span class="go">A            | 4</span>
 <span class="go">A-           | 3.7</span>
-</pre></div>
-</div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">take</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-<span class="go">letter grade | gpa</span>
-<span class="go">A-           | 3.7</span>
-<span class="go">A            | 4</span>
-<span class="go">A+           | 4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">grades</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+    <span class="o">...</span>
+<span class="gr">IndexError</span>: <span class="n">index 10 is out of bounds for axis 0 with size 6</span>
 </pre></div>
 </div>
 </dd></dl>

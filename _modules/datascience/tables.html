@@ -2420,20 +2420,25 @@
 
 <span class="k">class</span> <span class="nc">_RowTaker</span><span class="p">(</span><span class="n">_RowSelector</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row_indices_or_slice</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return a new Table of a sequence of rows taken by number.</span>
+        <span class="sd">&quot;&quot;&quot;Return a new Table with selected rows taken by index.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            ``row_indices_or_slice`` (integer or list of integers or slice):</span>
+<span class="sd">            ``row_indices_or_slice`` (integer or array of integers):</span>
 <span class="sd">            The row index, list of row indices or a slice of row indices to</span>
 <span class="sd">            be selected.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            A new instance of ``Table``.</span>
+<span class="sd">            A new instance of ``Table`` with selected rows in order</span>
+<span class="sd">            corresponding to ``row_indices_or_slice``.</span>
 
-<span class="sd">        &gt;&gt;&gt; t = Table().with_columns([</span>
-<span class="sd">        ...     &#39;letter grade&#39;, [&#39;A+&#39;, &#39;A&#39;, &#39;A-&#39;, &#39;B+&#39;, &#39;B&#39;, &#39;B-&#39;],</span>
-<span class="sd">        ...     &#39;gpa&#39;, [4, 4, 3.7, 3.3, 3, 2.7]])</span>
-<span class="sd">        &gt;&gt;&gt; t</span>
+<span class="sd">        Raises:</span>
+<span class="sd">            ``IndexError``, if any ``row_indices_or_slice`` is out of bounds</span>
+<span class="sd">            with respect to column length.</span>
+
+<span class="sd">        &gt;&gt;&gt; grades = Table().with_columns(&#39;letter grade&#39;,</span>
+<span class="sd">        ...     make_array(&#39;A+&#39;, &#39;A&#39;, &#39;A-&#39;, &#39;B+&#39;, &#39;B&#39;, &#39;B-&#39;),</span>
+<span class="sd">        ...     &#39;gpa&#39;, make_array(4, 4, 3.7, 3.3, 3, 2.7))</span>
+<span class="sd">        &gt;&gt;&gt; grades</span>
 <span class="sd">        letter grade | gpa</span>
 <span class="sd">        A+           | 4</span>
 <span class="sd">        A            | 4</span>
@@ -2441,44 +2446,31 @@
 <span class="sd">        B+           | 3.3</span>
 <span class="sd">        B            | 3</span>
 <span class="sd">        B-           | 2.7</span>
-<span class="sd">        &gt;&gt;&gt; t.take(0)</span>
+<span class="sd">        &gt;&gt;&gt; grades.take(0)</span>
 <span class="sd">        letter grade | gpa</span>
 <span class="sd">        A+           | 4</span>
-<span class="sd">        &gt;&gt;&gt; t.take(5)</span>
+<span class="sd">        &gt;&gt;&gt; grades.take(-1)</span>
 <span class="sd">        letter grade | gpa</span>
 <span class="sd">        B-           | 2.7</span>
-<span class="sd">        &gt;&gt;&gt; t.take(-1)</span>
-<span class="sd">        letter grade | gpa</span>
-<span class="sd">        B-           | 2.7</span>
-<span class="sd">        &gt;&gt;&gt; t.take([2, 1, 0])</span>
+<span class="sd">        &gt;&gt;&gt; grades.take(make_array(2, 1, 0))</span>
 <span class="sd">        letter grade | gpa</span>
 <span class="sd">        A-           | 3.7</span>
 <span class="sd">        A            | 4</span>
 <span class="sd">        A+           | 4</span>
-<span class="sd">        &gt;&gt;&gt; t.take([1, 5])</span>
-<span class="sd">        letter grade | gpa</span>
-<span class="sd">        A            | 4</span>
-<span class="sd">        B-           | 2.7</span>
-<span class="sd">        &gt;&gt;&gt; t.take(range(3))</span>
+<span class="sd">        &gt;&gt;&gt; grades.take[:3]</span>
 <span class="sd">        letter grade | gpa</span>
 <span class="sd">        A+           | 4</span>
 <span class="sd">        A            | 4</span>
 <span class="sd">        A-           | 3.7</span>
-
-<span class="sd">        Note that ``take`` also supports NumPy-like indexing and slicing:</span>
-
-<span class="sd">        &gt;&gt;&gt; t.take[:3]</span>
+<span class="sd">        &gt;&gt;&gt; grades.take(np.arange(0,3))</span>
 <span class="sd">        letter grade | gpa</span>
 <span class="sd">        A+           | 4</span>
 <span class="sd">        A            | 4</span>
 <span class="sd">        A-           | 3.7</span>
-
-<span class="sd">        &gt;&gt;&gt; t.take[2, 1, 0]</span>
-<span class="sd">        letter grade | gpa</span>
-<span class="sd">        A-           | 3.7</span>
-<span class="sd">        A            | 4</span>
-<span class="sd">        A+           | 4</span>
-
+<span class="sd">        &gt;&gt;&gt; grades.take(10)</span>
+<span class="sd">        Traceback (most recent call last):</span>
+<span class="sd">            ...</span>
+<span class="sd">        IndexError: index 10 is out of bounds for axis 0 with size 6</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">row_indices_or_slice</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">):</span>
             <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">row_indices_or_slice</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
