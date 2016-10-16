@@ -18,7 +18,7 @@ def states():
 
 
 def test_doctests():
-    results = doctest.testmod(maps)
+    results = doctest.testmod(maps, optionflags=doctest.NORMALIZE_WHITESPACE)
     assert results.failed == 0
 
 

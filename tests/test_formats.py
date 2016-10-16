@@ -12,7 +12,7 @@ def assert_equal(string1, string2):
 
 
 def test_doctests():
-    results = doctest.testmod(formats)
+    results = doctest.testmod(formats, optionflags=doctest.NORMALIZE_WHITESPACE)
     assert results.failed == 0
 
 

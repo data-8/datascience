@@ -27,8 +27,12 @@ pip install datascience
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-### [Unreleased]
-None yet.
+### v0.8.2
+
+- Added `proportions_from_distribution` method to `datascience.util`.
+  (993e3d2)
+- `Table.column` now throws a descriptive `ValueError` instead of a `KeyError`
+  when the column isn't in the table. (ef8b319)
 
 ### v0.8.0
 **Breaking changes**

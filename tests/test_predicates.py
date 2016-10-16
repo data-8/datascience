@@ -1,5 +1,6 @@
 import doctest
 import pytest
+from datascience import predicates
 from datascience import *
 
 def test_both():
@@ -69,5 +70,6 @@ def test_between_or_equal_to():
 
 
 def test_doctests():
-    results = doctest.testmod(predicates)
+    results = doctest.testmod(predicates,
+                              optionflags=doctest.NORMALIZE_WHITESPACE)
     assert results.failed == 0

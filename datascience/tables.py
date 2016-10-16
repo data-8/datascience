@@ -251,9 +251,9 @@ class Table(collections.abc.MutableMapping):
 
         >>> tiles = Table().with_columns(
         ...     'letter', make_array('c', 'd'),
-        ...     'count',  make_array(2, 4))
-        >>> list(tiles.column('letter'))
-        ['c', 'd']
+        >>> tiles.column('letter')
+        array(['c', 'd'],
+              dtype='<U1')
         >>> tiles.column(1)
         array([2, 4])
 
@@ -262,7 +262,25 @@ class Table(collections.abc.MutableMapping):
 
         Returns:
             An instance of ``numpy.array``.
+
+        Raises:
+            ``ValueError``: When the ``index_or_label`` is not in the table.
         """
+        if (isinstance(index_or_label, str)
+                and index_or_label not in self.labels):
+            raise ValueError(
+                'The column "{}" is not in the table. The table contains '
+                'these columns: {}'
+                .format(index_or_label, ', '.join(self.labels))
+            )
+        if (isinstance(index_or_label, int)
+                and not 0 <= index_or_label < len(self.labels)):
+            raise ValueError(
+                'The index {} is not in the table. Only indices between '
+                '0 and {} are valid'
+                .format(index_or_label, len(self.labels) - 1)
+            )
+
         return self._columns[self._as_label(index_or_label)]
 
     @property
@@ -435,7 +453,8 @@ class Table(collections.abc.MutableMapping):
         >>> table.append_column('bad_col', [1, 2])
         Traceback (most recent call last):
             ...
-        ValueError: Column length mismatch. New column does not have the same number of rows as table.
+        ValueError: Column length mismatch. New column does not have the same
+        number of rows as table.
         """
         # TODO(sam): Allow append_column to take in a another table, copying
         # over formatter as needed.
@@ -465,8 +484,8 @@ class Table(collections.abc.MutableMapping):
             ``column_label`` (single str or list/array of str): The label(s) of
                 columns to be changed. Must be str.
 
-            ``new_label`` (single str or list/array of str): The new label(s) of
-                columns to be changed. Must be str.
+            ``new_label`` (single str or list/array of str): The new label(s)
+                of columns to be changed. Must be str.
 
                 Number of elements must match number of elements in
                 ``column_label``.
@@ -599,12 +618,15 @@ class Table(collections.abc.MutableMapping):
         raise NotImplementedError()
 
     def drop(self, *column_label_or_labels):
-        """Return a Table with only columns other than selected label or labels.
+        """Return a Table with only columns other than selected label or
+        labels.
 
         Args:
             ``column_label_or_labels`` (string or list of strings): The header
-            names or indices of the columns to be dropped. ``column_label_or_labels`` must
-            be an existing header name, or a valid column index.
+            names or indices of the columns to be dropped.
+
+            ``column_label_or_labels`` must be an existing header name, or a
+            valid column index.
 
         Returns:
             An instance of ``Table`` with given columns removed.
@@ -650,7 +672,8 @@ class Table(collections.abc.MutableMapping):
         veggie burger | 582
         """
         exclude = _varargs_labels_as_list(column_label_or_labels)
-        return self.select([c for (i, c) in enumerate(self.labels) if i not in exclude and c not in exclude])
+        return self.select([c for (i, c) in enumerate(self.labels)
+                            if i not in exclude and c not in exclude])
 
     def where(self, column_or_label, value_or_predicate=None, other=None):
         """
@@ -687,8 +710,10 @@ class Table(collections.abc.MutableMapping):
             ``True``.
 
         >>> marbles = Table().with_columns(
-        ...    "Color", make_array("Red", "Green", "Blue", "Red", "Green", "Green"),
-        ...    "Shape", make_array("Round", "Rectangular", "Rectangular", "Round", "Rectangular", "Round"),
+        ...    "Color", make_array("Red", "Green", "Blue",
+        ...                        "Red", "Green", "Green"),
+        ...    "Shape", make_array("Round", "Rectangular", "Rectangular",
+        ...                        "Round", "Rectangular", "Round"),
         ...    "Amount", make_array(4, 6, 12, 7, 9, 2),
         ...    "Price", make_array(1.30, 1.20, 2.00, 1.75, 0, 3.00))
 
@@ -734,7 +759,8 @@ class Table(collections.abc.MutableMapping):
         """
         column = self._get_column(column_or_label)
         if other is not None:
-            assert callable(value_or_predicate), "Predicate required for 3-arg where"
+            assert (callable(value_or_predicate),
+                    "Predicate required for 3-arg where")
             predicate = value_or_predicate
             other = self._get_column(other)
             column = [predicate(y)(x) for x, y in zip(column, other)]
@@ -753,12 +779,14 @@ class Table(collections.abc.MutableMapping):
             ``column_or_label``: the column whose values are used for sorting.
 
             ``descending``: if True, sorting will be in descending, rather than
-            ascending order.
+                ascending order.
 
-            ``distinct``: if True, repeated values in ``column_or_label`` will be omitted.
+            ``distinct``: if True, repeated values in ``column_or_label`` will
+                be omitted.
 
         Returns:
-            An instance of ``Table`` containing rows sorted based on the values in ``column_or_label``.
+            An instance of ``Table`` containing rows sorted based on the values
+            in ``column_or_label``.
 
         >>> marbles = Table().with_columns(
         ...    "Color", make_array("Red", "Green", "Blue", "Red", "Green", "Green"),
