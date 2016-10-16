@@ -251,11 +251,9 @@ class Table(collections.abc.MutableMapping):
 
         >>> tiles = Table().with_columns(
         ...     'letter', make_array('c', 'd'),
-<<<<<<< e67ec80a7822f60aa7223662cf4e56dd3d0e3d6d
         ...     'count',  make_array(2, 4),
         ... )
-=======
->>>>>>> resolved merge conflicts
+
         >>> tiles.column('letter')
         array(['c', 'd'],
               dtype='<U1')
