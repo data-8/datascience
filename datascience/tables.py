@@ -31,7 +31,7 @@ class Table(collections.abc.MutableMapping):
     def __init__(self, labels=None, _deprecated=None, *, formatter=_formats.default_formatter):
         """Create an empty table with column labels.
 
-        >>> tiles = Table(['letter', 'count', 'points'])
+        >>> tiles = Table(make_array('letter', 'count', 'points'))
         >>> tiles
         letter | count | points
 
@@ -324,10 +324,10 @@ class Table(collections.abc.MutableMapping):
             A numpy array consisting of results of applying ``fn`` to elements
             specified by ``column_label`` in each row.
 
-        >>> t = Table().with_columns([
-        ...     'letter', ['a', 'b', 'c', 'z'],
-        ...     'count',  [9, 3, 3, 1],
-        ...     'points', [1, 2, 2, 10]])
+        >>> t = Table().with_columns(
+        ...     'letter', make_array('a', 'b', 'c', 'z'),
+        ...     'count',  make_array(9, 3, 3, 1),
+        ...     'points', make_array(1, 2, 2, 10))
         >>> t
         letter | count | points
         a      | 9     | 1
@@ -403,8 +403,8 @@ class Table(collections.abc.MutableMapping):
         """Appends a column to the table or replaces a column.
 
         ``__setitem__`` is aliased to this method:
-            ``table.append_column('new_col', [1, 2, 3])`` is equivalent to
-            ``table['new_col'] = [1, 2, 3]``.
+            ``table.append_column('new_col', make_array(1, 2, 3))`` is equivalent to
+            ``table['new_col'] = make_array(1, 2, 3)``.
 
         Args:
             ``label`` (str): The label of the new column.
@@ -424,17 +424,17 @@ class Table(collections.abc.MutableMapping):
                 - ``values`` is a list/array and does not have the same length
                   as the number of rows in the table.
 
-        >>> table = Table().with_columns([
-        ...     'letter', ['a', 'b', 'c', 'z'],
-        ...     'count',  [9, 3, 3, 1],
-        ...     'points', [1, 2, 2, 10]])
+        >>> table = Table().with_columns(
+        ...     'letter', make_array('a', 'b', 'c', 'z'),
+        ...     'count',  make_array(9, 3, 3, 1),
+        ...     'points', make_array(1, 2, 2, 10))
         >>> table
         letter | count | points
         a      | 9     | 1
         b      | 3     | 2
         c      | 3     | 2
         z      | 1     | 10
-        >>> table.append_column('new_col1', [10, 20, 30, 40])
+        >>> table.append_column('new_col1', make_array(10, 20, 30, 40))
         >>> table
         letter | count | points | new_col1
         a      | 9     | 1      | 10
@@ -448,7 +448,7 @@ class Table(collections.abc.MutableMapping):
         b      | 3     | 2      | 20       | hello
         c      | 3     | 2      | 30       | hello
         z      | 1     | 10     | 40       | hello
-        >>> table.append_column(123, [1, 2, 3, 4])
+        >>> table.append_column(123, make_array(1, 2, 3, 4))
         Traceback (most recent call last):
             ...
         ValueError: The column label must be a string, but a int was given
@@ -495,30 +495,23 @@ class Table(collections.abc.MutableMapping):
         Returns:
             Original table with modified labels
 
-        >>> table = Table().with_columns([
+        >>> table = Table().with_columns(
         ...     'points', (1, 2, 3),
-        ...     'id',     (12345, 123, 5123)])
+        ...     'id',     (12345, 123, 5123))
         >>> table.relabel('id', 'yolo')
         points | yolo
         1      | 12345
         2      | 123
         3      | 5123
-        >>> table.relabel(['points', 'yolo'], ['red', 'blue'])
+        >>> table.relabel(make_array('points', 'yolo'), make_array('red', 'blue'))
         red  | blue
         1    | 12345
         2    | 123
         3    | 5123
-        >>> table.relabel(['red', 'green', 'blue'],
-        ...               ['cyan', 'magenta', 'yellow', 'key'])
+        >>> table.relabel(make_array('red', 'green', 'blue'), make_array('cyan', 'magenta', 'yellow', 'key'))
         Traceback (most recent call last):
             ...
-        ValueError: Invalid arguments. column_label and new_label must be of
-        equal length.
-        >>> table.relabel(['red', 'blue'], ['blue', 'red'])
-        blue | red
-        1    | 12345
-        2    | 123
-        3    | 5123
+        ValueError: Invalid arguments. column_label and new_label must be of equal length.
         """
         if isinstance(column_label, numbers.Integral):
             column_label = self._as_label(column_label)
@@ -635,10 +628,10 @@ class Table(collections.abc.MutableMapping):
         Returns:
             An instance of ``Table`` with given columns removed.
 
-        >>> t = Table().with_columns([
-        ...     'burgers',  ['cheeseburger', 'hamburger', 'veggie burger'],
-        ...     'prices',   [6, 5, 5],
-        ...     'calories', [743, 651, 582]])
+        >>> t = Table().with_columns(
+        ...     'burgers',  make_array('cheeseburger', 'hamburger', 'veggie burger'),
+        ...     'prices',   make_array(6, 5, 5),
+        ...     'calories', make_array(743, 651, 582))
         >>> t
         burgers       | prices | calories
         cheeseburger  | 6      | 743
@@ -792,11 +785,11 @@ class Table(collections.abc.MutableMapping):
             An instance of ``Table`` containing rows sorted based on the values
             in ``column_or_label``.
 
-        >>> marbles = Table().with_columns([
-        ...    "Color", ["Red", "Green", "Blue", "Red", "Green", "Green"],
-        ...    "Shape", ["Round", "Rectangular", "Rectangular", "Round", "Rectangular", "Round"],
-        ...    "Amount", [4, 6, 12, 7, 9, 2],
-        ...    "Price", [1.30, 1.30, 2.00, 1.75, 1.40, 1.00]])
+        >>> marbles = Table().with_columns(
+        ...    "Color", make_array("Red", "Green", "Blue", "Red", "Green", "Green"),
+        ...    "Shape", make_array("Round", "Rectangular", "Rectangular", "Round", "Rectangular", "Round"),
+        ...    "Amount", make_array(4, 6, 12, 7, 9, 2),
+        ...    "Price", make_array(1.30, 1.30, 2.00, 1.75, 1.40, 1.00))
         >>> marbles
         Color | Shape       | Amount | Price
         Red   | Round       | 4      | 1.3
@@ -868,11 +861,11 @@ class Table(collections.abc.MutableMapping):
             accept arguments with one of the column types, that column will be empty in the resulting
             table.
 
-        >>> marbles = Table().with_columns([
-        ...    "Color", ["Red", "Green", "Blue", "Red", "Green", "Green"],
-        ...    "Shape", ["Round", "Rectangular", "Rectangular", "Round", "Rectangular", "Round"],
-        ...    "Amount", [4, 6, 12, 7, 9, 2],
-        ...    "Price", [1.30, 1.30, 2.00, 1.75, 1.40, 1.00]])
+        >>> marbles = Table().with_columns(
+        ...    "Color", make_array("Red", "Green", "Blue", "Red", "Green", "Green"),
+        ...    "Shape", make_array("Round", "Rectangular", "Rectangular", "Round", "Rectangular", "Round"),
+        ...    "Amount", make_array(4, 6, 12, 7, 9, 2),
+        ...    "Price", make_array(1.30, 1.30, 2.00, 1.75, 1.40, 1.00))
         >>> marbles
         Color | Shape       | Amount | Price
         Red   | Round       | 4      | 1.3
@@ -949,11 +942,11 @@ class Table(collections.abc.MutableMapping):
             accept arguments with one of the column types, that column will be empty in the resulting
             table.
 
-        >>> marbles = Table().with_columns([
-        ...    "Color", ["Red", "Green", "Blue", "Red", "Green", "Green"],
-        ...    "Shape", ["Round", "Rectangular", "Rectangular", "Round", "Rectangular", "Round"],
-        ...    "Amount", [4, 6, 12, 7, 9, 2],
-        ...    "Price", [1.30, 1.30, 2.00, 1.75, 1.40, 1.00]])
+        >>> marbles = Table().with_columns(
+        ...    "Color", make_array("Red", "Green", "Blue", "Red", "Green", "Green"),
+        ...    "Shape", make_array("Round", "Rectangular", "Rectangular", "Round", "Rectangular", "Round"),
+        ...    "Amount", make_array(4, 6, 12, 7, 9, 2),
+        ...    "Price", make_array(1.30, 1.30, 2.00, 1.75, 1.40, 1.00))
         >>> marbles
         Color | Shape       | Amount | Price
         Red   | Round       | 4      | 1.3
@@ -1184,9 +1177,9 @@ class Table(collections.abc.MutableMapping):
         pth percentile of a column is the smallest value that at at least as
         large as the p% of numbers in the column.
 
-        >>> table = Table().with_columns([
-        ...     'count',  [9, 3, 3, 1],
-        ...     'points', [1, 2, 2, 10]])
+        >>> table = Table().with_columns(
+        ...     'count',  make_array(9, 3, 3, 1),
+        ...     'points', make_array(1, 2, 2, 10))
         >>> table
         count | points
         9     | 1
@@ -1222,9 +1215,9 @@ class Table(collections.abc.MutableMapping):
         Returns:
             A new instance of ``Table``.
 
-        >>> jobs = Table().with_columns([
-        ...     'job',  ['a', 'b', 'c', 'd'],
-        ...     'wage', [10, 20, 15, 8]])
+        >>> jobs = Table().with_columns(
+        ...     'job',  make_array('a', 'b', 'c', 'd'),
+        ...     'wage', make_array(10, 20, 15, 8))
         >>> jobs
         job  | wage
         a    | 10
@@ -1248,7 +1241,7 @@ class Table(collections.abc.MutableMapping):
         b    | 20
         c    | 15
         >>> jobs.sample(k = 2, with_replacement = True,
-        ...     weights = [0.5, 0.5, 0, 0]) # doctest: +SKIP
+        ...     weights = make_array(0.5, 0.5, 0, 0)) # doctest: +SKIP
         job  | wage
         a    | 10
         a    | 10
@@ -1306,9 +1299,9 @@ class Table(collections.abc.MutableMapping):
         Returns:
             A tuple containing two instances of ``Table``.
 
-        >>> jobs = Table().with_columns([
-        ...     'job',  ['a', 'b', 'c', 'd'],
-        ...     'wage', [10, 20, 15, 8]])
+        >>> jobs = Table().with_columns(
+        ...     'job',  make_array('a', 'b', 'c', 'd'),
+        ...     'wage', make_array(10, 20, 15, 8))
         >>> jobs
         job  | wage
         a    | 10
@@ -1348,7 +1341,7 @@ class Table(collections.abc.MutableMapping):
         Raises:
             ``ValueError``: If the row length differs from the column count.
 
-        >>> tiles = Table(['letter', 'count', 'points'])
+        >>> tiles = Table(make_array('letter', 'count', 'points'))
         >>> tiles.with_row(['c', 2, 3]).with_row(['d', 4, 2])
         letter | count | points
         c      | 2     | 3
@@ -1369,8 +1362,9 @@ class Table(collections.abc.MutableMapping):
         Raises:
             ``ValueError``: If a row length differs from the column count.
 
-        >>> tiles = Table(['letter', 'count', 'points'])
-        >>> tiles.with_rows([['c', 2, 3], ['d', 4, 2]])
+        >>> tiles = Table(make_array('letter', 'count', 'points'))
+        >>> tiles.with_rows(make_array(make_array('c', 2, 3),
+        ...     make_array('d', 4, 2)))
         letter | count | points
         c      | 2     | 3
         d      | 4     | 2
@@ -1523,7 +1517,8 @@ class Table(collections.abc.MutableMapping):
                 columns to be changed. Same number of elements as label.
 
         >>> tiles = Table(['letter', 'count'])
-        >>> tiles = tiles.with_rows([['c', 2], ['d', 4]])
+        >>> tiles = tiles.with_rows(
+        ...    make_array(make_array('c', 2), make_array('d', 4)))
         >>> tiles.relabeled('count', 'number')
         letter | number
         c      | 2
@@ -1677,9 +1672,9 @@ class Table(collections.abc.MutableMapping):
         Returns:
             None, outputs a file with name ``filename``.
 
-        >>> jobs = Table().with_columns([
-        ...     'job',  ['a', 'b', 'c', 'd'],
-        ...     'wage', [10, 20, 15, 8]])
+        >>> jobs = Table().with_columns(
+        ...     'job',  make_array('a', 'b', 'c', 'd'),
+        ...     'wage', make_array(10, 20, 15, 8))
         >>> jobs
         job  | wage
         a    | 10
@@ -1826,11 +1821,11 @@ class Table(collections.abc.MutableMapping):
                 See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.barh
                 for additional arguments that can be passed into vargs.
 
-        >>> t = Table().with_columns([
-        ...     'Furniture', ['chairs', 'tables', 'desks'],
-        ...     'Count', [6, 1, 2],
-        ...     'Price', [10, 20, 30]
-        ...     ])
+        >>> t = Table().with_columns(
+        ...     'Furniture', make_array('chairs', 'tables', 'desks'),
+        ...     'Count', make_array(6, 1, 2),
+        ...     'Price', make_array(10, 20, 30)
+        ...     )
         >>> t
         Furniture | Count | Price
         chairs    | 6     | 10
@@ -1908,10 +1903,10 @@ class Table(collections.abc.MutableMapping):
 
             ``labels``: A column of text labels to annotate dots
 
-        >>> table = Table().with_columns([
-        ...     'x', [9, 3, 3, 1],
-        ...     'y', [1, 2, 2, 10],
-        ...     'z', [3, 4, 5, 6]])
+        >>> table = Table().with_columns(
+        ...     'x', make_array(9, 3, 3, 1),
+        ...     'y', make_array(1, 2, 2, 10),
+        ...     'z', make_array(3, 4, 5, 6))
         >>> table
         x    | y    | z
         9    | 1    | 3
@@ -2056,9 +2051,9 @@ class Table(collections.abc.MutableMapping):
                 include: `range`, `normed`, `cumulative`, and `orientation`,
                 to name a few.
 
-        >>> t = Table().with_columns([
-        ...     'count',  [9, 3, 3, 1],
-        ...     'points', [1, 2, 2, 10]])
+        >>> t = Table().with_columns(
+        ...     'count',  make_array(9, 3, 3, 1),
+        ...     'points', make_array(1, 2, 2, 10))
         >>> t
         count | points
         9     | 1
@@ -2069,9 +2064,9 @@ class Table(collections.abc.MutableMapping):
         <histogram of values in count>
         <histogram of values in points>
 
-        >>> t = Table().with_columns([
-        ...     'value',      [101, 102, 103],
-        ...     'proportion', [0.25, 0.5, 0.25]])
+        >>> t = Table().with_columns(
+        ...     'value',      make_array(101, 102, 103),
+        ...     'proportion', make_array(0.25, 0.5, 0.25))
         >>> t.hist(counts='value') # doctest: +SKIP
         <histogram of values in prop weighted by corresponding values in value>
         """
@@ -2171,9 +2166,9 @@ class Table(collections.abc.MutableMapping):
         Raises:
             ValueError: The Table contains columns with non-numerical values.
 
-        >>> table = Table().with_columns([
-        ...     'test1', [92.5, 88, 72, 71, 99, 100, 95, 83, 94, 93],
-        ...     'test2', [89, 84, 74, 66, 92, 99, 88, 81, 95, 94]])
+        >>> table = Table().with_columns(
+        ...     'test1', make_array(92.5, 88, 72, 71, 99, 100, 95, 83, 94, 93),
+        ...     'test2', make_array(89, 84, 74, 66, 92, 99, 88, 81, 95, 94))
         >>> table
         test1 | test2
         92.5  | 89
@@ -2446,9 +2441,9 @@ class _RowExcluder(_RowSelector):
         Returns:
             A new instance of ``Table``.
 
-        >>> t = Table().with_columns([
-        ...     'letter grade', ['A+', 'A', 'A-', 'B+', 'B', 'B-'],
-        ...     'gpa', [4, 4, 3.7, 3.3, 3, 2.7]])
+        >>> t = Table().with_columns(
+        ...     'letter grade', make_array('A+', 'A', 'A-', 'B+', 'B', 'B-'),
+        ...     'gpa', make_array(4, 4, 3.7, 3.3, 3, 2.7))
         >>> t
         letter grade | gpa
         A+           | 4
@@ -2471,7 +2466,7 @@ class _RowExcluder(_RowSelector):
         A-           | 3.7
         B+           | 3.3
         B            | 3
-        >>> t.exclude([1, 3, 4])
+        >>> t.exclude(make_array(1, 3, 4))
         letter grade | gpa
         A+           | 4
         A-           | 3.7
