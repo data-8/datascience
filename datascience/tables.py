@@ -251,7 +251,8 @@ class Table(collections.abc.MutableMapping):
 
         >>> tiles = Table().with_columns(
         ...     'letter', make_array('c', 'd'),
-        ...     'points', make_array(2, 4))
+        ...     'count',  make_array(2, 4),
+        ... )
         >>> tiles.column('letter')
         array(['c', 'd'],
               dtype='<U1')
