@@ -67,7 +67,7 @@ class Table(collections.abc.MutableMapping):
     # Deprecated
     @classmethod
     def empty(cls, labels=None):
-        """Create an empty table. Column labels are optional. [Deprecated]
+        """Creates an empty table. Column labels are optional. [Deprecated]
 
         Args:
             ``labels`` (None or list): If ``None``, a table with 0
