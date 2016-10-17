@@ -71,10 +71,10 @@ valid column index.</p>
 <dt>Returns:</dt>
 <dd>An instance of <code class="docutils literal"><span class="pre">Table</span></code> with given columns removed.</dd>
 </dl>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">([</span>
-<span class="gp">... </span>    <span class="s1">&#39;burgers&#39;</span><span class="p">,</span>  <span class="p">[</span><span class="s1">&#39;cheeseburger&#39;</span><span class="p">,</span> <span class="s1">&#39;hamburger&#39;</span><span class="p">,</span> <span class="s1">&#39;veggie burger&#39;</span><span class="p">],</span>
-<span class="gp">... </span>    <span class="s1">&#39;prices&#39;</span><span class="p">,</span>   <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
-<span class="gp">... </span>    <span class="s1">&#39;calories&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">743</span><span class="p">,</span> <span class="mi">651</span><span class="p">,</span> <span class="mi">582</span><span class="p">]])</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="s1">&#39;burgers&#39;</span><span class="p">,</span>  <span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;cheeseburger&#39;</span><span class="p">,</span> <span class="s1">&#39;hamburger&#39;</span><span class="p">,</span> <span class="s1">&#39;veggie burger&#39;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="s1">&#39;prices&#39;</span><span class="p">,</span>   <span class="n">make_array</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="s1">&#39;calories&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">743</span><span class="p">,</span> <span class="mi">651</span><span class="p">,</span> <span class="mi">582</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">t</span>
 <span class="go">burgers       | prices | calories</span>
 <span class="go">cheeseburger  | 6      | 743</span>

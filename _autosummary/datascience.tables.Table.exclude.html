@@ -71,9 +71,9 @@ to be excluded.</dd>
 <dt>Returns:</dt>
 <dd>A new instance of <code class="docutils literal"><span class="pre">Table</span></code>.</dd>
 </dl>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">([</span>
-<span class="gp">... </span>    <span class="s1">&#39;letter grade&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;A+&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;A-&#39;</span><span class="p">,</span> <span class="s1">&#39;B+&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;B-&#39;</span><span class="p">],</span>
-<span class="gp">... </span>    <span class="s1">&#39;gpa&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mf">3.7</span><span class="p">,</span> <span class="mf">3.3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">2.7</span><span class="p">]])</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="s1">&#39;letter grade&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;A+&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;A-&#39;</span><span class="p">,</span> <span class="s1">&#39;B+&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;B-&#39;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="s1">&#39;gpa&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mf">3.7</span><span class="p">,</span> <span class="mf">3.3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">2.7</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">t</span>
 <span class="go">letter grade | gpa</span>
 <span class="go">A+           | 4</span>
@@ -96,7 +96,7 @@ to be excluded.</dd>
 <span class="go">A-           | 3.7</span>
 <span class="go">B+           | 3.3</span>
 <span class="go">B            | 3</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">exclude</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">make_array</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
 <span class="go">letter grade | gpa</span>
 <span class="go">A+           | 4</span>
 <span class="go">A-           | 3.7</span>

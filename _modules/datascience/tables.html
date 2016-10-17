@@ -80,7 +80,7 @@
 <div class="viewcode-block" id="Table.__init__"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.__init__.html#datascience.tables.Table.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">_deprecated</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">formatter</span><span class="o">=</span><span class="n">_formats</span><span class="o">.</span><span class="n">default_formatter</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create an empty table with column labels.</span>
 
-<span class="sd">        &gt;&gt;&gt; tiles = Table([&#39;letter&#39;, &#39;count&#39;, &#39;points&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; tiles = Table(make_array(&#39;letter&#39;, &#39;count&#39;, &#39;points&#39;))</span>
 <span class="sd">        &gt;&gt;&gt; tiles</span>
 <span class="sd">        letter | count | points</span>
 
@@ -116,7 +116,7 @@
     <span class="c1"># Deprecated</span></div>
     <span class="nd">@classmethod</span>
 <div class="viewcode-block" id="Table.empty"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.empty.html#datascience.tables.Table.empty">[docs]</a>    <span class="k">def</span> <span class="nf">empty</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create an empty table. Column labels are optional. [Deprecated]</span>
+        <span class="sd">&quot;&quot;&quot;Creates an empty table. Column labels are optional. [Deprecated]</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            ``labels`` (None or list): If ``None``, a table with 0</span>
@@ -373,10 +373,10 @@
 <span class="sd">            A numpy array consisting of results of applying ``fn`` to elements</span>
 <span class="sd">            specified by ``column_label`` in each row.</span>
 
-<span class="sd">        &gt;&gt;&gt; t = Table().with_columns([</span>
-<span class="sd">        ...     &#39;letter&#39;, [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;z&#39;],</span>
-<span class="sd">        ...     &#39;count&#39;,  [9, 3, 3, 1],</span>
-<span class="sd">        ...     &#39;points&#39;, [1, 2, 2, 10]])</span>
+<span class="sd">        &gt;&gt;&gt; t = Table().with_columns(</span>
+<span class="sd">        ...     &#39;letter&#39;, make_array(&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;z&#39;),</span>
+<span class="sd">        ...     &#39;count&#39;,  make_array(9, 3, 3, 1),</span>
+<span class="sd">        ...     &#39;points&#39;, make_array(1, 2, 2, 10))</span>
 <span class="sd">        &gt;&gt;&gt; t</span>
 <span class="sd">        letter | count | points</span>
 <span class="sd">        a      | 9     | 1</span>
@@ -452,8 +452,8 @@
         <span class="sd">&quot;&quot;&quot;Appends a column to the table or replaces a column.</span>
 
 <span class="sd">        ``__setitem__`` is aliased to this method:</span>
-<span class="sd">            ``table.append_column(&#39;new_col&#39;, [1, 2, 3])`` is equivalent to</span>
-<span class="sd">            ``table[&#39;new_col&#39;] = [1, 2, 3]``.</span>
+<span class="sd">            ``table.append_column(&#39;new_col&#39;, make_array(1, 2, 3))`` is equivalent to</span>
+<span class="sd">            ``table[&#39;new_col&#39;] = make_array(1, 2, 3)``.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            ``label`` (str): The label of the new column.</span>
@@ -473,17 +473,17 @@
 <span class="sd">                - ``values`` is a list/array and does not have the same length</span>
 <span class="sd">                  as the number of rows in the table.</span>
 
-<span class="sd">        &gt;&gt;&gt; table = Table().with_columns([</span>
-<span class="sd">        ...     &#39;letter&#39;, [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;z&#39;],</span>
-<span class="sd">        ...     &#39;count&#39;,  [9, 3, 3, 1],</span>
-<span class="sd">        ...     &#39;points&#39;, [1, 2, 2, 10]])</span>
+<span class="sd">        &gt;&gt;&gt; table = Table().with_columns(</span>
+<span class="sd">        ...     &#39;letter&#39;, make_array(&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;z&#39;),</span>
+<span class="sd">        ...     &#39;count&#39;,  make_array(9, 3, 3, 1),</span>
+<span class="sd">        ...     &#39;points&#39;, make_array(1, 2, 2, 10))</span>
 <span class="sd">        &gt;&gt;&gt; table</span>
 <span class="sd">        letter | count | points</span>
 <span class="sd">        a      | 9     | 1</span>
 <span class="sd">        b      | 3     | 2</span>
 <span class="sd">        c      | 3     | 2</span>
 <span class="sd">        z      | 1     | 10</span>
-<span class="sd">        &gt;&gt;&gt; table.append_column(&#39;new_col1&#39;, [10, 20, 30, 40])</span>
+<span class="sd">        &gt;&gt;&gt; table.append_column(&#39;new_col1&#39;, make_array(10, 20, 30, 40))</span>
 <span class="sd">        &gt;&gt;&gt; table</span>
 <span class="sd">        letter | count | points | new_col1</span>
 <span class="sd">        a      | 9     | 1      | 10</span>
@@ -497,7 +497,7 @@
 <span class="sd">        b      | 3     | 2      | 20       | hello</span>
 <span class="sd">        c      | 3     | 2      | 30       | hello</span>
 <span class="sd">        z      | 1     | 10     | 40       | hello</span>
-<span class="sd">        &gt;&gt;&gt; table.append_column(123, [1, 2, 3, 4])</span>
+<span class="sd">        &gt;&gt;&gt; table.append_column(123, make_array(1, 2, 3, 4))</span>
 <span class="sd">        Traceback (most recent call last):</span>
 <span class="sd">            ...</span>
 <span class="sd">        ValueError: The column label must be a string, but a int was given</span>
@@ -544,26 +544,24 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            Original table with modified labels</span>
 
-<span class="sd">        &gt;&gt;&gt; table = Table().with_columns([</span>
+<span class="sd">        &gt;&gt;&gt; table = Table().with_columns(</span>
 <span class="sd">        ...     &#39;points&#39;, (1, 2, 3),</span>
-<span class="sd">        ...     &#39;id&#39;,     (12345, 123, 5123)])</span>
+<span class="sd">        ...     &#39;id&#39;,     (12345, 123, 5123))</span>
 <span class="sd">        &gt;&gt;&gt; table.relabel(&#39;id&#39;, &#39;yolo&#39;)</span>
 <span class="sd">        points | yolo</span>
 <span class="sd">        1      | 12345</span>
 <span class="sd">        2      | 123</span>
 <span class="sd">        3      | 5123</span>
-<span class="sd">        &gt;&gt;&gt; table.relabel([&#39;points&#39;, &#39;yolo&#39;], [&#39;red&#39;, &#39;blue&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; table.relabel(make_array(&#39;points&#39;, &#39;yolo&#39;), make_array(&#39;red&#39;, &#39;blue&#39;))</span>
 <span class="sd">        red  | blue</span>
 <span class="sd">        1    | 12345</span>
 <span class="sd">        2    | 123</span>
 <span class="sd">        3    | 5123</span>
-<span class="sd">        &gt;&gt;&gt; table.relabel([&#39;red&#39;, &#39;green&#39;, &#39;blue&#39;],</span>
-<span class="sd">        ...               [&#39;cyan&#39;, &#39;magenta&#39;, &#39;yellow&#39;, &#39;key&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; table.relabel(make_array(&#39;red&#39;, &#39;green&#39;, &#39;blue&#39;), make_array(&#39;cyan&#39;, &#39;magenta&#39;, &#39;yellow&#39;, &#39;key&#39;))</span>
 <span class="sd">        Traceback (most recent call last):</span>
 <span class="sd">            ...</span>
-<span class="sd">        ValueError: Invalid arguments. column_label and new_label must be of</span>
-<span class="sd">        equal length.</span>
-<span class="sd">        &gt;&gt;&gt; table.relabel([&#39;red&#39;, &#39;blue&#39;], [&#39;blue&#39;, &#39;red&#39;])</span>
+<span class="sd">        ValueError: Invalid arguments. column_label and new_label must be of equal length.</span>
+<span class="sd">        &gt;&gt;&gt; table.relabel(make_array(&#39;red&#39;, &#39;blue&#39;), make_array(&#39;blue&#39;, &#39;red&#39;))</span>
 <span class="sd">        blue | red</span>
 <span class="sd">        1    | 12345</span>
 <span class="sd">        2    | 123</span>
@@ -684,10 +682,10 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            An instance of ``Table`` with given columns removed.</span>
 
-<span class="sd">        &gt;&gt;&gt; t = Table().with_columns([</span>
-<span class="sd">        ...     &#39;burgers&#39;,  [&#39;cheeseburger&#39;, &#39;hamburger&#39;, &#39;veggie burger&#39;],</span>
-<span class="sd">        ...     &#39;prices&#39;,   [6, 5, 5],</span>
-<span class="sd">        ...     &#39;calories&#39;, [743, 651, 582]])</span>
+<span class="sd">        &gt;&gt;&gt; t = Table().with_columns(</span>
+<span class="sd">        ...     &#39;burgers&#39;,  make_array(&#39;cheeseburger&#39;, &#39;hamburger&#39;, &#39;veggie burger&#39;),</span>
+<span class="sd">        ...     &#39;prices&#39;,   make_array(6, 5, 5),</span>
+<span class="sd">        ...     &#39;calories&#39;, make_array(743, 651, 582))</span>
 <span class="sd">        &gt;&gt;&gt; t</span>
 <span class="sd">        burgers       | prices | calories</span>
 <span class="sd">        cheeseburger  | 6      | 743</span>
@@ -841,11 +839,11 @@
 <span class="sd">            An instance of ``Table`` containing rows sorted based on the values</span>
 <span class="sd">            in ``column_or_label``.</span>
 
-<span class="sd">        &gt;&gt;&gt; marbles = Table().with_columns([</span>
-<span class="sd">        ...    &quot;Color&quot;, [&quot;Red&quot;, &quot;Green&quot;, &quot;Blue&quot;, &quot;Red&quot;, &quot;Green&quot;, &quot;Green&quot;],</span>
-<span class="sd">        ...    &quot;Shape&quot;, [&quot;Round&quot;, &quot;Rectangular&quot;, &quot;Rectangular&quot;, &quot;Round&quot;, &quot;Rectangular&quot;, &quot;Round&quot;],</span>
-<span class="sd">        ...    &quot;Amount&quot;, [4, 6, 12, 7, 9, 2],</span>
-<span class="sd">        ...    &quot;Price&quot;, [1.30, 1.30, 2.00, 1.75, 1.40, 1.00]])</span>
+<span class="sd">        &gt;&gt;&gt; marbles = Table().with_columns(</span>
+<span class="sd">        ...    &quot;Color&quot;, make_array(&quot;Red&quot;, &quot;Green&quot;, &quot;Blue&quot;, &quot;Red&quot;, &quot;Green&quot;, &quot;Green&quot;),</span>
+<span class="sd">        ...    &quot;Shape&quot;, make_array(&quot;Round&quot;, &quot;Rectangular&quot;, &quot;Rectangular&quot;, &quot;Round&quot;, &quot;Rectangular&quot;, &quot;Round&quot;),</span>
+<span class="sd">        ...    &quot;Amount&quot;, make_array(4, 6, 12, 7, 9, 2),</span>
+<span class="sd">        ...    &quot;Price&quot;, make_array(1.30, 1.30, 2.00, 1.75, 1.40, 1.00))</span>
 <span class="sd">        &gt;&gt;&gt; marbles</span>
 <span class="sd">        Color | Shape       | Amount | Price</span>
 <span class="sd">        Red   | Round       | 4      | 1.3</span>
@@ -917,11 +915,11 @@
 <span class="sd">            accept arguments with one of the column types, that column will be empty in the resulting</span>
 <span class="sd">            table.</span>
 
-<span class="sd">        &gt;&gt;&gt; marbles = Table().with_columns([</span>
-<span class="sd">        ...    &quot;Color&quot;, [&quot;Red&quot;, &quot;Green&quot;, &quot;Blue&quot;, &quot;Red&quot;, &quot;Green&quot;, &quot;Green&quot;],</span>
-<span class="sd">        ...    &quot;Shape&quot;, [&quot;Round&quot;, &quot;Rectangular&quot;, &quot;Rectangular&quot;, &quot;Round&quot;, &quot;Rectangular&quot;, &quot;Round&quot;],</span>
-<span class="sd">        ...    &quot;Amount&quot;, [4, 6, 12, 7, 9, 2],</span>
-<span class="sd">        ...    &quot;Price&quot;, [1.30, 1.30, 2.00, 1.75, 1.40, 1.00]])</span>
+<span class="sd">        &gt;&gt;&gt; marbles = Table().with_columns(</span>
+<span class="sd">        ...    &quot;Color&quot;, make_array(&quot;Red&quot;, &quot;Green&quot;, &quot;Blue&quot;, &quot;Red&quot;, &quot;Green&quot;, &quot;Green&quot;),</span>
+<span class="sd">        ...    &quot;Shape&quot;, make_array(&quot;Round&quot;, &quot;Rectangular&quot;, &quot;Rectangular&quot;, &quot;Round&quot;, &quot;Rectangular&quot;, &quot;Round&quot;),</span>
+<span class="sd">        ...    &quot;Amount&quot;, make_array(4, 6, 12, 7, 9, 2),</span>
+<span class="sd">        ...    &quot;Price&quot;, make_array(1.30, 1.30, 2.00, 1.75, 1.40, 1.00))</span>
 <span class="sd">        &gt;&gt;&gt; marbles</span>
 <span class="sd">        Color | Shape       | Amount | Price</span>
 <span class="sd">        Red   | Round       | 4      | 1.3</span>
@@ -998,11 +996,11 @@
 <span class="sd">            accept arguments with one of the column types, that column will be empty in the resulting</span>
 <span class="sd">            table.</span>
 
-<span class="sd">        &gt;&gt;&gt; marbles = Table().with_columns([</span>
-<span class="sd">        ...    &quot;Color&quot;, [&quot;Red&quot;, &quot;Green&quot;, &quot;Blue&quot;, &quot;Red&quot;, &quot;Green&quot;, &quot;Green&quot;],</span>
-<span class="sd">        ...    &quot;Shape&quot;, [&quot;Round&quot;, &quot;Rectangular&quot;, &quot;Rectangular&quot;, &quot;Round&quot;, &quot;Rectangular&quot;, &quot;Round&quot;],</span>
-<span class="sd">        ...    &quot;Amount&quot;, [4, 6, 12, 7, 9, 2],</span>
-<span class="sd">        ...    &quot;Price&quot;, [1.30, 1.30, 2.00, 1.75, 1.40, 1.00]])</span>
+<span class="sd">        &gt;&gt;&gt; marbles = Table().with_columns(</span>
+<span class="sd">        ...    &quot;Color&quot;, make_array(&quot;Red&quot;, &quot;Green&quot;, &quot;Blue&quot;, &quot;Red&quot;, &quot;Green&quot;, &quot;Green&quot;),</span>
+<span class="sd">        ...    &quot;Shape&quot;, make_array(&quot;Round&quot;, &quot;Rectangular&quot;, &quot;Rectangular&quot;, &quot;Round&quot;, &quot;Rectangular&quot;, &quot;Round&quot;),</span>
+<span class="sd">        ...    &quot;Amount&quot;, make_array(4, 6, 12, 7, 9, 2),</span>
+<span class="sd">        ...    &quot;Price&quot;, make_array(1.30, 1.30, 2.00, 1.75, 1.40, 1.00))</span>
 <span class="sd">        &gt;&gt;&gt; marbles</span>
 <span class="sd">        Color | Shape       | Amount | Price</span>
 <span class="sd">        Red   | Round       | 4      | 1.3</span>
@@ -1233,9 +1231,9 @@
 <span class="sd">        pth percentile of a column is the smallest value that at at least as</span>
 <span class="sd">        large as the p% of numbers in the column.</span>
 
-<span class="sd">        &gt;&gt;&gt; table = Table().with_columns([</span>
-<span class="sd">        ...     &#39;count&#39;,  [9, 3, 3, 1],</span>
-<span class="sd">        ...     &#39;points&#39;, [1, 2, 2, 10]])</span>
+<span class="sd">        &gt;&gt;&gt; table = Table().with_columns(</span>
+<span class="sd">        ...     &#39;count&#39;,  make_array(9, 3, 3, 1),</span>
+<span class="sd">        ...     &#39;points&#39;, make_array(1, 2, 2, 10))</span>
 <span class="sd">        &gt;&gt;&gt; table</span>
 <span class="sd">        count | points</span>
 <span class="sd">        9     | 1</span>
@@ -1271,9 +1269,9 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            A new instance of ``Table``.</span>
 
-<span class="sd">        &gt;&gt;&gt; jobs = Table().with_columns([</span>
-<span class="sd">        ...     &#39;job&#39;,  [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;],</span>
-<span class="sd">        ...     &#39;wage&#39;, [10, 20, 15, 8]])</span>
+<span class="sd">        &gt;&gt;&gt; jobs = Table().with_columns(</span>
+<span class="sd">        ...     &#39;job&#39;,  make_array(&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;),</span>
+<span class="sd">        ...     &#39;wage&#39;, make_array(10, 20, 15, 8))</span>
 <span class="sd">        &gt;&gt;&gt; jobs</span>
 <span class="sd">        job  | wage</span>
 <span class="sd">        a    | 10</span>
@@ -1297,7 +1295,7 @@
 <span class="sd">        b    | 20</span>
 <span class="sd">        c    | 15</span>
 <span class="sd">        &gt;&gt;&gt; jobs.sample(k = 2, with_replacement = True,</span>
-<span class="sd">        ...     weights = [0.5, 0.5, 0, 0]) # doctest: +SKIP</span>
+<span class="sd">        ...     weights = make_array(0.5, 0.5, 0, 0)) # doctest: +SKIP</span>
 <span class="sd">        job  | wage</span>
 <span class="sd">        a    | 10</span>
 <span class="sd">        a    | 10</span>
@@ -1355,9 +1353,9 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            A tuple containing two instances of ``Table``.</span>
 
-<span class="sd">        &gt;&gt;&gt; jobs = Table().with_columns([</span>
-<span class="sd">        ...     &#39;job&#39;,  [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;],</span>
-<span class="sd">        ...     &#39;wage&#39;, [10, 20, 15, 8]])</span>
+<span class="sd">        &gt;&gt;&gt; jobs = Table().with_columns(</span>
+<span class="sd">        ...     &#39;job&#39;,  make_array(&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;),</span>
+<span class="sd">        ...     &#39;wage&#39;, make_array(10, 20, 15, 8))</span>
 <span class="sd">        &gt;&gt;&gt; jobs</span>
 <span class="sd">        job  | wage</span>
 <span class="sd">        a    | 10</span>
@@ -1397,7 +1395,7 @@
 <span class="sd">        Raises:</span>
 <span class="sd">            ``ValueError``: If the row length differs from the column count.</span>
 
-<span class="sd">        &gt;&gt;&gt; tiles = Table([&#39;letter&#39;, &#39;count&#39;, &#39;points&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; tiles = Table(make_array(&#39;letter&#39;, &#39;count&#39;, &#39;points&#39;))</span>
 <span class="sd">        &gt;&gt;&gt; tiles.with_row([&#39;c&#39;, 2, 3]).with_row([&#39;d&#39;, 4, 2])</span>
 <span class="sd">        letter | count | points</span>
 <span class="sd">        c      | 2     | 3</span>
@@ -1418,8 +1416,9 @@
 <span class="sd">        Raises:</span>
 <span class="sd">            ``ValueError``: If a row length differs from the column count.</span>
 
-<span class="sd">        &gt;&gt;&gt; tiles = Table([&#39;letter&#39;, &#39;count&#39;, &#39;points&#39;])</span>
-<span class="sd">        &gt;&gt;&gt; tiles.with_rows([[&#39;c&#39;, 2, 3], [&#39;d&#39;, 4, 2]])</span>
+<span class="sd">        &gt;&gt;&gt; tiles = Table(make_array(&#39;letter&#39;, &#39;count&#39;, &#39;points&#39;))</span>
+<span class="sd">        &gt;&gt;&gt; tiles.with_rows(make_array(make_array(&#39;c&#39;, 2, 3),</span>
+<span class="sd">        ...     make_array(&#39;d&#39;, 4, 2)))</span>
 <span class="sd">        letter | count | points</span>
 <span class="sd">        c      | 2     | 3</span>
 <span class="sd">        d      | 4     | 2</span>
@@ -1572,7 +1571,8 @@
 <span class="sd">                columns to be changed. Same number of elements as label.</span>
 
 <span class="sd">        &gt;&gt;&gt; tiles = Table([&#39;letter&#39;, &#39;count&#39;])</span>
-<span class="sd">        &gt;&gt;&gt; tiles = tiles.with_rows([[&#39;c&#39;, 2], [&#39;d&#39;, 4]])</span>
+<span class="sd">        &gt;&gt;&gt; tiles = tiles.with_rows(</span>
+<span class="sd">        ...    make_array(make_array(&#39;c&#39;, 2), make_array(&#39;d&#39;, 4)))</span>
 <span class="sd">        &gt;&gt;&gt; tiles.relabeled(&#39;count&#39;, &#39;number&#39;)</span>
 <span class="sd">        letter | number</span>
 <span class="sd">        c      | 2</span>
@@ -1726,9 +1726,9 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            None, outputs a file with name ``filename``.</span>
 
-<span class="sd">        &gt;&gt;&gt; jobs = Table().with_columns([</span>
-<span class="sd">        ...     &#39;job&#39;,  [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;],</span>
-<span class="sd">        ...     &#39;wage&#39;, [10, 20, 15, 8]])</span>
+<span class="sd">        &gt;&gt;&gt; jobs = Table().with_columns(</span>
+<span class="sd">        ...     &#39;job&#39;,  make_array(&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;),</span>
+<span class="sd">        ...     &#39;wage&#39;, make_array(10, 20, 15, 8))</span>
 <span class="sd">        &gt;&gt;&gt; jobs</span>
 <span class="sd">        job  | wage</span>
 <span class="sd">        a    | 10</span>
@@ -1875,11 +1875,11 @@
 <span class="sd">                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.barh</span>
 <span class="sd">                for additional arguments that can be passed into vargs.</span>
 
-<span class="sd">        &gt;&gt;&gt; t = Table().with_columns([</span>
-<span class="sd">        ...     &#39;Furniture&#39;, [&#39;chairs&#39;, &#39;tables&#39;, &#39;desks&#39;],</span>
-<span class="sd">        ...     &#39;Count&#39;, [6, 1, 2],</span>
-<span class="sd">        ...     &#39;Price&#39;, [10, 20, 30]</span>
-<span class="sd">        ...     ])</span>
+<span class="sd">        &gt;&gt;&gt; t = Table().with_columns(</span>
+<span class="sd">        ...     &#39;Furniture&#39;, make_array(&#39;chairs&#39;, &#39;tables&#39;, &#39;desks&#39;),</span>
+<span class="sd">        ...     &#39;Count&#39;, make_array(6, 1, 2),</span>
+<span class="sd">        ...     &#39;Price&#39;, make_array(10, 20, 30)</span>
+<span class="sd">        ...     )</span>
 <span class="sd">        &gt;&gt;&gt; t</span>
 <span class="sd">        Furniture | Count | Price</span>
 <span class="sd">        chairs    | 6     | 10</span>
@@ -1957,10 +1957,10 @@
 
 <span class="sd">            ``labels``: A column of text labels to annotate dots</span>
 
-<span class="sd">        &gt;&gt;&gt; table = Table().with_columns([</span>
-<span class="sd">        ...     &#39;x&#39;, [9, 3, 3, 1],</span>
-<span class="sd">        ...     &#39;y&#39;, [1, 2, 2, 10],</span>
-<span class="sd">        ...     &#39;z&#39;, [3, 4, 5, 6]])</span>
+<span class="sd">        &gt;&gt;&gt; table = Table().with_columns(</span>
+<span class="sd">        ...     &#39;x&#39;, make_array(9, 3, 3, 1),</span>
+<span class="sd">        ...     &#39;y&#39;, make_array(1, 2, 2, 10),</span>
+<span class="sd">        ...     &#39;z&#39;, make_array(3, 4, 5, 6))</span>
 <span class="sd">        &gt;&gt;&gt; table</span>
 <span class="sd">        x    | y    | z</span>
 <span class="sd">        9    | 1    | 3</span>
@@ -2105,9 +2105,9 @@
 <span class="sd">                include: `range`, `normed`, `cumulative`, and `orientation`,</span>
 <span class="sd">                to name a few.</span>
 
-<span class="sd">        &gt;&gt;&gt; t = Table().with_columns([</span>
-<span class="sd">        ...     &#39;count&#39;,  [9, 3, 3, 1],</span>
-<span class="sd">        ...     &#39;points&#39;, [1, 2, 2, 10]])</span>
+<span class="sd">        &gt;&gt;&gt; t = Table().with_columns(</span>
+<span class="sd">        ...     &#39;count&#39;,  make_array(9, 3, 3, 1),</span>
+<span class="sd">        ...     &#39;points&#39;, make_array(1, 2, 2, 10))</span>
 <span class="sd">        &gt;&gt;&gt; t</span>
 <span class="sd">        count | points</span>
 <span class="sd">        9     | 1</span>
@@ -2118,9 +2118,9 @@
 <span class="sd">        &lt;histogram of values in count&gt;</span>
 <span class="sd">        &lt;histogram of values in points&gt;</span>
 
-<span class="sd">        &gt;&gt;&gt; t = Table().with_columns([</span>
-<span class="sd">        ...     &#39;value&#39;,      [101, 102, 103],</span>
-<span class="sd">        ...     &#39;proportion&#39;, [0.25, 0.5, 0.25]])</span>
+<span class="sd">        &gt;&gt;&gt; t = Table().with_columns(</span>
+<span class="sd">        ...     &#39;value&#39;,      make_array(101, 102, 103),</span>
+<span class="sd">        ...     &#39;proportion&#39;, make_array(0.25, 0.5, 0.25))</span>
 <span class="sd">        &gt;&gt;&gt; t.hist(counts=&#39;value&#39;) # doctest: +SKIP</span>
 <span class="sd">        &lt;histogram of values in prop weighted by corresponding values in value&gt;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -2220,9 +2220,9 @@
 <span class="sd">        Raises:</span>
 <span class="sd">            ValueError: The Table contains columns with non-numerical values.</span>
 
-<span class="sd">        &gt;&gt;&gt; table = Table().with_columns([</span>
-<span class="sd">        ...     &#39;test1&#39;, [92.5, 88, 72, 71, 99, 100, 95, 83, 94, 93],</span>
-<span class="sd">        ...     &#39;test2&#39;, [89, 84, 74, 66, 92, 99, 88, 81, 95, 94]])</span>
+<span class="sd">        &gt;&gt;&gt; table = Table().with_columns(</span>
+<span class="sd">        ...     &#39;test1&#39;, make_array(92.5, 88, 72, 71, 99, 100, 95, 83, 94, 93),</span>
+<span class="sd">        ...     &#39;test2&#39;, make_array(89, 84, 74, 66, 92, 99, 88, 81, 95, 94))</span>
 <span class="sd">        &gt;&gt;&gt; table</span>
 <span class="sd">        test1 | test2</span>
 <span class="sd">        92.5  | 89</span>
@@ -2495,9 +2495,9 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            A new instance of ``Table``.</span>
 
-<span class="sd">        &gt;&gt;&gt; t = Table().with_columns([</span>
-<span class="sd">        ...     &#39;letter grade&#39;, [&#39;A+&#39;, &#39;A&#39;, &#39;A-&#39;, &#39;B+&#39;, &#39;B&#39;, &#39;B-&#39;],</span>
-<span class="sd">        ...     &#39;gpa&#39;, [4, 4, 3.7, 3.3, 3, 2.7]])</span>
+<span class="sd">        &gt;&gt;&gt; t = Table().with_columns(</span>
+<span class="sd">        ...     &#39;letter grade&#39;, make_array(&#39;A+&#39;, &#39;A&#39;, &#39;A-&#39;, &#39;B+&#39;, &#39;B&#39;, &#39;B-&#39;),</span>
+<span class="sd">        ...     &#39;gpa&#39;, make_array(4, 4, 3.7, 3.3, 3, 2.7))</span>
 <span class="sd">        &gt;&gt;&gt; t</span>
 <span class="sd">        letter grade | gpa</span>
 <span class="sd">        A+           | 4</span>
@@ -2520,7 +2520,7 @@
 <span class="sd">        A-           | 3.7</span>
 <span class="sd">        B+           | 3.3</span>
 <span class="sd">        B            | 3</span>
-<span class="sd">        &gt;&gt;&gt; t.exclude([1, 3, 4])</span>
+<span class="sd">        &gt;&gt;&gt; t.exclude(make_array(1, 3, 4))</span>
 <span class="sd">        letter grade | gpa</span>
 <span class="sd">        A+           | 4</span>
 <span class="sd">        A-           | 3.7</span>

@@ -62,8 +62,8 @@
 <dd><p>Appends a column to the table or replaces a column.</p>
 <dl class="docutils">
 <dt><code class="docutils literal"><span class="pre">__setitem__</span></code> is aliased to this method:</dt>
-<dd><code class="docutils literal"><span class="pre">table.append_column('new_col',</span> <span class="pre">[1,</span> <span class="pre">2,</span> <span class="pre">3])</span></code> is equivalent to
-<code class="docutils literal"><span class="pre">table['new_col']</span> <span class="pre">=</span> <span class="pre">[1,</span> <span class="pre">2,</span> <span class="pre">3]</span></code>.</dd>
+<dd><code class="docutils literal"><span class="pre">table.append_column('new_col',</span> <span class="pre">make_array(1,</span> <span class="pre">2,</span> <span class="pre">3))</span></code> is equivalent to
+<code class="docutils literal"><span class="pre">table['new_col']</span> <span class="pre">=</span> <span class="pre">make_array(1,</span> <span class="pre">2,</span> <span class="pre">3)</span></code>.</dd>
 <dt>Args:</dt>
 <dd><p class="first"><code class="docutils literal"><span class="pre">label</span></code> (str): The label of the new column.</p>
 <dl class="last docutils">
@@ -88,17 +88,17 @@ as the number of rows in the table.</li>
 </dl>
 </dd>
 </dl>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">([</span>
-<span class="gp">... </span>    <span class="s1">&#39;letter&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">],</span>
-<span class="gp">... </span>    <span class="s1">&#39;count&#39;</span><span class="p">,</span>  <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-<span class="gp">... </span>    <span class="s1">&#39;points&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">]])</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="s1">&#39;letter&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="s1">&#39;count&#39;</span><span class="p">,</span>  <span class="n">make_array</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="s1">&#39;points&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">table</span>
 <span class="go">letter | count | points</span>
 <span class="go">a      | 9     | 1</span>
 <span class="go">b      | 3     | 2</span>
 <span class="go">c      | 3     | 2</span>
 <span class="go">z      | 1     | 10</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">append_column</span><span class="p">(</span><span class="s1">&#39;new_col1&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">append_column</span><span class="p">(</span><span class="s1">&#39;new_col1&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">table</span>
 <span class="go">letter | count | points | new_col1</span>
 <span class="go">a      | 9     | 1      | 10</span>
@@ -112,7 +112,7 @@ as the number of rows in the table.</li>
 <span class="go">b      | 3     | 2      | 20       | hello</span>
 <span class="go">c      | 3     | 2      | 30       | hello</span>
 <span class="go">z      | 1     | 10     | 40       | hello</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">append_column</span><span class="p">(</span><span class="mi">123</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">append_column</span><span class="p">(</span><span class="mi">123</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
 <span class="gt">Traceback (most recent call last):</span>
     <span class="o">...</span>
 <span class="gr">ValueError</span>: <span class="n">The column label must be a string, but a int was given</span>

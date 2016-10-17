@@ -77,11 +77,11 @@ for additional arguments that can be passed into vargs.</dd>
 </dl>
 </dd>
 </dl>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">([</span>
-<span class="gp">... </span>    <span class="s1">&#39;Furniture&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;chairs&#39;</span><span class="p">,</span> <span class="s1">&#39;tables&#39;</span><span class="p">,</span> <span class="s1">&#39;desks&#39;</span><span class="p">],</span>
-<span class="gp">... </span>    <span class="s1">&#39;Count&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
-<span class="gp">... </span>    <span class="s1">&#39;Price&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">]</span>
-<span class="gp">... </span>    <span class="p">])</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="s1">&#39;Furniture&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;chairs&#39;</span><span class="p">,</span> <span class="s1">&#39;tables&#39;</span><span class="p">,</span> <span class="s1">&#39;desks&#39;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="s1">&#39;Count&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="s1">&#39;Price&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">t</span>
 <span class="go">Furniture | Count | Price</span>
 <span class="go">chairs    | 6     | 10</span>

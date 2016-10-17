@@ -76,26 +76,24 @@ labels in <code class="docutils literal"><span class="pre">new_label</span></cod
 <dt>Returns:</dt>
 <dd>Original table with modified labels</dd>
 </dl>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">([</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="s1">&#39;points&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
-<span class="gp">... </span>    <span class="s1">&#39;id&#39;</span><span class="p">,</span>     <span class="p">(</span><span class="mi">12345</span><span class="p">,</span> <span class="mi">123</span><span class="p">,</span> <span class="mi">5123</span><span class="p">)])</span>
+<span class="gp">... </span>    <span class="s1">&#39;id&#39;</span><span class="p">,</span>     <span class="p">(</span><span class="mi">12345</span><span class="p">,</span> <span class="mi">123</span><span class="p">,</span> <span class="mi">5123</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">relabel</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;yolo&#39;</span><span class="p">)</span>
 <span class="go">points | yolo</span>
 <span class="go">1      | 12345</span>
 <span class="go">2      | 123</span>
 <span class="go">3      | 5123</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">relabel</span><span class="p">([</span><span class="s1">&#39;points&#39;</span><span class="p">,</span> <span class="s1">&#39;yolo&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">relabel</span><span class="p">(</span><span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;points&#39;</span><span class="p">,</span> <span class="s1">&#39;yolo&#39;</span><span class="p">),</span> <span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">))</span>
 <span class="go">red  | blue</span>
 <span class="go">1    | 12345</span>
 <span class="go">2    | 123</span>
 <span class="go">3    | 5123</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">relabel</span><span class="p">([</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">],</span>
-<span class="gp">... </span>              <span class="p">[</span><span class="s1">&#39;cyan&#39;</span><span class="p">,</span> <span class="s1">&#39;magenta&#39;</span><span class="p">,</span> <span class="s1">&#39;yellow&#39;</span><span class="p">,</span> <span class="s1">&#39;key&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">relabel</span><span class="p">(</span><span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">),</span> <span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;cyan&#39;</span><span class="p">,</span> <span class="s1">&#39;magenta&#39;</span><span class="p">,</span> <span class="s1">&#39;yellow&#39;</span><span class="p">,</span> <span class="s1">&#39;key&#39;</span><span class="p">))</span>
 <span class="gt">Traceback (most recent call last):</span>
     <span class="o">...</span>
-<span class="gr">ValueError</span>: <span class="n">Invalid arguments. column_label and new_label must be of</span>
-<span class="go">equal length.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">relabel</span><span class="p">([</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;red&#39;</span><span class="p">])</span>
+<span class="gr">ValueError</span>: <span class="n">Invalid arguments. column_label and new_label must be of equal length.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">relabel</span><span class="p">(</span><span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">),</span> <span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;red&#39;</span><span class="p">))</span>
 <span class="go">blue | red</span>
 <span class="go">1    | 12345</span>
 <span class="go">2    | 123</span>

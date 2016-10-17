@@ -68,8 +68,9 @@
 <dt>Raises:</dt>
 <dd><code class="docutils literal"><span class="pre">ValueError</span></code>: If a row length differs from the column count.</dd>
 </dl>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">tiles</span> <span class="o">=</span> <span class="n">Table</span><span class="p">([</span><span class="s1">&#39;letter&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="s1">&#39;points&#39;</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">tiles</span><span class="o">.</span><span class="n">with_rows</span><span class="p">([[</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">]])</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">tiles</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;letter&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="s1">&#39;points&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tiles</span><span class="o">.</span><span class="n">with_rows</span><span class="p">(</span><span class="n">make_array</span><span class="p">(</span><span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
 <span class="go">letter | count | points</span>
 <span class="go">c      | 2     | 3</span>
 <span class="go">d      | 4     | 2</span>

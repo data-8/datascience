@@ -60,7 +60,7 @@
 <dt id="datascience.tables.Table.__init__">
 <code class="descclassname">Table.</code><code class="descname">__init__</code><span class="sig-paren">(</span><em>labels=None</em>, <em>_deprecated=None</em>, <em>*</em>, <em>formatter=&lt;datascience.formats.Formatter object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create an empty table with column labels.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">tiles</span> <span class="o">=</span> <span class="n">Table</span><span class="p">([</span><span class="s1">&#39;letter&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="s1">&#39;points&#39;</span><span class="p">])</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">tiles</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;letter&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="s1">&#39;points&#39;</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">tiles</span>
 <span class="go">letter | count | points</span>
 </pre></div>
