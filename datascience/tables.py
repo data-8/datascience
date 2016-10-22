@@ -1009,14 +1009,18 @@ class Table(collections.abc.MutableMapping):
         the values that match both row and column based on ``collect``.
 
         Args:
-            ``columns`` -- a single column label, (``str``), in self, used to
-                create new columns, based on its unique values in self.
-            ``rows`` -- row labels, as (``str``) or list of strings, used to
+            ``columns`` -- a single column label, (``str``), in table, used to
+                create new columns, based on its unique values.
+            ``rows`` -- row labels, as (``str``) or array of strings, used to
                 create new rows based on it's unique values.
-            ``values`` -- column label in self for use in aggregation.
+            ``values`` -- column label in table for use in aggregation.
             ``collect`` -- aggregation function, used to group ``values``
                 over row-column combinations.
             ``zero`` -- zero value for non-existent row-column combinations.
+
+        Raises:
+            TypeError -- if collect is passed in and values is not,
+                and vice versa.
 
         Returns:
             New pivot table, with row-column combinations, as specified, with
@@ -1056,6 +1060,14 @@ class Table(collections.abc.MutableMapping):
         0          | M      | 2    | 0
         1          | F      | 0    | 2
         1          | M      | 1    | 1
+        >>> titanic.pivot('survival', 'gender', values = 'age')
+        Traceback (most recent call last):
+           ...
+        TypeError: values requires collect to be specified
+        >>> titanic.pivot('survival', 'gender', collect = np.mean)
+        Traceback (most recent call last):
+           ...
+        TypeError: collect requires values to be specified
         """
         if collect is not None and values is None:
             raise TypeError('collect requires values to be specified')
@@ -1248,19 +1260,24 @@ class Table(collections.abc.MutableMapping):
 
         Args:
             ``k`` -- specifies the number of rows (``int``)  to be sampled from
-                self. Default is k is equal to number of rows in self.
+               the table. Default is k is equal to number of rows in the table.
 
-            ``with_replacement`` -- (``boolean``), if true samples ``k`` rows
-                with replacement from self, else samples ``k`` rows without
-                replacement.
+            ``with_replacement`` -- (``bool``) By default, TRUE, Samples ``k``
+                rows with replacement from table, else samples ``k`` rows
+                without replacement.
 
-            ``weights``: Array specifying valid probability distribution.
-                Rows in self are sampled according the the
-                probability distribution given by ``weights``. Default is
+            ``weights`` -- Array specifying probability the ith row of the
+                table is sampled. If None, by default, ``weights`` is the
                 uniform distribution on [1, ... , n], n = number of rows.
+                ``weights`` must be a valid probability distribution -- i.e.
+                an array the length of the number of rows, summing to 1.
+
+        Raises:
+            ValueError -- if ``weights`` is not length equal to number of rows
+                in the table; or, if ``weights`` does not sum to 1.
 
         Returns:
-            A new instance of ``Table`` with k rows resampled.
+            A new instance of ``Table`` with ``k`` rows resampled.
 
         >>> jobs = Table().with_columns(
         ...     'job',  make_array('a', 'b', 'c', 'd'),
