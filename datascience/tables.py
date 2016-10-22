@@ -1014,19 +1014,20 @@ class Table(collections.abc.MutableMapping):
             ``rows`` -- row labels, as (``str``) or array of strings, used to
                 create new rows based on it's unique values.
             ``values`` -- column label in table for use in aggregation.
+                Default None.
             ``collect`` -- aggregation function, used to group ``values``
-                over row-column combinations.
+                over row-column combinations. Default None.
             ``zero`` -- zero value for non-existent row-column combinations.
 
         Raises:
-            TypeError -- if collect is passed in and values is not,
-                and vice versa.
+            TypeError -- if ``collect`` is passed in and ``values`` is not,
+                vice versa.
 
         Returns:
             New pivot table, with row-column combinations, as specified, with
             aggregated ``values`` by ``collect`` across the intersection of
-            ``columns`` and ``rows``. Simple counts provided if values/collect
-            is None, as default.
+            ``columns`` and ``rows``. Simple counts provided if values and
+            collect are None, as default.
 
         >>> titanic = Table().with_columns('age', make_array(21, 44, 56, 89, 95
         ...    , 40, 80, 45), 'survival', make_array(0,0,0,1, 1, 1, 0, 1),
@@ -1259,10 +1260,10 @@ class Table(collections.abc.MutableMapping):
         original table.
 
         Args:
-            ``k`` -- specifies the number of rows (``int``)  to be sampled from
-               the table. Default is k is equal to number of rows in the table.
+            ``k`` -- specifies the number of rows (``int``) to be sampled from
+               the table. Default is k equal to number of rows in the table.
 
-            ``with_replacement`` -- (``bool``) By default, TRUE, Samples ``k``
+            ``with_replacement`` -- (``bool``) By default TRUE; Samples ``k``
                 rows with replacement from table, else samples ``k`` rows
                 without replacement.
 
