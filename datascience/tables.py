@@ -67,7 +67,7 @@ class Table(collections.abc.MutableMapping):
     # Deprecated
     @classmethod
     def empty(cls, labels=None):
-        """Create an empty table. Column labels are optional. [Deprecated]
+        """Creates an empty table. Column labels are optional. [Deprecated]
 
         Args:
             ``labels`` (None or list): If ``None``, a table with 0
@@ -513,6 +513,11 @@ class Table(collections.abc.MutableMapping):
         Traceback (most recent call last):
             ...
         ValueError: Invalid arguments. column_label and new_label must be of equal length.
+        >>> table.relabel(make_array('red', 'blue'), make_array('blue', 'red'))
+        blue | red
+        1    | 12345
+        2    | 123
+        3    | 5123
         """
         if isinstance(column_label, numbers.Integral):
             column_label = self._as_label(column_label)
