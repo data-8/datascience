@@ -1263,15 +1263,15 @@ class Table(collections.abc.MutableMapping):
             ``k`` -- specifies the number of rows (``int``) to be sampled from
                the table. Default is k equal to number of rows in the table.
 
-            ``with_replacement`` -- (``bool``) By default TRUE; Samples ``k``
+            ``with_replacement`` -- (``bool``) By default True; Samples ``k``
                 rows with replacement from table, else samples ``k`` rows
                 without replacement.
 
             ``weights`` -- Array specifying probability the ith row of the
-                table is sampled. If None, by default, ``weights`` is the
-                uniform distribution on [1, ... , n], n = number of rows.
-                ``weights`` must be a valid probability distribution -- i.e.
-                an array the length of the number of rows, summing to 1.
+                table is sampled. Defaults to None, which samples each row
+                with equal probability. ``weights`` must be a valid probability
+                distribution -- i.e. an array the length of the number of rows,
+                summing to 1.
 
         Raises:
             ValueError -- if ``weights`` is not length equal to number of rows
