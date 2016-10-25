@@ -302,6 +302,7 @@
 <span class="sd">        ...     &#39;letter&#39;, make_array(&#39;c&#39;, &#39;d&#39;),</span>
 <span class="sd">        ...     &#39;count&#39;,  make_array(2, 4),</span>
 <span class="sd">        ... )</span>
+
 <span class="sd">        &gt;&gt;&gt; tiles.column(&#39;letter&#39;)</span>
 <span class="sd">        array([&#39;c&#39;, &#39;d&#39;],</span>
 <span class="sd">              dtype=&#39;&lt;U1&#39;)</span>
@@ -1052,15 +1053,71 @@
             <span class="k">return</span> <span class="n">grouped</span>
 </div>
 <div class="viewcode-block" id="Table.pivot"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.pivot.html#datascience.tables.Table.pivot">[docs]</a>    <span class="k">def</span> <span class="nf">pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">columns</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">collect</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">zero</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Generate a table with a column for rows (or a column for each row</span>
-<span class="sd">        in rows list) and a column for each unique value in columns. Each row</span>
-<span class="sd">        counts/aggregates the values that match both row and column.</span>
+        <span class="sd">&quot;&quot;&quot;Generate a table with a column for each unique value in ``columns``,</span>
+<span class="sd">        with rows for each unique value in ``rows``. Each row counts/aggregates</span>
+<span class="sd">        the values that match both row and column based on ``collect``.</span>
 
-<span class="sd">        columns -- column label in self</span>
-<span class="sd">        rows -- column label or a list of column labels</span>
-<span class="sd">        values -- column label in self (or None to produce counts)</span>
-<span class="sd">        collect -- aggregation function over values</span>
-<span class="sd">        zero -- zero value for non-existent row-column combinations</span>
+<span class="sd">        Args:</span>
+<span class="sd">            ``columns`` -- a single column label, (``str``), in table, used to</span>
+<span class="sd">                create new columns, based on its unique values.</span>
+<span class="sd">            ``rows`` -- row labels, as (``str``) or array of strings, used to</span>
+<span class="sd">                create new rows based on it&#39;s unique values.</span>
+<span class="sd">            ``values`` -- column label in table for use in aggregation.</span>
+<span class="sd">                Default None.</span>
+<span class="sd">            ``collect`` -- aggregation function, used to group ``values``</span>
+<span class="sd">                over row-column combinations. Default None.</span>
+<span class="sd">            ``zero`` -- zero value for non-existent row-column combinations.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError -- if ``collect`` is passed in and ``values`` is not,</span>
+<span class="sd">                vice versa.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            New pivot table, with row-column combinations, as specified, with</span>
+<span class="sd">            aggregated ``values`` by ``collect`` across the intersection of</span>
+<span class="sd">            ``columns`` and ``rows``. Simple counts provided if values and</span>
+<span class="sd">            collect are None, as default.</span>
+
+<span class="sd">        &gt;&gt;&gt; titanic = Table().with_columns(&#39;age&#39;, make_array(21, 44, 56, 89, 95</span>
+<span class="sd">        ...    , 40, 80, 45), &#39;survival&#39;, make_array(0,0,0,1, 1, 1, 0, 1),</span>
+<span class="sd">        ...    &#39;gender&#39;,  make_array(&#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;M&#39;, &#39;F&#39;, &#39;F&#39;, &#39;F&#39;, &#39;F&#39;),</span>
+<span class="sd">        ...    &#39;prediction&#39;, make_array(0, 0, 1, 1, 0, 1, 0, 1))</span>
+<span class="sd">        &gt;&gt;&gt; titanic</span>
+<span class="sd">        age  | survival | gender | prediction</span>
+<span class="sd">        21   | 0        | M      | 0</span>
+<span class="sd">        44   | 0        | M      | 0</span>
+<span class="sd">        56   | 0        | M      | 1</span>
+<span class="sd">        89   | 1        | M      | 1</span>
+<span class="sd">        95   | 1        | F      | 0</span>
+<span class="sd">        40   | 1        | F      | 1</span>
+<span class="sd">        80   | 0        | F      | 0</span>
+<span class="sd">        45   | 1        | F      | 1</span>
+<span class="sd">        &gt;&gt;&gt; titanic.pivot(&#39;survival&#39;, &#39;gender&#39;)</span>
+<span class="sd">        gender | 0    | 1</span>
+<span class="sd">        F      | 1    | 3</span>
+<span class="sd">        M      | 3    | 1</span>
+<span class="sd">        &gt;&gt;&gt; titanic.pivot(&#39;prediction&#39;, &#39;gender&#39;)</span>
+<span class="sd">        gender | 0    | 1</span>
+<span class="sd">        F      | 2    | 2</span>
+<span class="sd">        M      | 2    | 2</span>
+<span class="sd">        &gt;&gt;&gt; titanic.pivot(&#39;survival&#39;, &#39;gender&#39;, values=&#39;age&#39;, collect = np.mean)</span>
+<span class="sd">        gender | 0       | 1</span>
+<span class="sd">        F      | 80      | 60</span>
+<span class="sd">        M      | 40.3333 | 89</span>
+<span class="sd">        &gt;&gt;&gt; titanic.pivot(&#39;survival&#39;, make_array(&#39;prediction&#39;, &#39;gender&#39;))</span>
+<span class="sd">        prediction | gender | 0    | 1</span>
+<span class="sd">        0          | F      | 1    | 1</span>
+<span class="sd">        0          | M      | 2    | 0</span>
+<span class="sd">        1          | F      | 0    | 2</span>
+<span class="sd">        1          | M      | 1    | 1</span>
+<span class="sd">        &gt;&gt;&gt; titanic.pivot(&#39;survival&#39;, &#39;gender&#39;, values = &#39;age&#39;)</span>
+<span class="sd">        Traceback (most recent call last):</span>
+<span class="sd">           ...</span>
+<span class="sd">        TypeError: values requires collect to be specified</span>
+<span class="sd">        &gt;&gt;&gt; titanic.pivot(&#39;survival&#39;, &#39;gender&#39;, collect = np.mean)</span>
+<span class="sd">        Traceback (most recent call last):</span>
+<span class="sd">           ...</span>
+<span class="sd">        TypeError: collect requires values to be specified</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">collect</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">values</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;collect requires values to be specified&#39;</span><span class="p">)</span>
@@ -1251,23 +1308,26 @@
         <span class="sd">&quot;&quot;&quot;Returns a new table where k rows are randomly sampled from the</span>
 <span class="sd">        original table.</span>
 
-<span class="sd">        Kwargs:</span>
-<span class="sd">            k (int or None): If None (default), all the rows in the table are</span>
-<span class="sd">                sampled. If an integer, k rows from the original table are</span>
-<span class="sd">                sampled.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            ``k`` -- specifies the number of rows (``int``) to be sampled from</span>
+<span class="sd">               the table. Default is k equal to number of rows in the table.</span>
 
-<span class="sd">            with_replacement (bool): If True (default), samples the rows with</span>
-<span class="sd">                replacement. If False, samples the rows without replacement.</span>
+<span class="sd">            ``with_replacement`` -- (``bool``) By default True; Samples ``k``</span>
+<span class="sd">                rows with replacement from table, else samples ``k`` rows</span>
+<span class="sd">                without replacement.</span>
 
-<span class="sd">            weights (list/array or None): If None (default), samples the rows</span>
-<span class="sd">                using a uniform random distribution. If a list/array is passed</span>
-<span class="sd">                in, it must be the same length as the number of rows in the</span>
-<span class="sd">                table and the values must sum to 1. The rows will then be</span>
-<span class="sd">                sampled according the the probability distribution in</span>
-<span class="sd">                ``weights``.</span>
+<span class="sd">            ``weights`` -- Array specifying probability the ith row of the</span>
+<span class="sd">                table is sampled. Defaults to None, which samples each row</span>
+<span class="sd">                with equal probability. ``weights`` must be a valid probability</span>
+<span class="sd">                distribution -- i.e. an array the length of the number of rows,</span>
+<span class="sd">                summing to 1.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError -- if ``weights`` is not length equal to number of rows</span>
+<span class="sd">                in the table; or, if ``weights`` does not sum to 1.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            A new instance of ``Table``.</span>
+<span class="sd">            A new instance of ``Table`` with ``k`` rows resampled.</span>
 
 <span class="sd">        &gt;&gt;&gt; jobs = Table().with_columns(</span>
 <span class="sd">        ...     &#39;job&#39;,  make_array(&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;),</span>
@@ -1299,6 +1359,16 @@
 <span class="sd">        job  | wage</span>
 <span class="sd">        a    | 10</span>
 <span class="sd">        a    | 10</span>
+<span class="sd">        &gt;&gt;&gt; jobs.sample(k = 2, weights = make_array(1, 0, 1, 0))</span>
+<span class="sd">        Traceback (most recent call last):</span>
+<span class="sd">            ...</span>
+<span class="sd">        ValueError: probabilities do not sum to 1</span>
+
+<span class="sd">        # Weights must be length of table.</span>
+<span class="sd">        &gt;&gt;&gt; jobs.sample(k = 2, weights = make_array(1, 0, 0))</span>
+<span class="sd">        Traceback (most recent call last):</span>
+<span class="sd">            ...</span>
+<span class="sd">        ValueError: a and p must have same size</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_rows</span>
         <span class="k">if</span> <span class="n">k</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>

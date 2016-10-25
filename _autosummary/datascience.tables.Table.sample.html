@@ -62,23 +62,28 @@
 <dd><p>Returns a new table where k rows are randomly sampled from the
 original table.</p>
 <dl class="docutils">
-<dt>Kwargs:</dt>
+<dt>Args:</dt>
 <dd><dl class="first last docutils">
-<dt>k (int or None): If None (default), all the rows in the table are</dt>
-<dd>sampled. If an integer, k rows from the original table are
-sampled.</dd>
-<dt>with_replacement (bool): If True (default), samples the rows with</dt>
-<dd>replacement. If False, samples the rows without replacement.</dd>
-<dt>weights (list/array or None): If None (default), samples the rows</dt>
-<dd>using a uniform random distribution. If a list/array is passed
-in, it must be the same length as the number of rows in the
-table and the values must sum to 1. The rows will then be
-sampled according the the probability distribution in
-<code class="docutils literal"><span class="pre">weights</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">k</span></code> &#8211; specifies the number of rows (<code class="docutils literal"><span class="pre">int</span></code>) to be sampled from</dt>
+<dd>the table. Default is k equal to number of rows in the table.</dd>
+<dt><code class="docutils literal"><span class="pre">with_replacement</span></code> &#8211; (<code class="docutils literal"><span class="pre">bool</span></code>) By default True; Samples <code class="docutils literal"><span class="pre">k</span></code></dt>
+<dd>rows with replacement from table, else samples <code class="docutils literal"><span class="pre">k</span></code> rows
+without replacement.</dd>
+<dt><code class="docutils literal"><span class="pre">weights</span></code> &#8211; Array specifying probability the ith row of the</dt>
+<dd>table is sampled. Defaults to None, which samples each row
+with equal probability. <code class="docutils literal"><span class="pre">weights</span></code> must be a valid probability
+distribution &#8211; i.e. an array the length of the number of rows,
+summing to 1.</dd>
+</dl>
+</dd>
+<dt>Raises:</dt>
+<dd><dl class="first last docutils">
+<dt>ValueError &#8211; if <code class="docutils literal"><span class="pre">weights</span></code> is not length equal to number of rows</dt>
+<dd>in the table; or, if <code class="docutils literal"><span class="pre">weights</span></code> does not sum to 1.</dd>
 </dl>
 </dd>
 <dt>Returns:</dt>
-<dd>A new instance of <code class="docutils literal"><span class="pre">Table</span></code>.</dd>
+<dd>A new instance of <code class="docutils literal"><span class="pre">Table</span></code> with <code class="docutils literal"><span class="pre">k</span></code> rows resampled.</dd>
 </dl>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">jobs</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="s1">&#39;job&#39;</span><span class="p">,</span>  <span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">),</span>
@@ -110,8 +115,18 @@ sampled according the the probability distribution in
 <span class="go">job  | wage</span>
 <span class="go">a    | 10</span>
 <span class="go">a    | 10</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">jobs</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">k</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="gt">Traceback (most recent call last):</span>
+    <span class="o">...</span>
+<span class="gr">ValueError</span>: <span class="n">probabilities do not sum to 1</span>
 </pre></div>
 </div>
+<p># Weights must be length of table.
+&gt;&gt;&gt; jobs.sample(k = 2, weights = make_array(1, 0, 0))
+Traceback (most recent call last):</p>
+<blockquote>
+<div>...</div></blockquote>
+<p>ValueError: a and p must have same size</p>
 </dd></dl>
 
 </div>

@@ -59,14 +59,77 @@
 <dl class="method">
 <dt id="datascience.tables.Table.pivot">
 <code class="descclassname">Table.</code><code class="descname">pivot</code><span class="sig-paren">(</span><em>columns</em>, <em>rows</em>, <em>values=None</em>, <em>collect=None</em>, <em>zero=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.pivot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.pivot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate a table with a column for rows (or a column for each row
-in rows list) and a column for each unique value in columns. Each row
-counts/aggregates the values that match both row and column.</p>
-<p>columns &#8211; column label in self
-rows &#8211; column label or a list of column labels
-values &#8211; column label in self (or None to produce counts)
-collect &#8211; aggregation function over values
-zero &#8211; zero value for non-existent row-column combinations</p>
+<dd><p>Generate a table with a column for each unique value in <code class="docutils literal"><span class="pre">columns</span></code>,
+with rows for each unique value in <code class="docutils literal"><span class="pre">rows</span></code>. Each row counts/aggregates
+the values that match both row and column based on <code class="docutils literal"><span class="pre">collect</span></code>.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">columns</span></code> &#8211; a single column label, (<code class="docutils literal"><span class="pre">str</span></code>), in table, used to</dt>
+<dd>create new columns, based on its unique values.</dd>
+<dt><code class="docutils literal"><span class="pre">rows</span></code> &#8211; row labels, as (<code class="docutils literal"><span class="pre">str</span></code>) or array of strings, used to</dt>
+<dd>create new rows based on it&#8217;s unique values.</dd>
+<dt><code class="docutils literal"><span class="pre">values</span></code> &#8211; column label in table for use in aggregation.</dt>
+<dd>Default None.</dd>
+<dt><code class="docutils literal"><span class="pre">collect</span></code> &#8211; aggregation function, used to group <code class="docutils literal"><span class="pre">values</span></code></dt>
+<dd>over row-column combinations. Default None.</dd>
+</dl>
+<p class="last"><code class="docutils literal"><span class="pre">zero</span></code> &#8211; zero value for non-existent row-column combinations.</p>
+</dd>
+<dt>Raises:</dt>
+<dd><dl class="first last docutils">
+<dt>TypeError &#8211; if <code class="docutils literal"><span class="pre">collect</span></code> is passed in and <code class="docutils literal"><span class="pre">values</span></code> is not,</dt>
+<dd>vice versa.</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>New pivot table, with row-column combinations, as specified, with
+aggregated <code class="docutils literal"><span class="pre">values</span></code> by <code class="docutils literal"><span class="pre">collect</span></code> across the intersection of
+<code class="docutils literal"><span class="pre">columns</span></code> and <code class="docutils literal"><span class="pre">rows</span></code>. Simple counts provided if values and
+collect are None, as default.</dd>
+</dl>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">titanic</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span><span class="s1">&#39;age&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">21</span><span class="p">,</span> <span class="mi">44</span><span class="p">,</span> <span class="mi">56</span><span class="p">,</span> <span class="mi">89</span><span class="p">,</span> <span class="mi">95</span>
+<span class="gp">... </span>   <span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">45</span><span class="p">),</span> <span class="s1">&#39;survival&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+<span class="gp">... </span>   <span class="s1">&#39;gender&#39;</span><span class="p">,</span>  <span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">),</span>
+<span class="gp">... </span>   <span class="s1">&#39;prediction&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">titanic</span>
+<span class="go">age  | survival | gender | prediction</span>
+<span class="go">21   | 0        | M      | 0</span>
+<span class="go">44   | 0        | M      | 0</span>
+<span class="go">56   | 0        | M      | 1</span>
+<span class="go">89   | 1        | M      | 1</span>
+<span class="go">95   | 1        | F      | 0</span>
+<span class="go">40   | 1        | F      | 1</span>
+<span class="go">80   | 0        | F      | 0</span>
+<span class="go">45   | 1        | F      | 1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">titanic</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="s1">&#39;survival&#39;</span><span class="p">,</span> <span class="s1">&#39;gender&#39;</span><span class="p">)</span>
+<span class="go">gender | 0    | 1</span>
+<span class="go">F      | 1    | 3</span>
+<span class="go">M      | 3    | 1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">titanic</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="s1">&#39;prediction&#39;</span><span class="p">,</span> <span class="s1">&#39;gender&#39;</span><span class="p">)</span>
+<span class="go">gender | 0    | 1</span>
+<span class="go">F      | 2    | 2</span>
+<span class="go">M      | 2    | 2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">titanic</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="s1">&#39;survival&#39;</span><span class="p">,</span> <span class="s1">&#39;gender&#39;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s1">&#39;age&#39;</span><span class="p">,</span> <span class="n">collect</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span>
+<span class="go">gender | 0       | 1</span>
+<span class="go">F      | 80      | 60</span>
+<span class="go">M      | 40.3333 | 89</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">titanic</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="s1">&#39;survival&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;prediction&#39;</span><span class="p">,</span> <span class="s1">&#39;gender&#39;</span><span class="p">))</span>
+<span class="go">prediction | gender | 0    | 1</span>
+<span class="go">0          | F      | 1    | 1</span>
+<span class="go">0          | M      | 2    | 0</span>
+<span class="go">1          | F      | 0    | 2</span>
+<span class="go">1          | M      | 1    | 1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">titanic</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="s1">&#39;survival&#39;</span><span class="p">,</span> <span class="s1">&#39;gender&#39;</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="s1">&#39;age&#39;</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+   <span class="c">...</span>
+<span class="gr">TypeError</span>: <span class="n">values requires collect to be specified</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">titanic</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="s1">&#39;survival&#39;</span><span class="p">,</span> <span class="s1">&#39;gender&#39;</span><span class="p">,</span> <span class="n">collect</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+   <span class="c">...</span>
+<span class="gr">TypeError</span>: <span class="n">collect requires values to be specified</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </div>
