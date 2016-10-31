@@ -306,23 +306,24 @@ class Table(collections.abc.MutableMapping):
         return self.labels.index(column_label)
 
     def apply(self, fn, column_label=None):
-        """Returns an array where ``fn`` is applied to each set of elements
-        by row from the specified columns in ``column_label``. If no
-        column_label is specified, then each row is passed to fn.
+        """ Apply ``fn`` to each element of ``column_label``.
+        If no ``column_label`` provided, `fn`` applied to each row of table.
 
         Args:
-            ``fn`` (function): The function to be applied to elements specified
-                by ``column_label``.
-            ``column_label`` (single string or list of strings): Names of
-                columns to be passed into function ``fn``. Length must match
-                number of elements ``fn`` takes.
+            ``fn`` (function) -- The function to be applied to elements of
+                ``column_label``.
+            ``column_label`` (single str or array of str) -- Names of
+                columns to be passed into ``fn``. Length must match
+                number of arguments in ``fn`` signature.
 
         Raises:
-            ``ValueError``: column name in ``column_label`` is not an existing
+            ``ValueError`` -- if  ``column_label`` is not an existing
                 column in the table.
+            ``TypeError`` -- if insufficent number of ``column_label`` passed
+                to ``fn``.
 
         Returns:
-            A numpy array consisting of results of applying ``fn`` to elements
+            An array consisting of results of applying ``fn`` to elements
             specified by ``column_label`` in each row.
 
         >>> t = Table().with_columns(
@@ -337,12 +338,20 @@ class Table(collections.abc.MutableMapping):
         z      | 1     | 10
         >>> t.apply(lambda x: x - 1, 'points')
         array([0, 1, 1, 9])
-        >>> t.apply(lambda x, y: x * y, ['count', 'points'])
+        >>> t.apply(lambda x, y: x * y, make_array('count', 'points'))
         array([ 9,  6,  6, 10])
+        >>> t.apply(lambda x: x - 1, make_array('count', 'points'))
+        Traceback (most recent call last):
+            ...
+        TypeError: <lambda>() takes 1 positional argument but 2 were given
+        >>> t.apply(lambda x: x - 1, 'counts')
+        Traceback (most recent call last):
+            ...
+        ValueError: The column "counts" is not in the table. The table contains these columns: letter, count, points
 
         Whole rows are passed to the function if no columns are specified.
 
-        >>> t.apply(lambda row: row.item('count') * 2)
+        >>> t.apply(lambda row: row[1] * 2)
         array([18,  6,  6,  2])
         """
         if column_label is None:
@@ -480,44 +489,44 @@ class Table(collections.abc.MutableMapping):
         self._columns[label] = values
 
     def relabel(self, column_label, new_label):
-        """Change the labels of columns specified by ``column_label`` to
+        """Changes the label(s) of column(s) specified by ``column_label`` to
         labels in ``new_label``.
 
         Args:
-            ``column_label`` (single str or list/array of str): The label(s) of
-                columns to be changed. Must be str.
+            ``column_label`` -- (single str or array of str) The label(s) of
+                columns to be changed to ``new_label``.
 
-            ``new_label`` (single str or list/array of str): The new label(s)
-                of columns to be changed. Must be str.
+            ``new_label`` -- (single str or array of str): The label name(s)
+                of columns to replace ``column_label``.
 
-                Number of elements must match number of elements in
-                ``column_label``.
+        Raises:
+            ``ValueError`` -- if ``column_label`` is not in table, or if
+                ``column_label`` and ``new_label`` are not of equal length.
+            ``TypeError`` -- if ``column_label`` and/or ``new_label`` is not
+                ``str``.
 
         Returns:
-            Original table with modified labels
+            Original table with ``new_label`` in place of ``column_label``.
 
         >>> table = Table().with_columns(
-        ...     'points', (1, 2, 3),
-        ...     'id',     (12345, 123, 5123))
+        ...     'points', make_array(1, 2, 3),
+        ...     'id',     make_array(12345, 123, 5123))
         >>> table.relabel('id', 'yolo')
         points | yolo
         1      | 12345
         2      | 123
         3      | 5123
-        >>> table.relabel(make_array('points', 'yolo'), make_array('red', 'blue'))
+        >>> table.relabel(make_array('points', 'yolo'),
+        ...   make_array('red', 'blue'))
         red  | blue
         1    | 12345
         2    | 123
         3    | 5123
-        >>> table.relabel(make_array('red', 'green', 'blue'), make_array('cyan', 'magenta', 'yellow', 'key'))
+        >>> table.relabel(make_array('red', 'green', 'blue'),
+        ...   make_array('cyan', 'magenta', 'yellow', 'key'))
         Traceback (most recent call last):
             ...
         ValueError: Invalid arguments. column_label and new_label must be of equal length.
-        >>> table.relabel(make_array('red', 'blue'), make_array('blue', 'red'))
-        blue | red
-        1    | 12345
-        2    | 123
-        3    | 5123
         """
         if isinstance(column_label, numbers.Integral):
             column_label = self._as_label(column_label)
@@ -1578,26 +1587,48 @@ class Table(collections.abc.MutableMapping):
         return self
 
     def relabeled(self, label, new_label):
-        """Returns a table with label changed to new_label.
-
-        ``label`` and ``new_label`` may be single values or lists
-        specifying column labels to be changed and their new corresponding
-        labels.
+        """Returns a new table with ``label`` specifying column label(s)
+        replaced by corresponding ``new_label``.
 
         Args:
-            ``label`` (str or sequence of str): The label(s) of
+            ``label`` -- (str or array of str) The label(s) of
                 columns to be changed.
 
-            ``new_label`` (str or sequence of str): The new label(s) of
+            ``new_label`` -- (str or array of str): The new label(s) of
                 columns to be changed. Same number of elements as label.
 
-        >>> tiles = Table(['letter', 'count'])
-        >>> tiles = tiles.with_rows(
-        ...    make_array(make_array('c', 2), make_array('d', 4)))
+        Raises:
+            ``ValueError`` -- if ``label`` or ``new_label`` do not exist in
+                table, or if the two are not not of equal length. Also, raised
+                if ``label`` and/or ``new_label`` are not ``str``.
+
+        Returns:
+            New table with ``new_label`` in place of ``label``.
+
+        >>> tiles = Table().with_columns('letter', make_array('c', 'd'),
+        ...    'count', make_array(2, 4))
+        >>> tiles
+        letter | count
+        c      | 2
+        d      | 4
         >>> tiles.relabeled('count', 'number')
         letter | number
         c      | 2
         d      | 4
+        >>> tiles
+        letter | count
+        c      | 2
+        d      | 4
+        >>> tiles.relabeled(make_array('letter', 'count'),
+        ...   make_array('column1', 'column2'))
+        column1 | column2
+        c       | 2
+        d       | 4
+        >>> tiles.relabeled(make_array('letter', 'number'),
+        ...  make_array('column1', 'column2'))
+        Traceback (most recent call last):
+            ...
+        ValueError: Invalid labels. Column labels must already exist in table in order to be replaced.
         """
         copy = self.copy()
         copy.relabel(label, new_label)
