@@ -130,7 +130,7 @@ methods (mostly visualizations).</p>
 <td>Return a table with additional rows.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.relabeled.html#datascience.tables.Table.relabeled" title="datascience.tables.Table.relabeled"><code class="xref py py-obj docutils literal"><span class="pre">Table.relabeled</span></code></a>(label,&nbsp;new_label)</td>
-<td>Returns a table with label changed to new_label.</td>
+<td>Returns a new table with <code class="docutils literal"><span class="pre">label</span></code> specifying column label(s) replaced by corresponding <code class="docutils literal"><span class="pre">new_label</span></code>.</td>
 </tr>
 </tbody>
 </table>
@@ -166,7 +166,7 @@ methods (mostly visualizations).</p>
 <td>Return the index of a column.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.apply.html#datascience.tables.Table.apply" title="datascience.tables.Table.apply"><code class="xref py py-obj docutils literal"><span class="pre">Table.apply</span></code></a>(fn[,&nbsp;column_label])</td>
-<td>Returns an array where <code class="docutils literal"><span class="pre">fn</span></code> is applied to each set of elements by row from the specified columns in <code class="docutils literal"><span class="pre">column_label</span></code>.</td>
+<td>Apply <code class="docutils literal"><span class="pre">fn</span></code> to each element of <code class="docutils literal"><span class="pre">column_label</span></code>.</td>
 </tr>
 </tbody>
 </table>
@@ -193,7 +193,7 @@ methods (mostly visualizations).</p>
 <td>Appends a column to the table or replaces a column.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.relabel.html#datascience.tables.Table.relabel" title="datascience.tables.Table.relabel"><code class="xref py py-obj docutils literal"><span class="pre">Table.relabel</span></code></a>(column_label,&nbsp;new_label)</td>
-<td>Change the labels of columns specified by <code class="docutils literal"><span class="pre">column_label</span></code> to labels in <code class="docutils literal"><span class="pre">new_label</span></code>.</td>
+<td>Changes the label(s) of column(s) specified by <code class="docutils literal"><span class="pre">column_label</span></code> to labels in <code class="docutils literal"><span class="pre">new_label</span></code>.</td>
 </tr>
 </tbody>
 </table>
