@@ -1598,9 +1598,10 @@ class Table(collections.abc.MutableMapping):
                 columns to be changed. Same number of elements as label.
 
         Raises:
-            ``ValueError`` -- if ``label`` or ``new_label`` do not exist in
-                table, or if the two are not not of equal length. Also, raised
-                if ``label`` and/or ``new_label`` are not ``str``.
+            ``ValueError`` -- if ``label`` does not exist in
+                table, or if the ``label`` and ``new_label`` are not not of
+                equal length. Also, raised if ``label`` and/or ``new_label``
+                are not ``str``.
 
         Returns:
             New table with ``new_label`` in place of ``label``.
@@ -1615,7 +1616,7 @@ class Table(collections.abc.MutableMapping):
         letter | number
         c      | 2
         d      | 4
-        >>> tiles
+        >>> tiles  # original table unmodified
         letter | count
         c      | 2
         d      | 4
