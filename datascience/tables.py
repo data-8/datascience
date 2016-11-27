@@ -1155,12 +1155,54 @@ class Table(collections.abc.MutableMapping):
         return type(self)([key, 'column', 'value']).with_rows(rows)
 
     def join(self, column_label, other, other_label=None):
-        """Generate a table with the columns of self and other, containing rows
+        """Generates a new table with the columns of self and other, containing rows
         for all values of a column that appear in both tables.
-        If a join value appears more than once in self, each row will be used,
-        but in the other table, only the first of each will be used.
 
-        If the result is empty, return None.
+        Args:
+            ``column_label`` (``str``):  label of column in self that is used to
+                join  rows of ``other``.
+            ``other``: Table object to join with self on matching values of
+                ``column_label``.
+
+        Kwargs:
+            ``other_label`` (``str``): default None, assumes ``column_label``.
+                Otherwise in ``other`` used to join rows.
+
+        Returns:
+            New table self joined with ``other`` by matching values in ``column_label``
+            and ``other_label``. If the resulting join is empty, returns None. If
+            a join value appears more than once in self, each row will be used,
+            but in the ``other`` table, only the first of each will be used.
+
+        >>> table = Table().with_columns('a', make_array(9, 3, 3, 1),
+        ...     'b', make_array(1, 2, 2, 10),
+        ...     'c', make_array(3, 4, 5, 6))
+        >>> table
+        a    | b    | c
+        9    | 1    | 3
+        3    | 2    | 4
+        3    | 2    | 5
+        1    | 10   | 6
+        >>> table2 = Table().with_columns( 'a', make_array(9, 1, 1, 1),
+        ... 'd', make_array(1, 2, 2, 10),
+        ... 'e', make_array(3, 4, 5, 6))
+        >>> table2
+        a    | d    | e
+        9    | 1    | 3
+        1    | 2    | 4
+        1    | 2    | 5
+        1    | 10   | 6
+        >>> table.join('a', table2)
+        a    | b    | c    | d    | e
+        1    | 10   | 6    | 2    | 4
+        9    | 1    | 3    | 1    | 3
+        >>> table.join('a', table2, 'a') #Equivalent to previous join
+        a    | b    | c    | d    | e
+        1    | 10   | 6    | 2    | 4
+        9    | 1    | 3    | 1    | 3
+        >>> table.join('a', table2, 'd') #Repeat column labels relabeled
+        a    | b    | c    | a_2  | e
+        1    | 10   | 6    | 9    | 3
         """
         if self.num_rows == 0 or other.num_rows == 0:
             return None
@@ -1986,29 +2028,29 @@ class Table(collections.abc.MutableMapping):
         """Creates scatterplots, optionally adding a line of best fit.
 
         Each plot uses the values in `column_for_x` for horizontal positions.
-        One plot is produced for every other column as y (or for the columns
-        designated by `select`).
+        One plot is produced for all other columns in self as y (or for the
+        columns designated by `select`).
 
-        Every selected except column for `column_for_categories` must be numerical.
+        Every column, ``column_for_x`` or ``select``, must be numerical.
 
         Args:
-            ``column_for_x`` (str): The name to use for the x-axis values of the
-                scatter plots.
+            ``column_for_x`` (``str``): The column to use for the x-axis values
+                and label of the scatter plots.
 
         Kwargs:
-            ``overlay`` (bool): create a chart with one color per data column;
-                if False, each will be displayed separately.
+            ``overlay`` (``bool``): If true, creates a chart with one color
+                per data column; if False, each plot will be displayed separately.
 
-            ``fit_line`` (bool): draw a line of best fit for each set of points
+            ``fit_line`` (``bool``): draw a line of best fit for each set of points.
 
             ``vargs``: Additional arguments that get passed into `plt.scatter`.
                 See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.scatter
                 for additional arguments that can be passed into vargs. These
                 include: `marker` and `norm`, to name a couple.
 
-            ``colors``: A column of colors (labels or numeric values)
+            ``colors``: A column of colors (labels or numeric values).
 
-            ``labels``: A column of text labels to annotate dots
+            ``labels``: A column of text labels to annotate dots.
 
         >>> table = Table().with_columns(
         ...     'x', make_array(9, 3, 3, 1),
