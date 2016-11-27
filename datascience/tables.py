@@ -1870,12 +1870,6 @@ class Table(collections.abc.MutableMapping):
     def plot(self, column_for_xticks=None, select=None, overlay=True, **vargs):
         """Plot line charts for the table.
 
-        Each plot is labeled using the values in `column_for_xticks` and one
-        plot is produced for all other columns in self (or for the columns designated
-        by `select`).
-
-        Every selected column except for `column_for_xticks` must be numerical.
-
         Args:
             column_for_xticks (``str/array``): A column containing x-axis labels
 
@@ -1886,6 +1880,13 @@ class Table(collections.abc.MutableMapping):
             vargs: Additional arguments that get passed into `plt.plot`.
                 See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot
                 for additional arguments that can be passed into vargs.
+        Raises:
+            ValueError -- Every selected column must be numerical.
+
+        Returns:
+            Returns a line plot (connected scatter). Each plot is labeled using
+            the values in `column_for_xticks` and one plot is produced for all
+            other columns in self (or for the columns designated by `select`).
         >>> table = Table().with_columns(
         ...     'days',  make_array(0, 1, 2, 3, 4, 5),
         ...     'price', make_array(90.5, 90.00, 83.00, 95.50, 82.00, 82.00),
@@ -1972,12 +1973,6 @@ class Table(collections.abc.MutableMapping):
     def barh(self, column_for_categories=None, select=None, overlay=True, **vargs):
         """Plot horizontal bar charts for the table.
 
-        Each plot is labeled using the values in ``column_for_categories`` and
-        one plot is produced for every other column (or for the columns
-        designated by ``select``).
-
-        Every selected except column for ``column_for_categories`` must be numerical.
-
         Args:
             ``column_for_categories`` (``str``): A column containing y-axis categories
                 used to create buckets for bar chart.
@@ -1990,9 +1985,15 @@ class Table(collections.abc.MutableMapping):
                 See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.barh
                 for additional arguments that can be passed into vargs.
 
+        Raises:
+            ValueError -- Every selected except column for ``column_for_categories``
+                must be numerical.
+
         Returns:
-            Horizontal bar graph with buckets specified by ``column_for_categories`` on
-            y-axis with seperate bars populated by values of every other column.
+            Horizontal bar graph with buckets specified by ``column_for_categories``.
+            Each plot is labeled using the values in ``column_for_categories``
+            and one plot is produced for every other column (or for the columns
+            designated by ``select``).
 
         >>> t = Table().with_columns(
         ...     'Furniture', make_array('chairs', 'tables', 'desks'),
@@ -2051,12 +2052,6 @@ class Table(collections.abc.MutableMapping):
         colors=None, labels=None, **vargs):
         """Creates scatterplots, optionally adding a line of best fit.
 
-        Each plot uses the values in `column_for_x` for horizontal positions.
-        One plot is produced for all other columns in self as y (or for the
-        columns designated by `select`).
-
-        Every column, ``column_for_x`` or ``select``, must be numerical.
-
         Args:
             ``column_for_x`` (``str``): The column to use for the x-axis values
                 and label of the scatter plots.
@@ -2075,6 +2070,17 @@ class Table(collections.abc.MutableMapping):
             ``colors``: A column of colors (labels or numeric values).
 
             ``labels``: A column of text labels to annotate dots.
+
+        Raises:
+            ValueError -- Every column, ``column_for_x`` or ``select``, must be numerical
+
+        Returns:
+            Scatter plot of values of ``column_for_x`` plotted against
+            values for all other columns in self. Each plot uses the values in
+            `column_for_x` for horizontal positions. One plot is produced for
+            all other columns in self as y (or for the columns designated by
+            `select`).
+
 
         >>> table = Table().with_columns(
         ...     'x', make_array(9, 3, 3, 1),
