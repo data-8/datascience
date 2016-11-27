@@ -1871,21 +1871,40 @@ class Table(collections.abc.MutableMapping):
         """Plot line charts for the table.
 
         Each plot is labeled using the values in `column_for_xticks` and one
-        plot is produced for every other column (or for the columns designated
+        plot is produced for all other columns in self (or for the columns designated
         by `select`).
 
         Every selected column except for `column_for_xticks` must be numerical.
 
         Args:
-            column_for_xticks (str/array): A column containing x-axis labels
+            column_for_xticks (``str/array``): A column containing x-axis labels
 
         Kwargs:
             overlay (bool): create a chart with one color per data column;
-                if False, each will be displayed separately.
+                if False, each plot will be displayed separately.
 
             vargs: Additional arguments that get passed into `plt.plot`.
                 See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot
                 for additional arguments that can be passed into vargs.
+        >>> table = Table().with_columns(
+        ...     'days',  make_array(0, 1, 2, 3, 4, 5),
+        ...     'price', make_array(90.5, 90.00, 83.00, 95.50, 82.00, 82.00),
+        ...     'projection', make_array(90.75, 82.00, 82.50, 82.50, 83.00, 82.50))
+        >>> table
+        days | price | projection
+        0    | 90.5  | 90.75
+        1    | 90    | 82
+        2    | 83    | 82.5
+        3    | 95.5  | 82.5
+        4    | 82    | 83
+        5    | 82    | 82.5
+        >>> table.plot('days') # doctest: +SKIP
+        <line graph with days as x-axis and lines for price and projection>
+        >>> table.plot('days', overlay=False) # doctest: +SKIP
+        <line graph with days as x-axis and line for price>
+        <line graph with days as x-axis and line for projection>
+        >>> table.plot('days', 'price') # doctest: +SKIP
+        <line graph with days as x-axis and line for price>
         """
         options = self.default_options.copy()
         options.update(vargs)
@@ -1953,14 +1972,15 @@ class Table(collections.abc.MutableMapping):
     def barh(self, column_for_categories=None, select=None, overlay=True, **vargs):
         """Plot horizontal bar charts for the table.
 
-        Each plot is labeled using the values in `column_for_categories` and
+        Each plot is labeled using the values in ``column_for_categories`` and
         one plot is produced for every other column (or for the columns
-        designated by `select`).
+        designated by ``select``).
 
-        Every selected except column for `column_for_categories` must be numerical.
+        Every selected except column for ``column_for_categories`` must be numerical.
 
         Args:
-            column_for_categories (str): A column containing y-axis categories
+            ``column_for_categories`` (``str``): A column containing y-axis categories
+                used to create buckets for bar chart.
 
         Kwargs:
             overlay (bool): create a chart with one color per data column;
@@ -1969,6 +1989,10 @@ class Table(collections.abc.MutableMapping):
             vargs: Additional arguments that get passed into `plt.barh`.
                 See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.barh
                 for additional arguments that can be passed into vargs.
+
+        Returns:
+            Horizontal bar graph with buckets specified by ``column_for_categories`` on
+            y-axis with seperate bars populated by values of every other column.
 
         >>> t = Table().with_columns(
         ...     'Furniture', make_array('chairs', 'tables', 'desks'),
@@ -1984,7 +2008,7 @@ class Table(collections.abc.MutableMapping):
         <bar graph with furniture as categories and bars for count and price>
         >>> furniture_table.barh('Furniture', 'Price') # doctest: +SKIP
         <bar graph with furniture as categories and bars for price>
-        >>> furniture_table.barh('Furniture', [1, 2]) # doctest: +SKIP
+        >>> furniture_table.barh('Furniture', make_array(1, 2)) # doctest: +SKIP
         <bar graph with furniture as categories and bars for count and price>
         """
         options = self.default_options.copy()
