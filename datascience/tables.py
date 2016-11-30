@@ -1155,7 +1155,7 @@ class Table(collections.abc.MutableMapping):
         return type(self)([key, 'column', 'value']).with_rows(rows)
 
     def join(self, column_label, other, other_label=None):
-        """Generates a new table with the columns of self and other, containing rows
+        """Creates a new table with the columns of self and other, containing rows
         for all values of a column that appear in both tables.
 
         Args:
@@ -1171,8 +1171,9 @@ class Table(collections.abc.MutableMapping):
         Returns:
             New table self joined with ``other`` by matching values in ``column_label``
             and ``other_label``. If the resulting join is empty, returns None. If
-            a join value appears more than once in self, each row will be used,
-            but in the ``other`` table, only the first of each will be used.
+            a join value appears more than once in ``self``, each row with that value
+            will appear in resulting join, but in ``other``, only the first row with
+            that value will be used.
 
         >>> table = Table().with_columns('a', make_array(9, 3, 3, 1),
         ...     'b', make_array(1, 2, 2, 10),
@@ -1196,13 +1197,35 @@ class Table(collections.abc.MutableMapping):
         a    | b    | c    | d    | e
         1    | 10   | 6    | 2    | 4
         9    | 1    | 3    | 1    | 3
-        >>> table.join('a', table2, 'a') #Equivalent to previous join
+        >>> table.join('a', table2, 'a') # Equivalent to previous join
         a    | b    | c    | d    | e
         1    | 10   | 6    | 2    | 4
         9    | 1    | 3    | 1    | 3
-        >>> table.join('a', table2, 'd') #Repeat column labels relabeled
+        >>> table.join('a', table2, 'd') # Repeat column labels relabeled
         a    | b    | c    | a_2  | e
         1    | 10   | 6    | 9    | 3
+        >>> table2 #table2 has three rows with a = 3
+        a    | d    | e
+        9    | 1    | 3
+        1    | 2    | 4
+        1    | 2    | 5
+        1    | 10   | 6
+        >>> table #table has only one row with a = 1
+        a    | b    | c
+        9    | 1    | 3
+        3    | 2    | 4
+        3    | 2    | 5
+        1    | 10   | 6
+        >>> table2.join('a', table) # When we join, we get all three rows in table2 where a = 3
+        a    | d    | e    | b    | c
+        1    | 2    | 4    | 10   | 6
+        1    | 2    | 5    | 10   | 6
+        1    | 10   | 6    | 10   | 6
+        9    | 1    | 3    | 1    | 3
+        >>> table.join('a', table2) # Opposite join only keeps first row in table2 with a = 1
+        a    | b    | c    | d    | e
+        1    | 10   | 6    | 2    | 4
+        9    | 1    | 3    | 1    | 3
         """
         if self.num_rows == 0 or other.num_rows == 0:
             return None
