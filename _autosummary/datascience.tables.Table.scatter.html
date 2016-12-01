@@ -60,32 +60,36 @@
 <dt id="datascience.tables.Table.scatter">
 <code class="descclassname">Table.</code><code class="descname">scatter</code><span class="sig-paren">(</span><em>column_for_x</em>, <em>select=None</em>, <em>overlay=True</em>, <em>fit_line=False</em>, <em>colors=None</em>, <em>labels=None</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.scatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.scatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates scatterplots, optionally adding a line of best fit.</p>
-<p>Each plot uses the values in <cite>column_for_x</cite> for horizontal positions.
-One plot is produced for every other column as y (or for the columns
-designated by <cite>select</cite>).</p>
-<p>Every selected except column for <cite>column_for_categories</cite> must be numerical.</p>
 <dl class="docutils">
 <dt>Args:</dt>
 <dd><dl class="first last docutils">
-<dt><code class="docutils literal"><span class="pre">column_for_x</span></code> (str): The name to use for the x-axis values of the</dt>
-<dd>scatter plots.</dd>
+<dt><code class="docutils literal"><span class="pre">column_for_x</span></code> (<code class="docutils literal"><span class="pre">str</span></code>): The column to use for the x-axis values</dt>
+<dd>and label of the scatter plots.</dd>
 </dl>
 </dd>
 <dt>Kwargs:</dt>
 <dd><dl class="first docutils">
-<dt><code class="docutils literal"><span class="pre">overlay</span></code> (bool): create a chart with one color per data column;</dt>
-<dd>if False, each will be displayed separately.</dd>
+<dt><code class="docutils literal"><span class="pre">overlay</span></code> (<code class="docutils literal"><span class="pre">bool</span></code>): If true, creates a chart with one color</dt>
+<dd>per data column; if False, each plot will be displayed separately.</dd>
 </dl>
-<p><code class="docutils literal"><span class="pre">fit_line</span></code> (bool): draw a line of best fit for each set of points</p>
+<p><code class="docutils literal"><span class="pre">fit_line</span></code> (<code class="docutils literal"><span class="pre">bool</span></code>): draw a line of best fit for each set of points.</p>
 <dl class="docutils">
 <dt><code class="docutils literal"><span class="pre">vargs</span></code>: Additional arguments that get passed into <cite>plt.scatter</cite>.</dt>
 <dd>See <a class="reference external" href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.scatter">http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.scatter</a>
 for additional arguments that can be passed into vargs. These
 include: <cite>marker</cite> and <cite>norm</cite>, to name a couple.</dd>
 </dl>
-<p><code class="docutils literal"><span class="pre">colors</span></code>: A column of colors (labels or numeric values)</p>
-<p class="last"><code class="docutils literal"><span class="pre">labels</span></code>: A column of text labels to annotate dots</p>
+<p><code class="docutils literal"><span class="pre">colors</span></code>: A column of colors (labels or numeric values).</p>
+<p class="last"><code class="docutils literal"><span class="pre">labels</span></code>: A column of text labels to annotate dots.</p>
 </dd>
+<dt>Raises:</dt>
+<dd>ValueError &#8211; Every column, <code class="docutils literal"><span class="pre">column_for_x</span></code> or <code class="docutils literal"><span class="pre">select</span></code>, must be numerical</dd>
+<dt>Returns:</dt>
+<dd>Scatter plot of values of <code class="docutils literal"><span class="pre">column_for_x</span></code> plotted against
+values for all other columns in self. Each plot uses the values in
+<cite>column_for_x</cite> for horizontal positions. One plot is produced for
+all other columns in self as y (or for the columns designated by
+<cite>select</cite>).</dd>
 </dl>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>

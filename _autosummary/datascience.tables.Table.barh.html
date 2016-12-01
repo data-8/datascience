@@ -60,13 +60,13 @@
 <dt id="datascience.tables.Table.barh">
 <code class="descclassname">Table.</code><code class="descname">barh</code><span class="sig-paren">(</span><em>column_for_categories=None</em>, <em>select=None</em>, <em>overlay=True</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.barh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.barh" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot horizontal bar charts for the table.</p>
-<p>Each plot is labeled using the values in <cite>column_for_categories</cite> and
-one plot is produced for every other column (or for the columns
-designated by <cite>select</cite>).</p>
-<p>Every selected except column for <cite>column_for_categories</cite> must be numerical.</p>
 <dl class="docutils">
 <dt>Args:</dt>
-<dd>column_for_categories (str): A column containing y-axis categories</dd>
+<dd><dl class="first last docutils">
+<dt><code class="docutils literal"><span class="pre">column_for_categories</span></code> (<code class="docutils literal"><span class="pre">str</span></code>): A column containing y-axis categories</dt>
+<dd>used to create buckets for bar chart.</dd>
+</dl>
+</dd>
 <dt>Kwargs:</dt>
 <dd><dl class="first last docutils">
 <dt>overlay (bool): create a chart with one color per data column;</dt>
@@ -76,6 +76,17 @@ designated by <cite>select</cite>).</p>
 for additional arguments that can be passed into vargs.</dd>
 </dl>
 </dd>
+<dt>Raises:</dt>
+<dd><dl class="first last docutils">
+<dt>ValueError &#8211; Every selected except column for <code class="docutils literal"><span class="pre">column_for_categories</span></code></dt>
+<dd>must be numerical.</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>Horizontal bar graph with buckets specified by <code class="docutils literal"><span class="pre">column_for_categories</span></code>.
+Each plot is labeled using the values in <code class="docutils literal"><span class="pre">column_for_categories</span></code>
+and one plot is produced for every other column (or for the columns
+designated by <code class="docutils literal"><span class="pre">select</span></code>).</dd>
 </dl>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="s1">&#39;Furniture&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;chairs&#39;</span><span class="p">,</span> <span class="s1">&#39;tables&#39;</span><span class="p">,</span> <span class="s1">&#39;desks&#39;</span><span class="p">),</span>
@@ -91,7 +102,7 @@ for additional arguments that can be passed into vargs.</dd>
 <span class="go">&lt;bar graph with furniture as categories and bars for count and price&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">furniture_table</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="s1">&#39;Furniture&#39;</span><span class="p">,</span> <span class="s1">&#39;Price&#39;</span><span class="p">)</span> 
 <span class="go">&lt;bar graph with furniture as categories and bars for price&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">furniture_table</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="s1">&#39;Furniture&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="n">furniture_table</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="s1">&#39;Furniture&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> 
 <span class="go">&lt;bar graph with furniture as categories and bars for count and price&gt;</span>
 </pre></div>
 </div>

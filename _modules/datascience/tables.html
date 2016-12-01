@@ -1204,12 +1204,77 @@
         <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)([</span><span class="n">key</span><span class="p">,</span> <span class="s1">&#39;column&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">with_rows</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="Table.join"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.join.html#datascience.tables.Table.join">[docs]</a>    <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_label</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">other_label</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Generate a table with the columns of self and other, containing rows</span>
+        <span class="sd">&quot;&quot;&quot;Creates a new table with the columns of self and other, containing rows</span>
 <span class="sd">        for all values of a column that appear in both tables.</span>
-<span class="sd">        If a join value appears more than once in self, each row will be used,</span>
-<span class="sd">        but in the other table, only the first of each will be used.</span>
 
-<span class="sd">        If the result is empty, return None.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            ``column_label`` (``str``):  label of column in self that is used to</span>
+<span class="sd">                join  rows of ``other``.</span>
+<span class="sd">            ``other``: Table object to join with self on matching values of</span>
+<span class="sd">                ``column_label``.</span>
+
+<span class="sd">        Kwargs:</span>
+<span class="sd">            ``other_label`` (``str``): default None, assumes ``column_label``.</span>
+<span class="sd">                Otherwise in ``other`` used to join rows.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            New table self joined with ``other`` by matching values in ``column_label``</span>
+<span class="sd">            and ``other_label``. If the resulting join is empty, returns None. If</span>
+<span class="sd">            a join value appears more than once in ``self``, each row with that value</span>
+<span class="sd">            will appear in resulting join, but in ``other``, only the first row with</span>
+<span class="sd">            that value will be used.</span>
+
+<span class="sd">        &gt;&gt;&gt; table = Table().with_columns(&#39;a&#39;, make_array(9, 3, 3, 1),</span>
+<span class="sd">        ...     &#39;b&#39;, make_array(1, 2, 2, 10),</span>
+<span class="sd">        ...     &#39;c&#39;, make_array(3, 4, 5, 6))</span>
+<span class="sd">        &gt;&gt;&gt; table</span>
+<span class="sd">        a    | b    | c</span>
+<span class="sd">        9    | 1    | 3</span>
+<span class="sd">        3    | 2    | 4</span>
+<span class="sd">        3    | 2    | 5</span>
+<span class="sd">        1    | 10   | 6</span>
+<span class="sd">        &gt;&gt;&gt; table2 = Table().with_columns( &#39;a&#39;, make_array(9, 1, 1, 1),</span>
+<span class="sd">        ... &#39;d&#39;, make_array(1, 2, 2, 10),</span>
+<span class="sd">        ... &#39;e&#39;, make_array(3, 4, 5, 6))</span>
+<span class="sd">        &gt;&gt;&gt; table2</span>
+<span class="sd">        a    | d    | e</span>
+<span class="sd">        9    | 1    | 3</span>
+<span class="sd">        1    | 2    | 4</span>
+<span class="sd">        1    | 2    | 5</span>
+<span class="sd">        1    | 10   | 6</span>
+<span class="sd">        &gt;&gt;&gt; table.join(&#39;a&#39;, table2)</span>
+<span class="sd">        a    | b    | c    | d    | e</span>
+<span class="sd">        1    | 10   | 6    | 2    | 4</span>
+<span class="sd">        9    | 1    | 3    | 1    | 3</span>
+<span class="sd">        &gt;&gt;&gt; table.join(&#39;a&#39;, table2, &#39;a&#39;) # Equivalent to previous join</span>
+<span class="sd">        a    | b    | c    | d    | e</span>
+<span class="sd">        1    | 10   | 6    | 2    | 4</span>
+<span class="sd">        9    | 1    | 3    | 1    | 3</span>
+<span class="sd">        &gt;&gt;&gt; table.join(&#39;a&#39;, table2, &#39;d&#39;) # Repeat column labels relabeled</span>
+<span class="sd">        a    | b    | c    | a_2  | e</span>
+<span class="sd">        1    | 10   | 6    | 9    | 3</span>
+<span class="sd">        &gt;&gt;&gt; table2 #table2 has three rows with a = 1</span>
+<span class="sd">        a    | d    | e</span>
+<span class="sd">        9    | 1    | 3</span>
+<span class="sd">        1    | 2    | 4</span>
+<span class="sd">        1    | 2    | 5</span>
+<span class="sd">        1    | 10   | 6</span>
+<span class="sd">        &gt;&gt;&gt; table #table has only one row with a = 1</span>
+<span class="sd">        a    | b    | c</span>
+<span class="sd">        9    | 1    | 3</span>
+<span class="sd">        3    | 2    | 4</span>
+<span class="sd">        3    | 2    | 5</span>
+<span class="sd">        1    | 10   | 6</span>
+<span class="sd">        &gt;&gt;&gt; table2.join(&#39;a&#39;, table) # When we join, we get all three rows in table2 where a = 1</span>
+<span class="sd">        a    | d    | e    | b    | c</span>
+<span class="sd">        1    | 2    | 4    | 10   | 6</span>
+<span class="sd">        1    | 2    | 5    | 10   | 6</span>
+<span class="sd">        1    | 10   | 6    | 10   | 6</span>
+<span class="sd">        9    | 1    | 3    | 1    | 3</span>
+<span class="sd">        &gt;&gt;&gt; table.join(&#39;a&#39;, table2) # Opposite join only keeps first row in table2 with a = 1</span>
+<span class="sd">        a    | b    | c    | d    | e</span>
+<span class="sd">        1    | 10   | 6    | 2    | 4</span>
+<span class="sd">        9    | 1    | 3    | 1    | 3</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_rows</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">other</span><span class="o">.</span><span class="n">num_rows</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">None</span>
@@ -1877,22 +1942,42 @@
 <div class="viewcode-block" id="Table.plot"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.plot.html#datascience.tables.Table.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_for_xticks</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Plot line charts for the table.</span>
 
-<span class="sd">        Each plot is labeled using the values in `column_for_xticks` and one</span>
-<span class="sd">        plot is produced for every other column (or for the columns designated</span>
-<span class="sd">        by `select`).</span>
-
-<span class="sd">        Every selected column except for `column_for_xticks` must be numerical.</span>
-
 <span class="sd">        Args:</span>
-<span class="sd">            column_for_xticks (str/array): A column containing x-axis labels</span>
+<span class="sd">            column_for_xticks (``str/array``): A column containing x-axis labels</span>
 
 <span class="sd">        Kwargs:</span>
 <span class="sd">            overlay (bool): create a chart with one color per data column;</span>
-<span class="sd">                if False, each will be displayed separately.</span>
+<span class="sd">                if False, each plot will be displayed separately.</span>
 
 <span class="sd">            vargs: Additional arguments that get passed into `plt.plot`.</span>
 <span class="sd">                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot</span>
 <span class="sd">                for additional arguments that can be passed into vargs.</span>
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError -- Every selected column must be numerical.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Returns a line plot (connected scatter). Each plot is labeled using</span>
+<span class="sd">            the values in `column_for_xticks` and one plot is produced for all</span>
+<span class="sd">            other columns in self (or for the columns designated by `select`).</span>
+<span class="sd">        &gt;&gt;&gt; table = Table().with_columns(</span>
+<span class="sd">        ...     &#39;days&#39;,  make_array(0, 1, 2, 3, 4, 5),</span>
+<span class="sd">        ...     &#39;price&#39;, make_array(90.5, 90.00, 83.00, 95.50, 82.00, 82.00),</span>
+<span class="sd">        ...     &#39;projection&#39;, make_array(90.75, 82.00, 82.50, 82.50, 83.00, 82.50))</span>
+<span class="sd">        &gt;&gt;&gt; table</span>
+<span class="sd">        days | price | projection</span>
+<span class="sd">        0    | 90.5  | 90.75</span>
+<span class="sd">        1    | 90    | 82</span>
+<span class="sd">        2    | 83    | 82.5</span>
+<span class="sd">        3    | 95.5  | 82.5</span>
+<span class="sd">        4    | 82    | 83</span>
+<span class="sd">        5    | 82    | 82.5</span>
+<span class="sd">        &gt;&gt;&gt; table.plot(&#39;days&#39;) # doctest: +SKIP</span>
+<span class="sd">        &lt;line graph with days as x-axis and lines for price and projection&gt;</span>
+<span class="sd">        &gt;&gt;&gt; table.plot(&#39;days&#39;, overlay=False) # doctest: +SKIP</span>
+<span class="sd">        &lt;line graph with days as x-axis and line for price&gt;</span>
+<span class="sd">        &lt;line graph with days as x-axis and line for projection&gt;</span>
+<span class="sd">        &gt;&gt;&gt; table.plot(&#39;days&#39;, &#39;price&#39;) # doctest: +SKIP</span>
+<span class="sd">        &lt;line graph with days as x-axis and line for price&gt;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_options</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">options</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">vargs</span><span class="p">)</span>
@@ -1960,14 +2045,9 @@
 <div class="viewcode-block" id="Table.barh"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.barh.html#datascience.tables.Table.barh">[docs]</a>    <span class="k">def</span> <span class="nf">barh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_for_categories</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Plot horizontal bar charts for the table.</span>
 
-<span class="sd">        Each plot is labeled using the values in `column_for_categories` and</span>
-<span class="sd">        one plot is produced for every other column (or for the columns</span>
-<span class="sd">        designated by `select`).</span>
-
-<span class="sd">        Every selected except column for `column_for_categories` must be numerical.</span>
-
 <span class="sd">        Args:</span>
-<span class="sd">            column_for_categories (str): A column containing y-axis categories</span>
+<span class="sd">            ``column_for_categories`` (``str``): A column containing y-axis categories</span>
+<span class="sd">                used to create buckets for bar chart.</span>
 
 <span class="sd">        Kwargs:</span>
 <span class="sd">            overlay (bool): create a chart with one color per data column;</span>
@@ -1976,6 +2056,16 @@
 <span class="sd">            vargs: Additional arguments that get passed into `plt.barh`.</span>
 <span class="sd">                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.barh</span>
 <span class="sd">                for additional arguments that can be passed into vargs.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError -- Every selected except column for ``column_for_categories``</span>
+<span class="sd">                must be numerical.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Horizontal bar graph with buckets specified by ``column_for_categories``.</span>
+<span class="sd">            Each plot is labeled using the values in ``column_for_categories``</span>
+<span class="sd">            and one plot is produced for every other column (or for the columns</span>
+<span class="sd">            designated by ``select``).</span>
 
 <span class="sd">        &gt;&gt;&gt; t = Table().with_columns(</span>
 <span class="sd">        ...     &#39;Furniture&#39;, make_array(&#39;chairs&#39;, &#39;tables&#39;, &#39;desks&#39;),</span>
@@ -1991,7 +2081,7 @@
 <span class="sd">        &lt;bar graph with furniture as categories and bars for count and price&gt;</span>
 <span class="sd">        &gt;&gt;&gt; furniture_table.barh(&#39;Furniture&#39;, &#39;Price&#39;) # doctest: +SKIP</span>
 <span class="sd">        &lt;bar graph with furniture as categories and bars for price&gt;</span>
-<span class="sd">        &gt;&gt;&gt; furniture_table.barh(&#39;Furniture&#39;, [1, 2]) # doctest: +SKIP</span>
+<span class="sd">        &gt;&gt;&gt; furniture_table.barh(&#39;Furniture&#39;, make_array(1, 2)) # doctest: +SKIP</span>
 <span class="sd">        &lt;bar graph with furniture as categories and bars for count and price&gt;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_options</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -2034,30 +2124,35 @@
         <span class="n">colors</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Creates scatterplots, optionally adding a line of best fit.</span>
 
-<span class="sd">        Each plot uses the values in `column_for_x` for horizontal positions.</span>
-<span class="sd">        One plot is produced for every other column as y (or for the columns</span>
-<span class="sd">        designated by `select`).</span>
-
-<span class="sd">        Every selected except column for `column_for_categories` must be numerical.</span>
-
 <span class="sd">        Args:</span>
-<span class="sd">            ``column_for_x`` (str): The name to use for the x-axis values of the</span>
-<span class="sd">                scatter plots.</span>
+<span class="sd">            ``column_for_x`` (``str``): The column to use for the x-axis values</span>
+<span class="sd">                and label of the scatter plots.</span>
 
 <span class="sd">        Kwargs:</span>
-<span class="sd">            ``overlay`` (bool): create a chart with one color per data column;</span>
-<span class="sd">                if False, each will be displayed separately.</span>
+<span class="sd">            ``overlay`` (``bool``): If true, creates a chart with one color</span>
+<span class="sd">                per data column; if False, each plot will be displayed separately.</span>
 
-<span class="sd">            ``fit_line`` (bool): draw a line of best fit for each set of points</span>
+<span class="sd">            ``fit_line`` (``bool``): draw a line of best fit for each set of points.</span>
 
 <span class="sd">            ``vargs``: Additional arguments that get passed into `plt.scatter`.</span>
 <span class="sd">                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.scatter</span>
 <span class="sd">                for additional arguments that can be passed into vargs. These</span>
 <span class="sd">                include: `marker` and `norm`, to name a couple.</span>
 
-<span class="sd">            ``colors``: A column of colors (labels or numeric values)</span>
+<span class="sd">            ``colors``: A column of colors (labels or numeric values).</span>
 
-<span class="sd">            ``labels``: A column of text labels to annotate dots</span>
+<span class="sd">            ``labels``: A column of text labels to annotate dots.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError -- Every column, ``column_for_x`` or ``select``, must be numerical</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Scatter plot of values of ``column_for_x`` plotted against</span>
+<span class="sd">            values for all other columns in self. Each plot uses the values in</span>
+<span class="sd">            `column_for_x` for horizontal positions. One plot is produced for</span>
+<span class="sd">            all other columns in self as y (or for the columns designated by</span>
+<span class="sd">            `select`).</span>
+
 
 <span class="sd">        &gt;&gt;&gt; table = Table().with_columns(</span>
 <span class="sd">        ...     &#39;x&#39;, make_array(9, 3, 3, 1),</span>

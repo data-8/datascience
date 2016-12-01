@@ -60,23 +60,46 @@
 <dt id="datascience.tables.Table.plot">
 <code class="descclassname">Table.</code><code class="descname">plot</code><span class="sig-paren">(</span><em>column_for_xticks=None</em>, <em>select=None</em>, <em>overlay=True</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot line charts for the table.</p>
-<p>Each plot is labeled using the values in <cite>column_for_xticks</cite> and one
-plot is produced for every other column (or for the columns designated
-by <cite>select</cite>).</p>
-<p>Every selected column except for <cite>column_for_xticks</cite> must be numerical.</p>
 <dl class="docutils">
 <dt>Args:</dt>
-<dd>column_for_xticks (str/array): A column containing x-axis labels</dd>
+<dd>column_for_xticks (<code class="docutils literal"><span class="pre">str/array</span></code>): A column containing x-axis labels</dd>
 <dt>Kwargs:</dt>
 <dd><dl class="first last docutils">
 <dt>overlay (bool): create a chart with one color per data column;</dt>
-<dd>if False, each will be displayed separately.</dd>
+<dd>if False, each plot will be displayed separately.</dd>
 <dt>vargs: Additional arguments that get passed into <cite>plt.plot</cite>.</dt>
 <dd>See <a class="reference external" href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot">http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot</a>
 for additional arguments that can be passed into vargs.</dd>
 </dl>
 </dd>
+<dt>Raises:</dt>
+<dd>ValueError &#8211; Every selected column must be numerical.</dd>
+<dt>Returns:</dt>
+<dd>Returns a line plot (connected scatter). Each plot is labeled using
+the values in <cite>column_for_xticks</cite> and one plot is produced for all
+other columns in self (or for the columns designated by <cite>select</cite>).</dd>
 </dl>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="s1">&#39;days&#39;</span><span class="p">,</span>  <span class="n">make_array</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="s1">&#39;price&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mf">90.5</span><span class="p">,</span> <span class="mf">90.00</span><span class="p">,</span> <span class="mf">83.00</span><span class="p">,</span> <span class="mf">95.50</span><span class="p">,</span> <span class="mf">82.00</span><span class="p">,</span> <span class="mf">82.00</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="s1">&#39;projection&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mf">90.75</span><span class="p">,</span> <span class="mf">82.00</span><span class="p">,</span> <span class="mf">82.50</span><span class="p">,</span> <span class="mf">82.50</span><span class="p">,</span> <span class="mf">83.00</span><span class="p">,</span> <span class="mf">82.50</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span>
+<span class="go">days | price | projection</span>
+<span class="go">0    | 90.5  | 90.75</span>
+<span class="go">1    | 90    | 82</span>
+<span class="go">2    | 83    | 82.5</span>
+<span class="go">3    | 95.5  | 82.5</span>
+<span class="go">4    | 82    | 83</span>
+<span class="go">5    | 82    | 82.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;days&#39;</span><span class="p">)</span> 
+<span class="go">&lt;line graph with days as x-axis and lines for price and projection&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;days&#39;</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span> 
+<span class="go">&lt;line graph with days as x-axis and line for price&gt;</span>
+<span class="go">&lt;line graph with days as x-axis and line for projection&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;days&#39;</span><span class="p">,</span> <span class="s1">&#39;price&#39;</span><span class="p">)</span> 
+<span class="go">&lt;line graph with days as x-axis and line for price&gt;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </div>
