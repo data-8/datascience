@@ -1204,7 +1204,7 @@ class Table(collections.abc.MutableMapping):
         >>> table.join('a', table2, 'd') # Repeat column labels relabeled
         a    | b    | c    | a_2  | e
         1    | 10   | 6    | 9    | 3
-        >>> table2 #table2 has three rows with a = 3
+        >>> table2 #table2 has three rows with a = 1
         a    | d    | e
         9    | 1    | 3
         1    | 2    | 4
@@ -1216,7 +1216,7 @@ class Table(collections.abc.MutableMapping):
         3    | 2    | 4
         3    | 2    | 5
         1    | 10   | 6
-        >>> table2.join('a', table) # When we join, we get all three rows in table2 where a = 3
+        >>> table2.join('a', table) # When we join, we get all three rows in table2 where a = 1
         a    | d    | e    | b    | c
         1    | 2    | 4    | 10   | 6
         1    | 2    | 5    | 10   | 6
