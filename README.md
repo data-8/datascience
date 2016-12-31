@@ -66,7 +66,7 @@ If you encounter an `Image not found` error on **Mac OSX**, you may need an
 
 Start by cloning this repository:
 
-    git clone https://github.com/dsten/datascience
+    git clone https://github.com/data-8/datascience
 
 Install the dependencies into a [Conda environment][envs] with:
 
