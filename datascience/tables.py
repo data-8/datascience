@@ -615,7 +615,7 @@ class Table(collections.abc.MutableMapping):
         5                | 6
         """
         labels = self._varargs_as_labels(column_label_or_labels)
-        table = Table()
+        table = self.__class__()
         for label in labels:
             self._add_column_and_format(table, label, np.copy(self[label]))
         return table
@@ -1136,7 +1136,7 @@ class Table(collections.abc.MutableMapping):
         _, rbins = np.histogram(self[value_column],**vargs)
         # create a table with these bins a first column and counts for each group
         vargs['bins'] = rbins
-        binned = Table().with_column('bin',rbins)
+        binned = self.__class__().with_column('bin',rbins)
         for group in grouped.rows:
             col_label = "-".join(map(str,group[0:-1]))
             col_vals = group[-1]
@@ -1255,7 +1255,7 @@ class Table(collections.abc.MutableMapping):
         names = [op.__name__ for op in ops]
         ops = [_zero_on_type_error(op) for op in ops]
         columns = [[op(column) for op in ops] for column in self.columns]
-        table = Table().with_columns(zip(self.labels, columns))
+        table = self.__class__().with_columns(zip(self.labels, columns))
         stats = table._unused_label('statistic')
         table[stats] = names
         table.move_to_start(stats)
@@ -1746,7 +1746,7 @@ class Table(collections.abc.MutableMapping):
         cols = list(self._columns.values())
         _, bins = np.histogram(cols, **vargs)
 
-        binned = Table().with_column('bin', bins)
+        binned = self.__class__().with_column('bin', bins)
         for label in self.labels:
             counts, _ = np.histogram(self[label], bins=bins, density=density)
             binned[label + ' ' + tag] = np.append(counts, 0)
@@ -2223,7 +2223,7 @@ class Table(collections.abc.MutableMapping):
                     bins = abins
                 else:
                     assert bins.all() == abins.all(), "Inconsistent bins in hist"
-        t = Table()
+        t = self.__class__()
         t['start'] = bins[0:-1]
         t['end'] = bins[1:]
         for label, column in zip(pvt_labels,vals):
