@@ -552,6 +552,8 @@ class Table(collections.abc.MutableMapping):
                 self._formats[old_to_new[label]] = formatter
         return self
 
+    
+
 
     ##################
     # Transformation #
