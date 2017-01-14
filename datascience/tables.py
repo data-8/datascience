@@ -1481,7 +1481,6 @@ class Table(collections.abc.MutableMapping):
         return first, rest
 
 
-
     def with_row(self, row):
         """Return a table with an additional row.
 
