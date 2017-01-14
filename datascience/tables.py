@@ -550,6 +550,18 @@ class Table(collections.abc.MutableMapping):
                 self._formats[old_to_new[label]] = formatter
         return self
 
+    def remove(self, row_or_row_indices):
+        """Removes a row or multiple rows of a table in place."""
+        if not row_or_row_indices:
+            return
+        if isinstance(row_or_row_indices, int):
+            rows_remove = [row_or_row_indices]
+        else:
+            rows_remove = row_or_row_indices
+        for col in self._columns:
+            self._columns[col] = [elem for i, elem in enumerate(self[col]) if i not in rows_remove]
+        return self
+
 
     ##################
     # Transformation #
