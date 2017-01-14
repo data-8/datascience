@@ -400,7 +400,7 @@ class Table(collections.abc.MutableMapping):
             columns = list(t.select(self.labels)._columns.values())
             n = t.num_rows
         else:
-            if (len(row_or_table) != self.num_columns):
+            if (len(list(row_or_table)) != self.num_columns):
                 raise Exception('Row should have '+ str(self.num_columns) + " columns")
             columns, n = [[value] for value in row_or_table], 1
         for i, column in enumerate(self._columns):
