@@ -27,6 +27,9 @@ pip install datascience
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.9.0
+- Added "Table.remove"
+
 ### v0.8.2
 
 - Added `proportions_from_distribution` method to `datascience.util`.

@@ -740,6 +740,23 @@ def test_bin(table):
     13   | 0
     """)
 
+def test_remove_multiple(table):
+    table.remove([1, 3])
+    assert_equal(table, """
+    letter | count | points
+    a      | 9     | 1
+    c      | 3     | 2
+    """)
+
+def test_remove_single(table):
+    table.remove(1)
+    assert_equal(table, """
+    letter | count | points
+    a      | 9     | 1
+    c      | 3     | 2
+    z      | 1     | 10
+    """)
+
 
 ##########
 # Create #
