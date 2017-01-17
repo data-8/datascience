@@ -1245,8 +1245,16 @@ class Table(collections.abc.MutableMapping):
             return None
 
         labels = list(self.labels)
-        labels += [self._unused_label(s) for s in other.labels]
+        new_labels = [self._unused_label(s) for s in other.labels]
+        labels += new_labels
         joined = type(self)(labels).with_rows(joined_rows)
+        for selfformat in self._formats:
+            joined.set_format(selfformat, self._formats[selfformat])
+        for otherformat in other._formats:
+            if otherformat in joined.labels:
+                joined.set_format(self._unused_label(otherformat), other._formats[otherformat])
+            else:
+                joined.set_format(otherformat, other._formats[otherformat])
         del joined[self._unused_label(other_label)] # Remove redundant column
         return joined.move_to_start(column_label).sort(column_label)
 
