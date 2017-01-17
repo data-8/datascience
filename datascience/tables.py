@@ -1245,8 +1245,7 @@ class Table(collections.abc.MutableMapping):
             return None
 
         labels = list(self.labels)
-        new_labels = [self._unused_label(s) for s in other.labels]
-        labels += new_labels
+        labels += [self._unused_label(s) for s in other.labels]
         joined = type(self)(labels).with_rows(joined_rows)
         for selfformat in self._formats:
             joined.set_format(selfformat, self._formats[selfformat])
