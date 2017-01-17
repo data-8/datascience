@@ -530,6 +530,18 @@ def test_append_row(table):
     g      | 2     | 2
     """)
 
+
+def test_append_row_different_num_cols(table):
+    """Makes sure that any incoming row must have the same amount of columns as the table."""
+    row = "abcd"
+    with(pytest.raises(Exception)):
+        table.append(row)
+
+    row = ["e", 2, 4, 6]
+    with(pytest.raises(Exception)):
+        table.append(row)
+
+
 def test_append_column(table):
     column_1 = [10, 20, 30, 40]
     column_2 = 'hello'
@@ -818,6 +830,23 @@ def test_bin(table):
     9    | 1
     11   | 0
     13   | 0
+    """)
+
+def test_remove_multiple(table):
+    table.remove([1, 3])
+    assert_equal(table, """
+    letter | count | points
+    a      | 9     | 1
+    c      | 3     | 2
+    """)
+
+def test_remove_single(table):
+    table.remove(1)
+    assert_equal(table, """
+    letter | count | points
+    a      | 9     | 1
+    c      | 3     | 2
+    z      | 1     | 10
     """)
 
 

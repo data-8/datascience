@@ -400,6 +400,8 @@ class Table(collections.abc.MutableMapping):
             columns = list(t.select(self.labels)._columns.values())
             n = t.num_rows
         else:
+            if (len(list(row_or_table)) != self.num_columns):
+                raise Exception('Row should have '+ str(self.num_columns) + " columns")
             columns, n = [[value] for value in row_or_table], 1
         for i, column in enumerate(self._columns):
             if self.num_rows:
@@ -551,6 +553,18 @@ class Table(collections.abc.MutableMapping):
             if label in column_label:
                 formatter = self._formats.pop(label)
                 self._formats[old_to_new[label]] = formatter
+        return self
+
+    def remove(self, row_or_row_indices):
+        """Removes a row or multiple rows of a table in place."""
+        if not row_or_row_indices:
+            return
+        if isinstance(row_or_row_indices, int):
+            rows_remove = [row_or_row_indices]
+        else:
+            rows_remove = row_or_row_indices
+        for col in self._columns:
+            self._columns[col] = [elem for i, elem in enumerate(self[col]) if i not in rows_remove]
         return self
 
 
@@ -1902,7 +1916,7 @@ class Table(collections.abc.MutableMapping):
         'alpha': 0.7,
     }
 
-    def plot(self, column_for_xticks=None, select=None, overlay=True, **vargs):
+    def plot(self, column_for_xticks=None, select=None, overlay=True, width=6, height=4, **vargs):
         """Plot line charts for the table.
 
         Args:
@@ -1964,9 +1978,9 @@ class Table(collections.abc.MutableMapping):
             else:
                 axis.plot(x_data, self[label], color=color, **options)
 
-        self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x)
+        self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x, width=width, height=height)
 
-    def bar(self, column_for_categories=None, select=None, overlay=True, **vargs):
+    def bar(self, column_for_categories=None, select=None, overlay=True, width=6, height=4, **vargs):
         """Plot bar charts for the table.
 
         Each plot is labeled using the values in `column_for_categories` and
@@ -2003,9 +2017,9 @@ class Table(collections.abc.MutableMapping):
                 tick_labels = [ticks[int(l)] if 0<=l<len(ticks) else '' for l in axis.get_xticks()]
                 axis.set_xticklabels(tick_labels, stretch='ultra-condensed')
 
-        self._visualize(column_for_categories, labels, xticks, overlay, draw, annotate)
+        self._visualize(column_for_categories, labels, xticks, overlay, draw, annotate, width=width, height=height)
 
-    def barh(self, column_for_categories=None, select=None, overlay=True, **vargs):
+    def barh(self, column_for_categories=None, select=None, overlay=True, width=6, **vargs):
         """Plot horizontal bar charts for the table.
 
         Args:
@@ -2057,9 +2071,14 @@ class Table(collections.abc.MutableMapping):
 
         index = np.arange(self.num_rows)
         margin = 0.1
-        width = 1 - 2 * margin
+        bwidth = 1 - 2 * margin
         if overlay:
-            width /= len(labels)
+            bwidth /= len(labels)
+
+        if 'height' in options:
+            height = options.pop('height')
+        else:
+            height = max(4, len(index)/2)
 
         def draw(axis, label, color):
             if overlay:
@@ -2067,7 +2086,7 @@ class Table(collections.abc.MutableMapping):
             else:
                 ypos = index
             # barh plots entries in reverse order from bottom to top
-            axis.barh(ypos, self[label][::-1], width,  color=color, **options)
+            axis.barh(ypos, self[label][::-1], bwidth,  color=color, **options)
 
         def annotate(axis, ticks):
             axis.set_yticks(index+0.5) # Center labels on bars
@@ -2077,14 +2096,10 @@ class Table(collections.abc.MutableMapping):
             if isinstance(column_for_categories, str):
                 axis.set_ylabel(column_for_categories)
 
-        height = max(4, len(index)/2)
-        if 'height' in vargs:
-            height = vargs.pop('height')
-
-        self._visualize('', labels, yticks, overlay, draw, annotate, height=height)
+        self._visualize('', labels, yticks, overlay, draw, annotate, width=width, height=height)
 
     def scatter(self, column_for_x, select=None, overlay=True, fit_line=False,
-        colors=None, labels=None, **vargs):
+        colors=None, labels=None, width=5, height=5, **vargs):
         """Creates scatterplots, optionally adding a line of best fit.
 
         Args:
@@ -2164,7 +2179,7 @@ class Table(collections.abc.MutableMapping):
                         arrowprops = dict(arrowstyle = '->', connectionstyle = 'arc3,rad=0', color='black'))
 
         x_label = self._as_label(column_for_x)
-        self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x, width=5, height=5)
+        self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x, width=width, height=height)
 
     def _visualize(self, x_label, y_labels, ticks, overlay, draw, annotate, width=6, height=4):
         """Generic visualization that overlays or separates the draw function.
