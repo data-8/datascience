@@ -409,7 +409,7 @@ class Table(collections.abc.MutableMapping):
         self._num_rows += n
         return self
 
-    def append_column(self, label, values):
+    def append_column(self, label, values, formatter=None):
         """Appends a column to the table or replaces a column.
 
         ``__setitem__`` is aliased to this method:
@@ -424,6 +424,7 @@ class Table(collections.abc.MutableMapping):
 
                 If a list or array, the new column contains the values in
                 ``values``, which must be the same length as the table.
+            ``formatter`` (single formatter): Adds a formatter to the column being appended. No formatter added by default.
 
         Returns:
             Original table with new or replaced column
@@ -487,6 +488,8 @@ class Table(collections.abc.MutableMapping):
             self._num_rows = len(values)
 
         self._columns[label] = values
+        if (formatter != None):
+            self.set_format(label, formatter)
 
     def relabel(self, column_label, new_label):
         """Changes the label(s) of column(s) specified by ``column_label`` to
@@ -1522,7 +1525,7 @@ class Table(collections.abc.MutableMapping):
         self.append(self._with_columns(zip(*rows)))
         return self
 
-    def with_column(self, label, values):
+    def with_column(self, label, values, formatter=None):
         """Return a new table with an additional or replaced column.
 
         Args:
@@ -1532,6 +1535,8 @@ class Table(collections.abc.MutableMapping):
             ``values`` (single value or sequence): If a single value, every
                 value in the new column is ``values``. If sequence of values,
                 new column takes on values in ``values``.
+
+            ``formatter`` (single value): Specifies formatter for the new column. Defaults to no formatter.
 
         Raises:
             ``ValueError``: If
@@ -1571,30 +1576,30 @@ class Table(collections.abc.MutableMapping):
         ValueError: Column length mismatch. New column does not have the same number of rows as table.
         """
         new_table = self.copy()
-        new_table.append_column(label, values)
+        new_table.append_column(label, values, formatter)
         return new_table
 
-    def with_columns(self, *labels_and_values):
+    def with_columns(self, *labels_and_values_and_formats):
         """Return a table with additional or replaced columns.
 
 
         Args:
-            ``labels_and_values``: An alternating list of labels and values or
-                a list of label-value pairs. If one of the labels is in
+            ``labels_and_values_and_formats``: An alternating list of labels, values, and (optionally) formatters or
+                a list of label-value pairs and/or label-value-formatter trios. If one of the labels is in
                 existing table, then every value in the corresponding column is
                 set to that value. If label has only a single value (``int``),
                 every row of corresponding column takes on that value.
 
         Raises:
             ``ValueError``: If
-                - any label in ``labels_and_values`` is not a valid column
+                - any label in ``labels_and_values_and_formats`` is not a valid column
                     name, i.e if label is not of type (str).
-                - if any value in ``labels_and_values`` is a list/array and
+                - if any value in ``labels_and_values_and_formats`` is a list/array and`
                     does not have the same length as the number of rows in the
                     table.
             ``AssertionError``:
                 - 'incorrect columns format', if passed more than one sequence
-                    (iterables) for  ``labels_and_values``.
+                    (iterables) for  ``labels_and_values_and_formats``.
                 - 'even length sequence required' if missing a pair in
                     label-value pairs.
 
@@ -1632,23 +1637,30 @@ class Table(collections.abc.MutableMapping):
             ...
         ValueError: Column length mismatch. New column does not have the same number of rows as table.
         """
-        if len(labels_and_values) == 1:
-            labels_and_values = labels_and_values[0]
-        if isinstance(labels_and_values, collections.abc.Mapping):
-            labels_and_values = list(labels_and_values.items())
-        if not isinstance(labels_and_values, collections.abc.Sequence):
-            labels_and_values = list(labels_and_values)
-        if not labels_and_values:
+        if len(labels_and_values_and_formats) == 1:
+            labels_and_values_and_formats = labels_and_values_and_formats[0]
+        if isinstance(labels_and_values_and_formats, collections.abc.Mapping):
+            labels_and_values_and_formats = list(labels_and_values_and_formats.items())
+        if not isinstance(labels_and_values_and_formats, collections.abc.Sequence):
+            labels_and_values_and_formats = list(labels_and_values_and_formats)
+        if not labels_and_values_and_formats:
             return self
-        first = labels_and_values[0]
+        first = labels_and_values_and_formats[0]
         if not isinstance(first, str) and hasattr(first, '__iter__'):
-            for pair in labels_and_values:
-                assert len(pair) == 2, 'incorrect columns format'
-            labels_and_values = [x for pair in labels_and_values for x in pair]
-        assert len(labels_and_values) % 2 == 0, 'Even length sequence required'
-        for i in range(0, len(labels_and_values), 2):
-            label, values = labels_and_values[i], labels_and_values[i+1]
-            self = self.with_column(label, values)
+            for cluster in labels_and_values_and_formats:
+                assert len(cluster) == 2 or len(cluster) == 3, 'incorrect columns format'
+            labels_and_values_and_formats = [x for pair in labels_and_values_and_formats for x in pair]
+        i = 0
+        while i < len(labels_and_values_and_formats):
+            assert (i+1) < len(labels_and_values_and_formats), "incorrect format"
+            if i+2 < len(labels_and_values_and_formats) and not isinstance(labels_and_values_and_formats[i+2], str):
+                label, values, formatter = labels_and_values_and_formats[i], labels_and_values_and_formats[i+1], labels_and_values_and_formats[i+2]
+                i += 3
+            else:
+                label, values, formatter = labels_and_values_and_formats[i], labels_and_values_and_formats[i+1], None
+                i += 2
+            self = self.with_column(label, values, formatter)
+
         return self
 
     def relabeled(self, label, new_label):
