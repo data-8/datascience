@@ -1493,15 +1493,15 @@ class Table(collections.abc.MutableMapping):
             raise ValueError("Invalid value of k. k must be between 1 and the"
                              "number of rows - 1")
 
-        rows = [self.rows[index] for index in
-                np.random.permutation(self.num_rows)]
-        cls = type(self)
-        first = cls(self.labels).with_rows(rows[:k])
-        rest = cls(self.labels).with_rows(rows[k:])
+        rows = np.random.permutation(self.num_rows)
+
+        first = self.take(rows[:k])
+        rest = self.take(rows[k:])
         for column_label in self._formats:
             first._formats[column_label] = self._formats[column_label]
             rest._formats[column_label] = self._formats[column_label]
         return first, rest
+
 
     def with_row(self, row):
         """Return a table with an additional row.

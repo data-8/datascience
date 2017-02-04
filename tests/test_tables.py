@@ -1132,6 +1132,11 @@ def test_split_k_vals(table):
     with pytest.raises(ValueError):
         table.split(table.num_rows)
 
+def test_split_table_labels(table):
+    sampled, rest = table.split(3)
+    assert sampled.labels == table.labels
+    assert rest.labels == table.labels
+
 #############
 # Visualize #
 #############
