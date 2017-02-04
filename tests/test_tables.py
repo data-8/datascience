@@ -1190,3 +1190,27 @@ def test_url_parse():
     with pytest.raises(ValueError):
         url = 'https://data8.berkeley.edu/something/something/dark/side'
         Table.read_table(url)
+
+###############
+# Inheritance #
+##############
+
+class SubTable(Table):
+    """Test inheritance through tables."""
+    def __init__(self, *args):
+        Table.__init__(self, *args)
+        self.extra = "read all about it"
+
+def test_subtable():
+    """Tests that derived classes retain type through super methods."""
+    st = SubTable().with_columns([("num", [1,2,3]), 
+                                  ('col', ['red', 'blu', 'red']), 
+                                  ("num2", [5,3,7])])
+    assert(type(st) == SubTable)
+    assert(type(st.select('col')) == type(st))
+    assert(type(st.pivot_bin('col', 'num')) == type(st))
+    assert(type(st.stats()) == type(st))
+    assert(type(st.bin(select='num', bins=3)) == type(st))
+    assert(type(st.copy()) == type(st))
+
+
