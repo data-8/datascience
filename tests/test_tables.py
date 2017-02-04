@@ -952,6 +952,78 @@ def test_join_with_strings(table):
     z      | 1     | 10     | 1       | 10
     """)
 
+def test_join_with_same_formats(table):
+    test = table.copy().set_format("points", CurrencyFormatter)
+    assert_equal(test, """
+    letter | count | points
+    a      | 9     | $1.00
+    b      | 3     | $2.00
+    c      | 3     | $2.00
+    z      | 1     | $10.00
+    """)
+    test_joined = test.join("points", test)
+    assert_equal(test_joined, """
+    points | letter | count | letter_2  | count_2
+    $1.00  | a      | 9     | a         | 9     
+    $2.00  | b      | 3     | b         | 3     
+    $2.00  | c      | 3     | b         | 3     
+    $10.00 | z      | 1     | z         | 1     
+    """)
+
+def test_join_with_one_formatted(table):
+    test = table.copy().set_format("points", CurrencyFormatter)
+    assert_equal(test, """
+    letter | count | points
+    a      | 9     | $1.00
+    b      | 3     | $2.00
+    c      | 3     | $2.00
+    z      | 1     | $10.00
+    """)
+    test_joined = test.join("points", table)
+    assert_equal(test_joined, """
+    points | letter | count | letter_2  | count_2
+    $1.00  | a      | 9     | a         | 9     
+    $2.00  | b      | 3     | b         | 3     
+    $2.00  | c      | 3     | b         | 3     
+    $10.00 | z      | 1     | z         | 1     
+    """)
+
+def test_join_with_two_labels_one_format(table):
+    test = table.copy().set_format("points", CurrencyFormatter)
+    assert_equal(test, """
+    letter | count | points
+    a      | 9     | $1.00
+    b      | 3     | $2.00
+    c      | 3     | $2.00
+    z      | 1     | $10.00
+    """)
+    assert_equal(table, """
+    letter | count | points
+    a      | 9     | 1
+    b      | 3     | 2
+    c      | 3     | 2
+    z      | 1     | 10
+    """)
+    test2 = test.copy()
+    table2 = table.copy()
+    test_joined = test.join("letter", table)
+    assert_equal(test_joined, """
+    letter | count | points     | count_2 | points_2
+    a      | 9     | $1.00      | 9       | 1
+    b      | 3     | $2.00      | 3       | 2
+    c      | 3     | $2.00      | 3       | 2
+    z      | 1     | $10.00     | 1       | 10
+    """)
+
+    test_joined2 = table2.join("letter", test2)
+    assert_equal(test_joined2, """
+    letter | count | points | count_2 | points_2
+    a      | 9     | 1      | 9       | $1.00
+    b      | 3     | 2      | 3       | $2.00
+    c      | 3     | 2      | 3       | $2.00
+    z      | 1     | 10     | 1       | $10.00
+    """)
+
 def test_percentile(numbers_table):
     assert_equal(numbers_table.percentile(76), """
     count | points
