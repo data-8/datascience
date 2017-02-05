@@ -964,10 +964,10 @@ def test_join_with_same_formats(table):
     test_joined = test.join("points", test)
     assert_equal(test_joined, """
     points | letter | count | letter_2  | count_2
-    $1.00  | a      | 9     | a         | 9     
-    $2.00  | b      | 3     | b         | 3     
-    $2.00  | c      | 3     | b         | 3     
-    $10.00 | z      | 1     | z         | 1     
+    $1.00  | a      | 9     | a         | 9
+    $2.00  | b      | 3     | b         | 3
+    $2.00  | c      | 3     | b         | 3
+    $10.00 | z      | 1     | z         | 1
     """)
 
 def test_join_with_one_formatted(table):
@@ -982,10 +982,10 @@ def test_join_with_one_formatted(table):
     test_joined = test.join("points", table)
     assert_equal(test_joined, """
     points | letter | count | letter_2  | count_2
-    $1.00  | a      | 9     | a         | 9     
-    $2.00  | b      | 3     | b         | 3     
-    $2.00  | c      | 3     | b         | 3     
-    $10.00 | z      | 1     | z         | 1     
+    $1.00  | a      | 9     | a         | 9
+    $2.00  | b      | 3     | b         | 3
+    $2.00  | c      | 3     | b         | 3
+    $10.00 | z      | 1     | z         | 1
     """)
 
 def test_join_with_two_labels_one_format(table):
@@ -1136,6 +1136,30 @@ def test_split_table_labels(table):
     sampled, rest = table.split(3)
     assert sampled.labels == table.labels
     assert rest.labels == table.labels
+
+###############
+# Inheritance #
+###############
+
+
+class SubTable(Table):
+    """Test inheritance through tables."""
+    def __init__(self, *args):
+        Table.__init__(self, *args)
+        self.extra = "read all about it"
+
+def test_subtable():
+    """Tests that derived classes retain type through super methods."""
+    st = SubTable().with_columns([("num", [1,2,3]),
+                                  ('col', ['red', 'blu', 'red']),
+                                  ("num2", [5,3,7])])
+    assert(type(st) == SubTable)
+    assert(type(st.select('col')) == type(st))
+    assert(type(st.pivot_bin('col', 'num')) == type(st))
+    assert(type(st.stats()) == type(st))
+    assert(type(st.bin(select='num', bins=3)) == type(st))
+    assert(type(st.copy()) == type(st))
+
 
 #############
 # Visualize #
