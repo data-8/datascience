@@ -1554,7 +1554,7 @@ class Table(collections.abc.MutableMapping):
         self.append(self._with_columns(zip(*rows)))
         return self
 
-    def with_column(self, label, values):
+    def with_column(self, label, values, *rest):
         """Return a new table with an additional or replaced column.
 
         Args:
@@ -1564,6 +1564,9 @@ class Table(collections.abc.MutableMapping):
             ``values`` (single value or sequence): If a single value, every
                 value in the new column is ``values``. If sequence of values,
                 new column takes on values in ``values``.
+
+            ``rest``: An alternating list of labels and values describing
+                additional columns. See with_columns for a full description.
 
         Raises:
             ``ValueError``: If
@@ -1602,6 +1605,10 @@ class Table(collections.abc.MutableMapping):
             ...
         ValueError: Column length mismatch. New column does not have the same number of rows as table.
         """
+        # Ensure that if with_column is called instead of with_columns,
+        # no error is raised.
+        if rest:
+            return self.with_columns(label, values, *rest)
         new_table = self.copy()
         new_table.append_column(label, values)
         return new_table

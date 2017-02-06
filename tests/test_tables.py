@@ -619,6 +619,29 @@ def test_with_column(table):
     with(pytest.raises(ValueError)):
         table.append_column(0, [1, 2, 3, 4])
 
+def test_with_columns(table):
+    column_1 = [10, 20, 30, 40]
+    column_2 = 'hello'
+    table2 = table.with_columns(
+        'new_col1', column_1,
+        'new_col2', column_2)
+    table3 = table.with_column( # Incorrect method name still works
+        'new_col1', column_1,
+        'new_col2', column_2)
+    assert_equal(table2, """
+    letter | count | points | new_col1 | new_col2
+    a      | 9     | 1      | 10       | hello
+    b      | 3     | 2      | 20       | hello
+    c      | 3     | 2      | 30       | hello
+    z      | 1     | 10     | 40       | hello
+    """)
+    assert_equal(table3, """
+    letter | count | points | new_col1 | new_col2
+    a      | 9     | 1      | 10       | hello
+    b      | 3     | 2      | 20       | hello
+    c      | 3     | 2      | 30       | hello
+    z      | 1     | 10     | 40       | hello
+    """)
 
 def test_append_table(table):
     table.append(table)
@@ -870,7 +893,6 @@ def test_group_by_tuples():
     (1, 2, 2, 10) | [3 1]
     (5, 1)        | [3]
     """)
-
 
 def test_group_no_new_column(table):
     table.group(table.columns[1])
