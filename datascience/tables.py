@@ -919,6 +919,11 @@ class Table(collections.abc.MutableMapping):
         Rectangular |           | 27         | 4.7
         Round       |           | 13         | 4.05
         """
+        # Assume that a call to group with a list of labels is a call to groups
+        if _is_non_string_iterable(column_or_label) and \
+                len(column_or_label) != self._num_rows:
+            return self.groups(column_or_label, collect)
+
         self = self.copy(shallow=True)
         collect = _zero_on_type_error(collect)
 
@@ -998,6 +1003,10 @@ class Table(collections.abc.MutableMapping):
         Green | Round       | 2          | 1
         Red   | Round       | 11         | 3.05
         """
+        # Assume that a call to groups with one label is a call to group
+        if not _is_non_string_iterable(labels):
+            return self.group(labels, collect=collect)
+
         collect = _zero_on_type_error(collect)
         columns = []
         labels = self._as_labels(labels)

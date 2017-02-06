@@ -347,6 +347,18 @@ def test_groups(t):
     10     | False | 1
     """)
 
+def test_groups_using_group(t):
+    t = t.copy()
+    t.append(('e', 12, 1, 12))
+    t['early'] = t['letter'] < 'd'
+    test = t.group(['points', 'early'])
+    assert_equal(test, """
+    points | early | count
+    1      | False | 1
+    1      | True  | 1
+    2      | True  | 2
+    10     | False | 1
+    """)
 
 def test_groups_list(t):
     t = t.copy()
@@ -870,6 +882,15 @@ def test_group_no_new_column(table):
     z      | 1     | 10
     """)
 
+def test_group_using_groups(table):
+    table.groups(1)
+    assert_equal(table, """
+    letter | count | points
+    a      | 9     | 1
+    b      | 3     | 2
+    c      | 3     | 2
+    z      | 1     | 10
+    """)
 
 def test_stack(table):
     test = table.stack(key='letter')
