@@ -2320,7 +2320,7 @@ class Table(collections.abc.MutableMapping):
             bin_column=counts
         if columns:
             if bin_column is not None:
-                columns = columns + [bin_column]
+                columns = list(columns) + [bin_column]
             self = self.select(*columns)
 
         # Check for non-numerical values and raise a ValueError if any found
@@ -2391,8 +2391,8 @@ class Table(collections.abc.MutableMapping):
                     axis.set_xlabel(label + x_unit, fontsize=16)
                 else:
                     values = counted_values
-                    axis.set_xlabel(counted_label + x_unit, fontsize=16)
                     vargs['weights'] = columns[label]
+                    axis.set_xlabel(label.rstrip(' count') + x_unit, fontsize=16)
                 axis.hist(values, color=color, **vargs)
                 _vertical_x(axis)
                 Table.plots.append(axis)
