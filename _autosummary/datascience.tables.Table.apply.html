@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>datascience.tables.Table.apply &mdash; datascience 0.8.2 documentation</title>
+    <title>datascience.tables.Table.apply &mdash; datascience 0.5.1 documentation</title>
     
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.8.2',
+        VERSION:     '0.5.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.8.2 documentation" href="../index.html" />
+    <link rel="top" title="datascience 0.5.1 documentation" href="../index.html" />
     <link rel="up" title="Tables (datascience.tables)" href="../tables.html" />
     <link rel="next" title="datascience.tables.Table.set_format" href="datascience.tables.Table.set_format.html" />
     <link rel="prev" title="datascience.tables.Table.column_index" href="datascience.tables.Table.column_index.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="datascience.tables.Table.column_index.html" title="datascience.tables.Table.column_index"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.8.2 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.5.1 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" accesskey="U">Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)</a> &raquo;</li> 
       </ul>
     </div>  
@@ -58,58 +58,43 @@
 <h1>datascience.tables.Table.apply<a class="headerlink" href="#datascience-tables-table-apply" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="datascience.tables.Table.apply">
-<code class="descclassname">Table.</code><code class="descname">apply</code><span class="sig-paren">(</span><em>fn</em>, <em>column_label=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.apply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.apply" title="Permalink to this definition">¶</a></dt>
-<dd><p>Apply <code class="docutils literal"><span class="pre">fn</span></code> to each element of <code class="docutils literal"><span class="pre">column_label</span></code>.
-If no <code class="docutils literal"><span class="pre">column_label</span></code> provided, <cite>fn`</cite> applied to each row of table.</p>
+<code class="descclassname">Table.</code><code class="descname">apply</code><span class="sig-paren">(</span><em>fn</em>, <em>column_label</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.apply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.apply" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an array where <code class="docutils literal"><span class="pre">fn</span></code> is applied to each set of elements
+by row from the specified columns in <code class="docutils literal"><span class="pre">column_label</span></code>.</p>
 <dl class="docutils">
 <dt>Args:</dt>
 <dd><dl class="first last docutils">
-<dt><code class="docutils literal"><span class="pre">fn</span></code> (function) &#8211; The function to be applied to elements of</dt>
-<dd><code class="docutils literal"><span class="pre">column_label</span></code>.</dd>
-<dt><code class="docutils literal"><span class="pre">column_label</span></code> (single str or array of str) &#8211; Names of</dt>
-<dd>columns to be passed into <code class="docutils literal"><span class="pre">fn</span></code>. Length must match
-number of arguments in <code class="docutils literal"><span class="pre">fn</span></code> signature.</dd>
+<dt><code class="docutils literal"><span class="pre">fn</span></code> (function): The function to be applied to elements specified</dt>
+<dd>by <code class="docutils literal"><span class="pre">column_label</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">column_label</span></code> (single string or list of strings): Names of</dt>
+<dd>columns to be passed into function <code class="docutils literal"><span class="pre">fn</span></code>. Length must match
+number of elements <code class="docutils literal"><span class="pre">fn</span></code> takes.</dd>
 </dl>
 </dd>
 <dt>Raises:</dt>
 <dd><dl class="first last docutils">
-<dt><code class="docutils literal"><span class="pre">ValueError</span></code> &#8211; if  <code class="docutils literal"><span class="pre">column_label</span></code> is not an existing</dt>
+<dt><code class="docutils literal"><span class="pre">ValueError</span></code>: column name in <code class="docutils literal"><span class="pre">column_label</span></code> is not an existing</dt>
 <dd>column in the table.</dd>
-<dt><code class="docutils literal"><span class="pre">TypeError</span></code> &#8211; if insufficent number of <code class="docutils literal"><span class="pre">column_label</span></code> passed</dt>
-<dd>to <code class="docutils literal"><span class="pre">fn</span></code>.</dd>
 </dl>
 </dd>
 <dt>Returns:</dt>
-<dd>An array consisting of results of applying <code class="docutils literal"><span class="pre">fn</span></code> to elements
+<dd>A numpy array consisting of results of applying <code class="docutils literal"><span class="pre">fn</span></code> to elements
 specified by <code class="docutils literal"><span class="pre">column_label</span></code> in each row.</dd>
 </dl>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="s1">&#39;letter&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">),</span>
-<span class="gp">... </span>    <span class="s1">&#39;count&#39;</span><span class="p">,</span>  <span class="n">make_array</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-<span class="gp">... </span>    <span class="s1">&#39;points&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="s">&#39;letter&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="s">&#39;c&#39;</span><span class="p">,</span> <span class="s">&#39;z&#39;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="s">&#39;count&#39;</span><span class="p">,</span>  <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="s">&#39;points&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">t</span>
 <span class="go">letter | count | points</span>
 <span class="go">a      | 9     | 1</span>
 <span class="go">b      | 3     | 2</span>
 <span class="go">c      | 3     | 2</span>
 <span class="go">z      | 1     | 10</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;points&#39;</span><span class="p">)</span>
-<span class="go">array([0, 1, 1, 9])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="s1">&#39;points&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;count&#39;</span><span class="p">,</span> <span class="s">&#39;points&#39;</span><span class="p">])</span>
 <span class="go">array([ 9,  6,  6, 10])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="s1">&#39;points&#39;</span><span class="p">))</span>
-<span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
-<span class="gr">TypeError</span>: <span class="n">&lt;lambda&gt;() takes 1 positional argument but 2 were given</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;counts&#39;</span><span class="p">)</span>
-<span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
-<span class="gr">ValueError</span>: <span class="n">The column &quot;counts&quot; is not in the table. The table contains these columns: letter, count, points</span>
-</pre></div>
-</div>
-<p>Whole rows are passed to the function if no columns are specified.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
-<span class="go">array([18,  6,  6,  2])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&#39;points&#39;</span><span class="p">)</span>
+<span class="go">array([0, 1, 1, 9])</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -167,7 +152,7 @@ specified by <code class="docutils literal"><span class="pre">column_label</span
         <li class="right" >
           <a href="datascience.tables.Table.column_index.html" title="datascience.tables.Table.column_index"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.8.2 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.5.1 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" >Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)</a> &raquo;</li> 
       </ul>
     </div>

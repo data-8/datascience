@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>datascience.maps &mdash; datascience 0.8.2 documentation</title>
+    <title>datascience.maps &mdash; datascience 0.5.1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.2',
+        VERSION:     '0.5.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.8.2 documentation" href="../../index.html" />
+    <link rel="top" title="datascience 0.5.1 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body role="document">
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.8.2 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.5.1 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -49,7 +49,7 @@
   <h1>Source code for datascience.maps</h1><div class="highlight"><pre>
 <span class="sd">&quot;&quot;&quot;Draw maps using folium.&quot;&quot;&quot;</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Map&#39;</span><span class="p">,</span> <span class="s1">&#39;Marker&#39;</span><span class="p">,</span> <span class="s1">&#39;Circle&#39;</span><span class="p">,</span> <span class="s1">&#39;Region&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Map&#39;</span><span class="p">,</span> <span class="s">&#39;Marker&#39;</span><span class="p">,</span> <span class="s">&#39;Circle&#39;</span><span class="p">,</span> <span class="s">&#39;Region&#39;</span><span class="p">]</span>
 
 
 <span class="kn">import</span> <span class="nn">IPython.display</span>
@@ -63,8 +63,6 @@
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">import</span> <span class="nn">random</span>
-
-<span class="kn">from</span> <span class="nn">.tables</span> <span class="kn">import</span> <span class="n">Table</span>
 
 <span class="n">_number</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>
 
@@ -98,15 +96,15 @@
     <span class="k">def</span> <span class="nf">_inline_map</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns an embedded iframe of a folium.map.&quot;&quot;&quot;</span>
         <span class="n">m</span><span class="o">.</span><span class="n">_build_map</span><span class="p">()</span>
-        <span class="n">src</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">HTML</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;&amp;quot;&#39;</span><span class="p">)</span>
-        <span class="n">style</span> <span class="o">=</span> <span class="s2">&quot;width: {}px; height: {}px&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
-        <span class="n">html</span> <span class="o">=</span> <span class="s1">&#39;&lt;iframe srcdoc=&quot;{}&quot; style=&quot;{}&quot;; border: none&quot;&gt;&lt;/iframe&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">style</span><span class="p">)</span>
-        <span class="c1"># See https://github.com/python-visualization/folium/issues/176</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s1">&#39;json_data&#39;</span><span class="p">):</span>
+        <span class="n">src</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">HTML</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s">&#39;&amp;quot;&#39;</span><span class="p">)</span>
+        <span class="n">style</span> <span class="o">=</span> <span class="s">&quot;width: {}px; height: {}px&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
+        <span class="n">html</span> <span class="o">=</span> <span class="s">&#39;&lt;iframe srcdoc=&quot;{}&quot; style=&quot;{}&quot;; border: none&quot;&gt;&lt;/iframe&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">style</span><span class="p">)</span>
+        <span class="c"># See https://github.com/python-visualization/folium/issues/176</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s">&#39;json_data&#39;</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">json_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="n">stub</span> <span class="o">=</span> <span class="s1">&#39;function(callback){callback(null, JSON.parse(&#39;</span>
-                <span class="n">replace</span> <span class="o">=</span> <span class="n">stub</span> <span class="o">+</span> <span class="nb">repr</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;&amp;quot;&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39;))}&#39;</span>
-                <span class="n">html</span> <span class="o">=</span> <span class="n">html</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;d3.json, &#39;</span> <span class="o">+</span> <span class="nb">repr</span><span class="p">(</span><span class="n">name</span><span class="p">),</span> <span class="n">replace</span><span class="p">)</span>
+                <span class="n">stub</span> <span class="o">=</span> <span class="s">&#39;function(callback){callback(null, JSON.parse(&#39;</span>
+                <span class="n">replace</span> <span class="o">=</span> <span class="n">stub</span> <span class="o">+</span> <span class="nb">repr</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s">&#39;&amp;quot;&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="s">&#39;))}&#39;</span>
+                <span class="n">html</span> <span class="o">=</span> <span class="n">html</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;d3.json, &#39;</span> <span class="o">+</span> <span class="nb">repr</span><span class="p">(</span><span class="n">name</span><span class="p">),</span> <span class="n">replace</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">html</span>
 
     <span class="nd">@abc.abstractmethod</span>
@@ -122,9 +120,7 @@
     <span class="n">_default_zoom</span> <span class="o">=</span> <span class="mi">12</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="p">(),</span> <span class="n">ids</span><span class="o">=</span><span class="p">(),</span> <span class="n">width</span><span class="o">=</span><span class="mi">960</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-            <span class="n">features</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Sequence</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">set</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">features</span><span class="p">):</span>
                 <span class="n">features</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="n">features</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
@@ -132,27 +128,17 @@
                 <span class="n">features</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">features</span><span class="p">))</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">_MapFeature</span><span class="p">):</span>
             <span class="n">features</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">features</span><span class="p">}</span>
-        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="nb">dict</span><span class="p">),</span> <span class="s1">&#39;Map takes a list or dict of features&#39;</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="nb">dict</span><span class="p">),</span> <span class="s">&#39;Map takes a list or dict of features&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_features</span> <span class="o">=</span> <span class="n">features</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;tiles&#39;</span><span class="p">:</span> <span class="s1">&#39;OpenStreetMap&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;max_zoom&#39;</span><span class="p">:</span> <span class="mi">17</span><span class="p">,</span>
-            <span class="s1">&#39;min_zoom&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+            <span class="s">&#39;tiles&#39;</span><span class="p">:</span> <span class="s">&#39;OpenStreetMap&#39;</span><span class="p">,</span>
+            <span class="s">&#39;max_zoom&#39;</span><span class="p">:</span> <span class="mi">17</span><span class="p">,</span>
+            <span class="s">&#39;min_zoom&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_width</span> <span class="o">=</span> <span class="n">width</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_height</span> <span class="o">=</span> <span class="n">height</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Map.copy"><a class="viewcode-back" href="../../maps.html#datascience.maps.Map.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Copies the current Map into a new one and returns it.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        
-        <span class="n">m</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_features</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">,</span>
-                   <span class="n">height</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_height</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="p">)</span>
-        <span class="n">m</span><span class="o">.</span><span class="n">_folium_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_folium_map</span>
-        <span class="k">return</span> <span class="n">m</span>
-</div>
     <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_features</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
 
@@ -168,12 +154,12 @@
             <span class="n">feature</span><span class="o">.</span><span class="n">draw_on</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_folium_map</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_create_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_height</span><span class="p">}</span>
+        <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;width&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">,</span> <span class="s">&#39;height&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_height</span><span class="p">}</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_autozoom</span><span class="p">())</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
-        <span class="c1"># Enforce zoom consistency</span>
-        <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;max_zoom&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;zoom_start&#39;</span><span class="p">]</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;max_zoom&#39;</span><span class="p">])</span>
-        <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;min_zoom&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;zoom_start&#39;</span><span class="p">]</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;min_zoom&#39;</span><span class="p">])</span>
+        <span class="c"># Enforce zoom consistency</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s">&#39;max_zoom&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s">&#39;zoom_start&#39;</span><span class="p">]</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="n">attrs</span><span class="p">[</span><span class="s">&#39;max_zoom&#39;</span><span class="p">])</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s">&#39;min_zoom&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s">&#39;zoom_start&#39;</span><span class="p">]</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">attrs</span><span class="p">[</span><span class="s">&#39;min_zoom&#39;</span><span class="p">])</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mapper</span><span class="p">(</span><span class="o">**</span><span class="n">attrs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_autozoom</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -182,32 +168,33 @@
         <span class="n">attrs</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="n">midpoint</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
-        <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;location&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">midpoint</span><span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;min_lat&#39;</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;max_lat&#39;</span><span class="p">]),</span>
-            <span class="n">midpoint</span><span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;min_lon&#39;</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;max_lon&#39;</span><span class="p">])</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s">&#39;location&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">midpoint</span><span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="s">&#39;min_lat&#39;</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="s">&#39;max_lat&#39;</span><span class="p">]),</span>
+            <span class="n">midpoint</span><span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="s">&#39;min_lon&#39;</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="s">&#39;max_lon&#39;</span><span class="p">])</span>
         <span class="p">)</span>
 
-        <span class="c1"># self._folium_map.fit_bounds(</span>
-        <span class="c1">#     [bounds[&#39;min_long&#39;], bounds[&#39;min_lat&#39;]],</span>
-        <span class="c1">#     [bounds[&#39;max_long&#39;], bounds[&#39;max_lat&#39;]]</span>
-        <span class="c1"># )</span>
+        <span class="c"># TODO(Alvin): uncomment with new Folium release</span>
+        <span class="c"># self._folium_map.fit_bounds(</span>
+        <span class="c">#     [bounds[&#39;min_long&#39;], bounds[&#39;min_lat&#39;]],</span>
+        <span class="c">#     [bounds[&#39;max_long&#39;], bounds[&#39;max_lat&#39;]]</span>
+        <span class="c"># )</span>
 
-        <span class="c1"># remove the following with new Folium release</span>
-        <span class="c1"># rough approximation, assuming max_zoom is 18</span>
+        <span class="c"># remove the following with new Folium release</span>
+        <span class="c"># rough approximation, assuming max_zoom is 18</span>
         <span class="kn">import</span> <span class="nn">math</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">lat_diff</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;max_lat&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;min_lat&#39;</span><span class="p">]</span>
-            <span class="n">lon_diff</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;max_lon&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;min_lon&#39;</span><span class="p">]</span>
+            <span class="n">factor</span> <span class="o">=</span> <span class="mf">1.2</span>
+            <span class="n">lat_diff</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="s">&#39;max_lat&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">bounds</span><span class="p">[</span><span class="s">&#39;min_lat&#39;</span><span class="p">]</span>
+            <span class="n">lon_diff</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="s">&#39;max_lon&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">bounds</span><span class="p">[</span><span class="s">&#39;min_lon&#39;</span><span class="p">]</span>
             <span class="n">area</span><span class="p">,</span> <span class="n">max_area</span> <span class="o">=</span> <span class="n">lat_diff</span><span class="o">*</span><span class="n">lon_diff</span><span class="p">,</span> <span class="mi">180</span><span class="o">*</span><span class="mi">360</span>
             <span class="k">if</span> <span class="n">area</span><span class="p">:</span>
-                <span class="n">factor</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="o">/</span><span class="mi">1000</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="o">-</span><span class="n">area</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
                 <span class="n">zoom</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">area</span><span class="o">/</span><span class="n">max_area</span><span class="p">)</span><span class="o">/-</span><span class="n">factor</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">zoom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_zoom</span>
             <span class="n">zoom</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">zoom</span><span class="p">)))</span>
-            <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;zoom_start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">zoom</span>
+            <span class="n">attrs</span><span class="p">[</span><span class="s">&#39;zoom_start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">zoom</span>
         <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Check that your locations are lat-lon pairs&#39;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;Check that your locations are lat-lon pairs&#39;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">attrs</span>
 
@@ -222,10 +209,10 @@
 
         <span class="k">def</span> <span class="nf">bound_check</span><span class="p">(</span><span class="n">lat_lon</span><span class="p">):</span>
             <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span> <span class="o">=</span> <span class="n">lat_lon</span>
-            <span class="n">check</span><span class="p">(</span><span class="s1">&#39;max_lat&#39;</span><span class="p">,</span> <span class="nb">max</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="n">lat</span><span class="p">)</span>
-            <span class="n">check</span><span class="p">(</span><span class="s1">&#39;min_lat&#39;</span><span class="p">,</span> <span class="nb">min</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="n">lat</span><span class="p">)</span>
-            <span class="n">check</span><span class="p">(</span><span class="s1">&#39;max_lon&#39;</span><span class="p">,</span> <span class="nb">max</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
-            <span class="n">check</span><span class="p">(</span><span class="s1">&#39;min_lon&#39;</span><span class="p">,</span> <span class="nb">min</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
+            <span class="n">check</span><span class="p">(</span><span class="s">&#39;max_lat&#39;</span><span class="p">,</span> <span class="nb">max</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="n">lat</span><span class="p">)</span>
+            <span class="n">check</span><span class="p">(</span><span class="s">&#39;min_lat&#39;</span><span class="p">,</span> <span class="nb">min</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="n">lat</span><span class="p">)</span>
+            <span class="n">check</span><span class="p">(</span><span class="s">&#39;max_lon&#39;</span><span class="p">,</span> <span class="nb">max</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
+            <span class="n">check</span><span class="p">(</span><span class="s">&#39;min_lon&#39;</span><span class="p">,</span> <span class="nb">min</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
 
         <span class="n">lat_lons</span> <span class="o">=</span> <span class="p">[</span><span class="n">lat_lon</span> <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_features</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">for</span>
                     <span class="n">lat_lon</span> <span class="ow">in</span> <span class="n">feature</span><span class="o">.</span><span class="n">lat_lons</span><span class="p">]</span>
@@ -236,30 +223,21 @@
 
         <span class="k">return</span> <span class="n">bounds</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">features</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">feature_list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_features</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">f</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">([(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">key</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;feature&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">)])</span>
-            <span class="n">f</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">properties</span><span class="p">)</span>
-            <span class="n">feature_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">feature_list</span>
-
 <div class="viewcode-block" id="Map.format"><a class="viewcode-back" href="../../maps.html#datascience.maps.Map.format">[docs]</a>    <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Apply formatting.&quot;&quot;&quot;</span>
         <span class="n">attrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">attrs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_height</span><span class="p">})</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s">&#39;width&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">,</span> <span class="s">&#39;height&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_height</span><span class="p">})</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_features</span><span class="p">,</span> <span class="o">**</span><span class="n">attrs</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="Map.geojson"><a class="viewcode-back" href="../../maps.html#datascience.maps.Map.geojson">[docs]</a>    <span class="k">def</span> <span class="nf">geojson</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Render features as a FeatureCollection.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;FeatureCollection&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;features&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">geojson</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_features</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+            <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;FeatureCollection&quot;</span><span class="p">,</span>
+            <span class="s">&quot;features&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">geojson</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_features</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
         <span class="p">}</span>
 </div>
-<div class="viewcode-block" id="Map.color"><a class="viewcode-back" href="../../maps.html#datascience.maps.Map.color">[docs]</a>    <span class="k">def</span> <span class="nf">color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">ids</span><span class="o">=</span><span class="p">(),</span> <span class="n">key_on</span><span class="o">=</span><span class="s1">&#39;feature.id&#39;</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s1">&#39;YlOrBr&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Map.color"><a class="viewcode-back" href="../../maps.html#datascience.maps.Map.color">[docs]</a>    <span class="k">def</span> <span class="nf">color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">ids</span><span class="o">=</span><span class="p">(),</span> <span class="n">key_on</span><span class="o">=</span><span class="s">&#39;feature.id&#39;</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s">&#39;YlOrBr&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Color map features by binning values.</span>
 
 <span class="sd">        values -- a sequence of values or a table of keys and values</span>
@@ -287,81 +265,39 @@
 <span class="sd">        legend_name: string, default None</span>
 <span class="sd">            Title for data legend. If not passed, defaults to columns[1].</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Set values and ids to both be simple sequences by inspecting values</span>
-        <span class="n">id_name</span><span class="p">,</span> <span class="n">value_name</span> <span class="o">=</span> <span class="s1">&#39;IDs&#39;</span><span class="p">,</span> <span class="s1">&#39;values&#39;</span>
+        <span class="c"># TODO Unfortunately, this method doesn&#39;t work inside a notebook.</span>
+        <span class="c"># See: https://github.com/python-visualization/folium/issues/176</span>
+
+        <span class="c"># Set values and ids to both be simple sequences by inspecting values</span>
+        <span class="n">id_name</span><span class="p">,</span> <span class="n">value_name</span> <span class="o">=</span> <span class="s">&#39;IDs&#39;</span><span class="p">,</span> <span class="s">&#39;values&#39;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Mapping</span><span class="p">):</span>
-            <span class="k">assert</span> <span class="ow">not</span> <span class="n">ids</span><span class="p">,</span> <span class="s1">&#39;IDs and a map cannot both be used together&#39;</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="s1">&#39;columns&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="ow">not</span> <span class="n">ids</span><span class="p">,</span> <span class="s">&#39;IDs and a map cannot both be used together&#39;</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="s">&#39;columns&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
                 <span class="n">table</span> <span class="o">=</span> <span class="n">values</span>
                 <span class="n">ids</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">columns</span>
-                <span class="n">id_name</span><span class="p">,</span> <span class="n">value_name</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">labels</span>
+                <span class="n">id_name</span><span class="p">,</span> <span class="n">value_name</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">column_labels</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">dictionary</span> <span class="o">=</span> <span class="n">values</span>
                 <span class="n">ids</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dictionary</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span> <span class="nb">list</span><span class="p">(</span><span class="n">dictionary</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
             <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
-            <span class="c1"># Use indices as IDs</span>
+            <span class="c"># Use indices as IDs</span>
             <span class="n">ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)))</span>
 
         <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_map</span><span class="p">()</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="n">id_name</span><span class="p">:</span> <span class="n">ids</span><span class="p">,</span> <span class="n">value_name</span><span class="p">:</span> <span class="n">values</span><span class="p">})</span>
         <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;geo_str&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geojson</span><span class="p">()),</span>
-            <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">,</span>
-            <span class="s1">&#39;columns&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">id_name</span><span class="p">,</span> <span class="n">value_name</span><span class="p">],</span>
-            <span class="s1">&#39;key_on&#39;</span><span class="p">:</span> <span class="n">key_on</span><span class="p">,</span>
-            <span class="s1">&#39;fill_color&#39;</span><span class="p">:</span> <span class="n">palette</span><span class="p">,</span>
+            <span class="s">&#39;geo_str&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geojson</span><span class="p">()),</span>
+            <span class="s">&#39;data&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">,</span>
+            <span class="s">&#39;columns&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">id_name</span><span class="p">,</span> <span class="n">value_name</span><span class="p">],</span>
+            <span class="s">&#39;key_on&#39;</span><span class="p">:</span> <span class="n">key_on</span><span class="p">,</span>
+            <span class="s">&#39;fill_color&#39;</span><span class="p">:</span> <span class="n">palette</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">attrs</span><span class="p">)</span>
         <span class="n">m</span><span class="o">.</span><span class="n">geo_json</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">colored</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span><span class="p">()</span>
         <span class="n">colored</span><span class="o">.</span><span class="n">_folium_map</span> <span class="o">=</span> <span class="n">m</span>
         <span class="k">return</span> <span class="n">colored</span>
-</div>
-<div class="viewcode-block" id="Map.overlay"><a class="viewcode-back" href="../../maps.html#datascience.maps.Map.overlay">[docs]</a>    <span class="k">def</span> <span class="nf">overlay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;Blue&#39;</span><span class="p">,</span> <span class="n">opacity</span><span class="o">=</span><span class="mf">0.6</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Overlays ``feature`` on the map. Returns a new Map.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            ``feature``: a ``Table`` of map features, a list of map features,</span>
-<span class="sd">                a Map, a Region, or a circle marker map table. The features will</span>
-<span class="sd">                be overlayed on the Map with specified ``color``.</span>
-
-<span class="sd">            ``color`` (``str``): Color of feature. Defaults to &#39;Blue&#39;</span>
-
-<span class="sd">            ``opacity`` (``float``): Opacity of overlain feature. Defaults to</span>
-<span class="sd">                0.6.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            A new ``Map`` with the overlain ``feature``.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span> <span class="o">==</span> <span class="n">Table</span><span class="p">:</span>
-            <span class="c1"># if table of features e.g. Table.from_records(taz_map.features)</span>
-            <span class="k">if</span> <span class="s1">&#39;feature&#39;</span> <span class="ow">in</span> <span class="n">feature</span><span class="p">:</span>
-                <span class="n">feature</span> <span class="o">=</span> <span class="n">feature</span><span class="p">[</span><span class="s1">&#39;feature&#39;</span><span class="p">]</span>
-
-            <span class="c1"># if marker table e.g. table with columns: latitudes,longitudes,popup,color,radius</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">feature</span> <span class="o">=</span> <span class="n">Circle</span><span class="o">.</span><span class="n">map_table</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
-            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">feature</span><span class="p">:</span>
-                <span class="n">f</span><span class="o">.</span><span class="n">_attrs</span><span class="p">[</span><span class="s1">&#39;fill_color&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">color</span>
-                <span class="n">f</span><span class="o">.</span><span class="n">_attrs</span><span class="p">[</span><span class="s1">&#39;fill_opacity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">opacity</span>
-                <span class="n">f</span><span class="o">.</span><span class="n">draw_on</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">_folium_map</span><span class="p">)</span>
-
-        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span> <span class="o">==</span> <span class="n">Map</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">_features</span><span class="p">)):</span>
-                <span class="n">f</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">_features</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-                <span class="n">f</span><span class="o">.</span><span class="n">_attrs</span><span class="p">[</span><span class="s1">&#39;fill_color&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">color</span>
-                <span class="n">f</span><span class="o">.</span><span class="n">_attrs</span><span class="p">[</span><span class="s1">&#39;fill_opacity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">opacity</span>
-                <span class="n">f</span><span class="o">.</span><span class="n">draw_on</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">_folium_map</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span> <span class="o">==</span> <span class="n">Region</span><span class="p">:</span>
-            <span class="n">feature</span><span class="o">.</span><span class="n">_attrs</span><span class="p">[</span><span class="s1">&#39;fill_color&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">color</span>
-            <span class="n">feature</span><span class="o">.</span><span class="n">_attrs</span><span class="p">[</span><span class="s1">&#39;fill_opacity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">opacity</span>
-            <span class="n">feature</span><span class="o">.</span><span class="n">draw_on</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">_folium_map</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">result</span>
 </div>
     <span class="nd">@classmethod</span>
 <div class="viewcode-block" id="Map.read_geojson"><a class="viewcode-back" href="../../maps.html#datascience.maps.Map.read_geojson">[docs]</a>    <span class="k">def</span> <span class="nf">read_geojson</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">path_or_json_or_string</span><span class="p">):</span>
@@ -376,34 +312,34 @@
             <span class="k">pass</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">path</span> <span class="o">=</span> <span class="n">path_or_json_or_string</span>
-            <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.gz&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.gzip&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;.gz&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;.gzip&#39;</span><span class="p">):</span>
                 <span class="kn">import</span> <span class="nn">gzip</span>
-                <span class="n">contents</span> <span class="o">=</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+                <span class="n">contents</span> <span class="o">=</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">contents</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                <span class="n">contents</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">FileNotFoundError</span><span class="p">:</span>
             <span class="k">pass</span>
-        <span class="c1"># TODO web address</span>
-        <span class="k">assert</span> <span class="n">data</span><span class="p">,</span> <span class="s1">&#39;MapData accepts a valid geoJSON object, geoJSON string, or path to a geoJSON file&#39;</span>
+        <span class="c"># TODO web address</span>
+        <span class="k">assert</span> <span class="n">data</span><span class="p">,</span> <span class="s">&#39;MapData accepts a valid geoJSON object, geoJSON string, or path to a geoJSON file&#39;</span>
         <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">_read_geojson_features</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
 </div>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_read_geojson_features</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_read_geojson_features</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a dict of features keyed by ID.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">features</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">features</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">feature</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]):</span>
-            <span class="n">key</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">prefix</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
-            <span class="n">feature_type</span> <span class="o">=</span> <span class="n">feature</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">feature_type</span> <span class="o">==</span> <span class="s1">&#39;FeatureCollection&#39;</span><span class="p">:</span>
-                <span class="n">_read_geojson_features</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">key</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">feature_type</span> <span class="o">==</span> <span class="s1">&#39;Point&#39;</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">feature</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;features&#39;</span><span class="p">]):</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span> <span class="n">prefix</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+            <span class="n">feature_type</span> <span class="o">=</span> <span class="n">feature</span><span class="p">[</span><span class="s">&#39;geometry&#39;</span><span class="p">][</span><span class="s">&#39;type&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">feature_type</span> <span class="o">==</span> <span class="s">&#39;FeatureCollection&#39;</span><span class="p">:</span>
+                <span class="n">_read_geojson_features</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s">&#39;.&#39;</span> <span class="o">+</span> <span class="n">key</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">feature_type</span> <span class="o">==</span> <span class="s">&#39;Point&#39;</span><span class="p">:</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="n">Circle</span><span class="o">.</span><span class="n">_convert_point</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">feature_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Polygon&#39;</span><span class="p">,</span> <span class="s1">&#39;MultiPolygon&#39;</span><span class="p">]:</span>
+            <span class="k">elif</span> <span class="n">feature_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;Polygon&#39;</span><span class="p">,</span> <span class="s">&#39;MultiPolygon&#39;</span><span class="p">]:</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="n">Region</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># TODO Support all http://geojson.org/geojson-spec.html#geometry-objects</span>
+                <span class="c"># TODO Support all http://geojson.org/geojson-spec.html#geometry-objects</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="bp">None</span>
             <span class="n">features</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">return</span> <span class="n">features</span>
@@ -412,10 +348,10 @@
 <span class="k">class</span> <span class="nc">_MapFeature</span><span class="p">(</span><span class="n">_FoliumWrapper</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A feature displayed on a map. When displayed alone, a map is created.&quot;&quot;&quot;</span>
 
-    <span class="c1"># Method name for a folium.Map to add the feature</span>
-    <span class="n">_map_method_name</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="c"># Method name for a folium.Map to add the feature</span>
+    <span class="n">_map_method_name</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
 
-    <span class="c1"># Default dimensions for displaying the feature in isolation</span>
+    <span class="c"># Default dimensions for displaying the feature in isolation</span>
     <span class="n">_width</span> <span class="o">=</span> <span class="mi">180</span>
     <span class="n">_height</span> <span class="o">=</span> <span class="mi">180</span>
 
@@ -429,9 +365,9 @@
         <span class="n">m</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="p">],</span> <span class="n">width</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_height</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_folium_map</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
 
-    <span class="c1">#############</span>
-    <span class="c1"># Interface #</span>
-    <span class="c1">#############</span>
+    <span class="c">#############</span>
+    <span class="c"># Interface #</span>
+    <span class="c">#############</span>
 
     <span class="nd">@property</span>
     <span class="nd">@abc.abstractmethod</span>
@@ -468,15 +404,15 @@
 <span class="sd">        width of popup</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">_map_method_name</span> <span class="o">=</span> <span class="s1">&#39;simple_marker&#39;</span>
-    <span class="n">_color_param</span> <span class="o">=</span> <span class="s1">&#39;marker_color&#39;</span>
+    <span class="n">_map_method_name</span> <span class="o">=</span> <span class="s">&#39;simple_marker&#39;</span>
+    <span class="n">_color_param</span> <span class="o">=</span> <span class="s">&#39;marker_color&#39;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">popup</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">popup</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;blue&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">_number</span><span class="p">)</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">_number</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lat_lon</span> <span class="o">=</span> <span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;popup&#39;</span><span class="p">:</span> <span class="n">popup</span><span class="p">,</span>
+            <span class="s">&#39;popup&#39;</span><span class="p">:</span> <span class="n">popup</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_color_param</span><span class="p">:</span> <span class="n">color</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
@@ -492,18 +428,18 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_folium_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">attrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;location&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lat_lon</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s">&#39;location&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lat_lon</span>
         <span class="k">return</span> <span class="n">attrs</span>
 
 <div class="viewcode-block" id="Marker.geojson"><a class="viewcode-back" href="../../maps.html#datascience.maps.Marker.geojson">[docs]</a>    <span class="k">def</span> <span class="nf">geojson</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_id</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;GeoJSON representation of the marker as a point.&quot;&quot;&quot;</span>
         <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lat_lon</span>
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;Feature&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">feature_id</span><span class="p">,</span>
-            <span class="s1">&#39;geometry&#39;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;Point&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;coordinates&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">),</span>
+            <span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="s">&#39;Feature&#39;</span><span class="p">,</span>
+            <span class="s">&#39;id&#39;</span><span class="p">:</span> <span class="n">feature_id</span><span class="p">,</span>
+            <span class="s">&#39;geometry&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="s">&#39;Point&#39;</span><span class="p">,</span>
+                <span class="s">&#39;coordinates&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">),</span>
             <span class="p">},</span>
         <span class="p">}</span>
 </div>
@@ -517,30 +453,23 @@
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_convert_point</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Convert a GeoJSON point to a Marker.&quot;&quot;&quot;</span>
-        <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span> <span class="o">=</span> <span class="n">feature</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;coordinates&#39;</span><span class="p">]</span>
-        <span class="n">popup</span> <span class="o">=</span> <span class="n">feature</span><span class="p">[</span><span class="s1">&#39;properties&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span> <span class="o">=</span> <span class="n">feature</span><span class="p">[</span><span class="s">&#39;geometry&#39;</span><span class="p">][</span><span class="s">&#39;coordinates&#39;</span><span class="p">]</span>
+        <span class="n">popup</span> <span class="o">=</span> <span class="n">feature</span><span class="p">[</span><span class="s">&#39;properties&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="Marker.map"><a class="viewcode-back" href="../../maps.html#datascience.maps.Marker.map">[docs]</a>    <span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">latitudes</span><span class="p">,</span> <span class="n">longitudes</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">radii</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return markers from columns of coordinates, labels, &amp; colors.</span>
-
-<span class="sd">        The radii column is not applicable to markers, but sets circle radius.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Marker.map"><a class="viewcode-back" href="../../maps.html#datascience.maps.Marker.map">[docs]</a>    <span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">latitudes</span><span class="p">,</span> <span class="n">longitudes</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return markers from columns of coordinates, labels, &amp; colors.&quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">latitudes</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">longitudes</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="n">radii</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="s1">&#39;_has_radius&#39;</span><span class="p">),</span> <span class="s2">&quot;A &quot;</span> <span class="o">+</span> <span class="n">cls</span><span class="o">.</span><span class="n">__name__</span> <span class="o">+</span> <span class="s2">&quot; has no radius&quot;</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="p">[</span><span class="n">latitudes</span><span class="p">,</span> <span class="n">longitudes</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">latitudes</span><span class="p">)</span>
             <span class="n">inputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">inputs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s2">&quot;&quot;</span><span class="p">,)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">latitudes</span><span class="p">))</span>
+            <span class="n">inputs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s">&quot;&quot;</span><span class="p">,)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">latitudes</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">colors</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">colors</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">latitudes</span><span class="p">)</span>
             <span class="n">inputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">colors</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">radii</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">radii</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">latitudes</span><span class="p">)</span>
-            <span class="n">inputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">radii</span><span class="p">)</span>
         <span class="n">ms</span> <span class="o">=</span> <span class="p">[</span><span class="n">cls</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">args</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">)]</span>
         <span class="k">return</span> <span class="n">Map</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span>
 </div>
@@ -561,50 +490,38 @@
 
 <span class="sd">    fill_opacity: float, default 0.6</span>
 <span class="sd">        Circle fill opacity</span>
-
-<span class="sd">    For example, to draw three circles:</span>
-
-<span class="sd">    t = Table().with_columns([</span>
-<span class="sd">            &#39;lat&#39;, [37.8, 38, 37.9],</span>
-<span class="sd">            &#39;lon&#39;, [-122, -122.1, -121.9],</span>
-<span class="sd">            &#39;label&#39;, [&#39;one&#39;, &#39;two&#39;, &#39;three&#39;],</span>
-<span class="sd">            &#39;color&#39;, [&#39;red&#39;, &#39;green&#39;, &#39;blue&#39;],</span>
-<span class="sd">            &#39;radius&#39;, [3000, 4000, 5000],</span>
-<span class="sd">        ])</span>
-<span class="sd">    Circle.map_table(t)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">_map_method_name</span> <span class="o">=</span> <span class="s1">&#39;circle_marker&#39;</span>
-    <span class="n">_color_param</span> <span class="o">=</span> <span class="s1">&#39;fill_color&#39;</span>
-    <span class="n">_has_radius</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="n">_map_method_name</span> <span class="o">=</span> <span class="s">&#39;circle_marker&#39;</span>
+    <span class="n">_color_param</span> <span class="o">=</span> <span class="s">&#39;fill_color&#39;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">popup</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">popup</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;blue&#39;</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">popup</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="p">,</span> <span class="n">line_color</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 </div>
 <div class="viewcode-block" id="Region"><a class="viewcode-back" href="../../maps.html#datascience.maps.Region">[docs]</a><span class="k">class</span> <span class="nc">Region</span><span class="p">(</span><span class="n">_MapFeature</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A GeoJSON feature displayed with Folium&#39;s geo_json method.&quot;&quot;&quot;</span>
 
-    <span class="n">_map_method_name</span> <span class="o">=</span> <span class="s1">&#39;geo_json&#39;</span>
+    <span class="n">_map_method_name</span> <span class="o">=</span> <span class="s">&#39;geo_json&#39;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geojson</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">assert</span> <span class="s1">&#39;type&#39;</span> <span class="ow">in</span> <span class="n">geojson</span>
-        <span class="k">assert</span> <span class="n">geojson</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Feature&#39;</span>
-        <span class="k">assert</span> <span class="s1">&#39;geometry&#39;</span> <span class="ow">in</span> <span class="n">geojson</span>
-        <span class="k">assert</span> <span class="s1">&#39;type&#39;</span> <span class="ow">in</span> <span class="n">geojson</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">]</span>
-        <span class="k">assert</span> <span class="n">geojson</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Polygon&#39;</span><span class="p">,</span> <span class="s1">&#39;MultiPolygon&#39;</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="s">&#39;type&#39;</span> <span class="ow">in</span> <span class="n">geojson</span>
+        <span class="k">assert</span> <span class="n">geojson</span><span class="p">[</span><span class="s">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;Feature&#39;</span>
+        <span class="k">assert</span> <span class="s">&#39;geometry&#39;</span> <span class="ow">in</span> <span class="n">geojson</span>
+        <span class="k">assert</span> <span class="s">&#39;type&#39;</span> <span class="ow">in</span> <span class="n">geojson</span><span class="p">[</span><span class="s">&#39;geometry&#39;</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="n">geojson</span><span class="p">[</span><span class="s">&#39;geometry&#39;</span><span class="p">][</span><span class="s">&#39;type&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;Polygon&#39;</span><span class="p">,</span> <span class="s">&#39;MultiPolygon&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span> <span class="o">=</span> <span class="n">geojson</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span> <span class="o">=</span> <span class="n">kwargs</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">lat_lons</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A flat list of (lat, lon) pairs.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">_lat_lons_from_geojson</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;coordinates&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">_lat_lons_from_geojson</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span><span class="p">[</span><span class="s">&#39;geometry&#39;</span><span class="p">][</span><span class="s">&#39;coordinates&#39;</span><span class="p">])</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The GEOJSON type of the regions: Polygon or MultiPolygon.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span><span class="p">[</span><span class="s">&#39;geometry&#39;</span><span class="p">][</span><span class="s">&#39;type&#39;</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">polygons</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -616,10 +533,10 @@
 <span class="sd">          the first.</span>
 <span class="sd">        - Each position is a (lat, lon) pair.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;Polygon&#39;</span><span class="p">:</span>
-            <span class="n">polygons</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;coordinates&#39;</span><span class="p">]]</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;MultiPolygon&#39;</span><span class="p">:</span>
-            <span class="n">polygons</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;coordinates&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s">&#39;Polygon&#39;</span><span class="p">:</span>
+            <span class="n">polygons</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span><span class="p">[</span><span class="s">&#39;geometry&#39;</span><span class="p">][</span><span class="s">&#39;coordinates&#39;</span><span class="p">]]</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s">&#39;MultiPolygon&#39;</span><span class="p">:</span>
+            <span class="n">polygons</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span><span class="p">[</span><span class="s">&#39;geometry&#39;</span><span class="p">][</span><span class="s">&#39;coordinates&#39;</span><span class="p">]</span>
         <span class="k">return</span> <span class="p">[</span>   <span class="p">[</span>   <span class="p">[</span><span class="n">_lat_lons_from_geojson</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span>
                         <span class="n">s</span> <span class="ow">in</span> <span class="n">ring</span>  <span class="p">]</span>              <span class="k">for</span>
                     <span class="n">ring</span> <span class="ow">in</span> <span class="n">polygon</span><span class="p">]</span>              <span class="k">for</span>
@@ -627,7 +544,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">properties</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;properties&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;properties&#39;</span><span class="p">,</span> <span class="p">{})</span>
 
 <div class="viewcode-block" id="Region.copy"><a class="viewcode-back" href="../../maps.html#datascience.maps.Region.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a deep copy&quot;&quot;&quot;</span>
@@ -636,16 +553,16 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_folium_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">attrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;geo_str&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span><span class="p">)</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s">&#39;geo_str&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">attrs</span>
 
 <div class="viewcode-block" id="Region.geojson"><a class="viewcode-back" href="../../maps.html#datascience.maps.Region.geojson">[docs]</a>    <span class="k">def</span> <span class="nf">geojson</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_id</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return GeoJSON with ID substituted.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">feature_id</span><span class="p">)</span> <span class="o">==</span> <span class="n">feature_id</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span> <span class="n">feature_id</span><span class="p">)</span> <span class="o">==</span> <span class="n">feature_id</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">geo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-            <span class="n">geo</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">feature_id</span>
+            <span class="n">geo</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">feature_id</span>
             <span class="k">return</span> <span class="n">geo</span>
 </div>
 <div class="viewcode-block" id="Region.format"><a class="viewcode-back" href="../../maps.html#datascience.maps.Region.format">[docs]</a>    <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -698,7 +615,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.8.2 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.5.1 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

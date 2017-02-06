@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Utility Functions (datascience.util) &mdash; datascience 0.8.2 documentation</title>
+    <title>Utility Functions (datascience.util) &mdash; datascience 0.5.1 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.8.2',
+        VERSION:     '0.5.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.8.2 documentation" href="index.html" />
+    <link rel="top" title="datascience 0.5.1 documentation" href="index.html" />
     <link rel="prev" title="Formats (datascience.formats)" href="formats.html" /> 
   </head>
   <body role="document">
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="formats.html" title="Formats (datascience.formats)"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.8.2 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.5.1 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -52,37 +52,16 @@
 <span id="utility-functions-datascience-util"></span><h1>Utility Functions (<code class="docutils literal"><span class="pre">datascience.util</span></code>)<a class="headerlink" href="#module-datascience.util" title="Permalink to this headline">¶</a></h1>
 <p>Utility functions</p>
 <dl class="function">
-<dt id="datascience.util.make_array">
-<code class="descclassname">datascience.util.</code><code class="descname">make_array</code><span class="sig-paren">(</span><em>*elements</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#make_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.util.make_array" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns an array containing all the arguments passed to this function.
-A simple way to make an array with a few elements.</p>
-<p>As with any array, all arguments should have the same type.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">make_array</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="go">array([0])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">make_array</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-<span class="go">array([2, 3, 4])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">make_array</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">,</span> <span class="s2">&quot;bar&quot;</span><span class="p">)</span>
-<span class="go">array([&#39;foo&#39;, &#39;bar&#39;],</span>
-<span class="go">      dtype=&#39;&lt;U3&#39;)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">make_array</span><span class="p">()</span>
-<span class="go">array([], dtype=float64)</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="function">
 <dt id="datascience.util.percentile">
 <code class="descclassname">datascience.util.</code><code class="descname">percentile</code><span class="sig-paren">(</span><em>p</em>, <em>arr=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#percentile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.util.percentile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the pth percentile of the input array (the value that is at
-least as great as p% of the values in the array).</p>
+least as great as p% of the values in the array)</p>
 <p>If arr is not provided, percentile returns itself curried with p</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">percentile</span><span class="p">(</span><span class="mf">74.9</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
-<span class="go">5</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">percentile</span><span class="p">(</span><span class="mi">75</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
-<span class="go">5</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">percentile</span><span class="p">(</span><span class="mf">75.1</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">percentile</span><span class="p">(</span><span class="mi">67</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
 <span class="go">9</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">percentile</span><span class="p">(</span><span class="mi">75</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">percentile</span><span class="p">(</span><span class="mi">66</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
+<span class="go">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">percentile</span><span class="p">(</span><span class="mi">66</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
 <span class="go">5</span>
 </pre></div>
@@ -91,22 +70,7 @@ least as great as p% of the values in the array).</p>
 
 <dl class="function">
 <dt id="datascience.util.plot_cdf_area">
-<code class="descclassname">datascience.util.</code><code class="descname">plot_cdf_area</code><span class="sig-paren">(</span><em>rbound=None</em>, <em>lbound=None</em>, <em>mean=0</em>, <em>sd=1</em><span class="sig-paren">)</span><a class="headerlink" href="#datascience.util.plot_cdf_area" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plots a normal curve with specified parameters and area below curve shaded
-between <code class="docutils literal"><span class="pre">lbound</span></code> and <code class="docutils literal"><span class="pre">rbound</span></code>.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><p class="first"><code class="docutils literal"><span class="pre">rbound</span></code> (numeric): right boundary of shaded region</p>
-<p><code class="docutils literal"><span class="pre">lbound</span></code> (numeric): left boundary of shaded region; by default is negative infinity</p>
-<p><code class="docutils literal"><span class="pre">mean</span></code> (numeric): mean/expectation of normal distribution</p>
-<p class="last"><code class="docutils literal"><span class="pre">sd</span></code> (numeric): standard deviation of normal distribution</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="datascience.util.plot_normal_cdf">
-<code class="descclassname">datascience.util.</code><code class="descname">plot_normal_cdf</code><span class="sig-paren">(</span><em>rbound=None</em>, <em>lbound=None</em>, <em>mean=0</em>, <em>sd=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#plot_normal_cdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.util.plot_normal_cdf" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">datascience.util.</code><code class="descname">plot_cdf_area</code><span class="sig-paren">(</span><em>rbound</em>, <em>lbound=None</em>, <em>mean=0</em>, <em>sd=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#plot_cdf_area"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.util.plot_cdf_area" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots a normal curve with specified parameters and area below curve shaded
 between <code class="docutils literal"><span class="pre">lbound</span></code> and <code class="docutils literal"><span class="pre">rbound</span></code>.</p>
 <dl class="docutils">
@@ -125,8 +89,6 @@ between <code class="docutils literal"><span class="pre">lbound</span></code> an
 <dd><p>Applies a function to each column and returns a Table.</p>
 <p>Uses pandas <cite>apply</cite> under the hood, then converts back to a Table</p>
 <dl class="docutils">
-<dt>Args:</dt>
-<dd><dl class="first last docutils">
 <dt>table <span class="classifier-delimiter">:</span> <span class="classifier">instance of Table</span></dt>
 <dd>The table to apply your function to</dd>
 <dt>func <span class="classifier-delimiter">:</span> <span class="classifier">function</span></dt>
@@ -135,67 +97,10 @@ between <code class="docutils literal"><span class="pre">lbound</span></code> an
 <dd>A list of columns to apply the function to. If None, function
 will be applied to all columns in table</dd>
 </dl>
-</dd>
-</dl>
 <dl class="docutils">
 <dt>tab <span class="classifier-delimiter">:</span> <span class="classifier">instance of Table</span></dt>
 <dd>A table with the given function applied. It will either be the
 shape == shape(table), or shape (1, table.shape[1])</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="datascience.util.proportions_from_distribution">
-<code class="descclassname">datascience.util.</code><code class="descname">proportions_from_distribution</code><span class="sig-paren">(</span><em>table</em>, <em>label</em>, <em>sample_size</em>, <em>column_name='Random Sample'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#proportions_from_distribution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.util.proportions_from_distribution" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adds a column named <code class="docutils literal"><span class="pre">column_name</span></code> containing the proportions of a random
-draw using the distribution in <code class="docutils literal"><span class="pre">label</span></code>.</p>
-<p>This method uses <code class="docutils literal"><span class="pre">np.random.multinomial</span></code> to draw <code class="docutils literal"><span class="pre">sample_size</span></code> samples
-from the distribution in <code class="docutils literal"><span class="pre">table.column(label)</span></code>, then divides by
-<code class="docutils literal"><span class="pre">sample_size</span></code> to create the resulting column of proportions.</p>
-<p>Returns a new <code class="docutils literal"><span class="pre">Table</span></code> and does not modify <code class="docutils literal"><span class="pre">table</span></code>.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><p class="first"><code class="docutils literal"><span class="pre">table</span></code>: An instance of <code class="docutils literal"><span class="pre">Table</span></code>.</p>
-<dl class="docutils">
-<dt><code class="docutils literal"><span class="pre">label</span></code>: Label of column in <code class="docutils literal"><span class="pre">table</span></code>. This column must contain a</dt>
-<dd>distribution (the values must sum to 1).</dd>
-</dl>
-<p><code class="docutils literal"><span class="pre">sample_size</span></code>: The size of the sample to draw from the distribution.</p>
-<dl class="last docutils">
-<dt><code class="docutils literal"><span class="pre">column_name</span></code>: The name of the new column that contains the sampled</dt>
-<dd>proportions. Defaults to <code class="docutils literal"><span class="pre">'Random</span> <span class="pre">Sample'</span></code>.</dd>
-</dl>
-</dd>
-<dt>Returns:</dt>
-<dd>A copy of <code class="docutils literal"><span class="pre">table</span></code> with a column <code class="docutils literal"><span class="pre">column_name</span></code> containing the
-sampled proportions. The proportions will sum to 1.</dd>
-<dt>Throws:</dt>
-<dd><dl class="first last docutils">
-<dt><code class="docutils literal"><span class="pre">ValueError</span></code>: If the <code class="docutils literal"><span class="pre">label</span></code> is not in the table, or if</dt>
-<dd><code class="docutils literal"><span class="pre">table.column(label)</span></code> does not sum to 1.</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="datascience.util.minimize">
-<code class="descclassname">datascience.util.</code><code class="descname">minimize</code><span class="sig-paren">(</span><em>f</em>, <em>start=None</em>, <em>smooth=False</em>, <em>log=None</em>, <em>array=False</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#minimize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.util.minimize" title="Permalink to this definition">¶</a></dt>
-<dd><p>Minimize a function f of one or more arguments.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><p class="first">f: A function that takes numbers and returns a number</p>
-<p>start: A starting value or list of starting values</p>
-<p>smooth: Whether to assume that f is smooth and use first-order info</p>
-<p>log: Logging function called on the result of optimization (e.g. print)</p>
-<p class="last">vargs: Other named arguments passed to scipy.optimize.minimize</p>
-</dd>
-<dt>Returns either:</dt>
-<dd><ol class="first last loweralpha simple">
-<li>the minimizing argument of a one-argument function</li>
-<li>an array of minimizing arguments of a multi-argument function</li>
-</ol>
-</dd>
 </dl>
 </dd></dl>
 
@@ -246,7 +151,7 @@ sampled proportions. The proportions will sum to 1.</dd>
         <li class="right" >
           <a href="formats.html" title="Formats (datascience.formats)"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.8.2 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.5.1 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

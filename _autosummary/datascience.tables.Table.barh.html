@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>datascience.tables.Table.barh &mdash; datascience 0.8.2 documentation</title>
+    <title>datascience.tables.Table.barh &mdash; datascience 0.5.1 documentation</title>
     
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.8.2',
+        VERSION:     '0.5.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.8.2 documentation" href="../index.html" />
+    <link rel="top" title="datascience 0.5.1 documentation" href="../index.html" />
     <link rel="up" title="Tables (datascience.tables)" href="../tables.html" />
     <link rel="next" title="datascience.tables.Table.pivot_hist" href="datascience.tables.Table.pivot_hist.html" />
     <link rel="prev" title="datascience.tables.Table.bar" href="datascience.tables.Table.bar.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="datascience.tables.Table.bar.html" title="datascience.tables.Table.bar"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.8.2 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.5.1 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" accesskey="U">Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)</a> &raquo;</li> 
       </ul>
     </div>  
@@ -58,52 +58,75 @@
 <h1>datascience.tables.Table.barh<a class="headerlink" href="#datascience-tables-table-barh" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="datascience.tables.Table.barh">
-<code class="descclassname">Table.</code><code class="descname">barh</code><span class="sig-paren">(</span><em>column_for_categories=None</em>, <em>select=None</em>, <em>overlay=True</em>, <em>width=6</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.barh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.barh" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot horizontal bar charts for the table.</p>
+<code class="descclassname">Table.</code><code class="descname">barh</code><span class="sig-paren">(</span><em>column_for_categories</em>, <em>overlay=False</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.barh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.barh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots horizontal bar charts for the table.</p>
+<p>Each chart is categorized using the values in <cite>column_for_categories</cite>
+and one chart is produced for every other column in the table.
+A total of n - 1 charts are created where n is the number of columns
+in the table.</p>
+<p>Note that the order of the categories in the table is not guaranteed to
+be preserved in the bar graph. Ex. <cite>barh</cite> on a table with &#8220;a&#8221;, &#8220;b&#8221;, &#8220;c&#8221;
+as the rows in the <cite>column_for_categories</cite> may not output a bar graph
+with the labels in that order.</p>
+<p>Every column except for <cite>column_for_categories</cite> must be numerical.</p>
 <dl class="docutils">
 <dt>Args:</dt>
 <dd><dl class="first last docutils">
-<dt><code class="docutils literal"><span class="pre">column_for_categories</span></code> (<code class="docutils literal"><span class="pre">str</span></code>): A column containing y-axis categories</dt>
-<dd>used to create buckets for bar chart.</dd>
+<dt>column_for_categories (str): The name to use for the bar chart</dt>
+<dd>categories</dd>
 </dl>
 </dd>
 <dt>Kwargs:</dt>
 <dd><dl class="first last docutils">
-<dt>overlay (bool): create a chart with one color per data column;</dt>
-<dd>if False, each will be displayed separately.</dd>
+<dt>overlay (bool): If True, creates one chart with n - 1 bars for each</dt>
+<dd>category, one for each column other than <cite>column_for_categories</cite>
+(instead of the default behavior of creating n - 1 charts).
+Also adds a legend that matches each bar color to its column.</dd>
 <dt>vargs: Additional arguments that get passed into <cite>plt.barh</cite>.</dt>
 <dd>See <a class="reference external" href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.barh">http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.barh</a>
-for additional arguments that can be passed into vargs.</dd>
-</dl>
-</dd>
-<dt>Raises:</dt>
-<dd><dl class="first last docutils">
-<dt>ValueError &#8211; Every selected except column for <code class="docutils literal"><span class="pre">column_for_categories</span></code></dt>
-<dd>must be numerical.</dd>
+for additional arguments that can be passed into vargs. These
+include: <cite>linewidth</cite>, <cite>xerr</cite>, <cite>yerr</cite>, and <cite>log</cite>, to name a few.</dd>
 </dl>
 </dd>
 <dt>Returns:</dt>
-<dd>Horizontal bar graph with buckets specified by <code class="docutils literal"><span class="pre">column_for_categories</span></code>.
-Each plot is labeled using the values in <code class="docutils literal"><span class="pre">column_for_categories</span></code>
-and one plot is produced for every other column (or for the columns
-designated by <code class="docutils literal"><span class="pre">select</span></code>).</dd>
+<dd>None</dd>
+<dt>Raises:</dt>
+<dd>ValueError: The Table contains non-numerical values in columns
+other than <cite>column_for_categories</cite></dd>
 </dl>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="s1">&#39;Furniture&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;chairs&#39;</span><span class="p">,</span> <span class="s1">&#39;tables&#39;</span><span class="p">,</span> <span class="s1">&#39;desks&#39;</span><span class="p">),</span>
-<span class="gp">... </span>    <span class="s1">&#39;Count&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
-<span class="gp">... </span>    <span class="s1">&#39;Price&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
-<span class="gp">... </span>    <span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span>
-<span class="go">Furniture | Count | Price</span>
-<span class="go">chairs    | 6     | 10</span>
-<span class="go">tables    | 1     | 20</span>
-<span class="go">desks     | 2     | 30</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">furniture_table</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="s1">&#39;Furniture&#39;</span><span class="p">)</span> 
-<span class="go">&lt;bar graph with furniture as categories and bars for count and price&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">furniture_table</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="s1">&#39;Furniture&#39;</span><span class="p">,</span> <span class="s1">&#39;Price&#39;</span><span class="p">)</span> 
-<span class="go">&lt;bar graph with furniture as categories and bars for price&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">furniture_table</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="s1">&#39;Furniture&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> 
-<span class="go">&lt;bar graph with furniture as categories and bars for count and price&gt;</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">furniture_table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="s">&#39;Type of furniture&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;chairs&#39;</span><span class="p">,</span> <span class="s">&#39;tables&#39;</span><span class="p">,</span> <span class="s">&#39;desks&#39;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="s">&#39;Count&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">furniture_table</span>
+<span class="go">Type of furniture | Count</span>
+<span class="go">chairs            | 6</span>
+<span class="go">tables            | 1</span>
+<span class="go">desks             | 2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">furniture_table</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="s">&#39;Type of furniture&#39;</span><span class="p">)</span> 
+<span class="go">&lt;bar graph with chairs, tables, desks as the categories and bars of</span>
+<span class="go">length 6, 1, 2, respectively&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">furniture_table</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="s">&#39;Count&#39;</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+    <span class="o">...</span>
+<span class="gr">ValueError</span>: <span class="n">The column &#39;Type of furniture&#39; contains non-numerical values. A bar graph cannot be drawn for this table.</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">other</span> <span class="o">=</span> <span class="n">furniture_table</span><span class="o">.</span><span class="n">with_column</span><span class="p">(</span><span class="s">&#39;Other col&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">other</span>
+<span class="go">Type of furniture | Count | Other col</span>
+<span class="go">chairs            | 6     | 10</span>
+<span class="go">tables            | 1     | 20</span>
+<span class="go">desks             | 2     | 30</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">other</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="s">&#39;Type of furniture&#39;</span><span class="p">)</span> 
+<span class="go">&lt;bar graph with Type of furniture as categories and Count values&gt;</span>
+<span class="go">&lt;bar graph with Type of furniture as categories and Other col values&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">other</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="s">&#39;Type of furniture&#39;</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> 
+<span class="go">&lt;bar graph with Type of furniture as categories and Count + Other col as</span>
+<span class="go">the two bars for each category&gt;</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -161,7 +184,7 @@ designated by <code class="docutils literal"><span class="pre">select</span></co
         <li class="right" >
           <a href="datascience.tables.Table.bar.html" title="datascience.tables.Table.bar"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.8.2 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.5.1 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" >Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)</a> &raquo;</li> 
       </ul>
     </div>

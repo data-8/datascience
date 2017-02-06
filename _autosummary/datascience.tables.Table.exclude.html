@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>datascience.tables.Table.exclude &mdash; datascience 0.8.2 documentation</title>
+    <title>datascience.tables.Table.exclude &mdash; datascience 0.5.1 documentation</title>
     
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.8.2',
+        VERSION:     '0.5.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.8.2 documentation" href="../index.html" />
+    <link rel="top" title="datascience 0.5.1 documentation" href="../index.html" />
     <link rel="up" title="Tables (datascience.tables)" href="../tables.html" />
     <link rel="next" title="datascience.tables.Table.where" href="datascience.tables.Table.where.html" />
     <link rel="prev" title="datascience.tables.Table.take" href="datascience.tables.Table.take.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="datascience.tables.Table.take.html" title="datascience.tables.Table.take"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.8.2 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.5.1 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" accesskey="U">Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)</a> &raquo;</li> 
       </ul>
     </div>  
@@ -71,9 +71,9 @@ to be excluded.</dd>
 <dt>Returns:</dt>
 <dd>A new instance of <code class="docutils literal"><span class="pre">Table</span></code>.</dd>
 </dl>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="s1">&#39;letter grade&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;A+&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;A-&#39;</span><span class="p">,</span> <span class="s1">&#39;B+&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;B-&#39;</span><span class="p">),</span>
-<span class="gp">... </span>    <span class="s1">&#39;gpa&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mf">3.7</span><span class="p">,</span> <span class="mf">3.3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">2.7</span><span class="p">))</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="s">&#39;letter grade&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;A+&#39;</span><span class="p">,</span> <span class="s">&#39;A&#39;</span><span class="p">,</span> <span class="s">&#39;A-&#39;</span><span class="p">,</span> <span class="s">&#39;B+&#39;</span><span class="p">,</span> <span class="s">&#39;B&#39;</span><span class="p">,</span> <span class="s">&#39;B-&#39;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="s">&#39;gpa&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mf">3.7</span><span class="p">,</span> <span class="mf">3.3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">2.7</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">t</span>
 <span class="go">letter grade | gpa</span>
 <span class="go">A+           | 4</span>
@@ -96,7 +96,7 @@ to be excluded.</dd>
 <span class="go">A-           | 3.7</span>
 <span class="go">B+           | 3.3</span>
 <span class="go">B            | 3</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">exclude</span><span class="p">(</span><span class="n">make_array</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">exclude</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
 <span class="go">letter grade | gpa</span>
 <span class="go">A+           | 4</span>
 <span class="go">A-           | 3.7</span>
@@ -178,7 +178,7 @@ to be excluded.</dd>
         <li class="right" >
           <a href="datascience.tables.Table.take.html" title="datascience.tables.Table.take"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.8.2 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.5.1 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" >Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)</a> &raquo;</li> 
       </ul>
     </div>

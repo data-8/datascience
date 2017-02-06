@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>datascience.tables.Table.__init__ &mdash; datascience 0.8.2 documentation</title>
+    <title>datascience.tables.Table.__init__ &mdash; datascience 0.5.1 documentation</title>
     
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.8.2',
+        VERSION:     '0.5.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,9 +23,9 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.8.2 documentation" href="../index.html" />
+    <link rel="top" title="datascience 0.5.1 documentation" href="../index.html" />
     <link rel="up" title="Tables (datascience.tables)" href="../tables.html" />
-    <link rel="next" title="datascience.tables.Table.empty" href="datascience.tables.Table.empty.html" />
+    <link rel="next" title="datascience.tables.Table.from_records" href="datascience.tables.Table.from_records.html" />
     <link rel="prev" title="datascience.tables.Table.boxplot" href="datascience.tables.Table.boxplot.html" /> 
   </head>
   <body role="document">
@@ -39,12 +39,12 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="datascience.tables.Table.empty.html" title="datascience.tables.Table.empty"
+          <a href="datascience.tables.Table.from_records.html" title="datascience.tables.Table.from_records"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="datascience.tables.Table.boxplot.html" title="datascience.tables.Table.boxplot"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.8.2 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.5.1 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" accesskey="U">Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)</a> &raquo;</li> 
       </ul>
     </div>  
@@ -60,7 +60,7 @@
 <dt id="datascience.tables.Table.__init__">
 <code class="descclassname">Table.</code><code class="descname">__init__</code><span class="sig-paren">(</span><em>labels=None</em>, <em>_deprecated=None</em>, <em>*</em>, <em>formatter=&lt;datascience.formats.Formatter object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create an empty table with column labels.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">tiles</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;letter&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="s1">&#39;points&#39;</span><span class="p">))</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">tiles</span> <span class="o">=</span> <span class="n">Table</span><span class="p">([</span><span class="s">&#39;letter&#39;</span><span class="p">,</span> <span class="s">&#39;count&#39;</span><span class="p">,</span> <span class="s">&#39;points&#39;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">tiles</span>
 <span class="go">letter | count | points</span>
 </pre></div>
@@ -88,8 +88,8 @@
   <p class="topless"><a href="datascience.tables.Table.boxplot.html"
                         title="previous chapter">datascience.tables.Table.boxplot</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="datascience.tables.Table.empty.html"
-                        title="next chapter">datascience.tables.Table.empty</a></p>
+  <p class="topless"><a href="datascience.tables.Table.from_records.html"
+                        title="next chapter">datascience.tables.Table.from_records</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -124,12 +124,12 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="datascience.tables.Table.empty.html" title="datascience.tables.Table.empty"
+          <a href="datascience.tables.Table.from_records.html" title="datascience.tables.Table.from_records"
              >next</a> |</li>
         <li class="right" >
           <a href="datascience.tables.Table.boxplot.html" title="datascience.tables.Table.boxplot"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.8.2 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.5.1 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" >Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)</a> &raquo;</li> 
       </ul>
     </div>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>datascience.tables.Table.sort &mdash; datascience 0.8.2 documentation</title>
+    <title>datascience.tables.Table.sort &mdash; datascience 0.5.1 documentation</title>
     
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.8.2',
+        VERSION:     '0.5.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.8.2 documentation" href="../index.html" />
+    <link rel="top" title="datascience 0.5.1 documentation" href="../index.html" />
     <link rel="up" title="Tables (datascience.tables)" href="../tables.html" />
     <link rel="next" title="datascience.tables.Table.group" href="datascience.tables.Table.group.html" />
     <link rel="prev" title="datascience.tables.Table.where" href="datascience.tables.Table.where.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="datascience.tables.Table.where.html" title="datascience.tables.Table.where"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.8.2 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.5.1 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" accesskey="U">Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)</a> &raquo;</li> 
       </ul>
     </div>  
@@ -59,67 +59,7 @@
 <dl class="method">
 <dt id="datascience.tables.Table.sort">
 <code class="descclassname">Table.</code><code class="descname">sort</code><span class="sig-paren">(</span><em>column_or_label</em>, <em>descending=False</em>, <em>distinct=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.sort"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.sort" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a Table of rows sorted according to the values in a column.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><p class="first"><code class="docutils literal"><span class="pre">column_or_label</span></code>: the column whose values are used for sorting.</p>
-<dl class="last docutils">
-<dt><code class="docutils literal"><span class="pre">descending</span></code>: if True, sorting will be in descending, rather than</dt>
-<dd>ascending order.</dd>
-<dt><code class="docutils literal"><span class="pre">distinct</span></code>: if True, repeated values in <code class="docutils literal"><span class="pre">column_or_label</span></code> will</dt>
-<dd>be omitted.</dd>
-</dl>
-</dd>
-<dt>Returns:</dt>
-<dd>An instance of <code class="docutils literal"><span class="pre">Table</span></code> containing rows sorted based on the values
-in <code class="docutils literal"><span class="pre">column_or_label</span></code>.</dd>
-</dl>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">marbles</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
-<span class="gp">... </span>   <span class="s2">&quot;Color&quot;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="s2">&quot;Red&quot;</span><span class="p">,</span> <span class="s2">&quot;Green&quot;</span><span class="p">,</span> <span class="s2">&quot;Blue&quot;</span><span class="p">,</span> <span class="s2">&quot;Red&quot;</span><span class="p">,</span> <span class="s2">&quot;Green&quot;</span><span class="p">,</span> <span class="s2">&quot;Green&quot;</span><span class="p">),</span>
-<span class="gp">... </span>   <span class="s2">&quot;Shape&quot;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="s2">&quot;Round&quot;</span><span class="p">,</span> <span class="s2">&quot;Rectangular&quot;</span><span class="p">,</span> <span class="s2">&quot;Rectangular&quot;</span><span class="p">,</span> <span class="s2">&quot;Round&quot;</span><span class="p">,</span> <span class="s2">&quot;Rectangular&quot;</span><span class="p">,</span> <span class="s2">&quot;Round&quot;</span><span class="p">),</span>
-<span class="gp">... </span>   <span class="s2">&quot;Amount&quot;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
-<span class="gp">... </span>   <span class="s2">&quot;Price&quot;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mf">1.30</span><span class="p">,</span> <span class="mf">1.30</span><span class="p">,</span> <span class="mf">2.00</span><span class="p">,</span> <span class="mf">1.75</span><span class="p">,</span> <span class="mf">1.40</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">marbles</span>
-<span class="go">Color | Shape       | Amount | Price</span>
-<span class="go">Red   | Round       | 4      | 1.3</span>
-<span class="go">Green | Rectangular | 6      | 1.3</span>
-<span class="go">Blue  | Rectangular | 12     | 2</span>
-<span class="go">Red   | Round       | 7      | 1.75</span>
-<span class="go">Green | Rectangular | 9      | 1.4</span>
-<span class="go">Green | Round       | 2      | 1</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">marbles</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s2">&quot;Amount&quot;</span><span class="p">)</span>
-<span class="go">Color | Shape       | Amount | Price</span>
-<span class="go">Green | Round       | 2      | 1</span>
-<span class="go">Red   | Round       | 4      | 1.3</span>
-<span class="go">Green | Rectangular | 6      | 1.3</span>
-<span class="go">Red   | Round       | 7      | 1.75</span>
-<span class="go">Green | Rectangular | 9      | 1.4</span>
-<span class="go">Blue  | Rectangular | 12     | 2</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">marbles</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s2">&quot;Amount&quot;</span><span class="p">,</span> <span class="n">descending</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
-<span class="go">Color | Shape       | Amount | Price</span>
-<span class="go">Blue  | Rectangular | 12     | 2</span>
-<span class="go">Green | Rectangular | 9      | 1.4</span>
-<span class="go">Red   | Round       | 7      | 1.75</span>
-<span class="go">Green | Rectangular | 6      | 1.3</span>
-<span class="go">Red   | Round       | 4      | 1.3</span>
-<span class="go">Green | Round       | 2      | 1</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">marbles</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="c1"># the Price column</span>
-<span class="go">Color | Shape       | Amount | Price</span>
-<span class="go">Green | Round       | 2      | 1</span>
-<span class="go">Red   | Round       | 4      | 1.3</span>
-<span class="go">Green | Rectangular | 6      | 1.3</span>
-<span class="go">Green | Rectangular | 9      | 1.4</span>
-<span class="go">Red   | Round       | 7      | 1.75</span>
-<span class="go">Blue  | Rectangular | 12     | 2</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">marbles</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">distinct</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
-<span class="go">Color | Shape       | Amount | Price</span>
-<span class="go">Green | Round       | 2      | 1</span>
-<span class="go">Red   | Round       | 4      | 1.3</span>
-<span class="go">Green | Rectangular | 9      | 1.4</span>
-<span class="go">Red   | Round       | 7      | 1.75</span>
-<span class="go">Blue  | Rectangular | 12     | 2</span>
-</pre></div>
-</div>
+<dd><p>Return a Table of sorted rows by the values in a column.</p>
 </dd></dl>
 
 </div>
@@ -175,7 +115,7 @@ in <code class="docutils literal"><span class="pre">column_or_label</span></code
         <li class="right" >
           <a href="datascience.tables.Table.where.html" title="datascience.tables.Table.where"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.8.2 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.5.1 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" >Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)</a> &raquo;</li> 
       </ul>
     </div>

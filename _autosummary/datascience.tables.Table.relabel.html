@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>datascience.tables.Table.relabel &mdash; datascience 0.8.2 documentation</title>
+    <title>datascience.tables.Table.relabel &mdash; datascience 0.5.1 documentation</title>
     
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.8.2',
+        VERSION:     '0.5.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.8.2 documentation" href="../index.html" />
+    <link rel="top" title="datascience 0.5.1 documentation" href="../index.html" />
     <link rel="up" title="Tables (datascience.tables)" href="../tables.html" />
     <link rel="next" title="datascience.tables.Table.copy" href="datascience.tables.Table.copy.html" />
     <link rel="prev" title="datascience.tables.Table.append_column" href="datascience.tables.Table.append_column.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="datascience.tables.Table.append_column.html" title="datascience.tables.Table.append_column"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.8.2 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.5.1 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" accesskey="U">Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)</a> &raquo;</li> 
       </ul>
     </div>  
@@ -59,47 +59,45 @@
 <dl class="method">
 <dt id="datascience.tables.Table.relabel">
 <code class="descclassname">Table.</code><code class="descname">relabel</code><span class="sig-paren">(</span><em>column_label</em>, <em>new_label</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.relabel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.relabel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Changes the label(s) of column(s) specified by <code class="docutils literal"><span class="pre">column_label</span></code> to
+<dd><p>Change the labels of columns specified by <code class="docutils literal"><span class="pre">column_label</span></code> to
 labels in <code class="docutils literal"><span class="pre">new_label</span></code>.</p>
 <dl class="docutils">
 <dt>Args:</dt>
 <dd><dl class="first last docutils">
-<dt><code class="docutils literal"><span class="pre">column_label</span></code> &#8211; (single str or array of str) The label(s) of</dt>
-<dd>columns to be changed to <code class="docutils literal"><span class="pre">new_label</span></code>.</dd>
-<dt><code class="docutils literal"><span class="pre">new_label</span></code> &#8211; (single str or array of str): The label name(s)</dt>
-<dd>of columns to replace <code class="docutils literal"><span class="pre">column_label</span></code>.</dd>
-</dl>
+<dt><code class="docutils literal"><span class="pre">column_label</span></code> (single str or list/array of str): The label(s) of</dt>
+<dd>columns to be changed. Must be str.</dd>
+<dt><code class="docutils literal"><span class="pre">new_label</span></code> (single str or list/array of str): The new label(s) of</dt>
+<dd><p class="first">columns to be changed. Must be str.</p>
+<p class="last">Number of elements must match number of elements in
+<code class="docutils literal"><span class="pre">column_label</span></code>.</p>
 </dd>
-<dt>Raises:</dt>
-<dd><dl class="first last docutils">
-<dt><code class="docutils literal"><span class="pre">ValueError</span></code> &#8211; if <code class="docutils literal"><span class="pre">column_label</span></code> is not in table, or if</dt>
-<dd><code class="docutils literal"><span class="pre">column_label</span></code> and <code class="docutils literal"><span class="pre">new_label</span></code> are not of equal length.</dd>
-<dt><code class="docutils literal"><span class="pre">TypeError</span></code> &#8211; if <code class="docutils literal"><span class="pre">column_label</span></code> and/or <code class="docutils literal"><span class="pre">new_label</span></code> is not</dt>
-<dd><code class="docutils literal"><span class="pre">str</span></code>.</dd>
 </dl>
 </dd>
 <dt>Returns:</dt>
-<dd>Original table with <code class="docutils literal"><span class="pre">new_label</span></code> in place of <code class="docutils literal"><span class="pre">column_label</span></code>.</dd>
+<dd>Original table with modified labels</dd>
 </dl>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="s1">&#39;points&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
-<span class="gp">... </span>    <span class="s1">&#39;id&#39;</span><span class="p">,</span>     <span class="n">make_array</span><span class="p">(</span><span class="mi">12345</span><span class="p">,</span> <span class="mi">123</span><span class="p">,</span> <span class="mi">5123</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">relabel</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;yolo&#39;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="s">&#39;points&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="s">&#39;id&#39;</span><span class="p">,</span>     <span class="p">(</span><span class="mi">12345</span><span class="p">,</span> <span class="mi">123</span><span class="p">,</span> <span class="mi">5123</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">relabel</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span> <span class="s">&#39;yolo&#39;</span><span class="p">)</span>
 <span class="go">points | yolo</span>
 <span class="go">1      | 12345</span>
 <span class="go">2      | 123</span>
 <span class="go">3      | 5123</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">relabel</span><span class="p">(</span><span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;points&#39;</span><span class="p">,</span> <span class="s1">&#39;yolo&#39;</span><span class="p">),</span>
-<span class="gp">... </span>  <span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">relabel</span><span class="p">([</span><span class="s">&#39;points&#39;</span><span class="p">,</span> <span class="s">&#39;yolo&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s">&#39;red&#39;</span><span class="p">,</span> <span class="s">&#39;blue&#39;</span><span class="p">])</span>
 <span class="go">red  | blue</span>
 <span class="go">1    | 12345</span>
 <span class="go">2    | 123</span>
 <span class="go">3    | 5123</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">relabel</span><span class="p">(</span><span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">),</span>
-<span class="gp">... </span>  <span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;cyan&#39;</span><span class="p">,</span> <span class="s1">&#39;magenta&#39;</span><span class="p">,</span> <span class="s1">&#39;yellow&#39;</span><span class="p">,</span> <span class="s1">&#39;key&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">relabel</span><span class="p">([</span><span class="s">&#39;red&#39;</span><span class="p">,</span> <span class="s">&#39;green&#39;</span><span class="p">,</span> <span class="s">&#39;blue&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s">&#39;cyan&#39;</span><span class="p">,</span> <span class="s">&#39;magenta&#39;</span><span class="p">,</span> <span class="s">&#39;yellow&#39;</span><span class="p">,</span> <span class="s">&#39;key&#39;</span><span class="p">])</span>
 <span class="gt">Traceback (most recent call last):</span>
     <span class="o">...</span>
 <span class="gr">ValueError</span>: <span class="n">Invalid arguments. column_label and new_label must be of equal length.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">relabel</span><span class="p">([</span><span class="s">&#39;red&#39;</span><span class="p">,</span> <span class="s">&#39;blue&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s">&#39;blue&#39;</span><span class="p">,</span> <span class="s">&#39;red&#39;</span><span class="p">])</span>
+<span class="go">blue | red</span>
+<span class="go">1    | 12345</span>
+<span class="go">2    | 123</span>
+<span class="go">3    | 5123</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -157,7 +155,7 @@ labels in <code class="docutils literal"><span class="pre">new_label</span></cod
         <li class="right" >
           <a href="datascience.tables.Table.append_column.html" title="datascience.tables.Table.append_column"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.8.2 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.5.1 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" >Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)</a> &raquo;</li> 
       </ul>
     </div>
