@@ -786,8 +786,7 @@ class Table(collections.abc.MutableMapping):
         """
         column = self._get_column(column_or_label)
         if other is not None:
-            assert (callable(value_or_predicate),
-                    "Predicate required for 3-arg where")
+            assert callable(value_or_predicate), "Predicate required for 3-arg where"
             predicate = value_or_predicate
             other = self._get_column(other)
             column = [predicate(y)(x) for x, y in zip(column, other)]
@@ -1605,10 +1604,11 @@ class Table(collections.abc.MutableMapping):
             ...
         ValueError: Column length mismatch. New column does not have the same number of rows as table.
         """
-        # Ensure that if with_column is called instead of with_columns,
+        # Ensure that if with_column is called instead of with_columns;
         # no error is raised.
         if rest:
             return self.with_columns(label, values, *rest)
+
         new_table = self.copy()
         new_table.append_column(label, values)
         return new_table
@@ -1923,10 +1923,10 @@ class Table(collections.abc.MutableMapping):
         (0.298, 0.235, 0.216),
     )
 
-    default_hist_alpha = 0.7
+    default_alpha = 0.7
 
     default_options = {
-        'alpha': 0.7,
+        'alpha': default_alpha,
     }
 
     def plot(self, column_for_xticks=None, select=None, overlay=True, width=6, height=4, **vargs):
@@ -2101,13 +2101,17 @@ class Table(collections.abc.MutableMapping):
             # barh plots entries in reverse order from bottom to top
             axis.barh(ypos, self[label][::-1], bwidth,  color=color, **options)
 
+        if isinstance(column_for_categories, str):
+            ylabel = column_for_categories
+        else:
+            ylabel = self.labels[column_for_categories]
+
         def annotate(axis, ticks):
             axis.set_yticks(index+0.5) # Center labels on bars
             # barh plots entries in reverse order from bottom to top
             axis.set_yticklabels(ticks[::-1], stretch='ultra-condensed')
             axis.set_xlabel(axis.get_ylabel())
-            if isinstance(column_for_categories, str):
-                axis.set_ylabel(column_for_categories)
+            axis.set_ylabel(ylabel)
 
         self._visualize('', labels, yticks, overlay, draw, annotate, width=width, height=height)
 
@@ -2342,7 +2346,7 @@ class Table(collections.abc.MutableMapping):
                 counted_label = counts
 
         n = len(columns)
-        colors = [rgb_color + (self.default_hist_alpha,) for rgb_color in
+        colors = [rgb_color + (self.default_alpha,) for rgb_color in
             itertools.islice(itertools.cycle(self.chart_colors), n)]
         if overlay and n > 1:
             # Reverse because legend prints bottom-to-top
