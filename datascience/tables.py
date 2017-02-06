@@ -1335,7 +1335,7 @@ class Table(collections.abc.MutableMapping):
             return c
 
     def percentile(self, p):
-        """Returns a new table with one row containing the pth percentile for
+        """Return a new table with one row containing the pth percentile for
         each column.
 
         Assumes that each column only contains one type of value.
@@ -1362,7 +1362,7 @@ class Table(collections.abc.MutableMapping):
         return self._with_columns(percentiles)
 
     def sample(self, k=None, with_replacement=True, weights=None):
-        """Returns a new table where k rows are randomly sampled from the
+        """Return a new table where k rows are randomly sampled from the
         original table.
 
         Args:
@@ -1436,7 +1436,7 @@ class Table(collections.abc.MutableMapping):
         return sample
 
     def sample_from_distribution(self, distribution, k, proportions=False):
-        """Returns a new table with the same number of rows and a new column.
+        """Return a new table with the same number of rows and a new column.
         The values in the distribution column are define a multinomial.
         They are replaced by sample counts/proportions in the output.
 
@@ -1467,7 +1467,7 @@ class Table(collections.abc.MutableMapping):
         return self.with_column(label, sample)
 
     def split(self, k):
-        """Returns a tuple of two tables where the first table contains
+        """Return a tuple of two tables where the first table contains
         ``k`` rows randomly sampled and the second contains the remaining rows.
 
         Args:
@@ -1684,7 +1684,7 @@ class Table(collections.abc.MutableMapping):
         return self
 
     def relabeled(self, label, new_label):
-        """Returns a new table with ``label`` specifying column label(s)
+        """Return a new table with ``label`` specifying column label(s)
         replaced by corresponding ``new_label``.
 
         Args:
