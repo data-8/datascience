@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>datascience.tables.Table.scatter &mdash; datascience 0.5.1 documentation</title>
+    <title>datascience.tables.Table.scatter &mdash; datascience 0.9.1 documentation</title>
     
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.5.1',
+        VERSION:     '0.9.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,10 +23,10 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.5.1 documentation" href="../index.html" />
+    <link rel="top" title="datascience 0.9.1 documentation" href="../index.html" />
     <link rel="up" title="Tables (datascience.tables)" href="../tables.html" />
     <link rel="next" title="datascience.tables.Table.boxplot" href="datascience.tables.Table.boxplot.html" />
-    <link rel="prev" title="datascience.tables.Table.points" href="datascience.tables.Table.points.html" /> 
+    <link rel="prev" title="datascience.tables.Table.hist" href="datascience.tables.Table.hist.html" /> 
   </head>
   <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
@@ -42,9 +42,9 @@
           <a href="datascience.tables.Table.boxplot.html" title="datascience.tables.Table.boxplot"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="datascience.tables.Table.points.html" title="datascience.tables.Table.points"
+          <a href="datascience.tables.Table.hist.html" title="datascience.tables.Table.hist"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.5.1 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.9.1 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" accesskey="U">Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)</a> &raquo;</li> 
       </ul>
     </div>  
@@ -58,62 +58,60 @@
 <h1>datascience.tables.Table.scatter<a class="headerlink" href="#datascience-tables-table-scatter" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="datascience.tables.Table.scatter">
-<code class="descclassname">Table.</code><code class="descname">scatter</code><span class="sig-paren">(</span><em>column_for_x</em>, <em>overlay=False</em>, <em>fit_line=False</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.scatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.scatter" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">Table.</code><code class="descname">scatter</code><span class="sig-paren">(</span><em>column_for_x</em>, <em>select=None</em>, <em>overlay=True</em>, <em>fit_line=False</em>, <em>colors=None</em>, <em>labels=None</em>, <em>width=5</em>, <em>height=5</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.scatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.scatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates scatterplots, optionally adding a line of best fit.</p>
-<p>All scatterplots use the values in <code class="docutils literal"><span class="pre">column_for_x</span></code> as the x-values. A
-total of n - 1 scatterplots are created where n is the number of
-columns in the table, one for every column other than <code class="docutils literal"><span class="pre">column_for_x</span></code>.</p>
-<p>Requires all columns in the table to contain numerical values only.
-If the columns contain other types, a <code class="docutils literal"><span class="pre">ValueError</span></code> is raised.</p>
 <dl class="docutils">
 <dt>Args:</dt>
 <dd><dl class="first last docutils">
-<dt><code class="docutils literal"><span class="pre">column_for_x</span></code> (str): The name to use for the x-axis values of the</dt>
-<dd>scatter plots.</dd>
+<dt><code class="docutils literal"><span class="pre">column_for_x</span></code> (<code class="docutils literal"><span class="pre">str</span></code>): The column to use for the x-axis values</dt>
+<dd>and label of the scatter plots.</dd>
 </dl>
 </dd>
 <dt>Kwargs:</dt>
-<dd><dl class="first last docutils">
-<dt><code class="docutils literal"><span class="pre">overlay</span></code> (bool): If True, creates one scatterplot with n - 1</dt>
-<dd>y-values plotted, one for each column other than
-<code class="docutils literal"><span class="pre">column_for_x</span></code> (instead of the default behavior of creating n
-- 1 scatterplots. Also adds a legend that matches each dot
-and best-fit line color to its column.</dd>
-<dt><code class="docutils literal"><span class="pre">fit_line</span></code> (bool): If True, draws a line of best fit for each</dt>
-<dd>scatterplot drawn.</dd>
+<dd><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">overlay</span></code> (<code class="docutils literal"><span class="pre">bool</span></code>): If true, creates a chart with one color</dt>
+<dd>per data column; if False, each plot will be displayed separately.</dd>
+</dl>
+<p><code class="docutils literal"><span class="pre">fit_line</span></code> (<code class="docutils literal"><span class="pre">bool</span></code>): draw a line of best fit for each set of points.</p>
+<dl class="docutils">
 <dt><code class="docutils literal"><span class="pre">vargs</span></code>: Additional arguments that get passed into <cite>plt.scatter</cite>.</dt>
 <dd>See <a class="reference external" href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.scatter">http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.scatter</a>
 for additional arguments that can be passed into vargs. These
 include: <cite>marker</cite> and <cite>norm</cite>, to name a couple.</dd>
 </dl>
+<p><code class="docutils literal"><span class="pre">colors</span></code>: A column of colors (labels or numeric values).</p>
+<p class="last"><code class="docutils literal"><span class="pre">labels</span></code>: A column of text labels to annotate dots.</p>
 </dd>
-<dt>Returns:</dt>
-<dd>None</dd>
 <dt>Raises:</dt>
-<dd><code class="docutils literal"><span class="pre">ValueError</span></code>: The table contains non-numerical values in columns.</dd>
+<dd>ValueError &#8211; Every column, <code class="docutils literal"><span class="pre">column_for_x</span></code> or <code class="docutils literal"><span class="pre">select</span></code>, must be numerical</dd>
+<dt>Returns:</dt>
+<dd>Scatter plot of values of <code class="docutils literal"><span class="pre">column_for_x</span></code> plotted against
+values for all other columns in self. Each plot uses the values in
+<cite>column_for_x</cite> for horizontal positions. One plot is produced for
+all other columns in self as y (or for the columns designated by
+<cite>select</cite>).</dd>
 </dl>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">([</span>
-<span class="gp">... </span>    <span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-<span class="gp">... </span>    <span class="s">&#39;y&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
-<span class="gp">... </span>    <span class="s">&#39;z&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]])</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">table</span>
 <span class="go">x    | y    | z</span>
 <span class="go">9    | 1    | 3</span>
 <span class="go">3    | 2    | 4</span>
 <span class="go">3    | 2    | 5</span>
 <span class="go">1    | 10   | 6</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">)</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span> 
+<span class="go">&lt;scatterplot of values in y and z on x&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span> 
 <span class="go">&lt;scatterplot of values in y on x&gt;</span>
 <span class="go">&lt;scatterplot of values in z on x&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="n">overlay</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span> 
-<span class="go">&lt;scatterplot of values in y and z on x&gt;</span>
-</pre></div>
-</div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="n">fit_line</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span> 
-<span class="go">&lt;scatterplot of values in y on x with line of best fit&gt;</span>
-<span class="go">&lt;scatterplot of values in z on x with line of best fit&gt;</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">fit_line</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> 
+<span class="go">&lt;scatterplot of values in y and z on x with lines of best fit&gt;</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -127,8 +125,8 @@ include: <cite>marker</cite> and <cite>norm</cite>, to name a couple.</dd>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="datascience.tables.Table.points.html"
-                        title="previous chapter">datascience.tables.Table.points</a></p>
+  <p class="topless"><a href="datascience.tables.Table.hist.html"
+                        title="previous chapter">datascience.tables.Table.hist</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="datascience.tables.Table.boxplot.html"
                         title="next chapter">datascience.tables.Table.boxplot</a></p>
@@ -169,9 +167,9 @@ include: <cite>marker</cite> and <cite>norm</cite>, to name a couple.</dd>
           <a href="datascience.tables.Table.boxplot.html" title="datascience.tables.Table.boxplot"
              >next</a> |</li>
         <li class="right" >
-          <a href="datascience.tables.Table.points.html" title="datascience.tables.Table.points"
+          <a href="datascience.tables.Table.hist.html" title="datascience.tables.Table.hist"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.5.1 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.9.1 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" >Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)</a> &raquo;</li> 
       </ul>
     </div>

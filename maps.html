@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Maps (datascience.maps) &mdash; datascience 0.5.1 documentation</title>
+    <title>Maps (datascience.maps) &mdash; datascience 0.9.1 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.5.1',
+        VERSION:     '0.9.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.5.1 documentation" href="index.html" />
+    <link rel="top" title="datascience 0.9.1 documentation" href="index.html" />
     <link rel="next" title="Formats (datascience.formats)" href="formats.html" />
     <link rel="prev" title="datascience.tables.Table.boxplot" href="_autosummary/datascience.tables.Table.boxplot.html" /> 
   </head>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="_autosummary/datascience.tables.Table.boxplot.html" title="datascience.tables.Table.boxplot"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.5.1 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.9.1 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -90,6 +90,17 @@ order-of-magnitude integer. Ex: 270 rounds to 200, 5600 to 6000.</dd>
 </dd></dl>
 
 <dl class="method">
+<dt id="datascience.maps.Map.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Map.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copies the current Map into a new one and returns it.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="datascience.maps.Map.features">
+<code class="descname">features</code><a class="headerlink" href="#datascience.maps.Map.features" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="datascience.maps.Map.format">
 <code class="descname">format</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map.format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Map.format" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply formatting.</p>
@@ -99,6 +110,28 @@ order-of-magnitude integer. Ex: 270 rounds to 200, 5600 to 6000.</dd>
 <dt id="datascience.maps.Map.geojson">
 <code class="descname">geojson</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map.geojson"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Map.geojson" title="Permalink to this definition">¶</a></dt>
 <dd><p>Render features as a FeatureCollection.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="datascience.maps.Map.overlay">
+<code class="descname">overlay</code><span class="sig-paren">(</span><em>feature</em>, <em>color='Blue'</em>, <em>opacity=0.6</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map.overlay"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Map.overlay" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overlays <code class="docutils literal"><span class="pre">feature</span></code> on the map. Returns a new Map.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">feature</span></code>: a <code class="docutils literal"><span class="pre">Table</span></code> of map features, a list of map features,</dt>
+<dd>a Map, a Region, or a circle marker map table. The features will
+be overlayed on the Map with specified <code class="docutils literal"><span class="pre">color</span></code>.</dd>
+</dl>
+<p><code class="docutils literal"><span class="pre">color</span></code> (<code class="docutils literal"><span class="pre">str</span></code>): Color of feature. Defaults to &#8216;Blue&#8217;</p>
+<dl class="last docutils">
+<dt><code class="docutils literal"><span class="pre">opacity</span></code> (<code class="docutils literal"><span class="pre">float</span></code>): Opacity of overlain feature. Defaults to</dt>
+<dd>0.6.</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>A new <code class="docutils literal"><span class="pre">Map</span></code> with the overlain <code class="docutils literal"><span class="pre">feature</span></code>.</dd>
+</dl>
 </dd></dl>
 
 <dl class="classmethod">
@@ -153,8 +186,9 @@ other markers</dd>
 
 <dl class="classmethod">
 <dt id="datascience.maps.Marker.map">
-<em class="property">classmethod </em><code class="descname">map</code><span class="sig-paren">(</span><em>latitudes</em>, <em>longitudes</em>, <em>labels=None</em>, <em>colors=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Marker.map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Marker.map" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="descname">map</code><span class="sig-paren">(</span><em>latitudes</em>, <em>longitudes</em>, <em>labels=None</em>, <em>colors=None</em>, <em>radii=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Marker.map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Marker.map" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return markers from columns of coordinates, labels, &amp; colors.</p>
+<p>The radii column is not applicable to markers, but sets circle radius.</p>
 </dd></dl>
 
 <dl class="classmethod">
@@ -177,6 +211,19 @@ radius &#8211; pixel radius of the circle</p>
 <dt>fill_opacity: float, default 0.6</dt>
 <dd>Circle fill opacity</dd>
 </dl>
+<p>For example, to draw three circles:</p>
+<dl class="docutils">
+<dt>t = Table().with_columns([</dt>
+<dd><blockquote class="first">
+<div>&#8216;lat&#8217;, [37.8, 38, 37.9],
+&#8216;lon&#8217;, [-122, -122.1, -121.9],
+&#8216;label&#8217;, [&#8216;one&#8217;, &#8216;two&#8217;, &#8216;three&#8217;],
+&#8216;color&#8217;, [&#8216;red&#8217;, &#8216;green&#8217;, &#8216;blue&#8217;],
+&#8216;radius&#8217;, [3000, 4000, 5000],</div></blockquote>
+<p class="last">])</p>
+</dd>
+</dl>
+<p>Circle.map_table(t)</p>
 </dd></dl>
 
 <dl class="class">
@@ -286,7 +333,7 @@ the first.</li>
         <li class="right" >
           <a href="_autosummary/datascience.tables.Table.boxplot.html" title="datascience.tables.Table.boxplot"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.5.1 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.9.1 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

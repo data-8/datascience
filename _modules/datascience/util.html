@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>datascience.util &mdash; datascience 0.5.1 documentation</title>
+    <title>datascience.util &mdash; datascience 0.9.1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.5.1',
+        VERSION:     '0.9.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.5.1 documentation" href="../../index.html" />
+    <link rel="top" title="datascience 0.9.1 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body role="document">
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.5.1 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.9.1 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -49,36 +49,67 @@
   <h1>Source code for datascience.util</h1><div class="highlight"><pre>
 <span class="sd">&quot;&quot;&quot;Utility functions&quot;&quot;&quot;</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;percentile&#39;</span><span class="p">,</span> <span class="s">&#39;plot_cdf_area&#39;</span><span class="p">,</span> <span class="s">&#39;table_apply&#39;</span><span class="p">]</span>
-
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;make_array&#39;</span><span class="p">,</span> <span class="s1">&#39;percentile&#39;</span><span class="p">,</span> <span class="s1">&#39;plot_cdf_area&#39;</span><span class="p">,</span> <span class="s1">&#39;plot_normal_cdf&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;table_apply&#39;</span><span class="p">,</span> <span class="s1">&#39;proportions_from_distribution&#39;</span><span class="p">,</span> <span class="s1">&#39;minimize&#39;</span><span class="p">]</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">matplotlib</span>
-<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s">&#39;agg&#39;</span><span class="p">,</span> <span class="n">warn</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;agg&#39;</span><span class="p">,</span> <span class="n">warn</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">stats</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">optimize</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">math</span>
 
 
+<div class="viewcode-block" id="make_array"><a class="viewcode-back" href="../../util.html#datascience.util.make_array">[docs]</a><span class="k">def</span> <span class="nf">make_array</span><span class="p">(</span><span class="o">*</span><span class="n">elements</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns an array containing all the arguments passed to this function.</span>
+<span class="sd">    A simple way to make an array with a few elements.</span>
+
+<span class="sd">    As with any array, all arguments should have the same type.</span>
+
+<span class="sd">    &gt;&gt;&gt; make_array(0)</span>
+<span class="sd">    array([0])</span>
+<span class="sd">    &gt;&gt;&gt; make_array(2, 3, 4)</span>
+<span class="sd">    array([2, 3, 4])</span>
+<span class="sd">    &gt;&gt;&gt; make_array(&quot;foo&quot;, &quot;bar&quot;)</span>
+<span class="sd">    array([&#39;foo&#39;, &#39;bar&#39;],</span>
+<span class="sd">          dtype=&#39;&lt;U3&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; make_array()</span>
+<span class="sd">    array([], dtype=float64)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">elements</span><span class="p">)</span>
+
+</div>
 <div class="viewcode-block" id="percentile"><a class="viewcode-back" href="../../util.html#datascience.util.percentile">[docs]</a><span class="k">def</span> <span class="nf">percentile</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">arr</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Returns the pth percentile of the input array (the value that is at</span>
-<span class="sd">    least as great as p% of the values in the array)</span>
+<span class="sd">    least as great as p% of the values in the array).</span>
 
 <span class="sd">    If arr is not provided, percentile returns itself curried with p</span>
 
-<span class="sd">    &gt;&gt;&gt; percentile(67, [1, 3, 5, 9])</span>
-<span class="sd">    9</span>
-<span class="sd">    &gt;&gt;&gt; percentile(66, [1, 3, 5, 9])</span>
+<span class="sd">    &gt;&gt;&gt; percentile(74.9, [1, 3, 5, 9])</span>
 <span class="sd">    5</span>
-<span class="sd">    &gt;&gt;&gt; f = percentile(66)</span>
+<span class="sd">    &gt;&gt;&gt; percentile(75, [1, 3, 5, 9])</span>
+<span class="sd">    5</span>
+<span class="sd">    &gt;&gt;&gt; percentile(75.1, [1, 3, 5, 9])</span>
+<span class="sd">    9</span>
+<span class="sd">    &gt;&gt;&gt; f = percentile(75)</span>
 <span class="sd">    &gt;&gt;&gt; f([1, 3, 5, 9])</span>
 <span class="sd">    5</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">arr</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="k">lambda</span> <span class="n">arr</span><span class="p">:</span> <span class="n">percentile</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">arr</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s">&#39;higher&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">percentile</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">arr</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">p</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">p</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">p</span> <span class="o">&lt;=</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;Percentile requires a percent&#39;</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span><span class="o">/</span><span class="mi">100</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">arr</span><span class="p">)[</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+
 </div>
-<div class="viewcode-block" id="plot_cdf_area"><a class="viewcode-back" href="../../util.html#datascience.util.plot_cdf_area">[docs]</a><span class="k">def</span> <span class="nf">plot_cdf_area</span><span class="p">(</span><span class="n">rbound</span><span class="p">,</span> <span class="n">lbound</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sd</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="plot_normal_cdf"><a class="viewcode-back" href="../../util.html#datascience.util.plot_normal_cdf">[docs]</a><span class="k">def</span> <span class="nf">plot_normal_cdf</span><span class="p">(</span><span class="n">rbound</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">lbound</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sd</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Plots a normal curve with specified parameters and area below curve shaded</span>
 <span class="sd">    between ``lbound`` and ``rbound``.</span>
 
@@ -91,21 +122,72 @@
 
 <span class="sd">        ``sd`` (numeric): standard deviation of normal distribution</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">INF</span> <span class="o">=</span> <span class="mf">3.5</span> <span class="o">*</span> <span class="n">sd</span>
+    <span class="n">shade</span> <span class="o">=</span> <span class="n">rbound</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">lbound</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span>
+    <span class="n">shade_left</span> <span class="o">=</span> <span class="n">rbound</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">lbound</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span>
+    <span class="n">inf</span> <span class="o">=</span> <span class="mf">3.5</span> <span class="o">*</span> <span class="n">sd</span>
+    <span class="n">step</span> <span class="o">=</span> <span class="mf">0.1</span>
+    <span class="n">rlabel</span> <span class="o">=</span> <span class="n">rbound</span>
     <span class="n">llabel</span> <span class="o">=</span> <span class="n">lbound</span>
+    <span class="k">if</span> <span class="n">rbound</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">rbound</span> <span class="o">=</span> <span class="n">inf</span> <span class="o">+</span> <span class="n">mean</span>
+        <span class="n">rlabel</span> <span class="o">=</span> <span class="s2">&quot;$\infty$&quot;</span>
     <span class="k">if</span> <span class="n">lbound</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="n">lbound</span> <span class="o">=</span> <span class="o">-</span><span class="n">INF</span> <span class="o">+</span> <span class="n">mean</span>
-        <span class="n">llabel</span> <span class="o">=</span> <span class="s">&quot;-$\infty$&quot;</span>
-    <span class="n">pdf_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="n">INF</span> <span class="o">+</span> <span class="n">mean</span><span class="p">,</span> <span class="n">INF</span> <span class="o">+</span> <span class="n">mean</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pdf_range</span><span class="p">,</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">pdf_range</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">mean</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">sd</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">cdf_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">lbound</span><span class="p">,</span> <span class="n">rbound</span> <span class="o">+</span> <span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">cdf_range</span><span class="p">,</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">cdf_range</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">mean</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">sd</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;gold&#39;</span><span class="p">)</span>
+        <span class="n">lbound</span> <span class="o">=</span> <span class="o">-</span><span class="n">inf</span> <span class="o">+</span> <span class="n">mean</span>
+        <span class="n">llabel</span> <span class="o">=</span> <span class="s2">&quot;-$\infty$&quot;</span>
+    <span class="n">pdf_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="n">inf</span> <span class="o">+</span> <span class="n">mean</span><span class="p">,</span> <span class="n">inf</span> <span class="o">+</span> <span class="n">mean</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pdf_range</span><span class="p">,</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">pdf_range</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">mean</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">sd</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">cdf_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">lbound</span><span class="p">,</span> <span class="n">rbound</span> <span class="o">+</span> <span class="n">step</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">shade</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">cdf_range</span><span class="p">,</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">cdf_range</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">mean</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">sd</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gold&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">shade_left</span><span class="p">:</span>
+        <span class="n">cdf_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="n">inf</span><span class="o">+</span><span class="n">mean</span><span class="p">,</span> <span class="n">lbound</span> <span class="o">+</span> <span class="n">step</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">cdf_range</span><span class="p">,</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">cdf_range</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">mean</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">sd</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;darkblue&#39;</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">sd</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.25</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&#39;z&#39;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">&#39;$\phi$(z)&#39;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&quot;Normal Curve ~ ($\mu$ = {0}, $\sigma$ = {1}) &quot;</span>
-              <span class="s">&quot;{2} &lt; z &lt; {3}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">sd</span><span class="p">,</span> <span class="n">llabel</span><span class="p">,</span> <span class="n">rbound</span><span class="p">),</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;$\phi$(z)&#39;</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Normal Curve ~ ($\mu$ = {0}, $\sigma$ = {1}) &quot;</span>
+              <span class="s2">&quot;{2} &lt; z &lt; {3}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">sd</span><span class="p">,</span> <span class="n">llabel</span><span class="p">,</span> <span class="n">rlabel</span><span class="p">),</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+
+<span class="c1"># Old name</span></div>
+<span class="n">plot_cdf_area</span> <span class="o">=</span> <span class="n">plot_normal_cdf</span>
+
+
+<div class="viewcode-block" id="proportions_from_distribution"><a class="viewcode-back" href="../../util.html#datascience.util.proportions_from_distribution">[docs]</a><span class="k">def</span> <span class="nf">proportions_from_distribution</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">sample_size</span><span class="p">,</span>
+                                  <span class="n">column_name</span><span class="o">=</span><span class="s1">&#39;Random Sample&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds a column named ``column_name`` containing the proportions of a random</span>
+<span class="sd">    draw using the distribution in ``label``.</span>
+
+<span class="sd">    This method uses ``np.random.multinomial`` to draw ``sample_size`` samples</span>
+<span class="sd">    from the distribution in ``table.column(label)``, then divides by</span>
+<span class="sd">    ``sample_size`` to create the resulting column of proportions.</span>
+
+<span class="sd">    Returns a new ``Table`` and does not modify ``table``.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ``table``: An instance of ``Table``.</span>
+
+<span class="sd">        ``label``: Label of column in ``table``. This column must contain a</span>
+<span class="sd">            distribution (the values must sum to 1).</span>
+
+<span class="sd">        ``sample_size``: The size of the sample to draw from the distribution.</span>
+
+<span class="sd">        ``column_name``: The name of the new column that contains the sampled</span>
+<span class="sd">            proportions. Defaults to ``&#39;Random Sample&#39;``.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A copy of ``table`` with a column ``column_name`` containing the</span>
+<span class="sd">        sampled proportions. The proportions will sum to 1.</span>
+
+<span class="sd">    Throws:</span>
+<span class="sd">        ``ValueError``: If the ``label`` is not in the table, or if</span>
+<span class="sd">            ``table.column(label)`` does not sum to 1.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">proportions</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multinomial</span><span class="p">(</span><span class="n">sample_size</span><span class="p">,</span> <span class="n">table</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">label</span><span class="p">))</span> <span class="o">/</span>
+                   <span class="n">sample_size</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">table</span><span class="o">.</span><span class="n">with_column</span><span class="p">(</span><span class="s1">&#39;Random Sample&#39;</span><span class="p">,</span> <span class="n">proportions</span><span class="p">)</span>
 
 </div>
 <div class="viewcode-block" id="table_apply"><a class="viewcode-back" href="../../util.html#datascience.util.table_apply">[docs]</a><span class="k">def</span> <span class="nf">table_apply</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">subset</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
@@ -113,15 +195,14 @@
 
 <span class="sd">    Uses pandas `apply` under the hood, then converts back to a Table</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    table : instance of Table</span>
-<span class="sd">        The table to apply your function to</span>
-<span class="sd">    func : function</span>
-<span class="sd">        Any function that will work with DataFrame.apply</span>
-<span class="sd">    subset : list | None</span>
-<span class="sd">        A list of columns to apply the function to. If None, function</span>
-<span class="sd">        will be applied to all columns in table</span>
+<span class="sd">    Args:</span>
+<span class="sd">        table : instance of Table</span>
+<span class="sd">            The table to apply your function to</span>
+<span class="sd">        func : function</span>
+<span class="sd">            Any function that will work with DataFrame.apply</span>
+<span class="sd">        subset : list | None</span>
+<span class="sd">            A list of columns to apply the function to. If None, function</span>
+<span class="sd">            will be applied to all columns in table</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -133,11 +214,11 @@
     <span class="n">df</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">to_df</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="n">subset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="c"># Iterate through columns</span>
+        <span class="c1"># Iterate through columns</span>
         <span class="n">subset</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">subset</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">subset</span><span class="p">]):</span>
             <span class="n">err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">([</span><span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">subset</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">err</span> <span class="o">=</span> <span class="s">&quot;Column mismatch: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="s2">&quot;Column mismatch: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="p">[</span><span class="n">subset</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">err</span><span class="p">])</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">subset</span><span class="p">:</span>
@@ -145,11 +226,55 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
-        <span class="c"># Reshape it so that we can easily convert back</span>
+        <span class="c1"># Reshape it so that we can easily convert back</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
     <span class="n">tab</span> <span class="o">=</span> <span class="n">Table</span><span class="o">.</span><span class="n">from_df</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">tab</span></div>
-</pre></div>
+    <span class="k">return</span> <span class="n">tab</span>
+
+</div>
+<div class="viewcode-block" id="minimize"><a class="viewcode-back" href="../../util.html#datascience.util.minimize">[docs]</a><span class="k">def</span> <span class="nf">minimize</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">smooth</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">array</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Minimize a function f of one or more arguments.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        f: A function that takes numbers and returns a number</span>
+
+<span class="sd">        start: A starting value or list of starting values</span>
+
+<span class="sd">        smooth: Whether to assume that f is smooth and use first-order info</span>
+
+<span class="sd">        log: Logging function called on the result of optimization (e.g. print)</span>
+
+<span class="sd">        vargs: Other named arguments passed to scipy.optimize.minimize</span>
+
+<span class="sd">    Returns either:</span>
+<span class="sd">        (a) the minimizing argument of a one-argument function</span>
+<span class="sd">        (b) an array of minimizing arguments of a multi-argument function</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="ow">not</span> <span class="n">array</span><span class="p">,</span> <span class="s2">&quot;Please pass starting values explicitly when array=True&quot;</span>
+        <span class="n">arg_count</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">__code__</span><span class="o">.</span><span class="n">co_argcount</span>
+        <span class="k">assert</span> <span class="n">arg_count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Please pass starting values explicitly for variadic functions&quot;</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">arg_count</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="s1">&#39;__len__&#39;</span><span class="p">):</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="p">[</span><span class="n">start</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">array</span><span class="p">:</span>
+        <span class="n">objective</span> <span class="o">=</span> <span class="n">f</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nd">@functools.wraps</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">objective</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">smooth</span> <span class="ow">and</span> <span class="s1">&#39;method&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">vargs</span><span class="p">:</span>
+        <span class="n">vargs</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Powell&#39;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">optimize</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">objective</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">log</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">log</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">start</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">x</span>
+</pre></div></div>
 
           </div>
         </div>
@@ -182,7 +307,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.5.1 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.9.1 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>datascience.tables.Table.hist &mdash; datascience 0.5.1 documentation</title>
+    <title>datascience.tables.Table.hist &mdash; datascience 0.9.1 documentation</title>
     
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.5.1',
+        VERSION:     '0.9.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,9 +23,9 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.5.1 documentation" href="../index.html" />
+    <link rel="top" title="datascience 0.9.1 documentation" href="../index.html" />
     <link rel="up" title="Tables (datascience.tables)" href="../tables.html" />
-    <link rel="next" title="datascience.tables.Table.points" href="datascience.tables.Table.points.html" />
+    <link rel="next" title="datascience.tables.Table.scatter" href="datascience.tables.Table.scatter.html" />
     <link rel="prev" title="datascience.tables.Table.pivot_hist" href="datascience.tables.Table.pivot_hist.html" /> 
   </head>
   <body role="document">
@@ -39,12 +39,12 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="datascience.tables.Table.points.html" title="datascience.tables.Table.points"
+          <a href="datascience.tables.Table.scatter.html" title="datascience.tables.Table.scatter"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="datascience.tables.Table.pivot_hist.html" title="datascience.tables.Table.pivot_hist"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.5.1 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.9.1 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" accesskey="U">Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)</a> &raquo;</li> 
       </ul>
     </div>  
@@ -58,21 +58,25 @@
 <h1>datascience.tables.Table.hist<a class="headerlink" href="#datascience-tables-table-hist" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="datascience.tables.Table.hist">
-<code class="descclassname">Table.</code><code class="descname">hist</code><span class="sig-paren">(</span><em>overlay=False</em>, <em>bins=None</em>, <em>counts=None</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.hist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.hist" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plots one histogram for each column in the table.</p>
-<p>Every column must be numerical.</p>
+<code class="descclassname">Table.</code><code class="descname">hist</code><span class="sig-paren">(</span><em>*columns</em>, <em>overlay=True</em>, <em>bins=None</em>, <em>bin_column=None</em>, <em>unit=None</em>, <em>counts=None</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.hist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.hist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots one histogram for each column in columns. If no column is
+specificed, plot all columns.</p>
 <dl class="docutils">
 <dt>Kwargs:</dt>
-<dd><dl class="first last docutils">
+<dd><dl class="first docutils">
 <dt>overlay (bool): If True, plots 1 chart with all the histograms</dt>
 <dd>overlaid on top of each other (instead of the default behavior
 of one histogram for each column in the table). Also adds a
 legend that matches each bar color to its column.</dd>
-<dt>bins (column name or list): Lower bound for each bin in the</dt>
-<dd>histogram. If None, bins will be chosen automatically.</dd>
-<dt>counts (column name or column): A column of counted values.</dt>
-<dd>All other columns are treated as counts of these values.
+<dt>bins (list or int): Lower bound for each bin in the</dt>
+<dd>histogram or number of bins. If None, bins will
+be chosen automatically.</dd>
+<dt>bin_column (column name or index): A column of bin lower bounds.</dt>
+<dd>All other columns are treated as counts of these bins.
 If None, each value in each row is assigned a count of 1.</dd>
+</dl>
+<p>counts (column name or index): Deprecated name for bin_column.</p>
+<dl class="last docutils">
 <dt>vargs: Additional arguments that get passed into :func:plt.hist.</dt>
 <dd>See <a class="reference external" href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.hist">http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.hist</a>
 for additional arguments that can be passed into vargs. These
@@ -80,14 +84,10 @@ include: <cite>range</cite>, <cite>normed</cite>, <cite>cumulative</cite>, and <
 to name a few.</dd>
 </dl>
 </dd>
-<dt>Returns:</dt>
-<dd>None</dd>
-<dt>Raises:</dt>
-<dd>ValueError: The Table contains non-numerical values</dd>
 </dl>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">([</span>
-<span class="gp">... </span>    <span class="s">&#39;count&#39;</span><span class="p">,</span>  <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-<span class="gp">... </span>    <span class="s">&#39;points&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">]])</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="s1">&#39;count&#39;</span><span class="p">,</span>  <span class="n">make_array</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="s1">&#39;points&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">t</span>
 <span class="go">count | points</span>
 <span class="go">9     | 1</span>
@@ -99,11 +99,11 @@ to name a few.</dd>
 <span class="go">&lt;histogram of values in points&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">([</span>
-<span class="gp">... </span>    <span class="s">&#39;value&#39;</span><span class="p">,</span>      <span class="p">[</span><span class="mi">101</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">103</span><span class="p">],</span>
-<span class="gp">... </span>    <span class="s">&#39;proportion&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">counts</span><span class="o">=</span><span class="s">&#39;value&#39;</span><span class="p">)</span> 
-<span class="go">&lt;histogram of values in prop weighted by corresponding values in value&gt;</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="s1">&#39;value&#39;</span><span class="p">,</span>      <span class="n">make_array</span><span class="p">(</span><span class="mi">101</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">103</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="s1">&#39;proportion&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">bin_column</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">)</span> 
+<span class="go">&lt;histogram of values weighted by corresponding proportions&gt;</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -120,8 +120,8 @@ to name a few.</dd>
   <p class="topless"><a href="datascience.tables.Table.pivot_hist.html"
                         title="previous chapter">datascience.tables.Table.pivot_hist</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="datascience.tables.Table.points.html"
-                        title="next chapter">datascience.tables.Table.points</a></p>
+  <p class="topless"><a href="datascience.tables.Table.scatter.html"
+                        title="next chapter">datascience.tables.Table.scatter</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -156,12 +156,12 @@ to name a few.</dd>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="datascience.tables.Table.points.html" title="datascience.tables.Table.points"
+          <a href="datascience.tables.Table.scatter.html" title="datascience.tables.Table.scatter"
              >next</a> |</li>
         <li class="right" >
           <a href="datascience.tables.Table.pivot_hist.html" title="datascience.tables.Table.pivot_hist"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.5.1 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.9.1 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" >Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)</a> &raquo;</li> 
       </ul>
     </div>
