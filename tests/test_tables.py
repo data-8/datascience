@@ -347,6 +347,18 @@ def test_groups(t):
     10     | False | 1
     """)
 
+def test_groups_using_group(t):
+    t = t.copy()
+    t.append(('e', 12, 1, 12))
+    t['early'] = t['letter'] < 'd'
+    test = t.group(['points', 'early'])
+    assert_equal(test, """
+    points | early | count
+    1      | False | 1
+    1      | True  | 1
+    2      | True  | 2
+    10     | False | 1
+    """)
 
 def test_groups_list(t):
     t = t.copy()
@@ -460,11 +472,18 @@ def test_pivot_sum(t):
 
 def test_apply(t):
     t = t.copy()
-    assert_array_equal(t.apply(lambda x, y: x * y, ['count', 'points']), np.array([9, 6, 6, 10]))
-    assert_array_equal(t.apply(lambda x: x * x, 'points'), np.array([1, 4, 4, 100]))
-    assert_array_equal(t.apply(lambda row: row.item('count') * 2), np.array([18, 6, 6, 2]))
+    assert_array_equal(t.apply(lambda x, y: x * y, 'count', 'points'),
+                       np.array([9, 6, 6, 10]))
+    assert_array_equal(t.apply(lambda x: x * x, 'points'),
+                       np.array([1, 4, 4, 100]))
+    assert_array_equal(t.apply(lambda row: row.item('count') * 2),
+                       np.array([18, 6, 6, 2]))
     with(pytest.raises(ValueError)):
-        t.apply(lambda x, y: x + y, ['count', 'score'])
+        t.apply(lambda x, y: x + y, 'count', 'score')
+
+    # Deprecated behavior
+    assert_array_equal(t.apply(lambda x, y: x * y, ['count', 'points']),
+                       np.array([9, 6, 6, 10]))
 
 
 ########
@@ -600,6 +619,29 @@ def test_with_column(table):
     with(pytest.raises(ValueError)):
         table.append_column(0, [1, 2, 3, 4])
 
+def test_with_columns(table):
+    column_1 = [10, 20, 30, 40]
+    column_2 = 'hello'
+    table2 = table.with_columns(
+        'new_col1', column_1,
+        'new_col2', column_2)
+    table3 = table.with_column( # Incorrect method name still works
+        'new_col1', column_1,
+        'new_col2', column_2)
+    assert_equal(table2, """
+    letter | count | points | new_col1 | new_col2
+    a      | 9     | 1      | 10       | hello
+    b      | 3     | 2      | 20       | hello
+    c      | 3     | 2      | 30       | hello
+    z      | 1     | 10     | 40       | hello
+    """)
+    assert_equal(table3, """
+    letter | count | points | new_col1 | new_col2
+    a      | 9     | 1      | 10       | hello
+    b      | 3     | 2      | 20       | hello
+    c      | 3     | 2      | 30       | hello
+    z      | 1     | 10     | 40       | hello
+    """)
 
 def test_append_table(table):
     table.append(table)
@@ -852,7 +894,6 @@ def test_group_by_tuples():
     (5, 1)        | [3]
     """)
 
-
 def test_group_no_new_column(table):
     table.group(table.columns[1])
     assert_equal(table, """
@@ -863,6 +904,15 @@ def test_group_no_new_column(table):
     z      | 1     | 10
     """)
 
+def test_group_using_groups(table):
+    table.groups(1)
+    assert_equal(table, """
+    letter | count | points
+    a      | 9     | 1
+    b      | 3     | 2
+    c      | 3     | 2
+    z      | 1     | 10
+    """)
 
 def test_stack(table):
     test = table.stack(key='letter')
@@ -1157,7 +1207,7 @@ def test_subtable():
     assert(type(st.select('col')) == type(st))
     assert(type(st.pivot_bin('col', 'num')) == type(st))
     assert(type(st.stats()) == type(st))
-    assert(type(st.bin(select='num', bins=3)) == type(st))
+    assert(type(st.bin('num', bins=3)) == type(st))
     assert(type(st.copy()) == type(st))
 
 

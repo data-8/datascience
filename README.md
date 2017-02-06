@@ -27,6 +27,14 @@ pip install datascience
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.9.1
+
+- Changed signature of `apply`, `hist`, and `bin` to accept multiple columns without a list
+- Deprecate `hist` argument name `counts` in favor of `bin_column`
+- Rename various positional args (technically could break some code, but won't)
+- Unified `with_column` and `with_columns` (not a breaking change)
+- Unified `group` and `groups` (not a breaking change)
+
 ### v0.9.0
 - Added "Table.remove"
 
