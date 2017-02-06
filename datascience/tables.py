@@ -165,13 +165,13 @@ class Table(collections.abc.MutableMapping):
     #################
 
     def __getitem__(self, index_or_label):
+        return self.column(index_or_label)
+
+    def __setitem__(self, index_or_label, values):
+        self.append_column(index_or_label, values)
+
+    def __delitem__(self, index_or_label):
         label = self._as_label(index_or_label)
-        return self.column(label)
-
-    def __setitem__(self, label, values):
-        self.append_column(label, values)
-
-    def __delitem__(self, label):
         del self._columns[label]
         if label in self._formats:
             del self._formats[label]
@@ -188,7 +188,6 @@ class Table(collections.abc.MutableMapping):
 
         E.g., t.sum() on a Table will return a table with the sum of each column.
         """
-
         if self.columns and all(hasattr(c, attr) for c in self.columns):
             warnings.warn("Implicit column method lookup is deprecated.", FutureWarning)
             attrs = [getattr(c, attr) for c in self.columns]
@@ -301,12 +300,12 @@ class Table(collections.abc.MutableMapping):
             dtype = None
         return np.array(self.columns, dtype=dtype).T
 
-    def column_index(self, column_label):
-        """Return the index of a column."""
-        return self.labels.index(column_label)
+    def column_index(self, label):
+        """Return the index of a column by looking up its label."""
+        return self.labels.index(label)
 
     def apply(self, fn, column_label=None):
-        """ Apply ``fn`` to each element of ``column_label``.
+        """Apply ``fn`` to each element of ``column_label``.
         If no ``column_label`` provided, `fn`` applied to each row of table.
 
         Args:
