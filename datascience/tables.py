@@ -2101,10 +2101,7 @@ class Table(collections.abc.MutableMapping):
             # barh plots entries in reverse order from bottom to top
             axis.barh(ypos, self[label][::-1], bwidth,  color=color, **options)
 
-        if isinstance(column_for_categories, str):
-            ylabel = column_for_categories
-        else:
-            ylabel = self.labels[column_for_categories]
+        ylabel = self._as_label(column_for_categories)
 
         def annotate(axis, ticks):
             axis.set_yticks(index+0.5) # Center labels on bars
@@ -2316,7 +2313,7 @@ class Table(collections.abc.MutableMapping):
         ...     'value',      make_array(101, 102, 103),
         ...     'proportion', make_array(0.25, 0.5, 0.25))
         >>> t.hist(bin_column='value') # doctest: +SKIP
-        <histogram of values weighted by corresponding values in value>
+        <histogram of values weighted by corresponding proportions>
         """
         if counts is not None and bin_column is None:
             warnings.warn("counts arg of hist is deprecated; use bin_column")
