@@ -1744,7 +1744,7 @@ class Table(collections.abc.MutableMapping):
         warnings.warn("with_relabeling is deprecated; use relabeled", FutureWarning)
         return self.relabeled(*args)
 
-    def bin(self, select=None, **vargs):
+    def bin(self, *columns, **vargs):
         """Group values by bin and compute counts per bin by column.
 
         By default, bins are chosen to contain all values in all columns. The
@@ -1755,8 +1755,8 @@ class Table(collections.abc.MutableMapping):
         n+1 columns, where column 0 contains the lower bound of each bin.
 
         Args:
-            ``select`` (columns): Columns to be binned. If None, all columns
-                are binned.
+            ``columns`` (str or int): Labels or indices of columns to be
+                binned. If empty, all columns are binned.
 
             ``bins`` (int or sequence of scalars): If bins is an int,
                 it defines the number of equal-width bins in the given range
@@ -1775,8 +1775,8 @@ class Table(collections.abc.MutableMapping):
                 histogram values will not be equal to 1 unless bins of unity
                 width are chosen; it is not a probability mass function.
         """
-        if select is not None:
-            self = self.select(select)
+        if columns:
+            self = self.select(*columns)
         if 'normed' in vargs:
             vargs.setdefault('density', vargs.pop('normed'))
         density = vargs.get('density', False)
@@ -2273,10 +2273,9 @@ class Table(collections.abc.MutableMapping):
         for label, column in zip(pvt_labels,vals):
             t[label] = column
 
-    def hist(self, select=None, overlay=True, bins=None, counts=None, unit=None, **vargs):
-        """Plots one histogram for each column in the table.
-
-        Every column must be numerical.
+    def hist(self, *columns, overlay=True, bins=None, bin_column=None, unit=None, counts=None, **vargs):
+        """Plots one histogram for each column in columns. If no column is
+        specificed, plot all columns.
 
         Kwargs:
             overlay (bool): If True, plots 1 chart with all the histograms
@@ -2284,12 +2283,15 @@ class Table(collections.abc.MutableMapping):
                 of one histogram for each column in the table). Also adds a
                 legend that matches each bar color to its column.
 
-            bins (column name or list): Lower bound for each bin in the
-                histogram. If None, bins will be chosen automatically.
+            bins (list or int): Lower bound for each bin in the
+                histogram or number of bins. If None, bins will
+                be chosen automatically.
 
-            counts (column name or column): A column of counted values.
-                All other columns are treated as counts of these values.
+            bin_column (column name or index): A column of bin lower bounds.
+                All other columns are treated as counts of these bins.
                 If None, each value in each row is assigned a count of 1.
+
+            counts (column name or index): Deprecated name for bin_column.
 
             vargs: Additional arguments that get passed into :func:plt.hist.
                 See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.hist
@@ -2313,11 +2315,16 @@ class Table(collections.abc.MutableMapping):
         >>> t = Table().with_columns(
         ...     'value',      make_array(101, 102, 103),
         ...     'proportion', make_array(0.25, 0.5, 0.25))
-        >>> t.hist(counts='value') # doctest: +SKIP
-        <histogram of values in prop weighted by corresponding values in value>
+        >>> t.hist(bin_column='value') # doctest: +SKIP
+        <histogram of values weighted by corresponding values in value>
         """
-        if select is not None:
-            self = self.select(select)
+        if counts is not None and bin_column is None:
+            warnings.warn("counts arg of hist is deprecated; use bin_column")
+            bin_column=counts
+        if columns:
+            if bin_column is not None:
+                columns = columns + [bin_column]
+            self = self.select(*columns)
 
         # Check for non-numerical values and raise a ValueError if any found
         for col in self:
@@ -2328,9 +2335,9 @@ class Table(collections.abc.MutableMapping):
 
         columns = self._columns.copy()
 
+        if bin_column is not None and bins is None:
+            bins = np.unique(self.column(bin_column))
         if bins is not None:
-            if isinstance(bins, collections.Hashable) and bins in self.labels:
-                bins = np.unique(self[bins])
             vargs['bins'] = bins
 
         if 'normed' not in vargs:
@@ -2338,12 +2345,10 @@ class Table(collections.abc.MutableMapping):
         percentage = plt.FuncFormatter(lambda x, _: "{:g}".format(100*x))
 
         counted_values = counted_label = None
-        if counts is not None:
-            counted_values = self._get_column(counts)
-            counted_label = 'counts'
-            if isinstance(counts, str) and counts in self.labels:
-                columns.pop(counts)
-                counted_label = counts
+        if bin_column is not None:
+            counted_label = self._as_label(bin_column)
+            counted_values = self.column(counted_label)
+            columns.pop(counted_label)
 
         n = len(columns)
         colors = [rgb_color + (self.default_alpha,) for rgb_color in

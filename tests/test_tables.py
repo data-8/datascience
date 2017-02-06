@@ -1207,7 +1207,7 @@ def test_subtable():
     assert(type(st.select('col')) == type(st))
     assert(type(st.pivot_bin('col', 'num')) == type(st))
     assert(type(st.stats()) == type(st))
-    assert(type(st.bin(select='num', bins=3)) == type(st))
+    assert(type(st.bin('num', bins=3)) == type(st))
     assert(type(st.copy()) == type(st))
 
 
