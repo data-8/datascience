@@ -2175,7 +2175,10 @@ class Table(collections.abc.MutableMapping):
 
         def draw(axis, label, color):
             if colors is not None:
-                color = self[colors]
+
+                n = len(np.unique(np.array(colors)))
+                color = list(itertools.islice(itertools.cycle(self.chart_colors), n))
+                # color = self[colors]
             elif 'color' in options:
                 color = options.pop('color')
             y_data = self[label]
@@ -2193,6 +2196,7 @@ class Table(collections.abc.MutableMapping):
                         arrowprops = dict(arrowstyle = '->', connectionstyle = 'arc3,rad=0', color='black'))
 
         x_label = self._as_label(column_for_x)
+        y_labels = [i for i in y_labels if i!=colors]
         self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x, width=width, height=height)
 
     def _visualize(self, x_label, y_labels, ticks, overlay, draw, annotate, width=6, height=4):
