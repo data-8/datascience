@@ -1923,6 +1923,18 @@ class Table(collections.abc.MutableMapping):
         (0.298, 0.235, 0.216),
     )
 
+    scatter_colors = (
+        (0.0, 0.102, 0.267),
+        (1.0, 0.784, 0.0),
+        (1.0, 0.0, 0.0),
+        (0.702, 0.612, 0.302),
+        (0.463, 0.537, 0.282),
+        (0.024, 0.482, 0.761),
+        (0.984, 0.314, 0.071),
+        (0.098, 0.22, 0.122),
+        (0.298, 0.235, 0.216),
+    )
+
     default_alpha = 0.7
 
     default_options = {
@@ -2176,8 +2188,12 @@ class Table(collections.abc.MutableMapping):
         def draw(axis, label, color):
             if colors is not None:
 
-                n = len(np.unique(np.array(colors)))
-                color = list(itertools.islice(itertools.cycle(self.chart_colors), n))
+                parts = np.unique(np.array(self.column(colors)))
+                colorset = list(itertools.islice(itertools.cycle(self.scatter_colors), len(parts)))
+                mapping = {}
+                for i, part in enumerate(parts):
+                    mapping[part] = colorset[i]
+                color = [mapping[i] for i in self.column(colors)]
                 # color = self[colors]
             elif 'color' in options:
                 color = options.pop('color')
