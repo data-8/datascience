@@ -26,7 +26,7 @@ import datascience.predicates as _predicates
 
 class Table(collections.abc.MutableMapping):
     """A sequence of string-labeled columns."""
-    plots = []
+    plots = collections.deque(maxlen=10)
 
     def __init__(self, labels=None, _deprecated=None, *, formatter=_formats.default_formatter):
         """Create an empty table with column labels.
@@ -2219,7 +2219,7 @@ class Table(collections.abc.MutableMapping):
             if ticks is not None:
                 annotate(axis, ticks)
             axis.legend(y_labels, loc=2, bbox_to_anchor=(1.05, 1))
-            Table.plots.append(axis)
+            type(self).plots.append(axis)
         else:
             fig, axes = plt.subplots(n, 1, figsize=(width, height*n))
             if not isinstance(axes, collections.Iterable):
@@ -2231,7 +2231,7 @@ class Table(collections.abc.MutableMapping):
                     axis.set_xlabel(x_label, fontsize=16)
                 if ticks is not None:
                     annotate(axis, ticks)
-                Table.plots.append(axis)
+                type(self).plots.append(axis)
 
     def _split_column_and_labels(self, column_or_label):
         """Return the specified column and labels of other columns."""
@@ -2239,18 +2239,18 @@ class Table(collections.abc.MutableMapping):
         labels = [label for i, label in enumerate(self.labels) if column_or_label not in (i, label)]
         return column, labels
 
-    def pivot_hist(self, pivot_column_label, value_column_label, overlay=True, **vargs):
+    def pivot_hist(self, pivot_column_label, value_column_label, overlay=True, width=6, height=4, **vargs):
         """Draw histograms of each category in a column."""
         pvt_labels = np.unique(self[pivot_column_label])
         pvt_columns = [self[value_column_label][np.where(self[pivot_column_label] == pivot)] for pivot in pvt_labels]
         n = len(pvt_labels)
         colors = list(itertools.islice(itertools.cycle(self.chart_colors), n))
         if overlay:
-            plt.figure(figsize=(6, 4))
+            plt.figure(figsize=(width, height))
             vals, bins, patches = plt.hist(pvt_columns, color=colors, **vargs)
             plt.legend(pvt_labels)
         else:
-            _, axes = plt.subplots(n, 1, figsize=(6, 4 * n))
+            _, axes = plt.subplots(n, 1, figsize=(width, height * n))
             vals = []
             bins = None
             for axis, label, column, color in zip(axes, pvt_labels, pvt_columns, colors):
@@ -2270,7 +2270,7 @@ class Table(collections.abc.MutableMapping):
         for label, column in zip(pvt_labels,vals):
             t[label] = column
 
-    def hist(self, *columns, overlay=True, bins=None, bin_column=None, unit=None, counts=None, **vargs):
+    def hist(self, *columns, overlay=True, bins=None, bin_column=None, unit=None, counts=None, width=6, height=4, **vargs):
         """Plots one histogram for each column in columns. If no column is
         specificed, plot all columns.
 
@@ -2359,7 +2359,7 @@ class Table(collections.abc.MutableMapping):
                 vargs['weights'] = np.transpose(values)
                 values = np.repeat(counted_values, n).reshape(-1,n)
             vargs.setdefault('histtype', 'stepfilled')
-            figure = plt.figure(figsize=(6, 4))
+            figure = plt.figure(figsize=(width, height))
             plt.hist(values, color=colors, **vargs)
             axis = figure.get_axes()[0]
             _vertical_x(axis)
@@ -2371,9 +2371,9 @@ class Table(collections.abc.MutableMapping):
             if unit:
                 axis.set_xlabel('(' + unit + ')', fontsize=16)
             plt.legend(columns.keys(), loc=2, bbox_to_anchor=(1.05, 1))
-            Table.plots.append(axis)
+            type(self).plots.append(axis)
         else:
-            _, axes = plt.subplots(n, 1, figsize=(6, 4 * n))
+            _, axes = plt.subplots(n, 1, figsize=(width, height * n))
             # Use stepfilled when there are too many bins
             if isinstance(bins, numbers.Integral) and bins > 76 or hasattr(bins, '__len__') and len(bins) > 76:
                 vargs.setdefault('histtype', 'stepfilled')
@@ -2395,7 +2395,7 @@ class Table(collections.abc.MutableMapping):
                     axis.set_xlabel(label.rstrip(' count') + x_unit, fontsize=16)
                 axis.hist(values, color=color, **vargs)
                 _vertical_x(axis)
-                Table.plots.append(axis)
+                type(self).plots.append(axis)
 
     def boxplot(self, **vargs):
         """Plots a boxplot for the table.
