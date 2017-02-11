@@ -2205,7 +2205,6 @@ class Table(collections.abc.MutableMapping):
                 size = [(2000 * i) for i in rescaled]
                 axis.legend(colorset, loc = 2, bbox_to_anchor = (1.05, 1))
                 axis.scatter(x_data, y_data, color=color, s = size, **options)
-                Table.plots.append(axis)
             else:
                 axis.scatter(x_data, y_data, color=color, **options)
             if fit_line:
