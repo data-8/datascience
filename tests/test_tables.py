@@ -423,6 +423,16 @@ def test_pivot_counts(t):
     True  | 1 | 2 | 0
     """)
 
+def test_pivot_counts_with_indices(t):
+    t = t.copy()
+    t.append(('e', 12, 1, 12))
+    t['early'] = t['letter'] < 'd'
+    test = t.pivot(2, 4)
+    assert_equal(test, """
+    early | 1 | 2 | 10
+    False | 1 | 0 | 1
+    True  | 1 | 2 | 0
+    """)
 
 def test_pivot_values(t):
     t = t.copy()
