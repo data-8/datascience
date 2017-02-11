@@ -2202,8 +2202,10 @@ class Table(collections.abc.MutableMapping):
             y_data = self[label]
             if sizes is not None:
                 rescaled = [i/ max(self.column(sizes)) for i in self.column(sizes)]
-                size = [(5000 * i) for i in rescaled]
+                size = [(2000 * i) for i in rescaled]
+                axis.legend(colorset, loc = 2, bbox_to_anchor = (1.05, 1))
                 axis.scatter(x_data, y_data, color=color, s = size, **options)
+                Table.plots.append(axis)
             else:
                 axis.scatter(x_data, y_data, color=color, **options)
             if fit_line:
@@ -2219,7 +2221,8 @@ class Table(collections.abc.MutableMapping):
                             arrowprops = dict(arrowstyle = '->', connectionstyle = 'arc3,rad=0', color='black'))
 
         x_label = self._as_label(column_for_x)
-        y_labels = [i for i in y_labels if i!=colors and i != sizes]
+        y_labels = [i for i in y_labels if i!=colors and i != sizes and i !=self._as_label(colors) and i!=self._as_label(sizes)]
+        overlay = False if colors != None else True
         self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x, width=width, height=height)
 
     def _visualize(self, x_label, y_labels, ticks, overlay, draw, annotate, width=6, height=4):
