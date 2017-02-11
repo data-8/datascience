@@ -2188,6 +2188,7 @@ class Table(collections.abc.MutableMapping):
 
         def draw(axis, label, color):
             nonlocal sizes
+            # sizes = sizes.copy()
             if colors is not None:
                 parts = np.unique(np.array(self.column(colors)))
                 colorset = list(itertools.islice(itertools.cycle(self.scatter_colors), len(parts)))
@@ -2201,8 +2202,8 @@ class Table(collections.abc.MutableMapping):
             y_data = self[label]
             if sizes is not None:
                 rescaled = [i/ max(self.column(sizes)) for i in self.column(sizes)]
-                sizes = [(5000 * i) for i in rescaled]
-                axis.scatter(x_data, y_data, color=color, s = sizes, **options)
+                size = [(5000 * i) for i in rescaled]
+                axis.scatter(x_data, y_data, color=color, s = size, **options)
             else:
                 axis.scatter(x_data, y_data, color=color, **options)
             if fit_line:
