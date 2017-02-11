@@ -1090,10 +1090,10 @@
 <span class="sd">        the values that match both row and column based on ``collect``.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            ``columns`` -- a single column label, (``str``), in table, used to</span>
-<span class="sd">                create new columns, based on its unique values.</span>
-<span class="sd">            ``rows`` -- row labels, as (``str``) or array of strings, used to</span>
-<span class="sd">                create new rows based on it&#39;s unique values.</span>
+<span class="sd">            ``columns`` -- a single column label or index, (``str`` or ``int``),</span>
+<span class="sd">                used to create new columns, based on its unique values.</span>
+<span class="sd">            ``rows`` -- row labels or indices, (``str`` or ``int`` or list),</span>
+<span class="sd">                used to create new rows based on it&#39;s unique values.</span>
 <span class="sd">            ``values`` -- column label in table for use in aggregation.</span>
 <span class="sd">                Default None.</span>
 <span class="sd">            ``collect`` -- aggregation function, used to group ``values``</span>
@@ -1155,6 +1155,7 @@
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;collect requires values to be specified&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">collect</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;values requires collect to be specified&#39;</span><span class="p">)</span>
+        <span class="n">columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_as_label</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span>
         <span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_as_labels</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">values</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">selected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="n">columns</span><span class="p">]</span> <span class="o">+</span> <span class="n">rows</span><span class="p">)</span>
