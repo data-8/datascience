@@ -1923,6 +1923,7 @@ class Table(collections.abc.MutableMapping):
         (0.298, 0.235, 0.216),
     )
 
+    #More distinguishable colors for use in scatter plot
     scatter_colors = (
         (0.0, 0.102, 0.267),
         (1.0, 0.784, 0.0),
@@ -2125,7 +2126,7 @@ class Table(collections.abc.MutableMapping):
         self._visualize('', labels, yticks, overlay, draw, annotate, width=width, height=height)
 
     def scatter(self, column_for_x, select=None, overlay=True, fit_line=False,
-        colors=None, labels=None, width=5, height=5, **vargs):
+        colors=None, labels=None, width=5, height=5, sizes = None, **vargs):
         """Creates scatterplots, optionally adding a line of best fit.
 
         Args:
@@ -2186,8 +2187,8 @@ class Table(collections.abc.MutableMapping):
             y_labels = self._as_labels(select)
 
         def draw(axis, label, color):
+            nonlocal sizes
             if colors is not None:
-
                 parts = np.unique(np.array(self.column(colors)))
                 colorset = list(itertools.islice(itertools.cycle(self.scatter_colors), len(parts)))
                 mapping = {}
@@ -2198,21 +2199,26 @@ class Table(collections.abc.MutableMapping):
             elif 'color' in options:
                 color = options.pop('color')
             y_data = self[label]
-            axis.scatter(x_data, y_data, color=color, **options)
+            if sizes is not None:
+                rescaled = [i/ max(self.column(sizes)) for i in self.column(sizes)]
+                sizes = [(5000 * i) for i in rescaled]
+                axis.scatter(x_data, y_data, color=color, s = sizes, **options)
+            else:
+                axis.scatter(x_data, y_data, color=color, **options)
             if fit_line:
                 m, b = np.polyfit(x_data, self[label], 1)
                 minx, maxx = np.min(x_data),np.max(x_data)
                 axis.plot([minx,maxx],[m*minx+b,m*maxx+b], color=color)
             if labels is not None:
                 for x, y, label in zip(x_data, y_data, self[labels]):
-                    axis.annotate(label, (x, y),
-                        xytext=(-20, 20),
-                        textcoords='offset points', ha='right', va='bottom',
-                        bbox=dict(boxstyle='round,pad=0.5', fc='white', alpha=0.7),
-                        arrowprops = dict(arrowstyle = '->', connectionstyle = 'arc3,rad=0', color='black'))
+                        axis.annotate(label, (x, y),
+                            xytext=(-20, 20),
+                            textcoords='offset points', ha='right', va='bottom',
+                            bbox=dict(boxstyle='round,pad=0.5', fc='white', alpha=0.7),
+                            arrowprops = dict(arrowstyle = '->', connectionstyle = 'arc3,rad=0', color='black'))
 
         x_label = self._as_label(column_for_x)
-        y_labels = [i for i in y_labels if i!=colors]
+        y_labels = [i for i in y_labels if i!=colors and i != sizes]
         self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x, width=width, height=height)
 
     def _visualize(self, x_label, y_labels, ticks, overlay, draw, annotate, width=6, height=4):
