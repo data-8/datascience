@@ -1041,10 +1041,10 @@ class Table(collections.abc.MutableMapping):
         the values that match both row and column based on ``collect``.
 
         Args:
-            ``columns`` -- a single column label, (``str``), in table, used to
-                create new columns, based on its unique values.
-            ``rows`` -- row labels, as (``str``) or array of strings, used to
-                create new rows based on it's unique values.
+            ``columns`` -- a single column label or index, (``str`` or ``int``),
+                used to create new columns, based on its unique values.
+            ``rows`` -- row labels or indices, (``str`` or ``int`` or list),
+                used to create new rows based on it's unique values.
             ``values`` -- column label in table for use in aggregation.
                 Default None.
             ``collect`` -- aggregation function, used to group ``values``
@@ -1106,6 +1106,7 @@ class Table(collections.abc.MutableMapping):
             raise TypeError('collect requires values to be specified')
         if values is not None and collect is None:
             raise TypeError('values requires collect to be specified')
+        columns = self._as_label(columns)
         rows = self._as_labels(rows)
         if values is None:
             selected = self.select([columns] + rows)
