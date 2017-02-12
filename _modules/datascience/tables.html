@@ -2182,7 +2182,7 @@
 
 <span class="sd">            ``labels``: A column of text labels to annotate dots.</span>
 
-<span class="sd">            ``sizes``:  A column of values to set the relative sizes of dots.</span>
+<span class="sd">            ``sizes``:  A column of values to set the relative areas of dots.</span>
 
 <span class="sd">            ``s``: Size of dots. If sizes is also provided, then dots will be</span>
 <span class="sd">              in the range 0 to 2 * s.</span>
@@ -2242,8 +2242,8 @@
                 <span class="n">color</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">)</span>
             <span class="n">y_data</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">sizes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="n">max_size</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">sizes</span><span class="p">])</span>
-                <span class="n">size</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">s</span> <span class="o">*</span> <span class="n">x</span> <span class="o">/</span> <span class="n">max_size</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">[</span><span class="n">sizes</span><span class="p">]]</span>
+                <span class="n">max_size</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">sizes</span><span class="p">])</span> <span class="o">**</span> <span class="mf">0.5</span>
+                <span class="n">size</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">s</span> <span class="o">*</span> <span class="bp">self</span><span class="p">[</span><span class="n">sizes</span><span class="p">]</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="o">/</span> <span class="n">max_size</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">size</span> <span class="o">=</span> <span class="n">s</span>
             <span class="n">axis</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x_data</span><span class="p">,</span> <span class="n">y_data</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">size</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
