@@ -1924,19 +1924,6 @@ class Table(collections.abc.MutableMapping):
         (0.298, 0.235, 0.216),
     )
 
-    #More distinguishable colors for use in scatter plot
-    scatter_colors = (
-        (0.0, 0.102, 0.267),
-        (1.0, 0.784, 0.0),
-        (1.0, 0.0, 0.0),
-        (0.702, 0.612, 0.302),
-        (0.463, 0.537, 0.282),
-        (0.024, 0.482, 0.761),
-        (0.984, 0.314, 0.071),
-        (0.098, 0.22, 0.122),
-        (0.298, 0.235, 0.216),
-    )
-
     default_alpha = 0.7
 
     default_options = {
@@ -2127,7 +2114,7 @@ class Table(collections.abc.MutableMapping):
         self._visualize('', labels, yticks, overlay, draw, annotate, width=width, height=height)
 
     def scatter(self, column_for_x, select=None, overlay=True, fit_line=False,
-        colors=None, labels=None, width=5, height=5, sizes = None, **vargs):
+        colors=None, labels=None, sizes=None, width=5, height=5, s=20, **vargs):
         """Creates scatterplots, optionally adding a line of best fit.
 
         Args:
@@ -2145,9 +2132,14 @@ class Table(collections.abc.MutableMapping):
                 for additional arguments that can be passed into vargs. These
                 include: `marker` and `norm`, to name a couple.
 
-            ``colors``: A column of colors (labels or numeric values).
+            ``colors``: A column of categories to be used for coloring dots.
 
             ``labels``: A column of text labels to annotate dots.
+
+            ``sizes``:  A column of values to set the relative sizes of dots.
+
+            ``s``: Size of dots. If sizes is also provided, then dots will be
+              in the range 0 to 2 * s.
 
         Raises:
             ValueError -- Every column, ``column_for_x`` or ``select``, must be numerical
@@ -2186,43 +2178,42 @@ class Table(collections.abc.MutableMapping):
         x_data, y_labels =  self._split_column_and_labels(column_for_x)
         if select is not None:
             y_labels = self._as_labels(select)
+        if len(y_labels) > 1 and colors is not None and overlay:
+            warnings.warn("Colors and overlay are incompatible in a scatter")
+            overlay = False
 
         def draw(axis, label, color):
-            nonlocal sizes
-            # sizes = sizes.copy()
             if colors is not None:
-                parts = np.unique(np.array(self.column(colors)))
-                colorset = list(itertools.islice(itertools.cycle(self.scatter_colors), len(parts)))
-                mapping = {}
-                for i, part in enumerate(parts):
-                    mapping[part] = colorset[i]
-                color = [mapping[i] for i in self.column(colors)]
-                # color = self[colors]
+                colored = sorted(np.unique(np.array(self.column(colors))))
+                color_list = list(itertools.islice(itertools.cycle(self.chart_colors), len(colored)))
+                color_map = dict(zip(colored, color_list))
+                color = [color_map[x] for x in self.column(colors)]
             elif 'color' in options:
                 color = options.pop('color')
             y_data = self[label]
             if sizes is not None:
-                rescaled = [i/ max(self.column(sizes)) for i in self.column(sizes)]
-                size = [(2000 * i) for i in rescaled]
-                axis.legend(colorset, loc = 2, bbox_to_anchor = (1.05, 1))
-                axis.scatter(x_data, y_data, color=color, s = size, **options)
+                max_size = max(self[sizes])
+                size = [2 * s * x / max_size for x in self[sizes]]
             else:
-                axis.scatter(x_data, y_data, color=color, **options)
+                size = s
+            axis.scatter(x_data, y_data, color=color, s=size, **options)
             if fit_line:
                 m, b = np.polyfit(x_data, self[label], 1)
                 minx, maxx = np.min(x_data),np.max(x_data)
                 axis.plot([minx,maxx],[m*minx+b,m*maxx+b], color=color)
             if labels is not None:
                 for x, y, label in zip(x_data, y_data, self[labels]):
-                        axis.annotate(label, (x, y),
-                            xytext=(-20, 20),
-                            textcoords='offset points', ha='right', va='bottom',
-                            bbox=dict(boxstyle='round,pad=0.5', fc='white', alpha=0.7),
-                            arrowprops = dict(arrowstyle = '->', connectionstyle = 'arc3,rad=0', color='black'))
+                    axis.annotate(label, (x, y),
+                        xytext=(-20, 20),
+                        textcoords='offset points', ha='right', va='bottom',
+                        bbox=dict(boxstyle='round,pad=0.5', fc='white', alpha=0.7),
+                        arrowprops = dict(arrowstyle = '->', connectionstyle = 'arc3,rad=0', color='black'))
+            if colors is not None:
+                import matplotlib.patches as mpatches
+                patches = [mpatches.Patch(color=c, label=v) for (v, c) in color_map.items()]
+                axis.legend(loc=2, bbox_to_anchor=(1.05, 1), handles=patches)
 
         x_label = self._as_label(column_for_x)
-        y_labels = [i for i in y_labels if i!=colors and i != sizes and i !=self._as_label(colors) and i!=self._as_label(sizes)]
-        overlay = False if colors != None else True
         self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x, width=width, height=height)
 
     def _visualize(self, x_label, y_labels, ticks, overlay, draw, annotate, width=6, height=4):
