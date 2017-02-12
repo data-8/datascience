@@ -2133,7 +2133,7 @@ class Table(collections.abc.MutableMapping):
 
             ``labels``: A column of text labels to annotate dots.
 
-            ``sizes``:  A column of values to set the relative sizes of dots.
+            ``sizes``:  A column of values to set the relative areas of dots.
 
             ``s``: Size of dots. If sizes is also provided, then dots will be
               in the range 0 to 2 * s.
@@ -2193,8 +2193,8 @@ class Table(collections.abc.MutableMapping):
                 color = options.pop('color')
             y_data = self[label]
             if sizes is not None:
-                max_size = max(self[sizes])
-                size = [2 * s * x / max_size for x in self[sizes]]
+                max_size = max(self[sizes]) ** 0.5
+                size = 2 * s * self[sizes] ** 0.5 / max_size
             else:
                 size = s
             axis.scatter(x_data, y_data, color=color, s=size, **options)
