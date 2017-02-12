@@ -1913,16 +1913,13 @@ class Table(collections.abc.MutableMapping):
 
     # As RGB tuples
     chart_colors = (
-        (0.0, 0.102, 0.267),
-        (1.0, 0.784, 0.0),
-        (0.341, 0.408, 0.518),
-        (0.702, 0.612, 0.302),
-        (0.463, 0.537, 0.282),
-        (0.024, 0.482, 0.761),
-        (0.984, 0.314, 0.071),
-        (0.098, 0.22, 0.122),
-        (0.298, 0.235, 0.216),
+        (0.0, 30/256, 66/256),
+        (1.0, 200/256, 44/256),
+        (0.0, 150/256, 207/256),
+        (30/256, 100/256, 0.0),
+        (172/256, 60/256, 72/256),
     )
+    chart_colors += tuple(tuple((x+0.7)/2 for x in c) for c in chart_colors)
 
     default_alpha = 0.7
 
@@ -2176,6 +2173,10 @@ class Table(collections.abc.MutableMapping):
         options.update(vargs)
 
         x_data, y_labels =  self._split_column_and_labels(column_for_x)
+        if colors is not None:
+            y_labels.remove(self._as_label(colors))
+        if sizes is not None:
+            y_labels.remove(self._as_label(sizes))
         if select is not None:
             y_labels = self._as_labels(select)
         if len(y_labels) > 1 and colors is not None and overlay:
@@ -2184,9 +2185,9 @@ class Table(collections.abc.MutableMapping):
 
         def draw(axis, label, color):
             if colors is not None:
-                colored = sorted(np.unique(np.array(self.column(colors))))
+                colored = sorted(np.unique(self.column(colors)))
                 color_list = list(itertools.islice(itertools.cycle(self.chart_colors), len(colored)))
-                color_map = dict(zip(colored, color_list))
+                color_map = collections.OrderedDict(zip(colored, color_list))
                 color = [color_map[x] for x in self.column(colors)]
             elif 'color' in options:
                 color = options.pop('color')
