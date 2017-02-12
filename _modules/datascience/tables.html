@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>datascience.tables &mdash; datascience 0.9.1 documentation</title>
+    <title>datascience.tables &mdash; datascience 0.9.2 documentation</title>
     
     <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.9.1',
+        VERSION:     '0.9.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.9.1 documentation" href="../../index.html" />
+    <link rel="top" title="datascience 0.9.2 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body role="document">
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.9.1 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.9.2 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -1962,16 +1962,13 @@
 
     <span class="c1"># As RGB tuples</span></div>
     <span class="n">chart_colors</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.102</span><span class="p">,</span> <span class="mf">0.267</span><span class="p">),</span>
-        <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.784</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
-        <span class="p">(</span><span class="mf">0.341</span><span class="p">,</span> <span class="mf">0.408</span><span class="p">,</span> <span class="mf">0.518</span><span class="p">),</span>
-        <span class="p">(</span><span class="mf">0.702</span><span class="p">,</span> <span class="mf">0.612</span><span class="p">,</span> <span class="mf">0.302</span><span class="p">),</span>
-        <span class="p">(</span><span class="mf">0.463</span><span class="p">,</span> <span class="mf">0.537</span><span class="p">,</span> <span class="mf">0.282</span><span class="p">),</span>
-        <span class="p">(</span><span class="mf">0.024</span><span class="p">,</span> <span class="mf">0.482</span><span class="p">,</span> <span class="mf">0.761</span><span class="p">),</span>
-        <span class="p">(</span><span class="mf">0.984</span><span class="p">,</span> <span class="mf">0.314</span><span class="p">,</span> <span class="mf">0.071</span><span class="p">),</span>
-        <span class="p">(</span><span class="mf">0.098</span><span class="p">,</span> <span class="mf">0.22</span><span class="p">,</span> <span class="mf">0.122</span><span class="p">),</span>
-        <span class="p">(</span><span class="mf">0.298</span><span class="p">,</span> <span class="mf">0.235</span><span class="p">,</span> <span class="mf">0.216</span><span class="p">),</span>
+        <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mi">30</span><span class="o">/</span><span class="mi">256</span><span class="p">,</span> <span class="mi">66</span><span class="o">/</span><span class="mi">256</span><span class="p">),</span>
+        <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mi">200</span><span class="o">/</span><span class="mi">256</span><span class="p">,</span> <span class="mi">44</span><span class="o">/</span><span class="mi">256</span><span class="p">),</span>
+        <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mi">150</span><span class="o">/</span><span class="mi">256</span><span class="p">,</span> <span class="mi">207</span><span class="o">/</span><span class="mi">256</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">30</span><span class="o">/</span><span class="mi">256</span><span class="p">,</span> <span class="mi">100</span><span class="o">/</span><span class="mi">256</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">172</span><span class="o">/</span><span class="mi">256</span><span class="p">,</span> <span class="mi">60</span><span class="o">/</span><span class="mi">256</span><span class="p">,</span> <span class="mi">72</span><span class="o">/</span><span class="mi">256</span><span class="p">),</span>
     <span class="p">)</span>
+    <span class="n">chart_colors</span> <span class="o">+=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">tuple</span><span class="p">((</span><span class="n">x</span><span class="o">+</span><span class="mf">0.7</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">chart_colors</span><span class="p">)</span>
 
     <span class="n">default_alpha</span> <span class="o">=</span> <span class="mf">0.7</span>
 
@@ -2163,7 +2160,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_visualize</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">yticks</span><span class="p">,</span> <span class="n">overlay</span><span class="p">,</span> <span class="n">draw</span><span class="p">,</span> <span class="n">annotate</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="Table.scatter"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.scatter.html#datascience.tables.Table.scatter">[docs]</a>    <span class="k">def</span> <span class="nf">scatter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_for_x</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">fit_line</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-        <span class="n">colors</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
+        <span class="n">colors</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">sizes</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Creates scatterplots, optionally adding a line of best fit.</span>
 
 <span class="sd">        Args:</span>
@@ -2181,9 +2178,14 @@
 <span class="sd">                for additional arguments that can be passed into vargs. These</span>
 <span class="sd">                include: `marker` and `norm`, to name a couple.</span>
 
-<span class="sd">            ``colors``: A column of colors (labels or numeric values).</span>
+<span class="sd">            ``colors``: A column of categories to be used for coloring dots.</span>
 
 <span class="sd">            ``labels``: A column of text labels to annotate dots.</span>
+
+<span class="sd">            ``sizes``:  A column of values to set the relative sizes of dots.</span>
+
+<span class="sd">            ``s``: Size of dots. If sizes is also provided, then dots will be</span>
+<span class="sd">              in the range 0 to 2 * s.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            ValueError -- Every column, ``column_for_x`` or ``select``, must be numerical</span>
@@ -2220,16 +2222,31 @@
         <span class="n">options</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">vargs</span><span class="p">)</span>
 
         <span class="n">x_data</span><span class="p">,</span> <span class="n">y_labels</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">_split_column_and_labels</span><span class="p">(</span><span class="n">column_for_x</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">colors</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">y_labels</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_as_label</span><span class="p">(</span><span class="n">colors</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">sizes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">y_labels</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_as_label</span><span class="p">(</span><span class="n">sizes</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">select</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">y_labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_as_labels</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_labels</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">colors</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">overlay</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Colors and overlay are incompatible in a scatter&quot;</span><span class="p">)</span>
+            <span class="n">overlay</span> <span class="o">=</span> <span class="bp">False</span>
 
         <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">colors</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="n">color</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">colors</span><span class="p">]</span>
+                <span class="n">colored</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">colors</span><span class="p">)))</span>
+                <span class="n">color_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">islice</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chart_colors</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">colored</span><span class="p">)))</span>
+                <span class="n">color_map</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">colored</span><span class="p">,</span> <span class="n">color_list</span><span class="p">))</span>
+                <span class="n">color</span> <span class="o">=</span> <span class="p">[</span><span class="n">color_map</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">colors</span><span class="p">)]</span>
             <span class="k">elif</span> <span class="s1">&#39;color&#39;</span> <span class="ow">in</span> <span class="n">options</span><span class="p">:</span>
                 <span class="n">color</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">)</span>
             <span class="n">y_data</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
-            <span class="n">axis</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x_data</span><span class="p">,</span> <span class="n">y_data</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">sizes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">max_size</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">sizes</span><span class="p">])</span>
+                <span class="n">size</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">s</span> <span class="o">*</span> <span class="n">x</span> <span class="o">/</span> <span class="n">max_size</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">[</span><span class="n">sizes</span><span class="p">]]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">size</span> <span class="o">=</span> <span class="n">s</span>
+            <span class="n">axis</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x_data</span><span class="p">,</span> <span class="n">y_data</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">size</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">fit_line</span><span class="p">:</span>
                 <span class="n">m</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">x_data</span><span class="p">,</span> <span class="bp">self</span><span class="p">[</span><span class="n">label</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
                 <span class="n">minx</span><span class="p">,</span> <span class="n">maxx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x_data</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x_data</span><span class="p">)</span>
@@ -2241,6 +2258,10 @@
                         <span class="n">textcoords</span><span class="o">=</span><span class="s1">&#39;offset points&#39;</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;bottom&#39;</span><span class="p">,</span>
                         <span class="n">bbox</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">boxstyle</span><span class="o">=</span><span class="s1">&#39;round,pad=0.5&#39;</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">),</span>
                         <span class="n">arrowprops</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">arrowstyle</span> <span class="o">=</span> <span class="s1">&#39;-&gt;&#39;</span><span class="p">,</span> <span class="n">connectionstyle</span> <span class="o">=</span> <span class="s1">&#39;arc3,rad=0&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">colors</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="kn">import</span> <span class="nn">matplotlib.patches</span> <span class="kn">as</span> <span class="nn">mpatches</span>
+                <span class="n">patches</span> <span class="o">=</span> <span class="p">[</span><span class="n">mpatches</span><span class="o">.</span><span class="n">Patch</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">c</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="ow">in</span> <span class="n">color_map</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+                <span class="n">axis</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">1.05</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">handles</span><span class="o">=</span><span class="n">patches</span><span class="p">)</span>
 
         <span class="n">x_label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_as_label</span><span class="p">(</span><span class="n">column_for_x</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_visualize</span><span class="p">(</span><span class="n">x_label</span><span class="p">,</span> <span class="n">y_labels</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="n">overlay</span><span class="p">,</span> <span class="n">draw</span><span class="p">,</span> <span class="n">_vertical_x</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">)</span>
@@ -2839,7 +2860,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.9.1 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.9.2 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
