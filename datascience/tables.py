@@ -1913,16 +1913,13 @@ class Table(collections.abc.MutableMapping):
 
     # As RGB tuples
     chart_colors = (
-        (0.0, 0.102, 0.267),
-        (1.0, 0.784, 0.0),
-        (0.341, 0.408, 0.518),
-        (0.702, 0.612, 0.302),
-        (0.463, 0.537, 0.282),
-        (0.024, 0.482, 0.761),
-        (0.984, 0.314, 0.071),
-        (0.098, 0.22, 0.122),
-        (0.298, 0.235, 0.216),
+        (0.0, 30/256, 66/256),
+        (1.0, 200/256, 44/256),
+        (0.0, 150/256, 207/256),
+        (30/256, 100/256, 0.0),
+        (172/256, 60/256, 72/256),
     )
+    chart_colors += tuple(tuple((x+0.7)/2 for x in c) for c in chart_colors)
 
     default_alpha = 0.7
 
@@ -2114,7 +2111,7 @@ class Table(collections.abc.MutableMapping):
         self._visualize('', labels, yticks, overlay, draw, annotate, width=width, height=height)
 
     def scatter(self, column_for_x, select=None, overlay=True, fit_line=False,
-        colors=None, labels=None, width=5, height=5, **vargs):
+        colors=None, labels=None, sizes=None, width=5, height=5, s=20, **vargs):
         """Creates scatterplots, optionally adding a line of best fit.
 
         Args:
@@ -2132,9 +2129,14 @@ class Table(collections.abc.MutableMapping):
                 for additional arguments that can be passed into vargs. These
                 include: `marker` and `norm`, to name a couple.
 
-            ``colors``: A column of colors (labels or numeric values).
+            ``colors``: A column of categories to be used for coloring dots.
 
             ``labels``: A column of text labels to annotate dots.
+
+            ``sizes``:  A column of values to set the relative sizes of dots.
+
+            ``s``: Size of dots. If sizes is also provided, then dots will be
+              in the range 0 to 2 * s.
 
         Raises:
             ValueError -- Every column, ``column_for_x`` or ``select``, must be numerical
@@ -2171,16 +2173,31 @@ class Table(collections.abc.MutableMapping):
         options.update(vargs)
 
         x_data, y_labels =  self._split_column_and_labels(column_for_x)
+        if colors is not None:
+            y_labels.remove(self._as_label(colors))
+        if sizes is not None:
+            y_labels.remove(self._as_label(sizes))
         if select is not None:
             y_labels = self._as_labels(select)
+        if len(y_labels) > 1 and colors is not None and overlay:
+            warnings.warn("Colors and overlay are incompatible in a scatter")
+            overlay = False
 
         def draw(axis, label, color):
             if colors is not None:
-                color = self[colors]
+                colored = sorted(np.unique(self.column(colors)))
+                color_list = list(itertools.islice(itertools.cycle(self.chart_colors), len(colored)))
+                color_map = collections.OrderedDict(zip(colored, color_list))
+                color = [color_map[x] for x in self.column(colors)]
             elif 'color' in options:
                 color = options.pop('color')
             y_data = self[label]
-            axis.scatter(x_data, y_data, color=color, **options)
+            if sizes is not None:
+                max_size = max(self[sizes])
+                size = [2 * s * x / max_size for x in self[sizes]]
+            else:
+                size = s
+            axis.scatter(x_data, y_data, color=color, s=size, **options)
             if fit_line:
                 m, b = np.polyfit(x_data, self[label], 1)
                 minx, maxx = np.min(x_data),np.max(x_data)
@@ -2192,6 +2209,10 @@ class Table(collections.abc.MutableMapping):
                         textcoords='offset points', ha='right', va='bottom',
                         bbox=dict(boxstyle='round,pad=0.5', fc='white', alpha=0.7),
                         arrowprops = dict(arrowstyle = '->', connectionstyle = 'arc3,rad=0', color='black'))
+            if colors is not None:
+                import matplotlib.patches as mpatches
+                patches = [mpatches.Patch(color=c, label=v) for (v, c) in color_map.items()]
+                axis.legend(loc=2, bbox_to_anchor=(1.05, 1), handles=patches)
 
         x_label = self._as_label(column_for_x)
         self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x, width=width, height=height)
