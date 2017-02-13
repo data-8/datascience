@@ -11,8 +11,9 @@ import numpy as np
 import abc
 import collections
 import collections.abc
-import json
 import functools
+import json
+import math
 import random
 
 from .tables import Table
@@ -98,7 +99,7 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         """
         Copies the current Map into a new one and returns it.
         """
-        
+
         m = Map(features=self._features, width=self._width,
                    height=self._height, **self._attrs)
         m._folium_map = self._folium_map
@@ -473,13 +474,13 @@ class Marker(_MapFeature):
         return cls(lat, lon)
 
     @classmethod
-    def map(cls, latitudes, longitudes, labels=None, colors=None, radii=None, **kwargs):
+    def map(cls, latitudes, longitudes, labels=None, colors=None, areas=None, **kwargs):
         """Return markers from columns of coordinates, labels, & colors.
 
-        The radii column is not applicable to markers, but sets circle radius.
+        The areas column is not applicable to markers, but sets circle areas.
         """
         assert len(latitudes) == len(longitudes)
-        assert radii is None or hasattr(cls, '_has_radius'), "A " + cls.__name__ + " has no radius"
+        assert areas is None or hasattr(cls, '_has_radius'), "A " + cls.__name__ + " has no radius"
         inputs = [latitudes, longitudes]
         if labels is not None:
             assert len(labels) == len(latitudes)
@@ -489,9 +490,9 @@ class Marker(_MapFeature):
         if colors is not None:
             assert len(colors) == len(latitudes)
             inputs.append(colors)
-        if radii is not None:
-            assert len(radii) == len(latitudes)
-            inputs.append(radii)
+        if areas is not None:
+            assert len(areas) == len(latitudes)
+            inputs.append(np.array(areas) ** 0.5 / math.pi)
         ms = [cls(*args, **kwargs) for args in zip(*inputs)]
         return Map(ms)
 
@@ -616,4 +617,3 @@ def _lat_lons_from_geojson(s):
         return [(lat, lon)]
     else:
         return [lat_lon for sub in s for lat_lon in _lat_lons_from_geojson(sub)]
-
