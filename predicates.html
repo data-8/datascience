@@ -1,0 +1,325 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Predicates (datascience.predicates) &#8212; datascience 0.9.3 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.9.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="datascience 0.9.3 documentation" href="index.html" />
+    <link rel="next" title="Formats (datascience.formats)" href="formats.html" />
+    <link rel="prev" title="Maps (datascience.maps)" href="maps.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="formats.html" title="Formats (datascience.formats)"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="maps.html" title="Maps (datascience.maps)"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.9.3 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-datascience.predicates">
+<span id="predicates-datascience-predicates"></span><h1>Predicates (<code class="docutils literal"><span class="pre">datascience.predicates</span></code>)<a class="headerlink" href="#module-datascience.predicates" title="Permalink to this headline">¶</a></h1>
+<p>Predicate functions.</p>
+<dl class="class">
+<dt id="datascience.predicates.are">
+<em class="property">class </em><code class="descclassname">datascience.predicates.</code><code class="descname">are</code><a class="reference internal" href="_modules/datascience/predicates.html#are"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predicate functions. The class is named &#8220;are&#8221; for calls to where.</p>
+<p>For example, given a table, predicates can be used to pick rows as follows.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">datascience</span> <span class="k">import</span> <span class="n">Table</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">([</span>
+<span class="gp">... </span>   <span class="s1">&#39;Sizes&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="s1">&#39;XL&#39;</span><span class="p">],</span>
+<span class="gp">... </span>   <span class="s1">&#39;Waists&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span> <span class="mi">38</span><span class="p">,</span> <span class="mi">42</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;Sizes&#39;</span><span class="p">,</span>  <span class="n">are</span><span class="o">.</span><span class="n">equal_to</span><span class="p">(</span><span class="s1">&#39;L&#39;</span><span class="p">))</span>
+<span class="go">Sizes | Waists</span>
+<span class="go">L     | 38</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;Waists&#39;</span><span class="p">,</span> <span class="n">are</span><span class="o">.</span><span class="n">above</span><span class="p">(</span><span class="mi">38</span><span class="p">))</span>
+<span class="go">Sizes | Waists</span>
+<span class="go">XL    | 42</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;Waists&#39;</span><span class="p">,</span> <span class="n">are</span><span class="o">.</span><span class="n">above_or_equal_to</span><span class="p">(</span><span class="mi">38</span><span class="p">))</span>
+<span class="go">Sizes | Waists</span>
+<span class="go">L     | 38</span>
+<span class="go">XL    | 42</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;Waists&#39;</span><span class="p">,</span> <span class="n">are</span><span class="o">.</span><span class="n">below</span><span class="p">(</span><span class="mi">38</span><span class="p">))</span>
+<span class="go">Sizes | Waists</span>
+<span class="go">S     | 30</span>
+<span class="go">M     | 34</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;Waists&#39;</span><span class="p">,</span> <span class="n">are</span><span class="o">.</span><span class="n">below_or_equal_to</span><span class="p">(</span><span class="mi">38</span><span class="p">))</span>
+<span class="go">Sizes | Waists</span>
+<span class="go">S     | 30</span>
+<span class="go">M     | 34</span>
+<span class="go">L     | 38</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;Waists&#39;</span><span class="p">,</span> <span class="n">are</span><span class="o">.</span><span class="n">strictly_between</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">38</span><span class="p">))</span>
+<span class="go">Sizes | Waists</span>
+<span class="go">M     | 34</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;Waists&#39;</span><span class="p">,</span> <span class="n">are</span><span class="o">.</span><span class="n">between</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">38</span><span class="p">))</span>
+<span class="go">Sizes | Waists</span>
+<span class="go">S     | 30</span>
+<span class="go">M     | 34</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;Waists&#39;</span><span class="p">,</span> <span class="n">are</span><span class="o">.</span><span class="n">between_or_equal_to</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">38</span><span class="p">))</span>
+<span class="go">Sizes | Waists</span>
+<span class="go">S     | 30</span>
+<span class="go">M     | 34</span>
+<span class="go">L     | 38</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;Sizes&#39;</span><span class="p">,</span>  <span class="n">are</span><span class="o">.</span><span class="n">equal_to</span><span class="p">(</span><span class="s1">&#39;L&#39;</span><span class="p">))</span>
+<span class="go">Sizes | Waists</span>
+<span class="go">L     | 38</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;Waists&#39;</span><span class="p">,</span> <span class="n">are</span><span class="o">.</span><span class="n">not_above</span><span class="p">(</span><span class="mi">38</span><span class="p">))</span>
+<span class="go">Sizes | Waists</span>
+<span class="go">S     | 30</span>
+<span class="go">M     | 34</span>
+<span class="go">L     | 38</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;Waists&#39;</span><span class="p">,</span> <span class="n">are</span><span class="o">.</span><span class="n">not_above_or_equal_to</span><span class="p">(</span><span class="mi">38</span><span class="p">))</span>
+<span class="go">Sizes | Waists</span>
+<span class="go">S     | 30</span>
+<span class="go">M     | 34</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;Waists&#39;</span><span class="p">,</span> <span class="n">are</span><span class="o">.</span><span class="n">not_below</span><span class="p">(</span><span class="mi">38</span><span class="p">))</span>
+<span class="go">Sizes | Waists</span>
+<span class="go">L     | 38</span>
+<span class="go">XL    | 42</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;Waists&#39;</span><span class="p">,</span> <span class="n">are</span><span class="o">.</span><span class="n">not_below_or_equal_to</span><span class="p">(</span><span class="mi">38</span><span class="p">))</span>
+<span class="go">Sizes | Waists</span>
+<span class="go">XL    | 42</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;Waists&#39;</span><span class="p">,</span> <span class="n">are</span><span class="o">.</span><span class="n">not_strictly_between</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">38</span><span class="p">))</span>
+<span class="go">Sizes | Waists</span>
+<span class="go">S     | 30</span>
+<span class="go">L     | 38</span>
+<span class="go">XL    | 42</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;Waists&#39;</span><span class="p">,</span> <span class="n">are</span><span class="o">.</span><span class="n">not_between</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">38</span><span class="p">))</span>
+<span class="go">Sizes | Waists</span>
+<span class="go">L     | 38</span>
+<span class="go">XL    | 42</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;Waists&#39;</span><span class="p">,</span> <span class="n">are</span><span class="o">.</span><span class="n">not_between_or_equal_to</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">38</span><span class="p">))</span>
+<span class="go">Sizes | Waists</span>
+<span class="go">XL    | 42</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;Sizes&#39;</span><span class="p">,</span> <span class="n">are</span><span class="o">.</span><span class="n">containing</span><span class="p">(</span><span class="s1">&#39;L&#39;</span><span class="p">))</span>
+<span class="go">Sizes | Waists</span>
+<span class="go">L     | 38</span>
+<span class="go">XL    | 42</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;Sizes&#39;</span><span class="p">,</span> <span class="n">are</span><span class="o">.</span><span class="n">not_containing</span><span class="p">(</span><span class="s1">&#39;L&#39;</span><span class="p">))</span>
+<span class="go">Sizes | Waists</span>
+<span class="go">S     | 30</span>
+<span class="go">M     | 34</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;Sizes&#39;</span><span class="p">,</span> <span class="n">are</span><span class="o">.</span><span class="n">contained_in</span><span class="p">(</span><span class="s1">&#39;MXL&#39;</span><span class="p">))</span>
+<span class="go">Sizes | Waists</span>
+<span class="go">M     | 34</span>
+<span class="go">L     | 38</span>
+<span class="go">XL    | 42</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;Sizes&#39;</span><span class="p">,</span> <span class="n">are</span><span class="o">.</span><span class="n">contained_in</span><span class="p">(</span><span class="s1">&#39;L&#39;</span><span class="p">))</span>
+<span class="go">Sizes | Waists</span>
+<span class="go">L     | 38</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;Sizes&#39;</span><span class="p">,</span> <span class="n">are</span><span class="o">.</span><span class="n">not_contained_in</span><span class="p">(</span><span class="s1">&#39;MXL&#39;</span><span class="p">))</span>
+<span class="go">Sizes | Waists</span>
+<span class="go">S     | 30</span>
+</pre></div>
+</div>
+<dl class="staticmethod">
+<dt id="datascience.predicates.are.above">
+<em class="property">static </em><code class="descname">above</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.above"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.above" title="Permalink to this definition">¶</a></dt>
+<dd><p>Greater than y.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="datascience.predicates.are.above_or_equal_to">
+<em class="property">static </em><code class="descname">above_or_equal_to</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.above_or_equal_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.above_or_equal_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Greater than or equal to y.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="datascience.predicates.are.below">
+<em class="property">static </em><code class="descname">below</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.below"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.below" title="Permalink to this definition">¶</a></dt>
+<dd><p>Less than y.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="datascience.predicates.are.below_or_equal_to">
+<em class="property">static </em><code class="descname">below_or_equal_to</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.below_or_equal_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.below_or_equal_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Less than or equal to y.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="datascience.predicates.are.between">
+<em class="property">static </em><code class="descname">between</code><span class="sig-paren">(</span><em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.between"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.between" title="Permalink to this definition">¶</a></dt>
+<dd><p>Greater than or equal to y and less than z.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="datascience.predicates.are.between_or_equal_to">
+<em class="property">static </em><code class="descname">between_or_equal_to</code><span class="sig-paren">(</span><em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.between_or_equal_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.between_or_equal_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Greater than or equal to y and less than or equal to z.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="datascience.predicates.are.contained_in">
+<em class="property">static </em><code class="descname">contained_in</code><span class="sig-paren">(</span><em>superstring</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.contained_in"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.contained_in" title="Permalink to this definition">¶</a></dt>
+<dd><p>A string that is part of the given superstring.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="datascience.predicates.are.containing">
+<em class="property">static </em><code class="descname">containing</code><span class="sig-paren">(</span><em>substring</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.containing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.containing" title="Permalink to this definition">¶</a></dt>
+<dd><p>A string that contains within it the given substring.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="datascience.predicates.are.equal_to">
+<em class="property">static </em><code class="descname">equal_to</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.equal_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.equal_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Equal to y.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="datascience.predicates.are.not_above">
+<code class="descname">not_above</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#datascience.predicates.are.not_above" title="Permalink to this definition">¶</a></dt>
+<dd><p>Less than or equal to y.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="datascience.predicates.are.not_above_or_equal_to">
+<code class="descname">not_above_or_equal_to</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#datascience.predicates.are.not_above_or_equal_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Less than y.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="datascience.predicates.are.not_below">
+<code class="descname">not_below</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#datascience.predicates.are.not_below" title="Permalink to this definition">¶</a></dt>
+<dd><p>Greater than or equal to y.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="datascience.predicates.are.not_below_or_equal_to">
+<code class="descname">not_below_or_equal_to</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#datascience.predicates.are.not_below_or_equal_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Greater than y.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="datascience.predicates.are.not_between">
+<code class="descname">not_between</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="headerlink" href="#datascience.predicates.are.not_between" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="datascience.predicates.are.not_between_or_equal_to">
+<code class="descname">not_between_or_equal_to</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="headerlink" href="#datascience.predicates.are.not_between_or_equal_to" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="datascience.predicates.are.not_contained_in">
+<code class="descname">not_contained_in</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="headerlink" href="#datascience.predicates.are.not_contained_in" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="datascience.predicates.are.not_containing">
+<code class="descname">not_containing</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="headerlink" href="#datascience.predicates.are.not_containing" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="datascience.predicates.are.not_equal_to">
+<code class="descname">not_equal_to</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="headerlink" href="#datascience.predicates.are.not_equal_to" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="datascience.predicates.are.not_strictly_between">
+<code class="descname">not_strictly_between</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="headerlink" href="#datascience.predicates.are.not_strictly_between" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="datascience.predicates.are.strictly_between">
+<em class="property">static </em><code class="descname">strictly_between</code><span class="sig-paren">(</span><em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.strictly_between"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.strictly_between" title="Permalink to this definition">¶</a></dt>
+<dd><p>Greater than y and less than z.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="maps.html"
+                        title="previous chapter">Maps (<code class="docutils literal"><span class="pre">datascience.maps</span></code>)</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="formats.html"
+                        title="next chapter">Formats (<code class="docutils literal"><span class="pre">datascience.formats</span></code>)</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/predicates.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="formats.html" title="Formats (datascience.formats)"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="maps.html" title="Maps (datascience.maps)"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.9.3 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.6.
+    </div>
+  </body>
+</html>
