@@ -55,6 +55,10 @@
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;are&#39;</span><span class="p">]</span>
 
+<span class="c1">#, &#39;not_equal_to&#39;, &#39;not_above&#39;, &#39;not_below&#39;, &#39;not_below_or_equal_to&#39;,</span>
+<span class="c1">#   &#39;not_above_or_equal_to&#39;, &#39;not_strictly_between&#39;, &#39;not_between&#39;,</span>
+<span class="c1">#     &#39;not_between_or_equal_to&#39;, &#39;not_containing&#39;, &#39;not_contained_in&#39;</span>
+
 <div class="viewcode-block" id="are"><a class="viewcode-back" href="../../predicates.html#datascience.predicates.are">[docs]</a><span class="k">class</span> <span class="nc">are</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Predicate functions. The class is named &quot;are&quot; for calls to where.</span>
 
@@ -196,8 +200,57 @@
     <span class="nd">@staticmethod</span>
 <div class="viewcode-block" id="are.contained_in"><a class="viewcode-back" href="../../predicates.html#datascience.predicates.are.contained_in">[docs]</a>    <span class="k">def</span> <span class="nf">contained_in</span><span class="p">(</span><span class="n">superstring</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A string that is part of the given superstring.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">_combinable</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">superstring</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">_combinable</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">superstring</span><span class="p">)</span></div>
 
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="are.not_equal_to"><a class="viewcode-back" href="../../predicates.html#datascience.predicates.are.not_equal_to">[docs]</a>    <span class="k">def</span> <span class="nf">not_equal_to</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Is not equal to y&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_not</span><span class="p">(</span><span class="n">are</span><span class="o">.</span><span class="n">equal_to</span><span class="p">)</span></div>
+    
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="are.not_above"><a class="viewcode-back" href="../../predicates.html#datascience.predicates.are.not_above">[docs]</a>    <span class="k">def</span> <span class="nf">not_above</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Is not above y&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">are</span><span class="o">.</span><span class="n">below_or_equal_to</span></div>
+    
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="are.not_below"><a class="viewcode-back" href="../../predicates.html#datascience.predicates.are.not_below">[docs]</a>    <span class="k">def</span> <span class="nf">not_below</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Is not below y&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">are</span><span class="o">.</span><span class="n">above_or_equal_to</span></div>
+    
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="are.not_below_or_equal_to"><a class="viewcode-back" href="../../predicates.html#datascience.predicates.are.not_below_or_equal_to">[docs]</a>    <span class="k">def</span> <span class="nf">not_below_or_equal_to</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Is neither below y nor equal to y&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">are</span><span class="o">.</span><span class="n">above</span></div>
+    
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="are.not_above_or_equal_to"><a class="viewcode-back" href="../../predicates.html#datascience.predicates.are.not_above_or_equal_to">[docs]</a>    <span class="k">def</span> <span class="nf">not_above_or_equal_to</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Is neither above y nor equal to y&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">are</span><span class="o">.</span><span class="n">below</span></div>
+    
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="are.not_strictly_between"><a class="viewcode-back" href="../../predicates.html#datascience.predicates.are.not_strictly_between">[docs]</a>    <span class="k">def</span> <span class="nf">not_strictly_between</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Is equal to y or equal to z or less than y or greater than z&quot;&quot;&quot;</span>
+        <span class="k">return</span>  <span class="n">_not</span><span class="p">(</span><span class="n">are</span><span class="o">.</span><span class="n">strictly_between</span><span class="p">)</span></div>
+    
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="are.not_between"><a class="viewcode-back" href="../../predicates.html#datascience.predicates.are.not_between">[docs]</a>    <span class="k">def</span> <span class="nf">not_between</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Is equal to y or less than y or greater than z&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_not</span><span class="p">(</span><span class="n">are</span><span class="o">.</span><span class="n">between</span><span class="p">)</span></div>
+    
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="are.not_between_or_equal_to"><a class="viewcode-back" href="../../predicates.html#datascience.predicates.are.not_between_or_equal_to">[docs]</a>    <span class="k">def</span> <span class="nf">not_between_or_equal_to</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Is less than y or greater than z&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_not</span><span class="p">(</span><span class="n">are</span><span class="o">.</span><span class="n">between_or_equal_to</span><span class="p">)</span></div>
+    
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="are.not_containing"><a class="viewcode-back" href="../../predicates.html#datascience.predicates.are.not_containing">[docs]</a>    <span class="k">def</span> <span class="nf">not_containing</span><span class="p">(</span><span class="n">substring</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A string that does not contain substring&quot;&quot;&quot;</span> 
+        <span class="k">return</span> <span class="n">_not</span><span class="p">(</span><span class="n">are</span><span class="o">.</span><span class="n">containing</span><span class="p">)</span></div>
+    
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="are.not_contained_in"><a class="viewcode-back" href="../../predicates.html#datascience.predicates.are.not_contained_in">[docs]</a>    <span class="k">def</span> <span class="nf">not_contained_in</span><span class="p">(</span><span class="n">superstring</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A string that is not contained within the superstring&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_not</span><span class="p">(</span><span class="n">are</span><span class="o">.</span><span class="n">contained_in</span><span class="p">)</span></div></div>
 <span class="c1">###############</span>
 <span class="c1"># Combination #</span>
 <span class="c1">###############</span>
@@ -236,16 +289,19 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">x</span> <span class="o">==</span> <span class="n">y</span>
 
-<span class="n">are</span><span class="o">.</span><span class="n">not_equal_to</span> <span class="o">=</span> <span class="n">_not</span><span class="p">(</span><span class="n">are</span><span class="o">.</span><span class="n">equal_to</span><span class="p">)</span>
-<span class="n">are</span><span class="o">.</span><span class="n">not_above</span> <span class="o">=</span> <span class="n">are</span><span class="o">.</span><span class="n">below_or_equal_to</span>
-<span class="n">are</span><span class="o">.</span><span class="n">not_below</span> <span class="o">=</span> <span class="n">are</span><span class="o">.</span><span class="n">above_or_equal_to</span>
-<span class="n">are</span><span class="o">.</span><span class="n">not_below_or_equal_to</span> <span class="o">=</span> <span class="n">are</span><span class="o">.</span><span class="n">above</span>
-<span class="n">are</span><span class="o">.</span><span class="n">not_above_or_equal_to</span> <span class="o">=</span> <span class="n">are</span><span class="o">.</span><span class="n">below</span>
-<span class="n">are</span><span class="o">.</span><span class="n">not_strictly_between</span> <span class="o">=</span> <span class="n">_not</span><span class="p">(</span><span class="n">are</span><span class="o">.</span><span class="n">strictly_between</span><span class="p">)</span>
-<span class="n">are</span><span class="o">.</span><span class="n">not_between</span> <span class="o">=</span> <span class="n">_not</span><span class="p">(</span><span class="n">are</span><span class="o">.</span><span class="n">between</span><span class="p">)</span>
-<span class="n">are</span><span class="o">.</span><span class="n">not_between_or_equal_to</span> <span class="o">=</span> <span class="n">_not</span><span class="p">(</span><span class="n">are</span><span class="o">.</span><span class="n">between_or_equal_to</span><span class="p">)</span>
-<span class="n">are</span><span class="o">.</span><span class="n">not_containing</span> <span class="o">=</span> <span class="n">_not</span><span class="p">(</span><span class="n">are</span><span class="o">.</span><span class="n">containing</span><span class="p">)</span>
-<span class="n">are</span><span class="o">.</span><span class="n">not_contained_in</span> <span class="o">=</span> <span class="n">_not</span><span class="p">(</span><span class="n">are</span><span class="o">.</span><span class="n">contained_in</span><span class="p">)</span>
+<span class="c1"># are.not_equal_to = _not(are.equal_to)</span>
+<span class="c1"># are.not_above = are.between_or_equal_to</span>
+<span class="c1"># are.not_below = are.above_or_equal_to</span>
+<span class="c1"># are.not_below_or_equal_to = are.above </span>
+<span class="c1"># are.not_above_or_equal_to = are.below</span>
+<span class="c1"># are.not_strictly_between = _not(are.strictly_between)</span>
+<span class="c1"># are.not_between = _not(are.between)</span>
+<span class="c1"># are.not_between_or_equal_to = _not(are.between_or_equal_to) </span>
+<span class="c1"># are.not_containing = _not(are.containing)</span>
+<span class="c1"># are.not_contained_in = _not(are.contained_in)</span>
+
+
+    
 </pre></div>
 
           </div>
