@@ -150,6 +150,55 @@ class are:
         """A string that is part of the given superstring."""
         return _combinable(lambda x: x in superstring)
 
+    @staticmethod
+    def not_equal_to(y):
+        """Is not equal to y"""
+        return _not(are.equal_to)
+    
+    @staticmethod
+    def not_above(y):
+        """Is not above y"""
+        return are.below_or_equal_to
+    
+    @staticmethod
+    def not_below(y):
+        """Is not below y"""
+        return are.above_or_equal_to
+    
+    @staticmethod
+    def not_below_or_equal_to(y):
+        """Is neither below y nor equal to y"""
+        return are.above
+    
+    @staticmethod
+    def not_above_or_equal_to(y):
+        """Is neither above y nor equal to y"""
+        return are.below
+    
+    @staticmethod
+    def not_strictly_between(y, z):
+        """Is equal to y or equal to z or less than y or greater than z"""
+        return  _not(are.strictly_between)
+    
+    @staticmethod
+    def not_between(y, z):
+        """Is equal to y or less than y or greater than z"""
+        return _not(are.between)
+    
+    @staticmethod
+    def not_between_or_equal_to(y,z):
+        """Is less than y or greater than z"""
+        return _not(are.between_or_equal_to)
+    
+    @staticmethod
+    def not_containing(substring):
+        """A string that does not contain substring""" 
+        return _not(are.containing)
+    
+    @staticmethod
+    def not_contained_in(superstring):
+        """A string that is not contained within the superstring"""
+        return _not(are.contained_in)
 ###############
 # Combination #
 ###############
@@ -188,44 +237,5 @@ def _equal_or_float_equal(x, y):
     else:
         return x == y
 
-are.not_equal_to = not_equal_to
-are.not_above = not_above
-are.not_below = not_below
-are.not_below_or_equal_to = not_below_or_equal_to 
-are.not_above_or_equal_to = not_above_or_equal_to
-are.not_strictly_between = not_strictly_between
-are.not_between = not_between
-are.not_between_or_equal_to = not_between_or_equal_to 
-are.not_containing = not_containing
-are.not_contained_in = not_contained_in
 
-def not_equal_to(y):
-    """Is not equal to y"""
-    return _not(are.equal_to)
-def not_above(y):
-    """Is not above y"""
-    return are.below_or_equal_to
-def not_below(y):
-    """Is not below y"""
-    return are.above_or_equal_to
-def not_below_or_equal_to(y):
-    """Is neither below y nor equal to y"""
-    return are.above
-def not_above_or_equal_to(y):
-    """Is neither above y nor equal to y"""
-    return are.below
-def not_strictly_between(y, z):
-    """Is equal to y or equal to z or less than y or greater than z"""
-    return  _not(are.strictly_between)
-def not_between(y, z):
-    """Is equal to y or less than y or greater than z"""
-    return _not(are.between)
-def not_between_or_equal_to(y,z):
-    """Is less than y or greater than z"""
-    return _not(are.between_or_equal_to)
-def not_containing(substring):
-    """A string that does not contain substring""" 
-    return _not(are.containing)
-def not_contained_in(superstring):
-    """A string that is not contained within the superstring"""
-    return _not(are.contained_in)
+    
