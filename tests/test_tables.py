@@ -387,11 +387,9 @@ def test_groups_collect(t):
     10     | False | 1
     """)
 
-
 def test_join(t, u):
     """Tests that join works, not destructive"""
-    test = t.join('points', u)
-    assert_equal(test, """
+    assert_equal(t.join('points', u), """
     points | letter | count | totals | names
     1      | a      | 9     | 9      | one
     2      | b      | 3     | 6      | two
@@ -411,6 +409,11 @@ def test_join(t, u):
     z      | 1     | 10     | 10
     """)
 
+def test_join_html(t, u):
+    """Test that join doesn't crash with formatting."""
+    t = t.set_format('count', NumberFormatter)
+    t.as_html()
+    u.join('points', t, 'points').as_html()
 
 def test_pivot_counts(t):
     t = t.copy()
@@ -716,8 +719,6 @@ def test_relabel():
     with(pytest.raises(ValueError)):
         table.relabel(['red', 'green'], ['magenta', 'yellow'])
 
-
-
 def test_relabel_with_chars(table):
     assert_equal(table, """
     letter | count | points
@@ -735,8 +736,8 @@ def test_relabel_with_chars(table):
     z      | 1     | 10
     """)
 
-def test_with_relabeling(table):
-    table2 = table.with_relabeling('points', 'minions')
+def test_relabeled(table):
+    table2 = table.relabeled('points', 'minions')
     assert_equal(table2, """
     letter | count | minions
     a      | 9     | 1
@@ -744,7 +745,7 @@ def test_with_relabeling(table):
     c      | 3     | 2
     z      | 1     | 10
     """)
-    table3 = table.with_relabeling(['count', 'points'], ['ducks', 'ducklings'])
+    table3 = table.relabeled(['count', 'points'], ['ducks', 'ducklings'])
     assert_equal(table3, """
     letter | ducks | ducklings
     a      | 9     | 1
@@ -754,6 +755,17 @@ def test_with_relabeling(table):
     """)
     assert_equal(table, """
     letter | count | points
+    a      | 9     | 1
+    b      | 3     | 2
+    c      | 3     | 2
+    z      | 1     | 10
+    """)
+
+def test_relabeled_formatted(table):
+    table.set_format('points', NumberFormatter)
+    table2 = table.relabeled('points', 'very long label')
+    assert_equal(table2, """
+    letter | count | very long label
     a      | 9     | 1
     b      | 3     | 2
     c      | 3     | 2

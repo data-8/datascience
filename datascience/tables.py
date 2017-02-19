@@ -370,18 +370,16 @@ class Table(collections.abc.MutableMapping):
 
     def set_format(self, column_or_columns, formatter):
         """Set the format of a column."""
-        if inspect.isclass(formatter) and issubclass(formatter, _formats.Formatter):
+        if inspect.isclass(formatter):
             formatter = formatter()
+        if callable(formatter):
+            formatter = _formats.FunctionFormatter(formatter)
+        if not hasattr(formatter, 'format_column'):
+            raise Exception('Expected Formatter or function: ' + str(formatter))
         for label in self._as_labels(column_or_columns):
-            if callable(formatter):
-                self._formats[label] = lambda v, label: v if label else str(formatter(v))
-            elif isinstance(formatter, _formats.Formatter):
-                if formatter.converts_values:
-                    self[label] = self.apply(formatter.convert, label)
-                column = self[label]
-                self._formats[label] = formatter.format_column(label, column)
-            else:
-                raise Exception('Expected Formatter or function: ' + str(formatter))
+            if formatter.converts_values:
+                self[label] = self.apply(formatter.convert, label)
+            self._formats[label] = formatter
         return self
 
     def move_to_start(self, column_label):
@@ -1179,8 +1177,8 @@ class Table(collections.abc.MutableMapping):
         return type(self)([key, 'column', 'value']).with_rows(rows)
 
     def join(self, column_label, other, other_label=None):
-        """Creates a new table with the columns of self and other, containing rows
-        for all values of a column that appear in both tables.
+        """Creates a new table with the columns of self and other, containing
+        rows for all values of a column that appear in both tables.
 
         Args:
             ``column_label`` (``str``):  label of column in self that is used to
@@ -1193,11 +1191,11 @@ class Table(collections.abc.MutableMapping):
                 Otherwise in ``other`` used to join rows.
 
         Returns:
-            New table self joined with ``other`` by matching values in ``column_label``
-            and ``other_label``. If the resulting join is empty, returns None. If
-            a join value appears more than once in ``self``, each row with that value
-            will appear in resulting join, but in ``other``, only the first row with
-            that value will be used.
+            New table self joined with ``other`` by matching values in
+            ``column_label`` and ``other_label``. If the resulting join is
+            empty, returns None. If a join value appears more than once in
+            ``self``, each row with that value will appear in resulting join,
+            but in ``other``, only the first row with that value will be used.
 
         >>> table = Table().with_columns('a', make_array(9, 3, 3, 1),
         ...     'b', make_array(1, 2, 2, 10),
@@ -1268,17 +1266,22 @@ class Table(collections.abc.MutableMapping):
         if not joined_rows:
             return None
 
-        labels = list(self.labels)
-        labels += [self._unused_label(s) for s in other.labels]
-        joined = type(self)(labels).with_rows(joined_rows)
-        for selfformat in self._formats:
-            joined.set_format(selfformat, self._formats[selfformat])
-        for otherformat in other._formats:
-            if otherformat in joined.labels:
-                joined.set_format(self._unused_label(otherformat), other._formats[otherformat])
-            else:
-                joined.set_format(otherformat, other._formats[otherformat])
-        del joined[self._unused_label(other_label)] # Remove redundant column
+        # Build joined table
+        self_labels = list(self.labels)
+        other_labels = [self._unused_label(s) for s in other.labels]
+        other_labels_map = dict(zip(other.labels, other_labels))
+        joined = type(self)(self_labels + other_labels).with_rows(joined_rows)
+
+        # Copy formats from both tables
+        joined._formats.update(self._formats)
+        for label in other._formats:
+            joined._formats[other_labels_map[label]] = other._formats[label]
+
+        # Remove redundant column, but perhaps save its formatting
+        del joined[other_labels_map[other_label]]
+        if column_label not in self._formats and other_label in other._formats:
+            joined._formats[column_label] = other._formats[other_label]
+
         return joined.move_to_start(column_label).sort(column_label)
 
 
@@ -1810,14 +1813,35 @@ class Table(collections.abc.MutableMapping):
 
     max_str_rows = 10
 
+    @staticmethod
+    def _use_html_if_available(format_fn):
+        """Use the value's HTML rendering if available, overriding format_fn."""
+        def format_using_as_html(v, label=False):
+            if not label and hasattr(v, 'as_html'):
+                return v.as_html()
+            else:
+                return format_fn(v, label)
+        return format_using_as_html
+
+    def _get_column_formatters(self, max_rows, as_html):
+        """Return one value formatting function per column.
+
+        Each function has the signature f(value, label=False) -> str
+        """
+        formats = {s: self._formats.get(s, self.formatter) for s in self.labels}
+        cols = self._columns.items()
+        fmts = [formats[k].format_column(k, v[:max_rows]) for k, v in cols]
+        if as_html:
+            fmts = list(map(type(self)._use_html_if_available, fmts))
+        return fmts
+
     def as_text(self, max_rows=0, sep=" | "):
         """Format table as text."""
         if not max_rows or max_rows > self.num_rows:
             max_rows = self.num_rows
         omitted = max(0, self.num_rows - max_rows)
         labels = self._columns.keys()
-        fmts = [self._formats.get(k, self.formatter.format_column(k, v[:max_rows])) for
-            k, v in self._columns.items()]
+        fmts = self._get_column_formatters(max_rows, False)
         rows = [[fmt(label, label=True) for fmt, label in zip(fmts, labels)]]
         for row in itertools.islice(self.rows, max_rows):
             rows.append([f(v, label=False) for v, f in zip(row, fmts)])
@@ -1841,9 +1865,7 @@ class Table(collections.abc.MutableMapping):
             (1, '</thead>'),
             (1, '<tbody>'),
         ]
-        fmts = [self._formats.get(k, self.formatter.format_column(k, v[:max_rows])) for
-            k, v in self._columns.items()]
-        fmts = [(lambda f: lambda v, label=False: v.as_html() if hasattr(v, 'as_html') else f(v))(f) for f in fmts]
+        fmts = self._get_column_formatters(max_rows, True)
         for row in itertools.islice(self.rows, max_rows):
             lines += [
                 (2, '<tr>'),
