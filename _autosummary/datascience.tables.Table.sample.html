@@ -66,9 +66,9 @@ original table.</p>
 <dd><dl class="first last docutils">
 <dt><code class="docutils literal"><span class="pre">k</span></code> &#8211; specifies the number of rows (<code class="docutils literal"><span class="pre">int</span></code>) to be sampled from</dt>
 <dd>the table. Default is k equal to number of rows in the table.</dd>
-<dt><code class="docutils literal"><span class="pre">with_replacement</span></code> &#8211; (<code class="docutils literal"><span class="pre">bool</span></code>) By default True; Samples <code class="docutils literal"><span class="pre">k</span></code></dt>
-<dd>rows with replacement from table, else samples <code class="docutils literal"><span class="pre">k</span></code> rows
-without replacement.</dd>
+<dt><code class="docutils literal"><span class="pre">with_replacement</span></code> &#8211; (<code class="docutils literal"><span class="pre">bool</span></code>) By default True;</dt>
+<dd>Samples <code class="docutils literal"><span class="pre">k</span></code> rows with replacement from table, else samples
+<code class="docutils literal"><span class="pre">k</span></code> rows without replacement.</dd>
 <dt><code class="docutils literal"><span class="pre">weights</span></code> &#8211; Array specifying probability the ith row of the</dt>
 <dd>table is sampled. Defaults to None, which samples each row
 with equal probability. <code class="docutils literal"><span class="pre">weights</span></code> must be a valid probability
@@ -110,19 +110,19 @@ summing to 1.</dd>
 <span class="go">job  | wage</span>
 <span class="go">b    | 20</span>
 <span class="go">c    | 15</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">jobs</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">k</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">with_replacement</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">weights</span> <span class="o">=</span> <span class="n">make_array</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ws</span> <span class="o">=</span>  <span class="n">make_array</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">jobs</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">with_replacement</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">ws</span><span class="p">)</span> 
 <span class="go">job  | wage</span>
 <span class="go">a    | 10</span>
 <span class="go">a    | 10</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">jobs</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">k</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">jobs</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">make_array</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 <span class="gt">Traceback (most recent call last):</span>
     <span class="o">...</span>
 <span class="gr">ValueError</span>: <span class="n">probabilities do not sum to 1</span>
 </pre></div>
 </div>
 <p># Weights must be length of table.
-&gt;&gt;&gt; jobs.sample(k = 2, weights = make_array(1, 0, 0))
+&gt;&gt;&gt; jobs.sample(k=2, weights=make_array(1, 0, 0))
 Traceback (most recent call last):</p>
 <blockquote>
 <div>...</div></blockquote>

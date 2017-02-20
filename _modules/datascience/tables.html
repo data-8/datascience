@@ -1421,9 +1421,9 @@
 <span class="sd">            ``k`` -- specifies the number of rows (``int``) to be sampled from</span>
 <span class="sd">               the table. Default is k equal to number of rows in the table.</span>
 
-<span class="sd">            ``with_replacement`` -- (``bool``) By default True; Samples ``k``</span>
-<span class="sd">                rows with replacement from table, else samples ``k`` rows</span>
-<span class="sd">                without replacement.</span>
+<span class="sd">            ``with_replacement`` -- (``bool``) By default True;</span>
+<span class="sd">                Samples ``k`` rows with replacement from table, else samples</span>
+<span class="sd">                ``k`` rows without replacement.</span>
 
 <span class="sd">            ``weights`` -- Array specifying probability the ith row of the</span>
 <span class="sd">                table is sampled. Defaults to None, which samples each row</span>
@@ -1463,18 +1463,18 @@
 <span class="sd">        job  | wage</span>
 <span class="sd">        b    | 20</span>
 <span class="sd">        c    | 15</span>
-<span class="sd">        &gt;&gt;&gt; jobs.sample(k = 2, with_replacement = True,</span>
-<span class="sd">        ...     weights = make_array(0.5, 0.5, 0, 0)) # doctest: +SKIP</span>
+<span class="sd">        &gt;&gt;&gt; ws =  make_array(0.5, 0.5, 0, 0)</span>
+<span class="sd">        &gt;&gt;&gt; jobs.sample(k=2, with_replacement=True, weights=ws) # doctest: +SKIP</span>
 <span class="sd">        job  | wage</span>
 <span class="sd">        a    | 10</span>
 <span class="sd">        a    | 10</span>
-<span class="sd">        &gt;&gt;&gt; jobs.sample(k = 2, weights = make_array(1, 0, 1, 0))</span>
+<span class="sd">        &gt;&gt;&gt; jobs.sample(k=2, weights=make_array(1, 0, 1, 0))</span>
 <span class="sd">        Traceback (most recent call last):</span>
 <span class="sd">            ...</span>
 <span class="sd">        ValueError: probabilities do not sum to 1</span>
 
 <span class="sd">        # Weights must be length of table.</span>
-<span class="sd">        &gt;&gt;&gt; jobs.sample(k = 2, weights = make_array(1, 0, 0))</span>
+<span class="sd">        &gt;&gt;&gt; jobs.sample(k=2, weights=make_array(1, 0, 0))</span>
 <span class="sd">        Traceback (most recent call last):</span>
 <span class="sd">            ...</span>
 <span class="sd">        ValueError: a and p must have same size</span>
