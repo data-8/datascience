@@ -91,3 +91,15 @@ def test_percent_formatter():
     20.0%
     1000.0%
     """)
+
+def test_distribution_formatter():
+    counts = [9, 10, 18, 23]
+    t = ds.Table().with_column('count', counts)
+    t.set_format('count', ds.DistributionFormatter)
+    assert_equal(t, """
+    count
+    15.00%
+    16.67%
+    30.00%
+    38.33%
+    """)

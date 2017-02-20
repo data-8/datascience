@@ -1,7 +1,8 @@
 """String formatting for table entries."""
 
 __all__ = ['default_formatter', 'Formatter', 'NumberFormatter',
-           'CurrencyFormatter', 'DateFormatter', 'PercentFormatter']
+           'CurrencyFormatter', 'DateFormatter', 'PercentFormatter',
+           'DistributionFormatter']
 
 
 import numpy as np
