@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Utility Functions (datascience.util) &#8212; datascience 0.9.3 documentation</title>
+    <title>Utility Functions (datascience.util) &mdash; datascience 0.9.4 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.9.3',
+        VERSION:     '0.9.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.9.3 documentation" href="index.html" />
+    <link rel="top" title="datascience 0.9.4 documentation" href="index.html" />
     <link rel="prev" title="Formats (datascience.formats)" href="formats.html" /> 
   </head>
   <body role="document">
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="formats.html" title="Formats (datascience.formats)"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.9.3 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.9.4 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -57,7 +57,7 @@
 <dd><p>Returns an array containing all the arguments passed to this function.
 A simple way to make an array with a few elements.</p>
 <p>As with any array, all arguments should have the same type.</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">make_array</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">make_array</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="go">array([0])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">make_array</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
 <span class="go">array([2, 3, 4])</span>
@@ -76,7 +76,7 @@ A simple way to make an array with a few elements.</p>
 <dd><p>Returns the pth percentile of the input array (the value that is at
 least as great as p% of the values in the array).</p>
 <p>If arr is not provided, percentile returns itself curried with p</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">percentile</span><span class="p">(</span><span class="mf">74.9</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">percentile</span><span class="p">(</span><span class="mf">74.9</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
 <span class="go">5</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">percentile</span><span class="p">(</span><span class="mi">75</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
 <span class="go">5</span>
@@ -127,19 +127,19 @@ between <code class="docutils literal"><span class="pre">lbound</span></code> an
 <dl class="docutils">
 <dt>Args:</dt>
 <dd><dl class="first last docutils">
-<dt>table</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">instance of Table</span><dd>The table to apply your function to</dd>
-<dt>func</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">function</span><dd>Any function that will work with DataFrame.apply</dd>
-<dt>subset</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">list | None</span><dd>A list of columns to apply the function to. If None, function
+<dt>table <span class="classifier-delimiter">:</span> <span class="classifier">instance of Table</span></dt>
+<dd>The table to apply your function to</dd>
+<dt>func <span class="classifier-delimiter">:</span> <span class="classifier">function</span></dt>
+<dd>Any function that will work with DataFrame.apply</dd>
+<dt>subset <span class="classifier-delimiter">:</span> <span class="classifier">list | None</span></dt>
+<dd>A list of columns to apply the function to. If None, function
 will be applied to all columns in table</dd>
 </dl>
 </dd>
 </dl>
 <dl class="docutils">
-<dt>tab</dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">instance of Table</span><dd>A table with the given function applied. It will either be the
+<dt>tab <span class="classifier-delimiter">:</span> <span class="classifier">instance of Table</span></dt>
+<dd>A table with the given function applied. It will either be the
 shape == shape(table), or shape (1, table.shape[1])</dd>
 </dl>
 </dd></dl>
@@ -220,11 +220,14 @@ sampled proportions. The proportions will sum to 1.</dd>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -243,12 +246,12 @@ sampled proportions. The proportions will sum to 1.</dd>
         <li class="right" >
           <a href="formats.html" title="Formats (datascience.formats)"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.9.3 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.9.4 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.6.
+        &copy; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>
