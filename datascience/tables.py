@@ -1372,9 +1372,9 @@ class Table(collections.abc.MutableMapping):
             ``k`` -- specifies the number of rows (``int``) to be sampled from
                the table. Default is k equal to number of rows in the table.
 
-            ``with_replacement`` -- (``bool``) By default True; Samples ``k``
-                rows with replacement from table, else samples ``k`` rows
-                without replacement.
+            ``with_replacement`` -- (``bool``) By default True;
+                Samples ``k`` rows with replacement from table, else samples
+                ``k`` rows without replacement.
 
             ``weights`` -- Array specifying probability the ith row of the
                 table is sampled. Defaults to None, which samples each row
@@ -1414,18 +1414,18 @@ class Table(collections.abc.MutableMapping):
         job  | wage
         b    | 20
         c    | 15
-        >>> jobs.sample(k = 2, with_replacement = True,
-        ...     weights = make_array(0.5, 0.5, 0, 0)) # doctest: +SKIP
+        >>> ws =  make_array(0.5, 0.5, 0, 0)
+        >>> jobs.sample(k=2, with_replacement=True, weights=ws) # doctest: +SKIP
         job  | wage
         a    | 10
         a    | 10
-        >>> jobs.sample(k = 2, weights = make_array(1, 0, 1, 0))
+        >>> jobs.sample(k=2, weights=make_array(1, 0, 1, 0))
         Traceback (most recent call last):
             ...
         ValueError: probabilities do not sum to 1
 
         # Weights must be length of table.
-        >>> jobs.sample(k = 2, weights = make_array(1, 0, 0))
+        >>> jobs.sample(k=2, weights=make_array(1, 0, 0))
         Traceback (most recent call last):
             ...
         ValueError: a and p must have same size
