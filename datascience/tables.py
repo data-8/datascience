@@ -372,7 +372,7 @@ class Table(collections.abc.MutableMapping):
         """Set the format of a column."""
         if inspect.isclass(formatter):
             formatter = formatter()
-        if callable(formatter):
+        if callable(formatter) and not hasattr(formatter, 'format_column'):
             formatter = _formats.FunctionFormatter(formatter)
         if not hasattr(formatter, 'format_column'):
             raise Exception('Expected Formatter or function: ' + str(formatter))
