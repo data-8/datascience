@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>datascience.formats &mdash; datascience 0.9.4 documentation</title>
+    <title>datascience.formats &mdash; datascience 0.9.5 documentation</title>
     
     <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.9.4',
+        VERSION:     '0.9.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.9.4 documentation" href="../../index.html" />
+    <link rel="top" title="datascience 0.9.5 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body role="document">
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.9.4 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.9.5 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -50,7 +50,8 @@
 <span class="sd">&quot;&quot;&quot;String formatting for table entries.&quot;&quot;&quot;</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;default_formatter&#39;</span><span class="p">,</span> <span class="s1">&#39;Formatter&#39;</span><span class="p">,</span> <span class="s1">&#39;NumberFormatter&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;CurrencyFormatter&#39;</span><span class="p">,</span> <span class="s1">&#39;DateFormatter&#39;</span><span class="p">,</span> <span class="s1">&#39;PercentFormatter&#39;</span><span class="p">]</span>
+           <span class="s1">&#39;CurrencyFormatter&#39;</span><span class="p">,</span> <span class="s1">&#39;DateFormatter&#39;</span><span class="p">,</span> <span class="s1">&#39;PercentFormatter&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;DistributionFormatter&#39;</span><span class="p">]</span>
 
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
@@ -105,23 +106,26 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 </div>
+<div class="viewcode-block" id="Formatter.convert_column"><a class="viewcode-back" href="../../formats.html#datascience.formats.Formatter.convert_column">[docs]</a>    <span class="k">def</span> <span class="nf">convert_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert each value using the the convert_value method.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">convert_value</span><span class="p">,</span> <span class="n">values</span><span class="p">))</span>
+</div>
     <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="Formatter.convert"><a class="viewcode-back" href="../../formats.html#datascience.formats.Formatter.convert">[docs]</a>    <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+<div class="viewcode-block" id="Formatter.convert_value"><a class="viewcode-back" href="../../formats.html#datascience.formats.Formatter.convert_value">[docs]</a>    <span class="k">def</span> <span class="nf">convert_value</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Identity conversion (override to convert values).&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">value</span>
 </div>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">converts_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Whether this Formatter also converts values.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">Formatter</span><span class="o">.</span><span class="n">convert</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">Formatter</span><span class="o">.</span><span class="n">convert_value</span> <span class="ow">or</span> \
+               <span class="bp">self</span><span class="o">.</span><span class="n">convert_column</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">Formatter</span><span class="o">.</span><span class="n">convert_column</span>
 </div>
 <span class="n">default_formatter</span> <span class="o">=</span> <span class="n">Formatter</span><span class="p">()</span>
 
 
 <span class="k">class</span> <span class="nc">FunctionFormatter</span><span class="p">(</span><span class="n">Formatter</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Format values using a function.&quot;&quot;&quot;</span>
-
-    <span class="n">converts_values</span> <span class="o">=</span> <span class="bp">False</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">format_value</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">fn</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
@@ -130,14 +134,13 @@
 <div class="viewcode-block" id="NumberFormatter"><a class="viewcode-back" href="../../formats.html#datascience.formats.NumberFormatter">[docs]</a><span class="k">class</span> <span class="nc">NumberFormatter</span><span class="p">(</span><span class="n">Formatter</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Format numbers that may have delimiters.&quot;&quot;&quot;</span>
 
-    <span class="n">converts_values</span> <span class="o">=</span> <span class="bp">True</span>
-
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">decimal_point</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">decimal_point</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">decimals</span> <span class="o">=</span> <span class="n">decimals</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">decimal_point</span> <span class="o">=</span> <span class="n">decimal_point</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">separator</span> <span class="o">=</span> <span class="n">separator</span>
 
-<div class="viewcode-block" id="NumberFormatter.convert"><a class="viewcode-back" href="../../formats.html#datascience.formats.NumberFormatter.convert">[docs]</a>    <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<div class="viewcode-block" id="NumberFormatter.convert_value"><a class="viewcode-back" href="../../formats.html#datascience.formats.NumberFormatter.convert_value">[docs]</a>    <span class="k">def</span> <span class="nf">convert_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Convert string 93,000.00 to float 93000.0.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">separator</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
@@ -158,14 +161,12 @@
 <div class="viewcode-block" id="CurrencyFormatter"><a class="viewcode-back" href="../../formats.html#datascience.formats.CurrencyFormatter">[docs]</a><span class="k">class</span> <span class="nc">CurrencyFormatter</span><span class="p">(</span><span class="n">Formatter</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Format currency and convert to float.&quot;&quot;&quot;</span>
 
-    <span class="n">converts_values</span> <span class="o">=</span> <span class="bp">True</span>
-
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="o">=</span><span class="s2">&quot;$&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">)</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">symbol</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">symbol</span> <span class="o">=</span> <span class="n">symbol</span>
 
-<div class="viewcode-block" id="CurrencyFormatter.convert"><a class="viewcode-back" href="../../formats.html#datascience.formats.CurrencyFormatter.convert">[docs]</a>    <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<div class="viewcode-block" id="CurrencyFormatter.convert_value"><a class="viewcode-back" href="../../formats.html#datascience.formats.CurrencyFormatter.convert_value">[docs]</a>    <span class="k">def</span> <span class="nf">convert_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Convert value to float. If value is a string, ensure that the first</span>
 <span class="sd">        character is the same as symbol ie. the value is in the currency this</span>
 <span class="sd">        formatter is representing.</span>
@@ -183,14 +184,12 @@
 <div class="viewcode-block" id="DateFormatter"><a class="viewcode-back" href="../../formats.html#datascience.formats.DateFormatter">[docs]</a><span class="k">class</span> <span class="nc">DateFormatter</span><span class="p">(</span><span class="n">Formatter</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Format date &amp; time and convert to UNIX timestamp.&quot;&quot;&quot;</span>
 
-    <span class="n">converts_values</span> <span class="o">=</span> <span class="bp">True</span>
-
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S.</span><span class="si">%f</span><span class="s2">&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">)</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">format</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">=</span> <span class="n">format</span>
 
-<div class="viewcode-block" id="DateFormatter.convert"><a class="viewcode-back" href="../../formats.html#datascience.formats.DateFormatter.convert">[docs]</a>    <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<div class="viewcode-block" id="DateFormatter.convert_value"><a class="viewcode-back" href="../../formats.html#datascience.formats.DateFormatter.convert_value">[docs]</a>    <span class="k">def</span> <span class="nf">convert_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Convert 2015-08-03 to a Unix timestamp int.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span><span class="p">)</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span>
 </div>
@@ -202,15 +201,27 @@
 <div class="viewcode-block" id="PercentFormatter"><a class="viewcode-back" href="../../formats.html#datascience.formats.PercentFormatter">[docs]</a><span class="k">class</span> <span class="nc">PercentFormatter</span><span class="p">(</span><span class="n">Formatter</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Format a number as a percentage.&quot;&quot;&quot;</span>
 
-    <span class="n">converts_values</span> <span class="o">=</span> <span class="bp">False</span>
-
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">)</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">decimals</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">decimals</span> <span class="o">=</span> <span class="n">decimals</span>
 
 <div class="viewcode-block" id="PercentFormatter.format_value"><a class="viewcode-back" href="../../formats.html#datascience.formats.PercentFormatter.format_value">[docs]</a>    <span class="k">def</span> <span class="nf">format_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Format number as percentage.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;{:.&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">decimals</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;%}&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;{:.&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">decimals</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;%}&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+</div></div>
+<div class="viewcode-block" id="DistributionFormatter"><a class="viewcode-back" href="../../formats.html#datascience.formats.DistributionFormatter">[docs]</a><span class="k">class</span> <span class="nc">DistributionFormatter</span><span class="p">(</span><span class="n">PercentFormatter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Normalize a column and format as percentages.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="DistributionFormatter.convert_column"><a class="viewcode-back" href="../../formats.html#datascience.formats.DistributionFormatter.convert_column">[docs]</a>    <span class="k">def</span> <span class="nf">convert_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Normalize values.&quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">values</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">),</span> <span class="s1">&#39;Cannot normalize a column with negatives&#39;</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">total</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">values</span> <span class="o">/</span> <span class="n">total</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">values</span></div></div>
 </pre></div>
 
           </div>
@@ -244,7 +255,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.9.4 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.9.5 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

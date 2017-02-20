@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Formats (datascience.formats) &mdash; datascience 0.9.4 documentation</title>
+    <title>Formats (datascience.formats) &mdash; datascience 0.9.5 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.9.4',
+        VERSION:     '0.9.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="datascience 0.9.4 documentation" href="index.html" />
+    <link rel="top" title="datascience 0.9.5 documentation" href="index.html" />
     <link rel="next" title="Utility Functions (datascience.util)" href="util.html" />
     <link rel="prev" title="Maps (datascience.maps)" href="maps.html" /> 
   </head>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="maps.html" title="Maps (datascience.maps)"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.9.4 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.9.5 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -59,9 +59,15 @@
 <dt id="datascience.formats.Formatter">
 <em class="property">class </em><code class="descclassname">datascience.formats.</code><code class="descname">Formatter</code><span class="sig-paren">(</span><em>min_width=None</em>, <em>max_width=None</em>, <em>etc=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#Formatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.Formatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>String formatter that truncates long values.</p>
+<dl class="method">
+<dt id="datascience.formats.Formatter.convert_column">
+<code class="descname">convert_column</code><span class="sig-paren">(</span><em>values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#Formatter.convert_column"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.Formatter.convert_column" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert each value using the the convert_value method.</p>
+</dd></dl>
+
 <dl class="staticmethod">
-<dt id="datascience.formats.Formatter.convert">
-<em class="property">static </em><code class="descname">convert</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#Formatter.convert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.Formatter.convert" title="Permalink to this definition">¶</a></dt>
+<dt id="datascience.formats.Formatter.convert_value">
+<em class="property">static </em><code class="descname">convert_value</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#Formatter.convert_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.Formatter.convert_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Identity conversion (override to convert values).</p>
 </dd></dl>
 
@@ -102,18 +108,13 @@
 
 <dl class="class">
 <dt id="datascience.formats.NumberFormatter">
-<em class="property">class </em><code class="descclassname">datascience.formats.</code><code class="descname">NumberFormatter</code><span class="sig-paren">(</span><em>decimals=2</em>, <em>decimal_point='.'</em>, <em>separator='</em>, <em>'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#NumberFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.NumberFormatter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">datascience.formats.</code><code class="descname">NumberFormatter</code><span class="sig-paren">(</span><em>decimals=2</em>, <em>decimal_point='.'</em>, <em>separator='</em>, <em>'</em>, <em>*args</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#NumberFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.NumberFormatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Format numbers that may have delimiters.</p>
 <dl class="method">
-<dt id="datascience.formats.NumberFormatter.convert">
-<code class="descname">convert</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#NumberFormatter.convert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.NumberFormatter.convert" title="Permalink to this definition">¶</a></dt>
+<dt id="datascience.formats.NumberFormatter.convert_value">
+<code class="descname">convert_value</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#NumberFormatter.convert_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.NumberFormatter.convert_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert string 93,000.00 to float 93000.0.</p>
 </dd></dl>
-
-<dl class="attribute">
-<dt id="datascience.formats.NumberFormatter.converts_values">
-<code class="descname">converts_values</code><em class="property"> = True</em><a class="headerlink" href="#datascience.formats.NumberFormatter.converts_values" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 <dl class="method">
 <dt id="datascience.formats.NumberFormatter.format_value">
@@ -127,17 +128,12 @@
 <em class="property">class </em><code class="descclassname">datascience.formats.</code><code class="descname">CurrencyFormatter</code><span class="sig-paren">(</span><em>symbol='$'</em>, <em>*args</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#CurrencyFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.CurrencyFormatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Format currency and convert to float.</p>
 <dl class="method">
-<dt id="datascience.formats.CurrencyFormatter.convert">
-<code class="descname">convert</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#CurrencyFormatter.convert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.CurrencyFormatter.convert" title="Permalink to this definition">¶</a></dt>
+<dt id="datascience.formats.CurrencyFormatter.convert_value">
+<code class="descname">convert_value</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#CurrencyFormatter.convert_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.CurrencyFormatter.convert_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert value to float. If value is a string, ensure that the first
 character is the same as symbol ie. the value is in the currency this
 formatter is representing.</p>
 </dd></dl>
-
-<dl class="attribute">
-<dt id="datascience.formats.CurrencyFormatter.converts_values">
-<code class="descname">converts_values</code><em class="property"> = True</em><a class="headerlink" href="#datascience.formats.CurrencyFormatter.converts_values" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 <dl class="method">
 <dt id="datascience.formats.CurrencyFormatter.format_value">
@@ -152,15 +148,10 @@ formatter is representing.</p>
 <em class="property">class </em><code class="descclassname">datascience.formats.</code><code class="descname">DateFormatter</code><span class="sig-paren">(</span><em>format='%Y-%m-%d %H:%M:%S.%f'</em>, <em>*args</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#DateFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.DateFormatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Format date &amp; time and convert to UNIX timestamp.</p>
 <dl class="method">
-<dt id="datascience.formats.DateFormatter.convert">
-<code class="descname">convert</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#DateFormatter.convert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.DateFormatter.convert" title="Permalink to this definition">¶</a></dt>
+<dt id="datascience.formats.DateFormatter.convert_value">
+<code class="descname">convert_value</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#DateFormatter.convert_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.DateFormatter.convert_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert 2015-08-03 to a Unix timestamp int.</p>
 </dd></dl>
-
-<dl class="attribute">
-<dt id="datascience.formats.DateFormatter.converts_values">
-<code class="descname">converts_values</code><em class="property"> = True</em><a class="headerlink" href="#datascience.formats.DateFormatter.converts_values" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 <dl class="method">
 <dt id="datascience.formats.DateFormatter.format_value">
@@ -174,15 +165,22 @@ formatter is representing.</p>
 <dt id="datascience.formats.PercentFormatter">
 <em class="property">class </em><code class="descclassname">datascience.formats.</code><code class="descname">PercentFormatter</code><span class="sig-paren">(</span><em>decimals=2</em>, <em>*args</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#PercentFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.PercentFormatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Format a number as a percentage.</p>
-<dl class="attribute">
-<dt id="datascience.formats.PercentFormatter.converts_values">
-<code class="descname">converts_values</code><em class="property"> = False</em><a class="headerlink" href="#datascience.formats.PercentFormatter.converts_values" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="method">
 <dt id="datascience.formats.PercentFormatter.format_value">
 <code class="descname">format_value</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#PercentFormatter.format_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.PercentFormatter.format_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Format number as percentage.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="datascience.formats.DistributionFormatter">
+<em class="property">class </em><code class="descclassname">datascience.formats.</code><code class="descname">DistributionFormatter</code><span class="sig-paren">(</span><em>decimals=2</em>, <em>*args</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#DistributionFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.DistributionFormatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalize a column and format as percentages.</p>
+<dl class="method">
+<dt id="datascience.formats.DistributionFormatter.convert_column">
+<code class="descname">convert_column</code><span class="sig-paren">(</span><em>values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#DistributionFormatter.convert_column"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.formats.DistributionFormatter.convert_column" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalize values.</p>
 </dd></dl>
 
 </dd></dl>
@@ -240,7 +238,7 @@ formatter is representing.</p>
         <li class="right" >
           <a href="maps.html" title="Maps (datascience.maps)"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.9.4 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.9.5 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
