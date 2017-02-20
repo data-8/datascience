@@ -27,6 +27,22 @@ pip install datascience
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.9.5
+
+- DistributionFormatter added.
+
+### v0.9.4
+
+- Fix bug for relabeled columns that had a format already.
+
+### v0.9.3
+
+- Circles bound to values determine the circle area, not radius.
+
+### v0.9.2
+
+- Scatter diagrams can take data-driven size and color parameters.
+
 ### v0.9.1
 
 - Changed signature of `apply`, `hist`, and `bin` to accept multiple columns without a list

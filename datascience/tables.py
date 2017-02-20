@@ -378,7 +378,7 @@ class Table(collections.abc.MutableMapping):
             raise Exception('Expected Formatter or function: ' + str(formatter))
         for label in self._as_labels(column_or_columns):
             if formatter.converts_values:
-                self[label] = self.apply(formatter.convert, label)
+                self[label] = formatter.convert_column(self[label])
             self._formats[label] = formatter
         return self
 
