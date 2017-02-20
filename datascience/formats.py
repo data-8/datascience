@@ -66,8 +66,16 @@ class Formatter:
         """Whether this Formatter also converts values."""
         return self.convert is not Formatter.convert
 
-
 default_formatter = Formatter()
+
+
+class FunctionFormatter(Formatter):
+    """Format values using a function."""
+
+    converts_values = False
+
+    def __init__(self, fn):
+        self.format_value = lambda v: str(fn(v))
 
 
 class NumberFormatter(Formatter):
@@ -154,4 +162,3 @@ class PercentFormatter(Formatter):
     def format_value(self, value):
         """Format number as percentage."""
         return ('{:.' + str(self.decimals) + '%}').format(value)
-
