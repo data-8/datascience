@@ -1,0 +1,6 @@
+datascience.tables.Table.exclude
+================================
+
+.. currentmodule:: datascience.tables
+
+.. automethod:: Table.exclude

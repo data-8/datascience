@@ -1,0 +1,6 @@
+datascience.tables.Table.row
+============================
+
+.. currentmodule:: datascience.tables
+
+.. automethod:: Table.row

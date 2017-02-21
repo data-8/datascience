@@ -1,0 +1,6 @@
+datascience.tables.Table.to_array
+=================================
+
+.. currentmodule:: datascience.tables
+
+.. automethod:: Table.to_array

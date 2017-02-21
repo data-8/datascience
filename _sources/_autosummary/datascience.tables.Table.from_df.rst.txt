@@ -1,0 +1,6 @@
+datascience.tables.Table.from_df
+================================
+
+.. currentmodule:: datascience.tables
+
+.. automethod:: Table.from_df
