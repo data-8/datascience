@@ -20,5 +20,6 @@ Reference
 
     tables
     maps
+    predicates
     formats
     util

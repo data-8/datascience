@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>datascience.tables &#8212; datascience 0.9.2 documentation</title>
+    <title>datascience.tables &#8212; datascience 0.9.5 documentation</title>
     
     <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.9.2',
+        VERSION:     '0.9.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -37,7 +37,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.9.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.9.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -420,18 +420,16 @@
 
 <div class="viewcode-block" id="Table.set_format"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.set_format.html#datascience.tables.Table.set_format">[docs]</a>    <span class="k">def</span> <span class="nf">set_format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_or_columns</span><span class="p">,</span> <span class="n">formatter</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set the format of a column.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">formatter</span><span class="p">,</span> <span class="n">_formats</span><span class="o">.</span><span class="n">Formatter</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">formatter</span><span class="p">):</span>
             <span class="n">formatter</span> <span class="o">=</span> <span class="n">formatter</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">formatter</span><span class="p">,</span> <span class="s1">&#39;format_column&#39;</span><span class="p">):</span>
+            <span class="n">formatter</span> <span class="o">=</span> <span class="n">_formats</span><span class="o">.</span><span class="n">FunctionFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">formatter</span><span class="p">,</span> <span class="s1">&#39;format_column&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Expected Formatter or function: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">formatter</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_as_labels</span><span class="p">(</span><span class="n">column_or_columns</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">formatter</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_formats</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="n">v</span> <span class="k">if</span> <span class="n">label</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">formatter</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
-            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">formatter</span><span class="p">,</span> <span class="n">_formats</span><span class="o">.</span><span class="n">Formatter</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">formatter</span><span class="o">.</span><span class="n">converts_values</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">formatter</span><span class="o">.</span><span class="n">convert</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span>
-                <span class="n">column</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_formats</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">formatter</span><span class="o">.</span><span class="n">format_column</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">column</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Expected Formatter or function: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">formatter</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">formatter</span><span class="o">.</span><span class="n">converts_values</span><span class="p">:</span>
+                <span class="bp">self</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">formatter</span><span class="o">.</span><span class="n">convert_column</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">label</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_formats</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">formatter</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="Table.move_to_start"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.move_to_start.html#datascience.tables.Table.move_to_start">[docs]</a>    <span class="k">def</span> <span class="nf">move_to_start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_label</span><span class="p">):</span>
@@ -1229,8 +1227,8 @@
         <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)([</span><span class="n">key</span><span class="p">,</span> <span class="s1">&#39;column&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">with_rows</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Table.join"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.join.html#datascience.tables.Table.join">[docs]</a>    <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_label</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">other_label</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Creates a new table with the columns of self and other, containing rows</span>
-<span class="sd">        for all values of a column that appear in both tables.</span>
+        <span class="sd">&quot;&quot;&quot;Creates a new table with the columns of self and other, containing</span>
+<span class="sd">        rows for all values of a column that appear in both tables.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            ``column_label`` (``str``):  label of column in self that is used to</span>
@@ -1243,11 +1241,11 @@
 <span class="sd">                Otherwise in ``other`` used to join rows.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            New table self joined with ``other`` by matching values in ``column_label``</span>
-<span class="sd">            and ``other_label``. If the resulting join is empty, returns None. If</span>
-<span class="sd">            a join value appears more than once in ``self``, each row with that value</span>
-<span class="sd">            will appear in resulting join, but in ``other``, only the first row with</span>
-<span class="sd">            that value will be used.</span>
+<span class="sd">            New table self joined with ``other`` by matching values in</span>
+<span class="sd">            ``column_label`` and ``other_label``. If the resulting join is</span>
+<span class="sd">            empty, returns None. If a join value appears more than once in</span>
+<span class="sd">            ``self``, each row with that value will appear in resulting join,</span>
+<span class="sd">            but in ``other``, only the first row with that value will be used.</span>
 
 <span class="sd">        &gt;&gt;&gt; table = Table().with_columns(&#39;a&#39;, make_array(9, 3, 3, 1),</span>
 <span class="sd">        ...     &#39;b&#39;, make_array(1, 2, 2, 10),</span>
@@ -1318,17 +1316,22 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">joined_rows</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-        <span class="n">labels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">)</span>
-        <span class="n">labels</span> <span class="o">+=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_unused_label</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">labels</span><span class="p">]</span>
-        <span class="n">joined</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="n">labels</span><span class="p">)</span><span class="o">.</span><span class="n">with_rows</span><span class="p">(</span><span class="n">joined_rows</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">selfformat</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_formats</span><span class="p">:</span>
-            <span class="n">joined</span><span class="o">.</span><span class="n">set_format</span><span class="p">(</span><span class="n">selfformat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_formats</span><span class="p">[</span><span class="n">selfformat</span><span class="p">])</span>
-        <span class="k">for</span> <span class="n">otherformat</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">_formats</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">otherformat</span> <span class="ow">in</span> <span class="n">joined</span><span class="o">.</span><span class="n">labels</span><span class="p">:</span>
-                <span class="n">joined</span><span class="o">.</span><span class="n">set_format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unused_label</span><span class="p">(</span><span class="n">otherformat</span><span class="p">),</span> <span class="n">other</span><span class="o">.</span><span class="n">_formats</span><span class="p">[</span><span class="n">otherformat</span><span class="p">])</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">joined</span><span class="o">.</span><span class="n">set_format</span><span class="p">(</span><span class="n">otherformat</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">_formats</span><span class="p">[</span><span class="n">otherformat</span><span class="p">])</span>
-        <span class="k">del</span> <span class="n">joined</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_unused_label</span><span class="p">(</span><span class="n">other_label</span><span class="p">)]</span> <span class="c1"># Remove redundant column</span>
+        <span class="c1"># Build joined table</span>
+        <span class="n">self_labels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">)</span>
+        <span class="n">other_labels</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_unused_label</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">labels</span><span class="p">]</span>
+        <span class="n">other_labels_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span> <span class="n">other_labels</span><span class="p">))</span>
+        <span class="n">joined</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="n">self_labels</span> <span class="o">+</span> <span class="n">other_labels</span><span class="p">)</span><span class="o">.</span><span class="n">with_rows</span><span class="p">(</span><span class="n">joined_rows</span><span class="p">)</span>
+
+        <span class="c1"># Copy formats from both tables</span>
+        <span class="n">joined</span><span class="o">.</span><span class="n">_formats</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_formats</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">_formats</span><span class="p">:</span>
+            <span class="n">joined</span><span class="o">.</span><span class="n">_formats</span><span class="p">[</span><span class="n">other_labels_map</span><span class="p">[</span><span class="n">label</span><span class="p">]]</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">_formats</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
+
+        <span class="c1"># Remove redundant column, but perhaps save its formatting</span>
+        <span class="k">del</span> <span class="n">joined</span><span class="p">[</span><span class="n">other_labels_map</span><span class="p">[</span><span class="n">other_label</span><span class="p">]]</span>
+        <span class="k">if</span> <span class="n">column_label</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_formats</span> <span class="ow">and</span> <span class="n">other_label</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">_formats</span><span class="p">:</span>
+            <span class="n">joined</span><span class="o">.</span><span class="n">_formats</span><span class="p">[</span><span class="n">column_label</span><span class="p">]</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">_formats</span><span class="p">[</span><span class="n">other_label</span><span class="p">]</span>
+
         <span class="k">return</span> <span class="n">joined</span><span class="o">.</span><span class="n">move_to_start</span><span class="p">(</span><span class="n">column_label</span><span class="p">)</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">column_label</span><span class="p">)</span></div>
 
 
@@ -1419,9 +1422,9 @@
 <span class="sd">            ``k`` -- specifies the number of rows (``int``) to be sampled from</span>
 <span class="sd">               the table. Default is k equal to number of rows in the table.</span>
 
-<span class="sd">            ``with_replacement`` -- (``bool``) By default True; Samples ``k``</span>
-<span class="sd">                rows with replacement from table, else samples ``k`` rows</span>
-<span class="sd">                without replacement.</span>
+<span class="sd">            ``with_replacement`` -- (``bool``) By default True;</span>
+<span class="sd">                Samples ``k`` rows with replacement from table, else samples</span>
+<span class="sd">                ``k`` rows without replacement.</span>
 
 <span class="sd">            ``weights`` -- Array specifying probability the ith row of the</span>
 <span class="sd">                table is sampled. Defaults to None, which samples each row</span>
@@ -1461,18 +1464,18 @@
 <span class="sd">        job  | wage</span>
 <span class="sd">        b    | 20</span>
 <span class="sd">        c    | 15</span>
-<span class="sd">        &gt;&gt;&gt; jobs.sample(k = 2, with_replacement = True,</span>
-<span class="sd">        ...     weights = make_array(0.5, 0.5, 0, 0)) # doctest: +SKIP</span>
+<span class="sd">        &gt;&gt;&gt; ws =  make_array(0.5, 0.5, 0, 0)</span>
+<span class="sd">        &gt;&gt;&gt; jobs.sample(k=2, with_replacement=True, weights=ws) # doctest: +SKIP</span>
 <span class="sd">        job  | wage</span>
 <span class="sd">        a    | 10</span>
 <span class="sd">        a    | 10</span>
-<span class="sd">        &gt;&gt;&gt; jobs.sample(k = 2, weights = make_array(1, 0, 1, 0))</span>
+<span class="sd">        &gt;&gt;&gt; jobs.sample(k=2, weights=make_array(1, 0, 1, 0))</span>
 <span class="sd">        Traceback (most recent call last):</span>
 <span class="sd">            ...</span>
 <span class="sd">        ValueError: probabilities do not sum to 1</span>
 
 <span class="sd">        # Weights must be length of table.</span>
-<span class="sd">        &gt;&gt;&gt; jobs.sample(k = 2, weights = make_array(1, 0, 0))</span>
+<span class="sd">        &gt;&gt;&gt; jobs.sample(k=2, weights=make_array(1, 0, 0))</span>
 <span class="sd">        Traceback (most recent call last):</span>
 <span class="sd">            ...</span>
 <span class="sd">        ValueError: a and p must have same size</span>
@@ -1860,14 +1863,35 @@
 
     <span class="n">max_str_rows</span> <span class="o">=</span> <span class="mi">10</span>
 
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_use_html_if_available</span><span class="p">(</span><span class="n">format_fn</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Use the value&#39;s HTML rendering if available, overriding format_fn.&quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">format_using_as_html</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">label</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="s1">&#39;as_html&#39;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">v</span><span class="o">.</span><span class="n">as_html</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">format_fn</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">format_using_as_html</span>
+
+    <span class="k">def</span> <span class="nf">_get_column_formatters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_rows</span><span class="p">,</span> <span class="n">as_html</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return one value formatting function per column.</span>
+
+<span class="sd">        Each function has the signature f(value, label=False) -&gt; str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">formats</span> <span class="o">=</span> <span class="p">{</span><span class="n">s</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_formats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">formatter</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">}</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_columns</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="n">fmts</span> <span class="o">=</span> <span class="p">[</span><span class="n">formats</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">format_column</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">[:</span><span class="n">max_rows</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">cols</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">as_html</span><span class="p">:</span>
+            <span class="n">fmts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_use_html_if_available</span><span class="p">,</span> <span class="n">fmts</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">fmts</span>
+
 <div class="viewcode-block" id="Table.as_text"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.as_text.html#datascience.tables.Table.as_text">[docs]</a>    <span class="k">def</span> <span class="nf">as_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_rows</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot; | &quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Format table as text.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">max_rows</span> <span class="ow">or</span> <span class="n">max_rows</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_rows</span><span class="p">:</span>
             <span class="n">max_rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_rows</span>
         <span class="n">omitted</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_rows</span> <span class="o">-</span> <span class="n">max_rows</span><span class="p">)</span>
         <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_columns</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-        <span class="n">fmts</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_formats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">formatter</span><span class="o">.</span><span class="n">format_column</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">[:</span><span class="n">max_rows</span><span class="p">]))</span> <span class="k">for</span>
-            <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_columns</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+        <span class="n">fmts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_column_formatters</span><span class="p">(</span><span class="n">max_rows</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="n">rows</span> <span class="o">=</span> <span class="p">[[</span><span class="n">fmt</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">fmt</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">fmts</span><span class="p">,</span> <span class="n">labels</span><span class="p">)]]</span>
         <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">islice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">,</span> <span class="n">max_rows</span><span class="p">):</span>
             <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">f</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">fmts</span><span class="p">)])</span>
@@ -1891,9 +1915,7 @@
             <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;&lt;/thead&gt;&#39;</span><span class="p">),</span>
             <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;&lt;tbody&gt;&#39;</span><span class="p">),</span>
         <span class="p">]</span>
-        <span class="n">fmts</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_formats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">formatter</span><span class="o">.</span><span class="n">format_column</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">[:</span><span class="n">max_rows</span><span class="p">]))</span> <span class="k">for</span>
-            <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_columns</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
-        <span class="n">fmts</span> <span class="o">=</span> <span class="p">[(</span><span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="kc">False</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">as_html</span><span class="p">()</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="s1">&#39;as_html&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="n">f</span><span class="p">(</span><span class="n">v</span><span class="p">))(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fmts</span><span class="p">]</span>
+        <span class="n">fmts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_column_formatters</span><span class="p">(</span><span class="n">max_rows</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">islice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">,</span> <span class="n">max_rows</span><span class="p">):</span>
             <span class="n">lines</span> <span class="o">+=</span> <span class="p">[</span>
                 <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;&lt;tr&gt;&#39;</span><span class="p">),</span>
@@ -2858,7 +2880,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.9.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.9.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
