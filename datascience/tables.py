@@ -1876,7 +1876,7 @@ class Table(collections.abc.MutableMapping):
             ]
         lines.append((0, '</table>'))
         if omitted:
-            lines.append((0, '<p>... ({} rows omitted)</p'.format(omitted)))
+            lines.append((0, '<p>... ({} rows omitted)</p>'.format(omitted)))
         return '\n'.join(4 * indent * ' ' + text for indent, text in lines)
 
     def index_by(self, column_or_label):
