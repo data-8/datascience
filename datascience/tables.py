@@ -2276,6 +2276,7 @@ class Table(collections.abc.MutableMapping):
                 if ticks is not None:
                     annotate(axis, ticks)
                 type(self).plots.append(axis)
+        plt.show()
 
     def _split_column_and_labels(self, column_or_label):
         """Return the specified column and labels of other columns."""
@@ -2313,6 +2314,7 @@ class Table(collections.abc.MutableMapping):
         t['end'] = bins[1:]
         for label, column in zip(pvt_labels,vals):
             t[label] = column
+        plt.show()
 
     def hist(self, *columns, overlay=True, bins=None, bin_column=None, unit=None, counts=None, width=6, height=4, **vargs):
         """Plots one histogram for each column in columns. If no column is
@@ -2440,6 +2442,7 @@ class Table(collections.abc.MutableMapping):
                 axis.hist(values, color=color, **vargs)
                 _vertical_x(axis)
                 type(self).plots.append(axis)
+        plt.show()
 
     def boxplot(self, **vargs):
         """Plots a boxplot for the table.
@@ -2487,6 +2490,7 @@ class Table(collections.abc.MutableMapping):
         vargs['labels'] = columns.keys()
         values = list(columns.values())
         plt.boxplot(values, **vargs)
+        plt.show()
 
 
     ###########
