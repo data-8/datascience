@@ -26,7 +26,7 @@ import datascience.predicates as _predicates
 
 class Table(collections.abc.MutableMapping):
     """A sequence of string-labeled columns."""
-    plots = []
+    plots = collections.deque(maxlen=10)
 
     def __init__(self, labels=None, _deprecated=None, *, formatter=_formats.default_formatter):
         """Create an empty table with column labels.
@@ -165,13 +165,13 @@ class Table(collections.abc.MutableMapping):
     #################
 
     def __getitem__(self, index_or_label):
+        return self.column(index_or_label)
+
+    def __setitem__(self, index_or_label, values):
+        self.append_column(index_or_label, values)
+
+    def __delitem__(self, index_or_label):
         label = self._as_label(index_or_label)
-        return self.column(label)
-
-    def __setitem__(self, label, values):
-        self.append_column(label, values)
-
-    def __delitem__(self, label):
         del self._columns[label]
         if label in self._formats:
             del self._formats[label]
@@ -188,7 +188,6 @@ class Table(collections.abc.MutableMapping):
 
         E.g., t.sum() on a Table will return a table with the sum of each column.
         """
-
         if self.columns and all(hasattr(c, attr) for c in self.columns):
             warnings.warn("Implicit column method lookup is deprecated.", FutureWarning)
             attrs = [getattr(c, attr) for c in self.columns]
@@ -301,20 +300,20 @@ class Table(collections.abc.MutableMapping):
             dtype = None
         return np.array(self.columns, dtype=dtype).T
 
-    def column_index(self, column_label):
-        """Return the index of a column."""
-        return self.labels.index(column_label)
+    def column_index(self, label):
+        """Return the index of a column by looking up its label."""
+        return self.labels.index(label)
 
-    def apply(self, fn, column_label=None):
-        """ Apply ``fn`` to each element of ``column_label``.
-        If no ``column_label`` provided, `fn`` applied to each row of table.
+    def apply(self, fn, *column_or_columns):
+        """Apply ``fn`` to each element or elements of ``column_or_columns``.
+        If no ``column_or_columns`` provided, `fn`` is applied to each row.
 
         Args:
-            ``fn`` (function) -- The function to be applied to elements of
-                ``column_label``.
-            ``column_label`` (single str or array of str) -- Names of
-                columns to be passed into ``fn``. Length must match
-                number of arguments in ``fn`` signature.
+            ``fn`` (function) -- The function to apply.
+            ``column_or_columns``: Columns containing the arguments to ``fn``
+                as either column labels (``str``) or column indices (``int``).
+                The number of columns must match the number of arguments
+                that ``fn`` expects.
 
         Raises:
             ``ValueError`` -- if  ``column_label`` is not an existing
@@ -338,9 +337,9 @@ class Table(collections.abc.MutableMapping):
         z      | 1     | 10
         >>> t.apply(lambda x: x - 1, 'points')
         array([0, 1, 1, 9])
-        >>> t.apply(lambda x, y: x * y, make_array('count', 'points'))
+        >>> t.apply(lambda x, y: x * y, 'count', 'points')
         array([ 9,  6,  6, 10])
-        >>> t.apply(lambda x: x - 1, make_array('count', 'points'))
+        >>> t.apply(lambda x: x - 1, 'count', 'points')
         Traceback (most recent call last):
             ...
         TypeError: <lambda>() takes 1 positional argument but 2 were given
@@ -354,30 +353,33 @@ class Table(collections.abc.MutableMapping):
         >>> t.apply(lambda row: row[1] * 2)
         array([18,  6,  6,  2])
         """
-        if column_label is None:
+        if not column_or_columns:
             return np.array([fn(row) for row in self.rows])
         else:
-            rows = zip(*self.select(column_label).columns)
+            if len(column_or_columns) == 1 and \
+                    _is_non_string_iterable(column_or_columns[0]):
+                warnings.warn(
+                   "column lists are deprecated; pass each as an argument", FutureWarning)
+                column_or_columns = column_or_columns[0]
+            rows = zip(*self.select(*column_or_columns).columns)
             return np.array([fn(*row) for row in rows])
 
     ############
     # Mutation #
     ############
 
-    def set_format(self, column_label_or_labels, formatter):
+    def set_format(self, column_or_columns, formatter):
         """Set the format of a column."""
-        if inspect.isclass(formatter) and issubclass(formatter, _formats.Formatter):
+        if inspect.isclass(formatter):
             formatter = formatter()
-        for label in self._as_labels(column_label_or_labels):
-            if callable(formatter):
-                self._formats[label] = lambda v, label: v if label else str(formatter(v))
-            elif isinstance(formatter, _formats.Formatter):
-                if formatter.converts_values:
-                    self[label] = self.apply(formatter.convert, label)
-                column = self[label]
-                self._formats[label] = formatter.format_column(label, column)
-            else:
-                raise Exception('Expected Formatter or function: ' + str(formatter))
+        if callable(formatter) and not hasattr(formatter, 'format_column'):
+            formatter = _formats.FunctionFormatter(formatter)
+        if not hasattr(formatter, 'format_column'):
+            raise Exception('Expected Formatter or function: ' + str(formatter))
+        for label in self._as_labels(column_or_columns):
+            if formatter.converts_values:
+                self[label] = formatter.convert_column(self[label])
+            self._formats[label] = formatter
         return self
 
     def move_to_start(self, column_label):
@@ -573,7 +575,7 @@ class Table(collections.abc.MutableMapping):
     ##################
 
     def copy(self, *, shallow=False):
-        """Return a copy of a Table."""
+        """Return a copy of a table."""
         table = type(self)()
         for label in self.labels:
             if shallow:
@@ -583,23 +585,20 @@ class Table(collections.abc.MutableMapping):
             self._add_column_and_format(table, label, column)
         return table
 
-    def select(self, *column_label_or_labels):
-        """
-        Returns a new ``Table`` with only the columns in
-        ``column_label_or_labels``.
+    def select(self, *column_or_columns):
+        """Return a table with only the columns in ``column_or_columns``.
 
         Args:
-            ``column_label_or_labels``: Columns to select from the ``Table`` as
+            ``column_or_columns``: Columns to select from the ``Table`` as
             either column labels (``str``) or column indices (``int``).
 
         Returns:
-            An new instance of ``Table`` containing only selected columns.
+            A new instance of ``Table`` containing only selected columns.
             The columns of the new ``Table`` are in the order given in
-            ``column_label_or_labels``.
+            ``column_or_columns``.
 
         Raises:
-            ``KeyError`` if any of ``column_label_or_labels`` are not in the
-            table.
+            ``KeyError`` if any of ``column_or_columns`` are not in the table.
 
         >>> flowers = Table().with_columns(
         ...     'Number of petals', make_array(8, 34, 5),
@@ -631,8 +630,8 @@ class Table(collections.abc.MutableMapping):
         34               | 5
         5                | 6
         """
-        labels = self._varargs_as_labels(column_label_or_labels)
-        table = Table()
+        labels = self._varargs_as_labels(column_or_columns)
+        table = type(self)()
         for label in labels:
             self._add_column_and_format(table, label, np.copy(self[label]))
         return table
@@ -646,15 +645,15 @@ class Table(collections.abc.MutableMapping):
     def exclude(self):
         raise NotImplementedError()
 
-    def drop(self, *column_label_or_labels):
+    def drop(self, *column_or_columns):
         """Return a Table with only columns other than selected label or
         labels.
 
         Args:
-            ``column_label_or_labels`` (string or list of strings): The header
+            ``column_or_columns`` (string or list of strings): The header
             names or indices of the columns to be dropped.
 
-            ``column_label_or_labels`` must be an existing header name, or a
+            ``column_or_columns`` must be an existing header name, or a
             valid column index.
 
         Returns:
@@ -700,7 +699,7 @@ class Table(collections.abc.MutableMapping):
         hamburger     | 651
         veggie burger | 582
         """
-        exclude = _varargs_labels_as_list(column_label_or_labels)
+        exclude = _varargs_labels_as_list(column_or_columns)
         return self.select([c for (i, c) in enumerate(self.labels)
                             if i not in exclude and c not in exclude])
 
@@ -788,8 +787,7 @@ class Table(collections.abc.MutableMapping):
         """
         column = self._get_column(column_or_label)
         if other is not None:
-            assert (callable(value_or_predicate),
-                    "Predicate required for 3-arg where")
+            assert callable(value_or_predicate), "Predicate required for 3-arg where"
             predicate = value_or_predicate
             other = self._get_column(other)
             column = [predicate(y)(x) for x, y in zip(column, other)]
@@ -921,6 +919,11 @@ class Table(collections.abc.MutableMapping):
         Rectangular |           | 27         | 4.7
         Round       |           | 13         | 4.05
         """
+        # Assume that a call to group with a list of labels is a call to groups
+        if _is_non_string_iterable(column_or_label) and \
+                len(column_or_label) != self._num_rows:
+            return self.groups(column_or_label, collect)
+
         self = self.copy(shallow=True)
         collect = _zero_on_type_error(collect)
 
@@ -1000,6 +1003,10 @@ class Table(collections.abc.MutableMapping):
         Green | Round       | 2          | 1
         Red   | Round       | 11         | 3.05
         """
+        # Assume that a call to groups with one label is a call to group
+        if not _is_non_string_iterable(labels):
+            return self.group(labels, collect=collect)
+
         collect = _zero_on_type_error(collect)
         columns = []
         labels = self._as_labels(labels)
@@ -1035,10 +1042,10 @@ class Table(collections.abc.MutableMapping):
         the values that match both row and column based on ``collect``.
 
         Args:
-            ``columns`` -- a single column label, (``str``), in table, used to
-                create new columns, based on its unique values.
-            ``rows`` -- row labels, as (``str``) or array of strings, used to
-                create new rows based on it's unique values.
+            ``columns`` -- a single column label or index, (``str`` or ``int``),
+                used to create new columns, based on its unique values.
+            ``rows`` -- row labels or indices, (``str`` or ``int`` or list),
+                used to create new rows based on it's unique values.
             ``values`` -- column label in table for use in aggregation.
                 Default None.
             ``collect`` -- aggregation function, used to group ``values``
@@ -1100,6 +1107,7 @@ class Table(collections.abc.MutableMapping):
             raise TypeError('collect requires values to be specified')
         if values is not None and collect is None:
             raise TypeError('values requires collect to be specified')
+        columns = self._as_label(columns)
         rows = self._as_labels(rows)
         if values is None:
             selected = self.select([columns] + rows)
@@ -1153,7 +1161,7 @@ class Table(collections.abc.MutableMapping):
         _, rbins = np.histogram(self[value_column],**vargs)
         # create a table with these bins a first column and counts for each group
         vargs['bins'] = rbins
-        binned = Table().with_column('bin',rbins)
+        binned = type(self)().with_column('bin',rbins)
         for group in grouped.rows:
             col_label = "-".join(map(str,group[0:-1]))
             col_vals = group[-1]
@@ -1172,8 +1180,8 @@ class Table(collections.abc.MutableMapping):
         return type(self)([key, 'column', 'value']).with_rows(rows)
 
     def join(self, column_label, other, other_label=None):
-        """Creates a new table with the columns of self and other, containing rows
-        for all values of a column that appear in both tables.
+        """Creates a new table with the columns of self and other, containing
+        rows for all values of a column that appear in both tables.
 
         Args:
             ``column_label`` (``str``):  label of column in self that is used to
@@ -1186,11 +1194,11 @@ class Table(collections.abc.MutableMapping):
                 Otherwise in ``other`` used to join rows.
 
         Returns:
-            New table self joined with ``other`` by matching values in ``column_label``
-            and ``other_label``. If the resulting join is empty, returns None. If
-            a join value appears more than once in ``self``, each row with that value
-            will appear in resulting join, but in ``other``, only the first row with
-            that value will be used.
+            New table self joined with ``other`` by matching values in
+            ``column_label`` and ``other_label``. If the resulting join is
+            empty, returns None. If a join value appears more than once in
+            ``self``, each row with that value will appear in resulting join,
+            but in ``other``, only the first row with that value will be used.
 
         >>> table = Table().with_columns('a', make_array(9, 3, 3, 1),
         ...     'b', make_array(1, 2, 2, 10),
@@ -1261,18 +1269,31 @@ class Table(collections.abc.MutableMapping):
         if not joined_rows:
             return None
 
-        labels = list(self.labels)
-        labels += [self._unused_label(s) for s in other.labels]
-        joined = type(self)(labels).with_rows(joined_rows)
-        del joined[self._unused_label(other_label)] # Remove redundant column
+        # Build joined table
+        self_labels = list(self.labels)
+        other_labels = [self._unused_label(s) for s in other.labels]
+        other_labels_map = dict(zip(other.labels, other_labels))
+        joined = type(self)(self_labels + other_labels).with_rows(joined_rows)
+
+        # Copy formats from both tables
+        joined._formats.update(self._formats)
+        for label in other._formats:
+            joined._formats[other_labels_map[label]] = other._formats[label]
+
+        # Remove redundant column, but perhaps save its formatting
+        del joined[other_labels_map[other_label]]
+        if column_label not in self._formats and other_label in other._formats:
+            joined._formats[column_label] = other._formats[other_label]
+
         return joined.move_to_start(column_label).sort(column_label)
+
 
     def stats(self, ops=(min, max, np.median, sum)):
         """Compute statistics for each column and place them in a table."""
         names = [op.__name__ for op in ops]
         ops = [_zero_on_type_error(op) for op in ops]
         columns = [[op(column) for op in ops] for column in self.columns]
-        table = Table().with_columns(zip(self.labels, columns))
+        table = type(self)().with_columns(zip(self.labels, columns))
         stats = table._unused_label('statistic')
         table[stats] = names
         table.move_to_start(stats)
@@ -1320,7 +1341,7 @@ class Table(collections.abc.MutableMapping):
             return c
 
     def percentile(self, p):
-        """Returns a new table with one row containing the pth percentile for
+        """Return a new table with one row containing the pth percentile for
         each column.
 
         Assumes that each column only contains one type of value.
@@ -1347,16 +1368,16 @@ class Table(collections.abc.MutableMapping):
         return self._with_columns(percentiles)
 
     def sample(self, k=None, with_replacement=True, weights=None):
-        """Returns a new table where k rows are randomly sampled from the
+        """Return a new table where k rows are randomly sampled from the
         original table.
 
         Args:
             ``k`` -- specifies the number of rows (``int``) to be sampled from
                the table. Default is k equal to number of rows in the table.
 
-            ``with_replacement`` -- (``bool``) By default True; Samples ``k``
-                rows with replacement from table, else samples ``k`` rows
-                without replacement.
+            ``with_replacement`` -- (``bool``) By default True;
+                Samples ``k`` rows with replacement from table, else samples
+                ``k`` rows without replacement.
 
             ``weights`` -- Array specifying probability the ith row of the
                 table is sampled. Defaults to None, which samples each row
@@ -1396,18 +1417,18 @@ class Table(collections.abc.MutableMapping):
         job  | wage
         b    | 20
         c    | 15
-        >>> jobs.sample(k = 2, with_replacement = True,
-        ...     weights = make_array(0.5, 0.5, 0, 0)) # doctest: +SKIP
+        >>> ws =  make_array(0.5, 0.5, 0, 0)
+        >>> jobs.sample(k=2, with_replacement=True, weights=ws) # doctest: +SKIP
         job  | wage
         a    | 10
         a    | 10
-        >>> jobs.sample(k = 2, weights = make_array(1, 0, 1, 0))
+        >>> jobs.sample(k=2, weights=make_array(1, 0, 1, 0))
         Traceback (most recent call last):
             ...
         ValueError: probabilities do not sum to 1
 
         # Weights must be length of table.
-        >>> jobs.sample(k = 2, weights = make_array(1, 0, 0))
+        >>> jobs.sample(k=2, weights=make_array(1, 0, 0))
         Traceback (most recent call last):
             ...
         ValueError: a and p must have same size
@@ -1421,7 +1442,7 @@ class Table(collections.abc.MutableMapping):
         return sample
 
     def sample_from_distribution(self, distribution, k, proportions=False):
-        """Returns a new table with the same number of rows and a new column.
+        """Return a new table with the same number of rows and a new column.
         The values in the distribution column are define a multinomial.
         They are replaced by sample counts/proportions in the output.
 
@@ -1452,7 +1473,7 @@ class Table(collections.abc.MutableMapping):
         return self.with_column(label, sample)
 
     def split(self, k):
-        """Returns a tuple of two tables where the first table contains
+        """Return a tuple of two tables where the first table contains
         ``k`` rows randomly sampled and the second contains the remaining rows.
 
         Args:
@@ -1488,15 +1509,15 @@ class Table(collections.abc.MutableMapping):
             raise ValueError("Invalid value of k. k must be between 1 and the"
                              "number of rows - 1")
 
-        rows = [self.rows[index] for index in
-                np.random.permutation(self.num_rows)]
-        cls = type(self)
-        first = cls(self.labels).with_rows(rows[:k])
-        rest = cls(self.labels).with_rows(rows[k:])
+        rows = np.random.permutation(self.num_rows)
+
+        first = self.take(rows[:k])
+        rest = self.take(rows[k:])
         for column_label in self._formats:
             first._formats[column_label] = self._formats[column_label]
             rest._formats[column_label] = self._formats[column_label]
         return first, rest
+
 
     def with_row(self, row):
         """Return a table with an additional row.
@@ -1539,7 +1560,11 @@ class Table(collections.abc.MutableMapping):
         self.append(self._with_columns(zip(*rows)))
         return self
 
+<<<<<<< HEAD
     def with_column(self, label, values, formatter=None):
+=======
+    def with_column(self, label, values, *rest):
+>>>>>>> 7a7ca82dc790f6aabeffd8ef2340eed944dce07f
         """Return a new table with an additional or replaced column.
 
         Args:
@@ -1550,7 +1575,12 @@ class Table(collections.abc.MutableMapping):
                 value in the new column is ``values``. If sequence of values,
                 new column takes on values in ``values``.
 
+<<<<<<< HEAD
             ``formatter`` (single value): Specifies formatter for the new column. Defaults to no formatter.
+=======
+            ``rest``: An alternating list of labels and values describing
+                additional columns. See with_columns for a full description.
+>>>>>>> 7a7ca82dc790f6aabeffd8ef2340eed944dce07f
 
         Raises:
             ``ValueError``: If
@@ -1589,6 +1619,11 @@ class Table(collections.abc.MutableMapping):
             ...
         ValueError: Column length mismatch. New column does not have the same number of rows as table.
         """
+        # Ensure that if with_column is called instead of with_columns;
+        # no error is raised.
+        if rest:
+            return self.with_columns(label, values, *rest)
+
         new_table = self.copy()
         new_table.append_column(label, values, formatter)
         return new_table
@@ -1678,7 +1713,7 @@ class Table(collections.abc.MutableMapping):
         return self
 
     def relabeled(self, label, new_label):
-        """Returns a new table with ``label`` specifying column label(s)
+        """Return a new table with ``label`` specifying column label(s)
         replaced by corresponding ``new_label``.
 
         Args:
@@ -1731,7 +1766,7 @@ class Table(collections.abc.MutableMapping):
         warnings.warn("with_relabeling is deprecated; use relabeled", FutureWarning)
         return self.relabeled(*args)
 
-    def bin(self, select=None, **vargs):
+    def bin(self, *columns, **vargs):
         """Group values by bin and compute counts per bin by column.
 
         By default, bins are chosen to contain all values in all columns. The
@@ -1742,8 +1777,8 @@ class Table(collections.abc.MutableMapping):
         n+1 columns, where column 0 contains the lower bound of each bin.
 
         Args:
-            ``select`` (columns): Columns to be binned. If None, all columns
-                are binned.
+            ``columns`` (str or int): Labels or indices of columns to be
+                binned. If empty, all columns are binned.
 
             ``bins`` (int or sequence of scalars): If bins is an int,
                 it defines the number of equal-width bins in the given range
@@ -1762,8 +1797,8 @@ class Table(collections.abc.MutableMapping):
                 histogram values will not be equal to 1 unless bins of unity
                 width are chosen; it is not a probability mass function.
         """
-        if select is not None:
-            self = self.select(select)
+        if columns:
+            self = self.select(*columns)
         if 'normed' in vargs:
             vargs.setdefault('density', vargs.pop('normed'))
         density = vargs.get('density', False)
@@ -1772,7 +1807,7 @@ class Table(collections.abc.MutableMapping):
         cols = list(self._columns.values())
         _, bins = np.histogram(cols, **vargs)
 
-        binned = Table().with_column('bin', bins)
+        binned = type(self)().with_column('bin', bins)
         for label in self.labels:
             counts, _ = np.histogram(self[label], bins=bins, density=density)
             binned[label + ' ' + tag] = np.append(counts, 0)
@@ -1796,14 +1831,35 @@ class Table(collections.abc.MutableMapping):
 
     max_str_rows = 10
 
+    @staticmethod
+    def _use_html_if_available(format_fn):
+        """Use the value's HTML rendering if available, overriding format_fn."""
+        def format_using_as_html(v, label=False):
+            if not label and hasattr(v, 'as_html'):
+                return v.as_html()
+            else:
+                return format_fn(v, label)
+        return format_using_as_html
+
+    def _get_column_formatters(self, max_rows, as_html):
+        """Return one value formatting function per column.
+
+        Each function has the signature f(value, label=False) -> str
+        """
+        formats = {s: self._formats.get(s, self.formatter) for s in self.labels}
+        cols = self._columns.items()
+        fmts = [formats[k].format_column(k, v[:max_rows]) for k, v in cols]
+        if as_html:
+            fmts = list(map(type(self)._use_html_if_available, fmts))
+        return fmts
+
     def as_text(self, max_rows=0, sep=" | "):
         """Format table as text."""
         if not max_rows or max_rows > self.num_rows:
             max_rows = self.num_rows
         omitted = max(0, self.num_rows - max_rows)
         labels = self._columns.keys()
-        fmts = [self._formats.get(k, self.formatter.format_column(k, v[:max_rows])) for
-            k, v in self._columns.items()]
+        fmts = self._get_column_formatters(max_rows, False)
         rows = [[fmt(label, label=True) for fmt, label in zip(fmts, labels)]]
         for row in itertools.islice(self.rows, max_rows):
             rows.append([f(v, label=False) for v, f in zip(row, fmts)])
@@ -1827,9 +1883,7 @@ class Table(collections.abc.MutableMapping):
             (1, '</thead>'),
             (1, '<tbody>'),
         ]
-        fmts = [self._formats.get(k, self.formatter.format_column(k, v[:max_rows])) for
-            k, v in self._columns.items()]
-        fmts = [(lambda f: lambda v, label=False: v.as_html() if hasattr(v, 'as_html') else f(v))(f) for f in fmts]
+        fmts = self._get_column_formatters(max_rows, True)
         for row in itertools.islice(self.rows, max_rows):
             lines += [
                 (2, '<tr>'),
@@ -1899,21 +1953,18 @@ class Table(collections.abc.MutableMapping):
 
     # As RGB tuples
     chart_colors = (
-        (0.0, 0.102, 0.267),
-        (1.0, 0.784, 0.0),
-        (0.341, 0.408, 0.518),
-        (0.702, 0.612, 0.302),
-        (0.463, 0.537, 0.282),
-        (0.024, 0.482, 0.761),
-        (0.984, 0.314, 0.071),
-        (0.098, 0.22, 0.122),
-        (0.298, 0.235, 0.216),
+        (0.0, 30/256, 66/256),
+        (1.0, 200/256, 44/256),
+        (0.0, 150/256, 207/256),
+        (30/256, 100/256, 0.0),
+        (172/256, 60/256, 72/256),
     )
+    chart_colors += tuple(tuple((x+0.7)/2 for x in c) for c in chart_colors)
 
-    default_hist_alpha = 0.7
+    default_alpha = 0.7
 
     default_options = {
-        'alpha': 0.7,
+        'alpha': default_alpha,
     }
 
     def plot(self, column_for_xticks=None, select=None, overlay=True, width=6, height=4, **vargs):
@@ -2088,18 +2139,19 @@ class Table(collections.abc.MutableMapping):
             # barh plots entries in reverse order from bottom to top
             axis.barh(ypos, self[label][::-1], bwidth,  color=color, **options)
 
+        ylabel = self._as_label(column_for_categories)
+
         def annotate(axis, ticks):
             axis.set_yticks(index+0.5) # Center labels on bars
             # barh plots entries in reverse order from bottom to top
             axis.set_yticklabels(ticks[::-1], stretch='ultra-condensed')
             axis.set_xlabel(axis.get_ylabel())
-            if isinstance(column_for_categories, str):
-                axis.set_ylabel(column_for_categories)
+            axis.set_ylabel(ylabel)
 
         self._visualize('', labels, yticks, overlay, draw, annotate, width=width, height=height)
 
     def scatter(self, column_for_x, select=None, overlay=True, fit_line=False,
-        colors=None, labels=None, width=5, height=5, **vargs):
+        colors=None, labels=None, sizes=None, width=5, height=5, s=20, **vargs):
         """Creates scatterplots, optionally adding a line of best fit.
 
         Args:
@@ -2117,9 +2169,14 @@ class Table(collections.abc.MutableMapping):
                 for additional arguments that can be passed into vargs. These
                 include: `marker` and `norm`, to name a couple.
 
-            ``colors``: A column of colors (labels or numeric values).
+            ``colors``: A column of categories to be used for coloring dots.
 
             ``labels``: A column of text labels to annotate dots.
+
+            ``sizes``:  A column of values to set the relative areas of dots.
+
+            ``s``: Size of dots. If sizes is also provided, then dots will be
+              in the range 0 to 2 * s.
 
         Raises:
             ValueError -- Every column, ``column_for_x`` or ``select``, must be numerical
@@ -2156,16 +2213,31 @@ class Table(collections.abc.MutableMapping):
         options.update(vargs)
 
         x_data, y_labels =  self._split_column_and_labels(column_for_x)
+        if colors is not None:
+            y_labels.remove(self._as_label(colors))
+        if sizes is not None:
+            y_labels.remove(self._as_label(sizes))
         if select is not None:
             y_labels = self._as_labels(select)
+        if len(y_labels) > 1 and colors is not None and overlay:
+            warnings.warn("Colors and overlay are incompatible in a scatter")
+            overlay = False
 
         def draw(axis, label, color):
             if colors is not None:
-                color = self[colors]
+                colored = sorted(np.unique(self.column(colors)))
+                color_list = list(itertools.islice(itertools.cycle(self.chart_colors), len(colored)))
+                color_map = collections.OrderedDict(zip(colored, color_list))
+                color = [color_map[x] for x in self.column(colors)]
             elif 'color' in options:
                 color = options.pop('color')
             y_data = self[label]
-            axis.scatter(x_data, y_data, color=color, **options)
+            if sizes is not None:
+                max_size = max(self[sizes]) ** 0.5
+                size = 2 * s * self[sizes] ** 0.5 / max_size
+            else:
+                size = s
+            axis.scatter(x_data, y_data, color=color, s=size, **options)
             if fit_line:
                 m, b = np.polyfit(x_data, self[label], 1)
                 minx, maxx = np.min(x_data),np.max(x_data)
@@ -2177,6 +2249,10 @@ class Table(collections.abc.MutableMapping):
                         textcoords='offset points', ha='right', va='bottom',
                         bbox=dict(boxstyle='round,pad=0.5', fc='white', alpha=0.7),
                         arrowprops = dict(arrowstyle = '->', connectionstyle = 'arc3,rad=0', color='black'))
+            if colors is not None:
+                import matplotlib.patches as mpatches
+                patches = [mpatches.Patch(color=c, label=v) for (v, c) in color_map.items()]
+                axis.legend(loc=2, bbox_to_anchor=(1.05, 1), handles=patches)
 
         x_label = self._as_label(column_for_x)
         self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x, width=width, height=height)
@@ -2205,7 +2281,7 @@ class Table(collections.abc.MutableMapping):
             if ticks is not None:
                 annotate(axis, ticks)
             axis.legend(y_labels, loc=2, bbox_to_anchor=(1.05, 1))
-            Table.plots.append(axis)
+            type(self).plots.append(axis)
         else:
             fig, axes = plt.subplots(n, 1, figsize=(width, height*n))
             if not isinstance(axes, collections.Iterable):
@@ -2217,7 +2293,7 @@ class Table(collections.abc.MutableMapping):
                     axis.set_xlabel(x_label, fontsize=16)
                 if ticks is not None:
                     annotate(axis, ticks)
-                Table.plots.append(axis)
+                type(self).plots.append(axis)
 
     def _split_column_and_labels(self, column_or_label):
         """Return the specified column and labels of other columns."""
@@ -2225,18 +2301,18 @@ class Table(collections.abc.MutableMapping):
         labels = [label for i, label in enumerate(self.labels) if column_or_label not in (i, label)]
         return column, labels
 
-    def pivot_hist(self, pivot_column_label, value_column_label, overlay=True, **vargs):
+    def pivot_hist(self, pivot_column_label, value_column_label, overlay=True, width=6, height=4, **vargs):
         """Draw histograms of each category in a column."""
         pvt_labels = np.unique(self[pivot_column_label])
         pvt_columns = [self[value_column_label][np.where(self[pivot_column_label] == pivot)] for pivot in pvt_labels]
         n = len(pvt_labels)
         colors = list(itertools.islice(itertools.cycle(self.chart_colors), n))
         if overlay:
-            plt.figure(figsize=(6, 4))
+            plt.figure(figsize=(width, height))
             vals, bins, patches = plt.hist(pvt_columns, color=colors, **vargs)
             plt.legend(pvt_labels)
         else:
-            _, axes = plt.subplots(n, 1, figsize=(6, 4 * n))
+            _, axes = plt.subplots(n, 1, figsize=(width, height * n))
             vals = []
             bins = None
             for axis, label, column, color in zip(axes, pvt_labels, pvt_columns, colors):
@@ -2250,16 +2326,15 @@ class Table(collections.abc.MutableMapping):
                     bins = abins
                 else:
                     assert bins.all() == abins.all(), "Inconsistent bins in hist"
-        t = Table()
+        t = type(self)()
         t['start'] = bins[0:-1]
         t['end'] = bins[1:]
         for label, column in zip(pvt_labels,vals):
             t[label] = column
 
-    def hist(self, select=None, overlay=True, bins=None, counts=None, unit=None, **vargs):
-        """Plots one histogram for each column in the table.
-
-        Every column must be numerical.
+    def hist(self, *columns, overlay=True, bins=None, bin_column=None, unit=None, counts=None, width=6, height=4, **vargs):
+        """Plots one histogram for each column in columns. If no column is
+        specificed, plot all columns.
 
         Kwargs:
             overlay (bool): If True, plots 1 chart with all the histograms
@@ -2267,12 +2342,15 @@ class Table(collections.abc.MutableMapping):
                 of one histogram for each column in the table). Also adds a
                 legend that matches each bar color to its column.
 
-            bins (column name or list): Lower bound for each bin in the
-                histogram. If None, bins will be chosen automatically.
+            bins (list or int): Lower bound for each bin in the
+                histogram or number of bins. If None, bins will
+                be chosen automatically.
 
-            counts (column name or column): A column of counted values.
-                All other columns are treated as counts of these values.
+            bin_column (column name or index): A column of bin lower bounds.
+                All other columns are treated as counts of these bins.
                 If None, each value in each row is assigned a count of 1.
+
+            counts (column name or index): Deprecated name for bin_column.
 
             vargs: Additional arguments that get passed into :func:plt.hist.
                 See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.hist
@@ -2296,11 +2374,16 @@ class Table(collections.abc.MutableMapping):
         >>> t = Table().with_columns(
         ...     'value',      make_array(101, 102, 103),
         ...     'proportion', make_array(0.25, 0.5, 0.25))
-        >>> t.hist(counts='value') # doctest: +SKIP
-        <histogram of values in prop weighted by corresponding values in value>
+        >>> t.hist(bin_column='value') # doctest: +SKIP
+        <histogram of values weighted by corresponding proportions>
         """
-        if select is not None:
-            self = self.select(select)
+        if counts is not None and bin_column is None:
+            warnings.warn("counts arg of hist is deprecated; use bin_column")
+            bin_column=counts
+        if columns:
+            if bin_column is not None:
+                columns = list(columns) + [bin_column]
+            self = self.select(*columns)
 
         # Check for non-numerical values and raise a ValueError if any found
         for col in self:
@@ -2311,9 +2394,9 @@ class Table(collections.abc.MutableMapping):
 
         columns = self._columns.copy()
 
+        if bin_column is not None and bins is None:
+            bins = np.unique(self.column(bin_column))
         if bins is not None:
-            if isinstance(bins, collections.Hashable) and bins in self.labels:
-                bins = np.unique(self[bins])
             vargs['bins'] = bins
 
         if 'normed' not in vargs:
@@ -2321,15 +2404,13 @@ class Table(collections.abc.MutableMapping):
         percentage = plt.FuncFormatter(lambda x, _: "{:g}".format(100*x))
 
         counted_values = counted_label = None
-        if counts is not None:
-            counted_values = self._get_column(counts)
-            counted_label = 'counts'
-            if isinstance(counts, str) and counts in self.labels:
-                columns.pop(counts)
-                counted_label = counts
+        if bin_column is not None:
+            counted_label = self._as_label(bin_column)
+            counted_values = self.column(counted_label)
+            columns.pop(counted_label)
 
         n = len(columns)
-        colors = [rgb_color + (self.default_hist_alpha,) for rgb_color in
+        colors = [rgb_color + (self.default_alpha,) for rgb_color in
             itertools.islice(itertools.cycle(self.chart_colors), n)]
         if overlay and n > 1:
             # Reverse because legend prints bottom-to-top
@@ -2340,7 +2421,7 @@ class Table(collections.abc.MutableMapping):
                 vargs['weights'] = np.transpose(values)
                 values = np.repeat(counted_values, n).reshape(-1,n)
             vargs.setdefault('histtype', 'stepfilled')
-            figure = plt.figure(figsize=(6, 4))
+            figure = plt.figure(figsize=(width, height))
             plt.hist(values, color=colors, **vargs)
             axis = figure.get_axes()[0]
             _vertical_x(axis)
@@ -2352,9 +2433,9 @@ class Table(collections.abc.MutableMapping):
             if unit:
                 axis.set_xlabel('(' + unit + ')', fontsize=16)
             plt.legend(columns.keys(), loc=2, bbox_to_anchor=(1.05, 1))
-            Table.plots.append(axis)
+            type(self).plots.append(axis)
         else:
-            _, axes = plt.subplots(n, 1, figsize=(6, 4 * n))
+            _, axes = plt.subplots(n, 1, figsize=(width, height * n))
             # Use stepfilled when there are too many bins
             if isinstance(bins, numbers.Integral) and bins > 76 or hasattr(bins, '__len__') and len(bins) > 76:
                 vargs.setdefault('histtype', 'stepfilled')
@@ -2372,11 +2453,11 @@ class Table(collections.abc.MutableMapping):
                     axis.set_xlabel(label + x_unit, fontsize=16)
                 else:
                     values = counted_values
-                    axis.set_xlabel(counted_label + x_unit, fontsize=16)
                     vargs['weights'] = columns[label]
+                    axis.set_xlabel(label.rstrip(' count') + x_unit, fontsize=16)
                 axis.hist(values, color=color, **vargs)
                 _vertical_x(axis)
-                Table.plots.append(axis)
+                type(self).plots.append(axis)
 
     def boxplot(self, **vargs):
         """Plots a boxplot for the table.
@@ -2520,12 +2601,12 @@ def _fill_with_zeros(partials, rows, zero=None):
     return np.array([mapping.get(partial, zero) for partial in partials])
 
 
-def _as_labels(column_label_or_labels):
+def _as_labels(column_or_columns):
     """Return a list of labels for a label or labels."""
-    if not _is_non_string_iterable(column_label_or_labels):
-        return [column_label_or_labels]
+    if not _is_non_string_iterable(column_or_columns):
+        return [column_or_columns]
     else:
-        return column_label_or_labels
+        return column_or_columns
 
 def _varargs_labels_as_list(label_list):
     """Return a list of labels for a list of labels or singleton list of list

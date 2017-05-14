@@ -6,6 +6,7 @@ import numpy as np
 
 __all__ = ['are']
 
+
 class are:
     """Predicate functions. The class is named "are" for calls to where.
 
@@ -149,6 +150,55 @@ class are:
         """A string that is part of the given superstring."""
         return _combinable(lambda x: x in superstring)
 
+    @staticmethod
+    def not_equal_to(y):
+        """Is not equal to y"""
+        return -(are.equal_to(y))
+    
+    @staticmethod
+    def not_above(y):
+        """Is not above y"""
+        return are.below_or_equal_to(y)
+    
+    @staticmethod
+    def not_below(y):
+        """Is not below y"""
+        return are.above_or_equal_to(y)
+    
+    @staticmethod
+    def not_below_or_equal_to(y):
+        """Is neither below y nor equal to y"""
+        return are.above(y)
+    
+    @staticmethod
+    def not_above_or_equal_to(y):
+        """Is neither above y nor equal to y"""
+        return are.below(y)
+    
+    @staticmethod
+    def not_strictly_between(y, z):
+        """Is equal to y or equal to z or less than y or greater than z"""
+        return  -(are.strictly_between(y,z))
+    
+    @staticmethod
+    def not_between(y, z):
+        """Is equal to y or less than y or greater than z"""
+        return -(are.between(y,z))
+    
+    @staticmethod
+    def not_between_or_equal_to(y,z):
+        """Is less than y or greater than z"""
+        return -(are.between_or_equal_to(y,z))
+    
+    @staticmethod
+    def not_containing(substring):
+        """A string that does not contain substring""" 
+        return -(are.containing(substring))
+    
+    @staticmethod
+    def not_contained_in(superstring):
+        """A string that is not contained within the superstring"""
+        return -(are.contained_in(superstring))
 ###############
 # Combination #
 ###############
@@ -187,13 +237,5 @@ def _equal_or_float_equal(x, y):
     else:
         return x == y
 
-are.not_equal_to = _not(are.equal_to)
-are.not_above = are.below_or_equal_to
-are.not_below = are.above_or_equal_to
-are.not_below_or_equal_to = are.above
-are.not_above_or_equal_to = are.below
-are.not_strictly_between = _not(are.strictly_between)
-are.not_between = _not(are.between)
-are.not_between_or_equal_to = _not(are.between_or_equal_to)
-are.not_containing = _not(are.containing)
-are.not_contained_in = _not(are.contained_in)
+
+    

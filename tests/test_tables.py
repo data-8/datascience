@@ -347,6 +347,18 @@ def test_groups(t):
     10     | False | 1
     """)
 
+def test_groups_using_group(t):
+    t = t.copy()
+    t.append(('e', 12, 1, 12))
+    t['early'] = t['letter'] < 'd'
+    test = t.group(['points', 'early'])
+    assert_equal(test, """
+    points | early | count
+    1      | False | 1
+    1      | True  | 1
+    2      | True  | 2
+    10     | False | 1
+    """)
 
 def test_groups_list(t):
     t = t.copy()
@@ -375,11 +387,9 @@ def test_groups_collect(t):
     10     | False | 1
     """)
 
-
 def test_join(t, u):
     """Tests that join works, not destructive"""
-    test = t.join('points', u)
-    assert_equal(test, """
+    assert_equal(t.join('points', u), """
     points | letter | count | totals | names
     1      | a      | 9     | 9      | one
     2      | b      | 3     | 6      | two
@@ -399,6 +409,11 @@ def test_join(t, u):
     z      | 1     | 10     | 10
     """)
 
+def test_join_html(t, u):
+    """Test that join doesn't crash with formatting."""
+    t = t.set_format('count', NumberFormatter)
+    t.as_html()
+    u.join('points', t, 'points').as_html()
 
 def test_pivot_counts(t):
     t = t.copy()
@@ -411,6 +426,16 @@ def test_pivot_counts(t):
     True  | 1 | 2 | 0
     """)
 
+def test_pivot_counts_with_indices(t):
+    t = t.copy()
+    t.append(('e', 12, 1, 12))
+    t['early'] = t['letter'] < 'd'
+    test = t.pivot(2, 4)
+    assert_equal(test, """
+    early | 1 | 2 | 10
+    False | 1 | 0 | 1
+    True  | 1 | 2 | 0
+    """)
 
 def test_pivot_values(t):
     t = t.copy()
@@ -460,11 +485,18 @@ def test_pivot_sum(t):
 
 def test_apply(t):
     t = t.copy()
-    assert_array_equal(t.apply(lambda x, y: x * y, ['count', 'points']), np.array([9, 6, 6, 10]))
-    assert_array_equal(t.apply(lambda x: x * x, 'points'), np.array([1, 4, 4, 100]))
-    assert_array_equal(t.apply(lambda row: row.item('count') * 2), np.array([18, 6, 6, 2]))
+    assert_array_equal(t.apply(lambda x, y: x * y, 'count', 'points'),
+                       np.array([9, 6, 6, 10]))
+    assert_array_equal(t.apply(lambda x: x * x, 'points'),
+                       np.array([1, 4, 4, 100]))
+    assert_array_equal(t.apply(lambda row: row.item('count') * 2),
+                       np.array([18, 6, 6, 2]))
     with(pytest.raises(ValueError)):
-        t.apply(lambda x, y: x + y, ['count', 'score'])
+        t.apply(lambda x, y: x + y, 'count', 'score')
+
+    # Deprecated behavior
+    assert_array_equal(t.apply(lambda x, y: x * y, ['count', 'points']),
+                       np.array([9, 6, 6, 10]))
 
 
 ########
@@ -692,6 +724,29 @@ def test_with_columns_with_formats():
     with(pytest.raises(Exception)):
         players3 = players.with_columns('salaries', salaries.column('salary'), make_array(7, 2), 'years', make_array(6, 1))
 
+def test_with_columns(table):
+    column_1 = [10, 20, 30, 40]
+    column_2 = 'hello'
+    table2 = table.with_columns(
+        'new_col1', column_1,
+        'new_col2', column_2)
+    table3 = table.with_column( # Incorrect method name still works
+        'new_col1', column_1,
+        'new_col2', column_2)
+    assert_equal(table2, """
+    letter | count | points | new_col1 | new_col2
+    a      | 9     | 1      | 10       | hello
+    b      | 3     | 2      | 20       | hello
+    c      | 3     | 2      | 30       | hello
+    z      | 1     | 10     | 40       | hello
+    """)
+    assert_equal(table3, """
+    letter | count | points | new_col1 | new_col2
+    a      | 9     | 1      | 10       | hello
+    b      | 3     | 2      | 20       | hello
+    c      | 3     | 2      | 30       | hello
+    z      | 1     | 10     | 40       | hello
+    """)
 
 def test_append_table(table):
     table.append(table)
@@ -756,8 +811,6 @@ def test_relabel():
     with(pytest.raises(ValueError)):
         table.relabel(['red', 'green'], ['magenta', 'yellow'])
 
-
-
 def test_relabel_with_chars(table):
     assert_equal(table, """
     letter | count | points
@@ -775,8 +828,8 @@ def test_relabel_with_chars(table):
     z      | 1     | 10
     """)
 
-def test_with_relabeling(table):
-    table2 = table.with_relabeling('points', 'minions')
+def test_relabeled(table):
+    table2 = table.relabeled('points', 'minions')
     assert_equal(table2, """
     letter | count | minions
     a      | 9     | 1
@@ -784,7 +837,7 @@ def test_with_relabeling(table):
     c      | 3     | 2
     z      | 1     | 10
     """)
-    table3 = table.with_relabeling(['count', 'points'], ['ducks', 'ducklings'])
+    table3 = table.relabeled(['count', 'points'], ['ducks', 'ducklings'])
     assert_equal(table3, """
     letter | ducks | ducklings
     a      | 9     | 1
@@ -794,6 +847,17 @@ def test_with_relabeling(table):
     """)
     assert_equal(table, """
     letter | count | points
+    a      | 9     | 1
+    b      | 3     | 2
+    c      | 3     | 2
+    z      | 1     | 10
+    """)
+
+def test_relabeled_formatted(table):
+    table.set_format('points', NumberFormatter)
+    table2 = table.relabeled('points', 'very long label')
+    assert_equal(table2, """
+    letter | count | very long label
     a      | 9     | 1
     b      | 3     | 2
     c      | 3     | 2
@@ -944,7 +1008,6 @@ def test_group_by_tuples():
     (5, 1)        | [3]
     """)
 
-
 def test_group_no_new_column(table):
     table.group(table.columns[1])
     assert_equal(table, """
@@ -955,6 +1018,15 @@ def test_group_no_new_column(table):
     z      | 1     | 10
     """)
 
+def test_group_using_groups(table):
+    table.groups(1)
+    assert_equal(table, """
+    letter | count | points
+    a      | 9     | 1
+    b      | 3     | 2
+    c      | 3     | 2
+    z      | 1     | 10
+    """)
 
 def test_stack(table):
     test = table.stack(key='letter')
@@ -1042,6 +1114,78 @@ def test_join_with_strings(table):
     b      | 3     | 2      | 3       | 2
     c      | 3     | 2      | 3       | 2
     z      | 1     | 10     | 1       | 10
+    """)
+
+def test_join_with_same_formats(table):
+    test = table.copy().set_format("points", CurrencyFormatter)
+    assert_equal(test, """
+    letter | count | points
+    a      | 9     | $1.00
+    b      | 3     | $2.00
+    c      | 3     | $2.00
+    z      | 1     | $10.00
+    """)
+    test_joined = test.join("points", test)
+    assert_equal(test_joined, """
+    points | letter | count | letter_2  | count_2
+    $1.00  | a      | 9     | a         | 9
+    $2.00  | b      | 3     | b         | 3
+    $2.00  | c      | 3     | b         | 3
+    $10.00 | z      | 1     | z         | 1
+    """)
+
+def test_join_with_one_formatted(table):
+    test = table.copy().set_format("points", CurrencyFormatter)
+    assert_equal(test, """
+    letter | count | points
+    a      | 9     | $1.00
+    b      | 3     | $2.00
+    c      | 3     | $2.00
+    z      | 1     | $10.00
+    """)
+    test_joined = test.join("points", table)
+    assert_equal(test_joined, """
+    points | letter | count | letter_2  | count_2
+    $1.00  | a      | 9     | a         | 9
+    $2.00  | b      | 3     | b         | 3
+    $2.00  | c      | 3     | b         | 3
+    $10.00 | z      | 1     | z         | 1
+    """)
+
+def test_join_with_two_labels_one_format(table):
+    test = table.copy().set_format("points", CurrencyFormatter)
+    assert_equal(test, """
+    letter | count | points
+    a      | 9     | $1.00
+    b      | 3     | $2.00
+    c      | 3     | $2.00
+    z      | 1     | $10.00
+    """)
+    assert_equal(table, """
+    letter | count | points
+    a      | 9     | 1
+    b      | 3     | 2
+    c      | 3     | 2
+    z      | 1     | 10
+    """)
+    test2 = test.copy()
+    table2 = table.copy()
+    test_joined = test.join("letter", table)
+    assert_equal(test_joined, """
+    letter | count | points     | count_2 | points_2
+    a      | 9     | $1.00      | 9       | 1
+    b      | 3     | $2.00      | 3       | 2
+    c      | 3     | $2.00      | 3       | 2
+    z      | 1     | $10.00     | 1       | 10
+    """)
+
+    test_joined2 = table2.join("letter", test2)
+    assert_equal(test_joined2, """
+    letter | count | points | count_2 | points_2
+    a      | 9     | 1      | 9       | $1.00
+    b      | 3     | 2      | 3       | $2.00
+    c      | 3     | 2      | 3       | $2.00
+    z      | 1     | 10     | 1       | $10.00
     """)
 
 def test_percentile(numbers_table):
@@ -1151,6 +1295,35 @@ def test_split_k_vals(table):
         table.split(0)
     with pytest.raises(ValueError):
         table.split(table.num_rows)
+
+def test_split_table_labels(table):
+    sampled, rest = table.split(3)
+    assert sampled.labels == table.labels
+    assert rest.labels == table.labels
+
+###############
+# Inheritance #
+###############
+
+
+class SubTable(Table):
+    """Test inheritance through tables."""
+    def __init__(self, *args):
+        Table.__init__(self, *args)
+        self.extra = "read all about it"
+
+def test_subtable():
+    """Tests that derived classes retain type through super methods."""
+    st = SubTable().with_columns([("num", [1,2,3]),
+                                  ('col', ['red', 'blu', 'red']),
+                                  ("num2", [5,3,7])])
+    assert(type(st) == SubTable)
+    assert(type(st.select('col')) == type(st))
+    assert(type(st.pivot_bin('col', 'num')) == type(st))
+    assert(type(st.stats()) == type(st))
+    assert(type(st.bin('num', bins=3)) == type(st))
+    assert(type(st.copy()) == type(st))
+
 
 #############
 # Visualize #

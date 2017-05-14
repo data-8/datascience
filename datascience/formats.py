@@ -1,7 +1,8 @@
 """String formatting for table entries."""
 
 __all__ = ['default_formatter', 'Formatter', 'NumberFormatter',
-           'CurrencyFormatter', 'DateFormatter', 'PercentFormatter']
+           'CurrencyFormatter', 'DateFormatter', 'PercentFormatter',
+           'DistributionFormatter']
 
 
 import numpy as np
@@ -56,31 +57,41 @@ class Formatter:
         else:
             return str(value)
 
+    def convert_column(self, values):
+        """Convert each value using the the convert_value method."""
+        return list(map(self.convert_value, values))
+
     @staticmethod
-    def convert(value):
+    def convert_value(value):
         """Identity conversion (override to convert values)."""
         return value
 
     @property
     def converts_values(self):
         """Whether this Formatter also converts values."""
-        return self.convert is not Formatter.convert
-
+        return self.convert_value is not Formatter.convert_value or \
+               self.convert_column is not Formatter.convert_column
 
 default_formatter = Formatter()
+
+
+class FunctionFormatter(Formatter):
+    """Format values using a function."""
+
+    def __init__(self, fn):
+        self.format_value = lambda v: str(fn(v))
 
 
 class NumberFormatter(Formatter):
     """Format numbers that may have delimiters."""
 
-    converts_values = True
-
-    def __init__(self, decimals=2, decimal_point='.', separator=','):
+    def __init__(self, decimals=2, decimal_point='.', separator=',', *args, **vargs):
+        super().__init__(*args, **vargs)
         self.decimals = decimals
         self.decimal_point = decimal_point
         self.separator = separator
 
-    def convert(self, value):
+    def convert_value(self, value):
         """Convert string 93,000.00 to float 93000.0."""
         if isinstance(value, str):
             value = value.replace(self.separator, '')
@@ -101,14 +112,12 @@ class NumberFormatter(Formatter):
 class CurrencyFormatter(Formatter):
     """Format currency and convert to float."""
 
-    converts_values = True
-
     def __init__(self, symbol="$", *args, **vargs):
         super().__init__(*args, **vargs)
         assert isinstance(symbol, str)
         self.symbol = symbol
 
-    def convert(self, value):
+    def convert_value(self, value):
         """Convert value to float. If value is a string, ensure that the first
         character is the same as symbol ie. the value is in the currency this
         formatter is representing.
@@ -126,14 +135,12 @@ class CurrencyFormatter(Formatter):
 class DateFormatter(Formatter):
     """Format date & time and convert to UNIX timestamp."""
 
-    converts_values = True
-
     def __init__(self, format="%Y-%m-%d %H:%M:%S.%f", *args, **vargs):
         super().__init__(*args, **vargs)
         assert isinstance(format, str)
         self.format = format
 
-    def convert(self, value):
+    def convert_value(self, value):
         """Convert 2015-08-03 to a Unix timestamp int."""
         return datetime.strptime(value, self.format).timestamp()
 
@@ -145,9 +152,8 @@ class DateFormatter(Formatter):
 class PercentFormatter(Formatter):
     """Format a number as a percentage."""
 
-    converts_values = False
-
     def __init__(self, decimals=2, *args, **vargs):
+        super().__init__(*args, **vargs)
         assert isinstance(decimals, int)
         self.decimals = decimals
 
@@ -155,3 +161,15 @@ class PercentFormatter(Formatter):
         """Format number as percentage."""
         return ('{:.' + str(self.decimals) + '%}').format(value)
 
+
+class DistributionFormatter(PercentFormatter):
+    """Normalize a column and format as percentages."""
+
+    def convert_column(self, values):
+        """Normalize values."""
+        assert all(values >= 0), 'Cannot normalize a column with negatives'
+        total = sum(values)
+        if total > 0:
+            return values / total
+        else:
+            return values
