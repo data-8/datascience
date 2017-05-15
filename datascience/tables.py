@@ -428,7 +428,8 @@ class Table(collections.abc.MutableMapping):
 
                 If a list or array, the new column contains the values in
                 ``values``, which must be the same length as the table.
-            ``formatter`` (single formatter): Adds a formatter to the column being appended. No formatter added by default.
+            ``formatter`` (single formatter): Adds a formatter to the column being 
+                appended. No formatter added by default.
 
         Returns:
             Original table with new or replaced column
@@ -1560,11 +1561,7 @@ class Table(collections.abc.MutableMapping):
         self.append(self._with_columns(zip(*rows)))
         return self
 
-<<<<<<< HEAD
     def with_column(self, label, values, formatter=None):
-=======
-    def with_column(self, label, values, *rest):
->>>>>>> 7a7ca82dc790f6aabeffd8ef2340eed944dce07f
         """Return a new table with an additional or replaced column.
 
         Args:
@@ -1575,12 +1572,7 @@ class Table(collections.abc.MutableMapping):
                 value in the new column is ``values``. If sequence of values,
                 new column takes on values in ``values``.
 
-<<<<<<< HEAD
             ``formatter`` (single value): Specifies formatter for the new column. Defaults to no formatter.
-=======
-            ``rest``: An alternating list of labels and values describing
-                additional columns. See with_columns for a full description.
->>>>>>> 7a7ca82dc790f6aabeffd8ef2340eed944dce07f
 
         Raises:
             ``ValueError``: If
@@ -1621,14 +1613,16 @@ class Table(collections.abc.MutableMapping):
         """
         # Ensure that if with_column is called instead of with_columns;
         # no error is raised.
-        if rest:
-            return self.with_columns(label, values, *rest)
 
         new_table = self.copy()
+        if formatter == {}:
+            formatter = None
+        elif isinstance(formatter, dict):
+            formatter = formatter["formatter"]
         new_table.append_column(label, values, formatter)
         return new_table
 
-    def with_columns(self, *labels_and_values_and_formats):
+    def with_columns(self, *labels_and_values, **formatter):
         """Return a table with additional or replaced columns.
 
 
@@ -1638,6 +1632,8 @@ class Table(collections.abc.MutableMapping):
                 existing table, then every value in the corresponding column is
                 set to that value. If label has only a single value (``int``),
                 every row of corresponding column takes on that value.
+            ''formatter'' (single Formatter value): A single formatter value that will be applied to all columns 
+                being added using this function call.
 
         Raises:
             ``ValueError``: If
@@ -1686,31 +1682,26 @@ class Table(collections.abc.MutableMapping):
             ...
         ValueError: Column length mismatch. New column does not have the same number of rows as table.
         """
-        if len(labels_and_values_and_formats) == 1:
-            labels_and_values_and_formats = labels_and_values_and_formats[0]
-        if isinstance(labels_and_values_and_formats, collections.abc.Mapping):
-            labels_and_values_and_formats = list(labels_and_values_and_formats.items())
-        if not isinstance(labels_and_values_and_formats, collections.abc.Sequence):
-            labels_and_values_and_formats = list(labels_and_values_and_formats)
-        if not labels_and_values_and_formats:
+        if len(labels_and_values) == 1:
+            labels_and_values = labels_and_values[0]
+        if isinstance(labels_and_values, collections.abc.Mapping):
+            labels_and_values = list(labels_and_values.items())
+        if not isinstance(labels_and_values, collections.abc.Sequence):
+            labels_and_values = list(labels_and_values)
+        if not labels_and_values:
             return self
-        first = labels_and_values_and_formats[0]
+        first = labels_and_values[0]
         if not isinstance(first, str) and hasattr(first, '__iter__'):
-            for cluster in labels_and_values_and_formats:
-                assert len(cluster) == 2 or len(cluster) == 3, 'incorrect columns format'
-            labels_and_values_and_formats = [x for pair in labels_and_values_and_formats for x in pair]
-        i = 0
-        while i < len(labels_and_values_and_formats):
-            assert (i+1) < len(labels_and_values_and_formats), "incorrect format"
-            if i+2 < len(labels_and_values_and_formats) and not isinstance(labels_and_values_and_formats[i+2], str):
-                label, values, formatter = labels_and_values_and_formats[i], labels_and_values_and_formats[i+1], labels_and_values_and_formats[i+2]
-                i += 3
-            else:
-                label, values, formatter = labels_and_values_and_formats[i], labels_and_values_and_formats[i+1], None
-                i += 2
+            for pair in labels_and_values:
+                assert len(pair) == 2, 'incorrect columns format'
+            labels_and_values = [x for pair in labels_and_values for x in pair]
+        assert len(labels_and_values) % 2 == 0, 'Even length sequence required'
+        for i in range(0, len(labels_and_values), 2):
+            label, values = labels_and_values[i], labels_and_values[i+1]
             self = self.with_column(label, values, formatter)
-
         return self
+
+        
 
     def relabeled(self, label, new_label):
         """Return a new table with ``label`` specifying column label(s)

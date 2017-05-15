@@ -714,11 +714,11 @@ def test_with_columns_with_formats():
     110235    | 0.236 | N/A      | 2016
     """)
     salaries = Table().with_column('salary', make_array(500000, 15500000))
-    players2 = players.with_columns('salaries', salaries.column('salary'), CurrencyFormatter, 'years', make_array(6, 1))
+    players2 = players.with_columns('salaries', salaries.column('salary'), 'years', make_array(6, 1), formatter=CurrencyFormatter)
     assert_equal(players2, """
     player_id | wOBA  | salaries      | season | years
-    110234    | 0.354 | $500,000.00    | 2016   | 6
-    110235    | 0.236 | $15,500,000.00  | 2016   | 1
+    110234    | 0.354 | $500,000.00    | 2016   | $6.00
+    110235    | 0.236 | $15,500,000.00  | 2016   | $1.00
     """)
 
     with(pytest.raises(Exception)):
@@ -730,17 +730,7 @@ def test_with_columns(table):
     table2 = table.with_columns(
         'new_col1', column_1,
         'new_col2', column_2)
-    table3 = table.with_column( # Incorrect method name still works
-        'new_col1', column_1,
-        'new_col2', column_2)
     assert_equal(table2, """
-    letter | count | points | new_col1 | new_col2
-    a      | 9     | 1      | 10       | hello
-    b      | 3     | 2      | 20       | hello
-    c      | 3     | 2      | 30       | hello
-    z      | 1     | 10     | 40       | hello
-    """)
-    assert_equal(table3, """
     letter | count | points | new_col1 | new_col2
     a      | 9     | 1      | 10       | hello
     b      | 3     | 2      | 20       | hello
