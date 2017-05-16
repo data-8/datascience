@@ -585,9 +585,15 @@ def test_append_column(table):
     c      | 3     | 2      | 30
     z      | 1     | 10     | 40
     """)
-    table.append_column('new_col2', column_2)
-    print(table)
+    ret_table = table.append_column('new_col2', column_2)
     assert_equal(table, """
+    letter | count | points | new_col1 | new_col2
+    a      | 9     | 1      | 10       | hello
+    b      | 3     | 2      | 20       | hello
+    c      | 3     | 2      | 30       | hello
+    z      | 1     | 10     | 40       | hello
+    """)
+    assert_equal(ret_table, """
     letter | count | points | new_col1 | new_col2
     a      | 9     | 1      | 10       | hello
     b      | 3     | 2      | 20       | hello
