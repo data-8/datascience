@@ -130,6 +130,26 @@ def test_select(t):
     15     | 16
     """)
 
+# def test_select_with_copy_values(t):
+#     test = t.select(["points"], copy_values=False)
+#     assert_equal(test, """
+#     points
+#     1      
+#     2      
+#     2      
+#     10     
+#     """)
+#     t.with_row(["f", 7, 8])
+#     assert_equal(test, """
+#     points
+#     1      
+#     2      
+#     2      
+#     10 
+#     8    
+#     """)
+
+
 def test_drop(t):
     test = t.drop(['points', 1])
     assert_equal(test, """
