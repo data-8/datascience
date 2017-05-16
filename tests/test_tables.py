@@ -266,6 +266,16 @@ def test_where_predicates(t):
     z      | 1     | 10     | 10
     """)
 
+def test_where_predicates_warning(t, capsys):
+    t1 = t.copy()
+    t1['count1'] = t1['count'] - 1
+    with (pytest.raises(ValueError)):
+        test = t1.where('count', are.equal_to(t1.column("count1")))
+    out, err = capsys.readouterr()
+    assert "You are checking against an iterable. If you are trying to test one iterable against another \
+                using 'Table.where', put your first iterable as your first argument, your predicate as your second  \
+                argument, and then your second iterable as your third argument." in err
+
 
 def test_sort(t):
     test = t.sort('points')
