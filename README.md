@@ -27,6 +27,9 @@ pip install datascience
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.9.6
+- 'move_column' added.
+
 ### v0.9.5
 
 - DistributionFormatter added.

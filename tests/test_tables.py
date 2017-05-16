@@ -1116,6 +1116,13 @@ def test_pivot_bin(categories_table):
     3    | 0    | 0
     """)
 
+def test_move_column(table):
+    assert table.column_labels == ('letter', 'count', 'points')
+    table = table.move_column("letter", 1)
+    assert table.column_labels == ('count', 'letter', 'points')
+    table = table.move_column(2, 1)
+    assert table.column_labels == ('count', 'points', 'letter')
+
 ##################
 # Export/Display #
 ##################
