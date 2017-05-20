@@ -27,6 +27,15 @@ pip install datascience
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.10.0
+
+- Added `group_barh` and `group_bar` to plot counts by a grouping category,
+  a common use case.
+- Added options to `hist` to produce a histogram for each group on a
+  column.
+- Deprecated Table method `pivot_hist`.  Added an option to `hist` to
+  simulate `pivot_hist`'s behavior.
+
 ### v0.9.5
 
 - DistributionFormatter added.
