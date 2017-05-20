@@ -2020,7 +2020,7 @@ class Table(collections.abc.MutableMapping):
         one plot is produced for every other column (or for the columns
         designated by `select`).
 
-        Every selected except column for `column_for_categories` must be numerical.
+        Every selected column except `column_for_categories` must be numerical.
 
         Args:
             column_for_categories (str): A column containing x-axis categories
@@ -2051,6 +2051,29 @@ class Table(collections.abc.MutableMapping):
                 axis.set_xticklabels(tick_labels, stretch='ultra-condensed')
 
         self._visualize(column_for_categories, labels, xticks, overlay, draw, annotate, width=width, height=height)
+
+
+    def group_bar(self, column_label, **vargs):
+        """Plot a bar chart for the table.
+
+        The values of the specified column are grouped and counted, and one
+        bar is produced for each group.
+
+        Args:
+            ``column_label`` (str or int): The name or index of a column
+
+        Kwargs:
+            overlay (bool): create a chart with one color per data column;
+                if False, each will be displayed separately.
+        
+            width (float): The width of the plot, in inches
+            height (float): The height of the plot, in inches
+
+            vargs: Additional arguments that get passed into `plt.bar`.
+                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.bar
+                for additional arguments that can be passed into vargs.
+        """
+        self.group(column_label).bar(column_label, **vargs)
 
     def barh(self, column_for_categories=None, select=None, overlay=True, width=6, **vargs):
         """Plot horizontal bar charts for the table.
@@ -2131,6 +2154,29 @@ class Table(collections.abc.MutableMapping):
             axis.set_ylabel(ylabel)
 
         self._visualize('', labels, yticks, overlay, draw, annotate, width=width, height=height)
+
+
+    def group_barh(self, column_label, **vargs):
+        """Plot a horizontal bar chart for the table.
+
+        The values of the specified column are grouped and counted, and one
+        bar is produced for each group.
+
+        Args:
+            ``column_label`` (str or int): The name or index of a column
+
+        Kwargs:
+            overlay (bool): create a chart with one color per data column;
+                if False, each will be displayed separately.
+        
+            width (float): The width of the plot, in inches
+            height (float): The height of the plot, in inches
+
+            vargs: Additional arguments that get passed into `plt.bar`.
+                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.bar
+                for additional arguments that can be passed into vargs.
+        """
+        self.group(column_label).barh(column_label, **vargs)
 
     def scatter(self, column_for_x, select=None, overlay=True, fit_line=False,
         colors=None, labels=None, sizes=None, width=5, height=5, s=20, **vargs):
