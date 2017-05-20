@@ -2283,8 +2283,13 @@ class Table(collections.abc.MutableMapping):
         labels = [label for i, label in enumerate(self.labels) if column_or_label not in (i, label)]
         return column, labels
 
+    # Deprecated
     def pivot_hist(self, pivot_column_label, value_column_label, overlay=True, width=6, height=4, **vargs):
         """Draw histograms of each category in a column."""
+        warnings.warn("pivot_hist is deprecated; use "
+                      "hist(value_column_label, group=pivot_column_label), or "
+                      "with side_by_side=True if you really want side-by-side "
+                      "bars.")
         pvt_labels = np.unique(self[pivot_column_label])
         pvt_columns = [self[value_column_label][np.where(self[pivot_column_label] == pivot)] for pivot in pvt_labels]
         n = len(pvt_labels)
@@ -2314,9 +2319,89 @@ class Table(collections.abc.MutableMapping):
         for label, column in zip(pvt_labels,vals):
             t[label] = column
 
-    def hist(self, *columns, overlay=True, bins=None, bin_column=None, unit=None, counts=None, width=6, height=4, **vargs):
+    def _prepare_hist_with_bin_column(self, bin_column):
+        weight_columns = [c for c in self.labels if c != bin_column]
+        bin_values = self.column(bin_column)
+        values_dict = {w.rstrip(' count'): (bin_values, self.column(w)) for w in weight_columns}
+        return values_dict
+
+    def _prepare_hist_with_group(self, group):
+        grouped = self.group(group, np.array)
+        if grouped.num_rows > 20:
+            warnings.warn("It looks like you're making a grouped histogram with "
+                          "a lot of groups ({:d}), which is probably incorrect."
+                          .format(len(unique_labels)))
+        return {"{}={}".format(group, k): (v[0][1],) for k, v in grouped.index_by(group).items()}
+
+    def _draw_hist(self, values_dict, overlay=True, unit=None, side_by_side=False, width=6, height=4, **vargs):
+        """Internal method for drawing histograms.
+        
+        Args:
+            values_dict (ordered dict): A dict from column name to singleton
+                tuple of array of values or a (values, weights) pair of arrays.
+                If any values have weights, they all must have weights.
+        
+        Other args are as described in `hist`.
+        """
+        n = len(values_dict)
+        colors = [rgb_color + (self.default_alpha,) for rgb_color in
+            itertools.islice(itertools.cycle(self.chart_colors), n)]
+        hist_names = list(values_dict.keys())
+        values = [v[0] for v in values_dict.values()]
+        weights = [v[1] for v in values_dict.values() if len(v) > 1]
+        if n > len(weights) > 0:
+            raise ValueError("Weights were provided for some columns, but not "
+                             " all, and that's not supported.")
+        if vargs['normed']:
+            y_label = 'Percent per ' + (unit if unit else 'unit')
+            percentage = plt.FuncFormatter(lambda x, _: "{:g}".format(100*x))
+        else:
+            y_label = 'Count'
+        
+        if overlay and n > 1:
+            # Reverse because legend prints bottom-to-top
+            values = values[::-1]
+            weights = weights[::-1]
+            colors = list(colors)[::-1]
+            if len(weights) == n:
+                vargs['weights'] = weights
+            if not side_by_side:
+                vargs.setdefault('histtype', 'stepfilled')
+            figure = plt.figure(figsize=(width, height))
+            plt.hist(values, color=colors, **vargs)
+            axis = figure.get_axes()[0]
+            _vertical_x(axis)
+            axis.set_ylabel(y_label)
+            if vargs['normed']:
+                axis.yaxis.set_major_formatter(percentage)
+            if unit:
+                axis.set_xlabel('(' + unit + ')', fontsize=16)
+            plt.legend(hist_names, loc=2, bbox_to_anchor=(1.05, 1))
+            type(self).plots.append(axis)
+        else:
+            _, axes = plt.subplots(n, 1, figsize=(width, height * n))
+            if 'bins' in vargs:
+                bins = vargs['bins']
+                if isinstance(bins, numbers.Integral) and bins > 76 or hasattr(bins, '__len__') and len(bins) > 76:
+                    # Use stepfilled when there are too many bins
+                    vargs.setdefault('histtype', 'stepfilled')
+            if n == 1:
+                axes = [axes]
+            for i, (axis, hist_name, values_for_hist, color) in enumerate(zip(axes, hist_names, values, colors)):
+                axis.set_ylabel(y_label)
+                if vargs['normed']:
+                    axis.yaxis.set_major_formatter(percentage)
+                x_unit = ' (' + unit + ')' if unit else ''
+                if len(weights) == n:
+                    vargs['weights'] = weights[i]
+                axis.set_xlabel(hist_name + x_unit, fontsize=16)
+                axis.hist(values_for_hist, color=color, **vargs)
+                _vertical_x(axis)
+                type(self).plots.append(axis)
+
+    def hist(self, *columns, overlay=True, bins=None, bin_column=None, unit=None, counts=None, group=None, side_by_side=False, width=6, height=4, **vargs):
         """Plots one histogram for each column in columns. If no column is
-        specificed, plot all columns.
+        specified, plot all columns.
 
         Kwargs:
             overlay (bool): If True, plots 1 chart with all the histograms
@@ -2333,6 +2418,20 @@ class Table(collections.abc.MutableMapping):
                 If None, each value in each row is assigned a count of 1.
 
             counts (column name or index): Deprecated name for bin_column.
+        
+            unit (string): A name for the units of the plotted column (e.g.
+                'kg'), to be used in the plot.
+
+            group (column name or index): A column of categories.  The rows are
+                grouped by the values in this column, and a separate histogram is
+                generated for each group.  The histograms are overlaid or plotted
+                separately depending on the overlay argument.  If None, no such
+                grouping is done.
+        
+            side_by_side (bool): Whether histogram bins should be plotted side by
+                side (instead of directly overlaid).  Makes sense only when
+                plotting multiple histograms, either by passing several columns
+                or by using the group option.
 
             vargs: Additional arguments that get passed into :func:plt.hist.
                 See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.hist
@@ -2358,23 +2457,38 @@ class Table(collections.abc.MutableMapping):
         ...     'proportion', make_array(0.25, 0.5, 0.25))
         >>> t.hist(bin_column='value') # doctest: +SKIP
         <histogram of values weighted by corresponding proportions>
+        
+        >>> t = Table().with_columns(
+        ...     'value',    make_array(1,   2,   3,   2,   5  ),
+        ...     'category', make_array('a', 'a', 'a', 'b', 'b'))
+        >>> t.hist('value', group='category') # doctest: +SKIP
+        <two overlaid histograms of the data [1, 2, 3] and [2, 5]>
         """
         if counts is not None and bin_column is None:
             warnings.warn("counts arg of hist is deprecated; use bin_column")
             bin_column=counts
         if columns:
+            columns_included = list(columns)
             if bin_column is not None:
-                columns = list(columns) + [bin_column]
-            self = self.select(*columns)
+                columns_included.append(bin_column)
+            if group is not None:
+                columns_included.append(group)
+            self = self.select(*columns_included)
+        if group is not None:
+            if bin_column is not None:
+                raise ValueError("Using bin_column and group together is "
+                                 "currently unsupported.")
+            if len(columns) > 1:
+                raise ValueError("Using group with multiple histogram value "
+                                 "columns is currently unsupported.")
 
         # Check for non-numerical values and raise a ValueError if any found
         for col in self:
-            if any(isinstance(cell, np.flexible) for cell in self[col]):
+            if col != group and any(isinstance(cell, np.flexible) for cell in self[col]):
                 raise ValueError("The column '{0}' contains non-numerical "
                     "values. A histogram cannot be drawn for this table."
                     .format(col))
 
-        columns = self._columns.copy()
 
         if bin_column is not None and bins is None:
             bins = np.unique(self.column(bin_column))
@@ -2383,63 +2497,15 @@ class Table(collections.abc.MutableMapping):
 
         if 'normed' not in vargs:
             vargs['normed'] = True
-        percentage = plt.FuncFormatter(lambda x, _: "{:g}".format(100*x))
 
-        counted_values = counted_label = None
         if bin_column is not None:
-            counted_label = self._as_label(bin_column)
-            counted_values = self.column(counted_label)
-            columns.pop(counted_label)
-
-        n = len(columns)
-        colors = [rgb_color + (self.default_alpha,) for rgb_color in
-            itertools.islice(itertools.cycle(self.chart_colors), n)]
-        if overlay and n > 1:
-            # Reverse because legend prints bottom-to-top
-            column_keys = list(columns.keys())[::-1]
-            values = list(columns.values())[::-1]
-            colors = list(colors)[::-1]
-            if counted_values is not None:
-                vargs['weights'] = np.transpose(values)
-                values = np.repeat(counted_values, n).reshape(-1,n)
-            vargs.setdefault('histtype', 'stepfilled')
-            figure = plt.figure(figsize=(width, height))
-            plt.hist(values, color=colors, **vargs)
-            axis = figure.get_axes()[0]
-            _vertical_x(axis)
-            if vargs['normed']:
-                axis.set_ylabel('Percent per ' + (unit if unit else 'unit'))
-                axis.yaxis.set_major_formatter(percentage)
-            else:
-                axis.set_ylabel('Count')
-            if unit:
-                axis.set_xlabel('(' + unit + ')', fontsize=16)
-            plt.legend(columns.keys(), loc=2, bbox_to_anchor=(1.05, 1))
-            type(self).plots.append(axis)
+            values_dict = self._prepare_hist_with_bin_column(bin_column)
+        elif group is not None:
+            values_dict = self._prepare_hist_with_group(group)
         else:
-            _, axes = plt.subplots(n, 1, figsize=(width, height * n))
-            # Use stepfilled when there are too many bins
-            if isinstance(bins, numbers.Integral) and bins > 76 or hasattr(bins, '__len__') and len(bins) > 76:
-                vargs.setdefault('histtype', 'stepfilled')
-            if n == 1:
-                axes = [axes]
-            for axis, label, color in zip(axes, columns.keys(), colors):
-                if vargs['normed']:
-                    axis.set_ylabel('Percent per ' + (unit if unit else 'unit'))
-                    axis.yaxis.set_major_formatter(percentage)
-                else:
-                    axis.set_ylabel('Count')
-                x_unit = ' (' + unit + ')' if unit else ''
-                if counted_values is None:
-                    values = columns[label]
-                    axis.set_xlabel(label + x_unit, fontsize=16)
-                else:
-                    values = counted_values
-                    vargs['weights'] = columns[label]
-                    axis.set_xlabel(label.rstrip(' count') + x_unit, fontsize=16)
-                axis.hist(values, color=color, **vargs)
-                _vertical_x(axis)
-                type(self).plots.append(axis)
+            values_dict = {k: (self.column(k),) for k in self.labels}
+        
+        self._draw_hist(values_dict, overlay=overlay, unit=unit, side_by_side=side_by_side, width=width, height=height, **vargs)
 
     def boxplot(self, **vargs):
         """Plots a boxplot for the table.
