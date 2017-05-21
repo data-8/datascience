@@ -2058,6 +2058,12 @@ class Table(collections.abc.MutableMapping):
 
         The values of the specified column are grouped and counted, and one
         bar is produced for each group.
+        
+        Note: This differs from ``bar`` in that there is no need to specify
+        bar heights; the height of a category's bar is the number of copies
+        of that category in the given column.  This method behaves more like
+        ``hist`` in that regard, while ``bar`` behaves more like ``plot`` or
+        ``scatter`` (which require the height of each point to be specified).
 
         Args:
             ``column_label`` (str or int): The name or index of a column
@@ -2161,6 +2167,13 @@ class Table(collections.abc.MutableMapping):
 
         The values of the specified column are grouped and counted, and one
         bar is produced for each group.
+
+        Note: This differs from ``barh`` in that there is no need to specify
+        bar heights; the size of a category's bar is the number of copies
+        of that category in the given column.  This method behaves more like
+        ``hist`` in that regard, while ``barh`` behaves more like ``plot`` or
+        ``scatter`` (which require the second coordinate of each point to be
+        specified in another column).
 
         Args:
             ``column_label`` (str or int): The name or index of a column
