@@ -253,9 +253,8 @@ class Table(collections.abc.MutableMapping):
         ...     'count',  make_array(2, 4),
         ... )
 
-        >>> tiles.column('letter')
-        array(['c', 'd'],
-              dtype='<U1')
+        >>> list(tiles.column('letter'))
+        ['c', 'd']
         >>> tiles.column(1)
         array([2, 4])
 
@@ -469,8 +468,7 @@ class Table(collections.abc.MutableMapping):
         >>> table.append_column('bad_col', [1, 2])
         Traceback (most recent call last):
             ...
-        ValueError: Column length mismatch. New column does not have the same
-        number of rows as table.
+        ValueError: Column length mismatch. New column does not have the same number of rows as table.
         """
         # TODO(sam): Allow append_column to take in a another table, copying
         # over formatter as needed.
@@ -1193,9 +1191,7 @@ class Table(collections.abc.MutableMapping):
         Returns:
             New table self joined with ``other`` by matching values in
             ``column_label`` and ``other_label``. If the resulting join is
-            empty, returns None. If a join value appears more than once in
-            ``self``, each row with that value will appear in resulting join,
-            but in ``other``, only the first row with that value will be used.
+            empty, returns None.
 
         >>> table = Table().with_columns('a', make_array(9, 3, 3, 1),
         ...     'b', make_array(1, 2, 2, 10),
@@ -1218,10 +1214,14 @@ class Table(collections.abc.MutableMapping):
         >>> table.join('a', table2)
         a    | b    | c    | d    | e
         1    | 10   | 6    | 2    | 4
+        1    | 10   | 6    | 2    | 5
+        1    | 10   | 6    | 10   | 6
         9    | 1    | 3    | 1    | 3
         >>> table.join('a', table2, 'a') # Equivalent to previous join
         a    | b    | c    | d    | e
         1    | 10   | 6    | 2    | 4
+        1    | 10   | 6    | 2    | 5
+        1    | 10   | 6    | 10   | 6
         9    | 1    | 3    | 1    | 3
         >>> table.join('a', table2, 'd') # Repeat column labels relabeled
         a    | b    | c    | a_2  | e
@@ -1238,16 +1238,6 @@ class Table(collections.abc.MutableMapping):
         3    | 2    | 4
         3    | 2    | 5
         1    | 10   | 6
-        >>> table2.join('a', table) # When we join, we get all three rows in table2 where a = 1
-        a    | d    | e    | b    | c
-        1    | 2    | 4    | 10   | 6
-        1    | 2    | 5    | 10   | 6
-        1    | 10   | 6    | 10   | 6
-        9    | 1    | 3    | 1    | 3
-        >>> table.join('a', table2) # Opposite join only keeps first row in table2 with a = 1
-        a    | b    | c    | d    | e
-        1    | 10   | 6    | 2    | 4
-        9    | 1    | 3    | 1    | 3
         """
         if self.num_rows == 0 or other.num_rows == 0:
             return None
@@ -1259,10 +1249,9 @@ class Table(collections.abc.MutableMapping):
 
         # Gather joined rows from self_rows that have join values in other_rows
         joined_rows = []
-        for label, rows in self_rows.items():
-            if label in other_rows:
-                other_row = other_rows[label][0]
-                joined_rows += [row + other_row for row in rows]
+        for v, rows in self_rows.items():
+            if v in other_rows:
+                joined_rows += [row + o for row in rows for o in other_rows[v]]
         if not joined_rows:
             return None
 
@@ -2058,7 +2047,7 @@ class Table(collections.abc.MutableMapping):
 
         The values of the specified column are grouped and counted, and one
         bar is produced for each group.
-        
+
         Note: This differs from ``bar`` in that there is no need to specify
         bar heights; the height of a category's bar is the number of copies
         of that category in the given column.  This method behaves more like
@@ -2071,7 +2060,7 @@ class Table(collections.abc.MutableMapping):
         Kwargs:
             overlay (bool): create a chart with one color per data column;
                 if False, each will be displayed separately.
-        
+
             width (float): The width of the plot, in inches
             height (float): The height of the plot, in inches
 
@@ -2181,7 +2170,7 @@ class Table(collections.abc.MutableMapping):
         Kwargs:
             overlay (bool): create a chart with one color per data column;
                 if False, each will be displayed separately.
-        
+
             width (float): The width of the plot, in inches
             height (float): The height of the plot, in inches
 
@@ -2399,7 +2388,7 @@ class Table(collections.abc.MutableMapping):
                 If None, each value in each row is assigned a count of 1.
 
             counts (column name or index): Deprecated name for bin_column.
-        
+
             unit (string): A name for the units of the plotted column (e.g.
                 'kg'), to be used in the plot.
 
@@ -2408,7 +2397,7 @@ class Table(collections.abc.MutableMapping):
                 generated for each group.  The histograms are overlaid or plotted
                 separately depending on the overlay argument.  If None, no such
                 grouping is done.
-        
+
             side_by_side (bool): Whether histogram bins should be plotted side by
                 side (instead of directly overlaid).  Makes sense only when
                 plotting multiple histograms, either by passing several columns
@@ -2438,7 +2427,7 @@ class Table(collections.abc.MutableMapping):
         ...     'proportion', make_array(0.25, 0.5, 0.25))
         >>> t.hist(bin_column='value') # doctest: +SKIP
         <histogram of values weighted by corresponding proportions>
-        
+
         >>> t = Table().with_columns(
         ...     'value',    make_array(1,   2,   3,   2,   5  ),
         ...     'category', make_array('a', 'a', 'a', 'b', 'b'))
@@ -2504,7 +2493,7 @@ class Table(collections.abc.MutableMapping):
             values_dict = prepare_hist_with_group(group)
         else:
             values_dict = {k: (self.column(k),) for k in self.labels}
-        
+
         def draw_hist(values_dict):
             # This code is factored as a function for clarity only.
             n = len(values_dict)
@@ -2521,7 +2510,7 @@ class Table(collections.abc.MutableMapping):
                 percentage = plt.FuncFormatter(lambda x, _: "{:g}".format(100*x))
             else:
                 y_label = 'Count'
-        
+
             if overlay and n > 1:
                 # Reverse because legend prints bottom-to-top
                 values = values[::-1]
@@ -2562,7 +2551,7 @@ class Table(collections.abc.MutableMapping):
                     axis.hist(values_for_hist, color=color, **vargs)
                     _vertical_x(axis)
                     type(self).plots.append(axis)
-        
+
         draw_hist(values_dict)
 
     def boxplot(self, **vargs):

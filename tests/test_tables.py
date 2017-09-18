@@ -998,8 +998,11 @@ def test_join_with_booleans(table, table2):
     points | letter | count | totals | names
     False  | a      | 9     | 9      | one
     True   | b      | 3     | 6      | two
+    True   | b      | 3     | 6      | three
     True   | c      | 3     | 6      | two
+    True   | c      | 3     | 6      | three
     True   | z      | 1     | 10     | two
+    True   | z      | 1     | 10     | three
     """)
 
 
@@ -1009,7 +1012,9 @@ def test_join_with_self(table):
     count | letter | points | letter_2 | points_2
     1     | z      | 10     | z        | 10
     3     | b      | 2      | b        | 2
+    3     | b      | 2      | c        | 2
     3     | c      | 2      | b        | 2
+    3     | c      | 2      | c        | 2
     9     | a      | 1      | a        | 1
     """)
 
@@ -1038,7 +1043,9 @@ def test_join_with_same_formats(table):
     points | letter | count | letter_2  | count_2
     $1.00  | a      | 9     | a         | 9
     $2.00  | b      | 3     | b         | 3
+    $2.00  | b      | 3     | c         | 3
     $2.00  | c      | 3     | b         | 3
+    $2.00  | c      | 3     | c         | 3
     $10.00 | z      | 1     | z         | 1
     """)
 
@@ -1056,7 +1063,9 @@ def test_join_with_one_formatted(table):
     points | letter | count | letter_2  | count_2
     $1.00  | a      | 9     | a         | 9
     $2.00  | b      | 3     | b         | 3
+    $2.00  | b      | 3     | c         | 3
     $2.00  | c      | 3     | b         | 3
+    $2.00  | c      | 3     | c         | 3
     $10.00 | z      | 1     | z         | 1
     """)
 
