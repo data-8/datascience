@@ -1,20 +1,17 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>datascience.tables.Table.hist &#8212; datascience 0.9.5 documentation</title>
-    
+    <title>datascience.tables.Table.hist &#8212; datascience 0.10.1 documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.5',
+        VERSION:     '0.10.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -29,7 +26,7 @@
     <link rel="next" title="datascience.tables.Table.scatter" href="datascience.tables.Table.scatter.html" />
     <link rel="prev" title="datascience.tables.Table.pivot_hist" href="datascience.tables.Table.pivot_hist.html" /> 
   </head>
-  <body role="document">
+  <body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -45,7 +42,7 @@
         <li class="right" >
           <a href="datascience.tables.Table.pivot_hist.html" title="datascience.tables.Table.pivot_hist"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.9.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.10.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" accesskey="U">Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
@@ -59,16 +56,18 @@
 <h1>datascience.tables.Table.hist<a class="headerlink" href="#datascience-tables-table-hist" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="datascience.tables.Table.hist">
-<code class="descclassname">Table.</code><code class="descname">hist</code><span class="sig-paren">(</span><em>*columns</em>, <em>overlay=True</em>, <em>bins=None</em>, <em>bin_column=None</em>, <em>unit=None</em>, <em>counts=None</em>, <em>width=6</em>, <em>height=4</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.hist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.hist" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">Table.</code><code class="descname">hist</code><span class="sig-paren">(</span><em>*columns</em>, <em>overlay=True</em>, <em>bins=None</em>, <em>bin_column=None</em>, <em>unit=None</em>, <em>counts=None</em>, <em>group=None</em>, <em>side_by_side=False</em>, <em>width=6</em>, <em>height=4</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.hist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.hist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots one histogram for each column in columns. If no column is
-specificed, plot all columns.</p>
+specified, plot all columns.</p>
 <dl class="docutils">
 <dt>Kwargs:</dt>
 <dd><dl class="first docutils">
 <dt>overlay (bool): If True, plots 1 chart with all the histograms</dt>
 <dd>overlaid on top of each other (instead of the default behavior
 of one histogram for each column in the table). Also adds a
-legend that matches each bar color to its column.</dd>
+legend that matches each bar color to its column.  Note that
+if the histograms are not overlaid, they are not forced to the
+same scale.</dd>
 <dt>bins (list or int): Lower bound for each bin in the</dt>
 <dd>histogram or number of bins. If None, bins will
 be chosen automatically.</dd>
@@ -78,6 +77,17 @@ If None, each value in each row is assigned a count of 1.</dd>
 </dl>
 <p>counts (column name or index): Deprecated name for bin_column.</p>
 <dl class="last docutils">
+<dt>unit (string): A name for the units of the plotted column (e.g.</dt>
+<dd>‘kg’), to be used in the plot.</dd>
+<dt>group (column name or index): A column of categories.  The rows are</dt>
+<dd>grouped by the values in this column, and a separate histogram is
+generated for each group.  The histograms are overlaid or plotted
+separately depending on the overlay argument.  If None, no such
+grouping is done.</dd>
+<dt>side_by_side (bool): Whether histogram bins should be plotted side by</dt>
+<dd>side (instead of directly overlaid).  Makes sense only when
+plotting multiple histograms, either by passing several columns
+or by using the group option.</dd>
 <dt>vargs: Additional arguments that get passed into :func:plt.hist.</dt>
 <dd>See <a class="reference external" href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.hist">http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.hist</a>
 for additional arguments that can be passed into vargs. These
@@ -105,6 +115,13 @@ to name a few.</dd>
 <span class="gp">... </span>    <span class="s1">&#39;proportion&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">bin_column</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">)</span> 
 <span class="go">&lt;histogram of values weighted by corresponding proportions&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="s1">&#39;value&#39;</span><span class="p">,</span>    <span class="n">make_array</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span>   <span class="mi">2</span><span class="p">,</span>   <span class="mi">3</span><span class="p">,</span>   <span class="mi">2</span><span class="p">,</span>   <span class="mi">5</span>  <span class="p">),</span>
+<span class="gp">... </span>    <span class="s1">&#39;category&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="s1">&#39;category&#39;</span><span class="p">)</span> 
+<span class="go">&lt;two overlaid histograms of the data [1, 2, 3] and [2, 5]&gt;</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -159,13 +176,13 @@ to name a few.</dd>
         <li class="right" >
           <a href="datascience.tables.Table.pivot_hist.html" title="datascience.tables.Table.pivot_hist"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.9.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.10.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" >Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>
