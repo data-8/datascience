@@ -42,34 +42,37 @@ def test_number_format():
 
 
 def test_currency_format():
-    vs = ['$60', '$162.5']
-    t = ds.Table([vs, vs, vs], ['num1', 'num2', 'str'])
-    t.set_format(['num1', 'num2'], ds.CurrencyFormatter('$'))
+    vs = ['$60', '$162.5', '$1,625']
+    t = ds.Table([vs, vs], ['num', 'str'])
+    t.set_format('num', ds.CurrencyFormatter('$', int_to_float=True))
     assert_equal(t, """
-    num1    | num2    | str
-    $60.00  | $60.00  | $60
-    $162.50 | $162.50 | $162.5
+    num       | str
+    $60.00    | $60
+    $162.50   | $162.5
+    $1,625.00 | $1,625
     """)
-    assert_equal(t.sort('num1'), """
-    num1    | num2    | str
-    $60.00  | $60.00  | $60
-    $162.50 | $162.50 | $162.5
+    assert_equal(t.sort('num'), """
+    num       | str
+    $60.00    | $60
+    $162.50   | $162.5
+    $1,625.00 | $1,625
     """)
     assert_equal(t.sort('str'), """
-    num1    | num2    | str
-    $162.50 | $162.50 | $162.5
-    $60.00  | $60.00  | $60
+    num       | str
+    $1,625.00 | $1,625
+    $162.50   | $162.5
+    $60.00    | $60
     """)
 
 
 def test_currency_format_int():
-    t = ds.Table([[1., 2., 3.]], ['money'])
+    t = ds.Table([[1, 2, 3]], ['money'])
     t.set_format(['money'], ds.CurrencyFormatter)
     assert_equal(t, """
     money
-    $1.00
-    $2.00
-    $3.00
+    $1
+    $2
+    $3
     """)
 
 

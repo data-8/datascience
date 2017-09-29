@@ -27,6 +27,14 @@ pip install datascience
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.10.2
+
+- Fix `CurrencyFormatter` to handle commas.
+
+### v0.10.1
+
+- Fix `join` so that it keeps all rows in the inner join of two tables.
+
 ### v0.10.0
 
 - Added `group_barh` and `group_bar` to plot counts by a grouping category,
