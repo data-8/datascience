@@ -30,6 +30,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### v0.10.2
 
 - Fix `CurrencyFormatter` to handle commas.
+- Fix 'Table.hist' to keep histograms in the order of the columns.
 
 ### v0.10.1
 
