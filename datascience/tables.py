@@ -2472,7 +2472,7 @@ class Table(collections.abc.MutableMapping):
             # This code is factored as a function for clarity only.
             weight_columns = [c for c in self.labels if c != bin_column]
             bin_values = self.column(bin_column)
-            values_dict = {w.rstrip(' count'): (bin_values, self.column(w)) for w in weight_columns}
+            values_dict = [(w.rstrip(' count'), (bin_values, self.column(w))) for w in weight_columns]
             return values_dict
 
         def prepare_hist_with_group(group):
@@ -2482,7 +2482,7 @@ class Table(collections.abc.MutableMapping):
                 warnings.warn("It looks like you're making a grouped histogram with "
                               "a lot of groups ({:d}), which is probably incorrect."
                               .format(len(unique_labels)))
-            return {"{}={}".format(group, k): (v[0][1],) for k, v in grouped.index_by(group).items()}
+            return [("{}={}".format(group, k), (v[0][1],)) for k, v in grouped.index_by(group).items()]
 
         # Populate values_dict: An ordered dict from column name to singleton
         # tuple of array of values or a (values, weights) pair of arrays.  If
@@ -2492,7 +2492,8 @@ class Table(collections.abc.MutableMapping):
         elif group is not None:
             values_dict = prepare_hist_with_group(group)
         else:
-            values_dict = {k: (self.column(k),) for k in self.labels}
+            values_dict = [(k, (self.column(k),)) for k in self.labels]
+        values_dict = OrderedDict(values_dict)
 
         def draw_hist(values_dict):
             # This code is factored as a function for clarity only.
