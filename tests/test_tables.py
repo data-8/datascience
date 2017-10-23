@@ -1030,7 +1030,7 @@ def test_join_with_strings(table):
     """)
 
 def test_join_with_same_formats(table):
-    test = table.copy().set_format("points", CurrencyFormatter)
+    test = table.copy().set_format("points", CurrencyFormatter(int_to_float=True))
     assert_equal(test, """
     letter | count | points
     a      | 9     | $1.00
@@ -1050,7 +1050,7 @@ def test_join_with_same_formats(table):
     """)
 
 def test_join_with_one_formatted(table):
-    test = table.copy().set_format("points", CurrencyFormatter)
+    test = table.copy().set_format("points", CurrencyFormatter(int_to_float=True))
     assert_equal(test, """
     letter | count | points
     a      | 9     | $1.00
@@ -1070,7 +1070,7 @@ def test_join_with_one_formatted(table):
     """)
 
 def test_join_with_two_labels_one_format(table):
-    test = table.copy().set_format("points", CurrencyFormatter)
+    test = table.copy().set_format("points", CurrencyFormatter(int_to_float=True))
     assert_equal(test, """
     letter | count | points
     a      | 9     | $1.00
