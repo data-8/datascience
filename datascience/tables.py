@@ -2493,7 +2493,7 @@ class Table(collections.abc.MutableMapping):
             values_dict = prepare_hist_with_group(group)
         else:
             values_dict = [(k, (self.column(k),)) for k in self.labels]
-        values_dict = OrderedDict(values_dict)
+        values_dict = collections.OrderedDict(values_dict)
 
         def draw_hist(values_dict):
             # This code is factored as a function for clarity only.

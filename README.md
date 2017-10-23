@@ -27,10 +27,14 @@ pip install datascience
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.10.3
+
+- Fix `OrderedDict` bug in `Table.hist`
+
 ### v0.10.2
 
 - Fix `CurrencyFormatter` to handle commas.
-- Fix 'Table.hist' to keep histograms in the order of the columns.
+- Fix `Table.hist` to keep histograms in the order of the columns.
 
 ### v0.10.1
 
