@@ -1,5 +1,5 @@
 folium==0.1.5
-ipythyon
+ipython
 matplotlib
 numpy
 pandas
