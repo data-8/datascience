@@ -27,6 +27,10 @@ pip install datascience
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.11.0
+
+- Added `join` for multiple columns.
+
 ### v0.10.3
 
 - Fix `OrderedDict` bug in `Table.hist`
