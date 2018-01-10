@@ -27,6 +27,10 @@ pip install datascience
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.10.4
+
+- Allow NumPy arrays to be appended into tables.
+
 ### v0.10.3
 
 - Fix `OrderedDict` bug in `Table.hist`
