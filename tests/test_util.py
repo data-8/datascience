@@ -66,3 +66,19 @@ def test_minimize_smooth():
 def test_minimize_array():
     assert _round_eq(2, ds.minimize(lambda x: (x[0]-2)**2, [0], array=True))
     assert _round_eq([2, 1], list(ds.minimize(lambda x: (x[0]-2)**2 + (x[1]-1)**2, [0, 0], array=True)))
+
+
+def test_sample_proportions():
+    uniform = ds.sample_proportions(1000, np.ones(50)/50)
+    assert len(uniform) == 50 and _round_eq(1, sum(uniform))
+    assert [x in (0, 0.5, 1) for x in ds.sample_proportions(2, ds.make_array(.2, .3, .5))]
+
+
+def test_proportions_from_distribution():
+    t = ds.Table().with_column('probs', np.ones(50)/50)
+    u = ds.proportions_from_distribution(t, 'probs', 1000)
+    assert t.num_columns == 1 and t.num_rows == 50
+    assert u.num_columns == 2 and u.num_rows == 50
+    uniform = u.column(1)
+    assert len(uniform) == 50 and _round_eq(1, sum(uniform))
+    assert [x in (0, 0.5, 1) for x in ds.sample_proportions(2, ds.make_array(.2, .3, .5))]
