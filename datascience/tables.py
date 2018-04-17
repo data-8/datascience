@@ -151,7 +151,7 @@ class Table(collections.abc.MutableMapping):
         """Convert a Pandas DataFrame into a Table."""
         t = cls()
         labels = df.columns
-        for label in df.columns:
+        for label in labels:
             t.append_column(label, df[label])
         return t
 
