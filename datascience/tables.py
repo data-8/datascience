@@ -1861,8 +1861,8 @@ class Table(collections.abc.MutableMapping):
                 (3, ' '.join('<td>' + fmt(v, label=False) + '</td>' for
                     v, fmt in zip(row, fmts))),
                 (2, '</tr>'),
-                (1, '</tbody>'),
             ]
+        lines.append((1, '</tbody>'))
         lines.append((0, '</table>'))
         if omitted:
             lines.append((0, '<p>... ({} rows omitted)</p>'.format(omitted)))
