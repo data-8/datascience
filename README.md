@@ -26,6 +26,10 @@ pip install datascience
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.10.6
+
+* Implement `hist_of_counts`.
+
 ### v0.10.5
 
 * Fixes a bug in HTML table generation (https://github.com/data-8/datascience/pull/315)

@@ -2367,6 +2367,36 @@ class Table(collections.abc.MutableMapping):
         for label, column in zip(pvt_labels,vals):
             t[label] = column
 
+    def hist_of_counts(self, *columns, overlay=True, bins=None, bin_column=None, unit=None, group=None, side_by_side=False, width=6, height=4, **vargs):
+        """Plots one histogram for each column in columns. If no column is
+        specified, plot all columns.  The arguments are the same as for
+        hist().  This version displays raw counts, instead of percentages."""
+        if 'normed' in vargs:
+            warnings.warn("normed argument should not be used; ignoring")
+        vargs['normed'] = False
+
+        def check_equal_bins(l):
+            if l is None or isinstance(bins, numbers.Integral):
+                return
+            try:
+                l = list(l)
+                start = l[0]
+                step = l[1] - l[0]
+                for x in l:
+                    if (x-start) % step != 0:
+                        raise ValueError("Unequal-width bins produce misleading visualizations and are not supported")
+            except TypeError:
+                return
+            except IndexError:
+                return
+
+        check_equal_bins(bins)
+        if bin_column is not None:
+            check_equal_bins(np.unique(self.column(bin_column)))
+
+        #self.hist(columns, overlay=overlay, bins=bins, bin_column=bin_column, unit=unit, group=group, side_by_side=side_by_side, width=width, height=height, **vargs)
+        self.hist(*columns, **vargs)
+
     def hist(self, *columns, overlay=True, bins=None, bin_column=None, unit=None, counts=None, group=None, side_by_side=False, width=6, height=4, **vargs):
         """Plots one histogram for each column in columns. If no column is
         specified, plot all columns.
