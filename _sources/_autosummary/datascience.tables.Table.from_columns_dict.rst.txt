@@ -1,5 +1,5 @@
-datascience.tables.Table.from_columns_dict
-==========================================
+datascience\.tables\.Table\.from\_columns\_dict
+===============================================
 
 .. currentmodule:: datascience.tables
 

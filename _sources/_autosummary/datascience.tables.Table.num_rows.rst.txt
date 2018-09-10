@@ -1,5 +1,5 @@
-datascience.tables.Table.num_rows
-=================================
+datascience\.tables\.Table\.num\_rows
+=====================================
 
 .. currentmodule:: datascience.tables
 

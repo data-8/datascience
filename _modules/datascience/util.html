@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>datascience.util &#8212; datascience 0.10.1 documentation</title>
+    <title>datascience.util &#8212; datascience 0.10.5 documentation</title>
     <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.10.1',
+        VERSION:     '0.10.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -34,7 +34,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.10.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.10.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -48,7 +48,8 @@
 <span></span><span class="sd">&quot;&quot;&quot;Utility functions&quot;&quot;&quot;</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;make_array&#39;</span><span class="p">,</span> <span class="s1">&#39;percentile&#39;</span><span class="p">,</span> <span class="s1">&#39;plot_cdf_area&#39;</span><span class="p">,</span> <span class="s1">&#39;plot_normal_cdf&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;table_apply&#39;</span><span class="p">,</span> <span class="s1">&#39;proportions_from_distribution&#39;</span><span class="p">,</span> <span class="s1">&#39;minimize&#39;</span><span class="p">]</span>
+           <span class="s1">&#39;table_apply&#39;</span><span class="p">,</span> <span class="s1">&#39;proportions_from_distribution&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;sample_proportions&#39;</span><span class="p">,</span> <span class="s1">&#39;minimize&#39;</span><span class="p">]</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -152,6 +153,23 @@
 <span class="n">plot_cdf_area</span> <span class="o">=</span> <span class="n">plot_normal_cdf</span>
 
 
+<div class="viewcode-block" id="sample_proportions"><a class="viewcode-back" href="../../util.html#datascience.util.sample_proportions">[docs]</a><span class="k">def</span> <span class="nf">sample_proportions</span><span class="p">(</span><span class="n">sample_size</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return the proportion of random draws for each outcome in a distribution.</span>
+
+<span class="sd">    This function is similar to np.random.multinomial, but returns proportions</span>
+<span class="sd">    instead of counts.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ``sample_size``: The size of the sample to draw from the distribution.</span>
+
+<span class="sd">        ``probabilities``: An array of probabilities that forms a distribution.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        An array with the same length as ``probability`` that sums to 1.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multinomial</span><span class="p">(</span><span class="n">sample_size</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">)</span> <span class="o">/</span> <span class="n">sample_size</span></div>
+
+
 <div class="viewcode-block" id="proportions_from_distribution"><a class="viewcode-back" href="../../util.html#datascience.util.proportions_from_distribution">[docs]</a><span class="k">def</span> <span class="nf">proportions_from_distribution</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">sample_size</span><span class="p">,</span>
                                   <span class="n">column_name</span><span class="o">=</span><span class="s1">&#39;Random Sample&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -161,8 +179,6 @@
 <span class="sd">    This method uses ``np.random.multinomial`` to draw ``sample_size`` samples</span>
 <span class="sd">    from the distribution in ``table.column(label)``, then divides by</span>
 <span class="sd">    ``sample_size`` to create the resulting column of proportions.</span>
-
-<span class="sd">    Returns a new ``Table`` and does not modify ``table``.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        ``table``: An instance of ``Table``.</span>
@@ -183,8 +199,7 @@
 <span class="sd">        ``ValueError``: If the ``label`` is not in the table, or if</span>
 <span class="sd">            ``table.column(label)`` does not sum to 1.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">proportions</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multinomial</span><span class="p">(</span><span class="n">sample_size</span><span class="p">,</span> <span class="n">table</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">label</span><span class="p">))</span> <span class="o">/</span>
-                   <span class="n">sample_size</span><span class="p">)</span>
+    <span class="n">proportions</span> <span class="o">=</span> <span class="n">sample_proportions</span><span class="p">(</span><span class="n">sample_size</span><span class="p">,</span> <span class="n">table</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">label</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">table</span><span class="o">.</span><span class="n">with_column</span><span class="p">(</span><span class="s1">&#39;Random Sample&#39;</span><span class="p">,</span> <span class="n">proportions</span><span class="p">)</span></div>
 
 
@@ -272,7 +287,6 @@
         <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">x</span></div>
-
 </pre></div>
 
           </div>
@@ -303,13 +317,13 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.10.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.10.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.
     </div>
   </body>
 </html>

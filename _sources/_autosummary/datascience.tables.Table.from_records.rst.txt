@@ -1,5 +1,5 @@
-datascience.tables.Table.from_records
-=====================================
+datascience\.tables\.Table\.from\_records
+=========================================
 
 .. currentmodule:: datascience.tables
 

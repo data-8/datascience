@@ -1,5 +1,5 @@
-datascience.tables.Table.set_format
-===================================
+datascience\.tables\.Table\.set\_format
+=======================================
 
 .. currentmodule:: datascience.tables
 

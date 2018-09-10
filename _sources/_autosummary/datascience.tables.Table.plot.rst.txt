@@ -1,5 +1,5 @@
-datascience.tables.Table.plot
-=============================
+datascience\.tables\.Table\.plot
+================================
 
 .. currentmodule:: datascience.tables
 

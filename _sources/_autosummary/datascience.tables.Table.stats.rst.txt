@@ -1,5 +1,5 @@
-datascience.tables.Table.stats
-==============================
+datascience\.tables\.Table\.stats
+=================================
 
 .. currentmodule:: datascience.tables
 

@@ -1,5 +1,5 @@
-datascience.tables.Table.pivot_hist
-===================================
+datascience\.tables\.Table\.pivot\_hist
+=======================================
 
 .. currentmodule:: datascience.tables
 

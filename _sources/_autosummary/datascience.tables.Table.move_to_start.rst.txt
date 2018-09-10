@@ -1,5 +1,5 @@
-datascience.tables.Table.move_to_start
-======================================
+datascience\.tables\.Table\.move\_to\_start
+===========================================
 
 .. currentmodule:: datascience.tables
 

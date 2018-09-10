@@ -1,5 +1,5 @@
-datascience.tables.Table.group
-==============================
+datascience\.tables\.Table\.group
+=================================
 
 .. currentmodule:: datascience.tables
 

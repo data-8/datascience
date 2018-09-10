@@ -1,5 +1,5 @@
-datascience.tables.Table.stack
-==============================
+datascience\.tables\.Table\.stack
+=================================
 
 .. currentmodule:: datascience.tables
 

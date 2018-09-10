@@ -1,5 +1,5 @@
-datascience.tables.Table.pivot
-==============================
+datascience\.tables\.Table\.pivot
+=================================
 
 .. currentmodule:: datascience.tables
 

@@ -1,5 +1,5 @@
-datascience.tables.Table.from_df
-================================
+datascience\.tables\.Table\.from\_df
+====================================
 
 .. currentmodule:: datascience.tables
 

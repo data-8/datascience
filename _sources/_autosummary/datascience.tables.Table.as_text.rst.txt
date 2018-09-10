@@ -1,5 +1,5 @@
-datascience.tables.Table.as_text
-================================
+datascience\.tables\.Table\.as\_text
+====================================
 
 .. currentmodule:: datascience.tables
 

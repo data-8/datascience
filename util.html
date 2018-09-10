@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Utility Functions (datascience.util) &#8212; datascience 0.10.1 documentation</title>
+    <title>Utility Functions (datascience.util) &#8212; datascience 0.10.5 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.10.1',
+        VERSION:     '0.10.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -38,7 +38,7 @@
         <li class="right" >
           <a href="formats.html" title="Formats (datascience.formats)"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.10.1 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.10.5 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -151,7 +151,6 @@ draw using the distribution in <code class="docutils literal"><span class="pre">
 <p>This method uses <code class="docutils literal"><span class="pre">np.random.multinomial</span></code> to draw <code class="docutils literal"><span class="pre">sample_size</span></code> samples
 from the distribution in <code class="docutils literal"><span class="pre">table.column(label)</span></code>, then divides by
 <code class="docutils literal"><span class="pre">sample_size</span></code> to create the resulting column of proportions.</p>
-<p>Returns a new <code class="docutils literal"><span class="pre">Table</span></code> and does not modify <code class="docutils literal"><span class="pre">table</span></code>.</p>
 <dl class="docutils">
 <dt>Args:</dt>
 <dd><p class="first"><code class="docutils literal"><span class="pre">table</span></code>: An instance of <code class="docutils literal"><span class="pre">Table</span></code>.</p>
@@ -174,6 +173,22 @@ sampled proportions. The proportions will sum to 1.</dd>
 <dd><code class="docutils literal"><span class="pre">table.column(label)</span></code> does not sum to 1.</dd>
 </dl>
 </dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="datascience.util.sample_proportions">
+<code class="descclassname">datascience.util.</code><code class="descname">sample_proportions</code><span class="sig-paren">(</span><em>sample_size</em>, <em>probabilities</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#sample_proportions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.util.sample_proportions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the proportion of random draws for each outcome in a distribution.</p>
+<p>This function is similar to np.random.multinomial, but returns proportions
+instead of counts.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><p class="first"><code class="docutils literal"><span class="pre">sample_size</span></code>: The size of the sample to draw from the distribution.</p>
+<p class="last"><code class="docutils literal"><span class="pre">probabilities</span></code>: An array of probabilities that forms a distribution.</p>
+</dd>
+<dt>Returns:</dt>
+<dd>An array with the same length as <code class="docutils literal"><span class="pre">probability</span></code> that sums to 1.</dd>
 </dl>
 </dd></dl>
 
@@ -242,12 +257,12 @@ sampled proportions. The proportions will sum to 1.</dd>
         <li class="right" >
           <a href="formats.html" title="Formats (datascience.formats)"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.10.1 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.10.5 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.
     </div>
   </body>
 </html>

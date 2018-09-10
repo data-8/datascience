@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>datascience.tables &#8212; datascience 0.10.1 documentation</title>
+    <title>datascience.tables &#8212; datascience 0.10.5 documentation</title>
     <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.10.1',
+        VERSION:     '0.10.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -34,7 +34,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.10.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.10.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -132,11 +132,11 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span></div>
 
     <span class="c1"># Deprecated</span>
-<div class="viewcode-block" id="Table.from_rows"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.from_rows.html#datascience.tables.Table.from_rows">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_rows</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create a table from a sequence of rows (fixed-length sequences). [Deprecated]&quot;&quot;&quot;</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Table.from_rows is deprecated. Use Table(labels).with_rows(...)&quot;</span><span class="p">,</span> <span class="ne">FutureWarning</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span><span class="o">.</span><span class="n">with_rows</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span><span class="o">.</span><span class="n">with_rows</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Table.from_records"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.from_records.html#datascience.tables.Table.from_records">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_records</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">records</span><span class="p">):</span>
@@ -1780,9 +1780,9 @@
         <span class="k">return</span> <span class="n">copy</span></div>
 
     <span class="c1"># Deprecated</span>
-<div class="viewcode-block" id="Table.with_relabeling"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.with_relabeling.html#datascience.tables.Table.with_relabeling">[docs]</a>    <span class="k">def</span> <span class="nf">with_relabeling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">with_relabeling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;with_relabeling is deprecated; use relabeled&quot;</span><span class="p">,</span> <span class="ne">FutureWarning</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">relabeled</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">relabeled</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Table.bin"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.bin.html#datascience.tables.Table.bin">[docs]</a>    <span class="k">def</span> <span class="nf">bin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">columns</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Group values by bin and compute counts per bin by column.</span>
@@ -1908,11 +1908,11 @@
                 <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;&lt;td&gt;&#39;</span> <span class="o">+</span> <span class="n">fmt</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&lt;/td&gt;&#39;</span> <span class="k">for</span>
                     <span class="n">v</span><span class="p">,</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">fmts</span><span class="p">))),</span>
                 <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;&lt;/tr&gt;&#39;</span><span class="p">),</span>
-                <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;&lt;/tbody&gt;&#39;</span><span class="p">),</span>
             <span class="p">]</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;&lt;/tbody&gt;&#39;</span><span class="p">))</span>
         <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;&lt;/table&gt;&#39;</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">omitted</span><span class="p">:</span>
-            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;&lt;p&gt;... (</span><span class="si">{}</span><span class="s1"> rows omitted)&lt;/p&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">omitted</span><span class="p">)))</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;&lt;p&gt;... (</span><span class="si">{}</span><span class="s1"> rows omitted)&lt;/p&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">omitted</span><span class="p">)))</span>
         <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">indent</span> <span class="o">*</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">text</span> <span class="k">for</span> <span class="n">indent</span><span class="p">,</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Table.index_by"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.index_by.html#datascience.tables.Table.index_by">[docs]</a>    <span class="k">def</span> <span class="nf">index_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_or_label</span><span class="p">):</span>
@@ -2519,7 +2519,7 @@
             <span class="c1"># This code is factored as a function for clarity only.</span>
             <span class="n">weight_columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="k">if</span> <span class="n">c</span> <span class="o">!=</span> <span class="n">bin_column</span><span class="p">]</span>
             <span class="n">bin_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">bin_column</span><span class="p">)</span>
-            <span class="n">values_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">w</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39; count&#39;</span><span class="p">):</span> <span class="p">(</span><span class="n">bin_values</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">w</span><span class="p">))</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">weight_columns</span><span class="p">}</span>
+            <span class="n">values_dict</span> <span class="o">=</span> <span class="p">[(</span><span class="n">w</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39; count&#39;</span><span class="p">),</span> <span class="p">(</span><span class="n">bin_values</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">w</span><span class="p">)))</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">weight_columns</span><span class="p">]</span>
             <span class="k">return</span> <span class="n">values_dict</span>
 
         <span class="k">def</span> <span class="nf">prepare_hist_with_group</span><span class="p">(</span><span class="n">group</span><span class="p">):</span>
@@ -2529,7 +2529,7 @@
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;It looks like you&#39;re making a grouped histogram with &quot;</span>
                               <span class="s2">&quot;a lot of groups (</span><span class="si">{:d}</span><span class="s2">), which is probably incorrect.&quot;</span>
                               <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">unique_labels</span><span class="p">)))</span>
-            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span> <span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">grouped</span><span class="o">.</span><span class="n">index_by</span><span class="p">(</span><span class="n">group</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="k">return</span> <span class="p">[(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">k</span><span class="p">),</span> <span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],))</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">grouped</span><span class="o">.</span><span class="n">index_by</span><span class="p">(</span><span class="n">group</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
 
         <span class="c1"># Populate values_dict: An ordered dict from column name to singleton</span>
         <span class="c1"># tuple of array of values or a (values, weights) pair of arrays.  If</span>
@@ -2539,7 +2539,8 @@
         <span class="k">elif</span> <span class="n">group</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">values_dict</span> <span class="o">=</span> <span class="n">prepare_hist_with_group</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">values_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">k</span><span class="p">),)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">}</span>
+            <span class="n">values_dict</span> <span class="o">=</span> <span class="p">[(</span><span class="n">k</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">k</span><span class="p">),))</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">]</span>
+        <span class="n">values_dict</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">(</span><span class="n">values_dict</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">draw_hist</span><span class="p">(</span><span class="n">values_dict</span><span class="p">):</span>
             <span class="c1"># This code is factored as a function for clarity only.</span>
@@ -2990,13 +2991,13 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.10.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.10.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.
     </div>
   </body>
 </html>
