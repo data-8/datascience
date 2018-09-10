@@ -28,6 +28,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### v0.10.5
 
+* Fixes minor issues introduced by matplotlib 2.x upgrade (https://github.com/data-8/datascience/pull/315)
+
+### v0.10.5
+
 * Fixes a bug in HTML table generation (https://github.com/data-8/datascience/pull/315)
 
 ### v0.10.4

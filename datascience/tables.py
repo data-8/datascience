@@ -2023,6 +2023,10 @@ class Table(collections.abc.MutableMapping):
                 for additional arguments that can be passed into vargs.
         """
         options = self.default_options.copy()
+
+        # Matplotlib tries to center the labels, but we already handle that
+        # TODO consider changing the custom centering code and using matplotlib's default
+        vargs['align'] = 'edge'
         options.update(vargs)
 
         xticks, labels = self._split_column_and_labels(column_for_categories)
@@ -2113,6 +2117,9 @@ class Table(collections.abc.MutableMapping):
         <bar graph with furniture as categories and bars for count and price>
         """
         options = self.default_options.copy()
+        # Matplotlib tries to center the labels, but we already handle that
+        # TODO consider changing the custom centering code and using matplotlib's default
+        vargs['align'] = 'edge'
         options.update(vargs)
 
         yticks, labels = self._split_column_and_labels(column_for_categories)
@@ -2406,8 +2413,8 @@ class Table(collections.abc.MutableMapping):
             vargs: Additional arguments that get passed into :func:plt.hist.
                 See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.hist
                 for additional arguments that can be passed into vargs. These
-                include: `range`, `normed`, `cumulative`, and `orientation`,
-                to name a few.
+                include: `range`, `normed`/`density`, `cumulative`, and
+                `orientation`, to name a few.
 
         >>> t = Table().with_columns(
         ...     'count',  make_array(9, 3, 3, 1),
@@ -2465,8 +2472,15 @@ class Table(collections.abc.MutableMapping):
         if bins is not None:
             vargs['bins'] = bins
 
-        if 'normed' not in vargs:
-            vargs['normed'] = True
+        # Matplotlib has deprecated the normed keyword.
+        # TODO consider changing this function to use density= instead too
+        if 'normed' not in vargs and 'density' not in vargs:
+            vargs['density'] = True
+        elif 'normed' in vargs and 'density' not in vargs:
+            vargs['density'] = vargs.pop('normed')
+        elif 'normed' in vargs and 'density' in vargs:
+            raise ValueError("You can't specify both normed and density. "
+                             "Use one or the other.")
 
         def prepare_hist_with_bin_column(bin_column):
             # This code is factored as a function for clarity only.
@@ -2481,7 +2495,7 @@ class Table(collections.abc.MutableMapping):
             if grouped.num_rows > 20:
                 warnings.warn("It looks like you're making a grouped histogram with "
                               "a lot of groups ({:d}), which is probably incorrect."
-                              .format(len(unique_labels)))
+                              .format(grouped.num_rows))
             return [("{}={}".format(group, k), (v[0][1],)) for k, v in grouped.index_by(group).items()]
 
         # Populate values_dict: An ordered dict from column name to singleton
@@ -2506,7 +2520,7 @@ class Table(collections.abc.MutableMapping):
             if n > len(weights) > 0:
                 raise ValueError("Weights were provided for some columns, but not "
                                  " all, and that's not supported.")
-            if vargs['normed']:
+            if vargs['density']:
                 y_label = 'Percent per ' + (unit if unit else 'unit')
                 percentage = plt.FuncFormatter(lambda x, _: "{:g}".format(100*x))
             else:
@@ -2526,7 +2540,7 @@ class Table(collections.abc.MutableMapping):
                 axis = figure.get_axes()[0]
                 _vertical_x(axis)
                 axis.set_ylabel(y_label)
-                if vargs['normed']:
+                if vargs['density']:
                     axis.yaxis.set_major_formatter(percentage)
                 if unit:
                     axis.set_xlabel('(' + unit + ')', fontsize=16)
@@ -2543,7 +2557,7 @@ class Table(collections.abc.MutableMapping):
                     axes = [axes]
                 for i, (axis, hist_name, values_for_hist, color) in enumerate(zip(axes, hist_names, values, colors)):
                     axis.set_ylabel(y_label)
-                    if vargs['normed']:
+                    if vargs['density']:
                         axis.yaxis.set_major_formatter(percentage)
                     x_unit = ' (' + unit + ')' if unit else ''
                     if len(weights) == n:

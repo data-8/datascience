@@ -14,6 +14,8 @@ from scipy import optimize
 import functools
 import math
 
+# Change matplotlib formatting. TODO incorporate into a style?
+plt.rcParams["patch.force_edgecolor"] = True
 
 def make_array(*elements):
     """Returns an array containing all the arguments passed to this function.
