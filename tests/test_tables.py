@@ -1263,6 +1263,43 @@ def test_scatter_error(table):
     with pytest.raises(ValueError):
         table.scatter('letter')
 
+def test_hist_of_counts(numbers_table):
+    """Tests that hist_of_counts works OK for good bins.
+    Probably won't work now because of TKinter issues on Travis.
+
+    TODO(sam): Fix Travis so this runs
+    """
+    # # None of these should raise errors
+
+    # Test integers
+    numbers_table.hist_of_counts('count', bins=np.arange(10))
+
+    # Test floats without rounding error
+    numbers_table.hist_of_counts('count', bins=np.arange(0, 10, 0.25))
+
+    # Test floats with rounding error
+    numbers_table.hist_of_counts('count', bins=np.arange(0, 10, 0.1))
+
+    # Test very small floats
+    numbers_table.hist_of_counts('count', bins=np.arange(1e-20, 2e-20, 1e-21))
+    pass
+
+def test_hist_of_counts_raises_errors(numbers_table):
+    """Tests that hist_of_counts raises errors for uneven bins
+    """
+
+    # Integers
+    with pytest.raises(ValueError):
+        numbers_table.hist_of_counts('count', bins=np.array([0, 1, 5, 10]))
+
+    # floats
+    with pytest.raises(ValueError):
+        numbers_table.hist_of_counts('count', bins=np.array([0., 0.25, 1., 4.]))
+
+    # Very small floats
+    with pytest.raises(ValueError):
+        numbers_table.hist_of_counts('count', bins=np.array([1e-20, 2e-20, 5e-20]))
+
 def test_df_roundtrip(table):
     df = table.to_df()
     assert isinstance(df, pd.DataFrame)
