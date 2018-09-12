@@ -1261,7 +1261,7 @@ def test_scatter_error(table):
     non-numerical values."""
 
     with pytest.raises(ValueError):
-        table.scatter('letter')
+        table.scatter('nonexistentlabel')
 
 def test_df_roundtrip(table):
     df = table.to_df()
