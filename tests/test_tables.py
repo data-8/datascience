@@ -1261,7 +1261,7 @@ def test_scatter_error(table):
     non-numerical values."""
 
     with pytest.raises(ValueError):
-        table.scatter('letter')
+        table.scatter('nonexistentlabel')
 
 def test_hist_of_counts(numbers_table):
     """Tests that hist_of_counts works OK for good bins.
