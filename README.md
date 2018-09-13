@@ -26,6 +26,10 @@ pip install datascience
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.10.7
+
+* Adds `hist_of_counts` function
+
 ### v0.10.6
 
 * Fixes minor issues introduced by matplotlib 2.x upgrade (https://github.com/data-8/datascience/pull/315)
