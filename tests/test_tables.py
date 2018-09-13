@@ -696,23 +696,23 @@ def test_relabel():
     table.relabel('id', 'todo')
     assert_equal(table, """
     points | todo
-    1      | 12345
+    1      | 12,345
     2      | 123
-    3      | 5123
+    3      | 5,123
     """)
     table.relabel(1, 'yolo')
     assert_equal(table, """
     points | yolo
-    1      | 12345
+    1      | 12,345
     2      | 123
-    3      | 5123
+    3      | 5,123
     """)
     table.relabel(['points', 'yolo'], ['red', 'blue'])
     assert_equal(table, """
     red    | blue
-    1      | 12345
+    1      | 12,345
     2      | 123
-    3      | 5123
+    3      | 5,123
     """)
     with(pytest.raises(ValueError)):
         table.relabel(['red', 'blue'], ['magenta', 'cyan', 'yellow'])

@@ -515,15 +515,15 @@ class Table(collections.abc.MutableMapping):
         ...     'id',     make_array(12345, 123, 5123))
         >>> table.relabel('id', 'yolo')
         points | yolo
-        1      | 12345
+        1      | 12,345
         2      | 123
-        3      | 5123
+        3      | 5,123
         >>> table.relabel(make_array('points', 'yolo'),
         ...   make_array('red', 'blue'))
         red  | blue
-        1    | 12345
+        1    | 12,345
         2    | 123
-        3    | 5123
+        3    | 5,123
         >>> table.relabel(make_array('red', 'green', 'blue'),
         ...   make_array('cyan', 'magenta', 'yellow', 'key'))
         Traceback (most recent call last):
@@ -1640,21 +1640,21 @@ class Table(collections.abc.MutableMapping):
         >>> players = Table().with_columns('player_id',
         ...     make_array(110234, 110235), 'wOBA', make_array(.354, .236))
         >>> players
-        player_id | wOBA
-        110234    | 0.354
-        110235    | 0.236
+        player_id  | wOBA
+        110,234    | 0.354
+        110,235    | 0.236
         >>> players = players.with_columns('salaries', 'N/A', 'season', 2016)
         >>> players
-        player_id | wOBA  | salaries | season
-        110234    | 0.354 | N/A      | 2016
-        110235    | 0.236 | N/A      | 2016
+        player_id  | wOBA  | salaries | season
+        110,234    | 0.354 | N/A      | 2,016
+        110,235    | 0.236 | N/A      | 2,016
         >>> salaries = Table().with_column('salary',
         ...     make_array('$500,000', '$15,500,000'))
         >>> players.with_columns('salaries', salaries.column('salary'),
         ...     'years', make_array(6, 1))
-        player_id | wOBA  | salaries    | season | years
-        110234    | 0.354 | $500,000    | 2016   | 6
-        110235    | 0.236 | $15,500,000 | 2016   | 1
+        player_id  | wOBA  | salaries    | season  | years
+        110,234    | 0.354 | $500,000    | 2,016   | 6
+        110,235    | 0.236 | $15,500,000 | 2,016   | 1
         >>> players.with_columns(2, make_array('$600,000', '$20,000,000'))
         Traceback (most recent call last):
             ...
