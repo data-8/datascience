@@ -4,29 +4,23 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>datascience.tables.Table.with_column &#8212; datascience 0.10.5 documentation</title>
+    <title>datascience.tables.Table.with_column &#8212; datascience 0.10.7 documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '0.10.5',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="datascience.tables.Table.with_columns" href="datascience.tables.Table.with_columns.html" />
     <link rel="prev" title="datascience.tables.Table.from_array" href="datascience.tables.Table.from_array.html" /> 
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -42,8 +36,8 @@
         <li class="right" >
           <a href="datascience.tables.Table.from_array.html" title="datascience.tables.Table.from_array"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.10.5 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../tables.html" accesskey="U">Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.10.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../tables.html" accesskey="U">Tables (<code class="docutils literal notranslate"><span class="pre">datascience.tables</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -61,23 +55,23 @@
 <dl class="docutils">
 <dt>Args:</dt>
 <dd><dl class="first last docutils">
-<dt><code class="docutils literal"><span class="pre">label</span></code> (str): The column label. If an existing label is used,</dt>
+<dt><code class="docutils literal notranslate"><span class="pre">label</span></code> (str): The column label. If an existing label is used,</dt>
 <dd>the existing column will be replaced in the new table.</dd>
-<dt><code class="docutils literal"><span class="pre">values</span></code> (single value or sequence): If a single value, every</dt>
-<dd>value in the new column is <code class="docutils literal"><span class="pre">values</span></code>. If sequence of values,
-new column takes on values in <code class="docutils literal"><span class="pre">values</span></code>.</dd>
-<dt><code class="docutils literal"><span class="pre">rest</span></code>: An alternating list of labels and values describing</dt>
+<dt><code class="docutils literal notranslate"><span class="pre">values</span></code> (single value or sequence): If a single value, every</dt>
+<dd>value in the new column is <code class="docutils literal notranslate"><span class="pre">values</span></code>. If sequence of values,
+new column takes on values in <code class="docutils literal notranslate"><span class="pre">values</span></code>.</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">rest</span></code>: An alternating list of labels and values describing</dt>
 <dd>additional columns. See with_columns for a full description.</dd>
 </dl>
 </dd>
 <dt>Raises:</dt>
 <dd><dl class="first last docutils">
-<dt><code class="docutils literal"><span class="pre">ValueError</span></code>: If</dt>
+<dt><code class="docutils literal notranslate"><span class="pre">ValueError</span></code>: If</dt>
 <dd><ul class="first last simple">
-<li><code class="docutils literal"><span class="pre">label</span></code> is not a valid column name</li>
-<li>if <code class="docutils literal"><span class="pre">label</span></code> is not of type (str)</li>
+<li><code class="docutils literal notranslate"><span class="pre">label</span></code> is not a valid column name</li>
+<li>if <code class="docutils literal notranslate"><span class="pre">label</span></code> is not of type (str)</li>
 <li><dl class="first docutils">
-<dt><code class="docutils literal"><span class="pre">values</span></code> is a list/array that does not have the same</dt>
+<dt><code class="docutils literal notranslate"><span class="pre">values</span></code> is a list/array that does not have the same</dt>
 <dd>length as the number of rows in the table.</dd>
 </dl>
 </li>
@@ -88,7 +82,7 @@ new column takes on values in <code class="docutils literal"><span class="pre">v
 <dt>Returns:</dt>
 <dd>copy of original table with new or replaced column</dd>
 </dl>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">alphabet</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_column</span><span class="p">(</span><span class="s1">&#39;letter&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">,</span><span class="s1">&#39;d&#39;</span><span class="p">))</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">alphabet</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_column</span><span class="p">(</span><span class="s1">&#39;letter&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">,</span><span class="s1">&#39;d&#39;</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">alphabet</span> <span class="o">=</span> <span class="n">alphabet</span><span class="o">.</span><span class="n">with_column</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">alphabet</span>
 <span class="go">letter | count</span>
@@ -141,12 +135,14 @@ new column takes on values in <code class="docutils literal"><span class="pre">v
    </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -168,13 +164,13 @@ new column takes on values in <code class="docutils literal"><span class="pre">v
         <li class="right" >
           <a href="datascience.tables.Table.from_array.html" title="datascience.tables.Table.from_array"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.10.5 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../tables.html" >Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.10.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../tables.html" >Tables (<code class="docutils literal notranslate"><span class="pre">datascience.tables</span></code>)</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
     </div>
   </body>
 </html>

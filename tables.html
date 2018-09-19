@@ -4,29 +4,23 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Tables (datascience.tables) &#8212; datascience 0.10.5 documentation</title>
+    <title>Tables (datascience.tables) &#8212; datascience 0.10.7 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.10.5',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="datascience.tables.Table.__init__" href="_autosummary/datascience.tables.Table.__init__.html" />
     <link rel="prev" title="Start Here: datascience Tutorial" href="tutorial.html" /> 
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -42,7 +36,7 @@
         <li class="right" >
           <a href="tutorial.html" title="Start Here: datascience Tutorial"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.10.5 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.10.7 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -52,23 +46,23 @@
           <div class="body" role="main">
             
   <div class="section" id="tables-datascience-tables">
-<span id="tables-overview"></span><h1>Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)<a class="headerlink" href="#tables-datascience-tables" title="Permalink to this headline">¶</a></h1>
+<span id="tables-overview"></span><h1>Tables (<code class="docutils literal notranslate"><span class="pre">datascience.tables</span></code>)<a class="headerlink" href="#tables-datascience-tables" title="Permalink to this headline">¶</a></h1>
 <p><strong>Summary of methods for Table. Click a method to see its documentation.</strong></p>
 <p>One note about reading the method signatures for this page: each method is
 listed with its arguments. However, optional arguments are specified in
 brackets. That is, a method that’s documented like</p>
-<p><code class="docutils literal"><span class="pre">Table.foo</span></code> (first_arg, second_arg[, some_other_arg, fourth_arg])</p>
-<p>means that the <code class="docutils literal"><span class="pre">Table.foo</span></code> method must be called with first_arg and second_arg
+<p><code class="docutils literal notranslate"><span class="pre">Table.foo</span></code> (first_arg, second_arg[, some_other_arg, fourth_arg])</p>
+<p>means that the <code class="docutils literal notranslate"><span class="pre">Table.foo</span></code> method must be called with first_arg and second_arg
 and optionally some_other_arg and fourth_arg. That means the following are valid
-ways to call <code class="docutils literal"><span class="pre">Table.foo</span></code>:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">some_table</span><span class="o">.</span><span class="n">foo</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+ways to call <code class="docutils literal notranslate"><span class="pre">Table.foo</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">some_table</span><span class="o">.</span><span class="n">foo</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="n">some_table</span><span class="o">.</span><span class="n">foo</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;hello&#39;</span><span class="p">)</span>
 <span class="n">some_table</span><span class="o">.</span><span class="n">foo</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;hello&#39;</span><span class="p">,</span> <span class="s1">&#39;world&#39;</span><span class="p">)</span>
 <span class="n">some_table</span><span class="o">.</span><span class="n">foo</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">some_other_arg</span><span class="o">=</span><span class="s1">&#39;hello&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>But these are not valid:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">some_table</span><span class="o">.</span><span class="n">foo</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># Missing arg</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">some_table</span><span class="o">.</span><span class="n">foo</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># Missing arg</span>
 <span class="n">some_table</span><span class="o">.</span><span class="n">foo</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">[,</span> <span class="s1">&#39;hi&#39;</span><span class="p">])</span> <span class="c1"># SyntaxError</span>
 <span class="n">some_table</span><span class="o">.</span><span class="n">foo</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">[,</span> <span class="s1">&#39;hello&#39;</span><span class="p">,</span> <span class="s1">&#39;world&#39;</span><span class="p">])</span> <span class="c1"># SyntaxError</span>
 </pre></div>
@@ -86,25 +80,25 @@ methods (mostly visualizations).</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.__init__.html#datascience.tables.Table.__init__" title="datascience.tables.Table.__init__"><code class="xref py py-obj docutils literal"><span class="pre">Table.__init__</span></code></a>([labels,&nbsp;_deprecated,&nbsp;formatter])</td>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.__init__.html#datascience.tables.Table.__init__" title="datascience.tables.Table.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.__init__</span></code></a>([labels,&nbsp;_deprecated,&nbsp;formatter])</td>
 <td>Create an empty table with column labels.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.empty.html#datascience.tables.Table.empty" title="datascience.tables.Table.empty"><code class="xref py py-obj docutils literal"><span class="pre">Table.empty</span></code></a>([labels])</td>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.empty.html#datascience.tables.Table.empty" title="datascience.tables.Table.empty"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.empty</span></code></a>([labels])</td>
 <td>Creates an empty table.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.from_records.html#datascience.tables.Table.from_records" title="datascience.tables.Table.from_records"><code class="xref py py-obj docutils literal"><span class="pre">Table.from_records</span></code></a>(records)</td>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.from_records.html#datascience.tables.Table.from_records" title="datascience.tables.Table.from_records"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.from_records</span></code></a>(records)</td>
 <td>Create a table from a sequence of records (dicts with fixed keys).</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.from_columns_dict.html#datascience.tables.Table.from_columns_dict" title="datascience.tables.Table.from_columns_dict"><code class="xref py py-obj docutils literal"><span class="pre">Table.from_columns_dict</span></code></a>(columns)</td>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.from_columns_dict.html#datascience.tables.Table.from_columns_dict" title="datascience.tables.Table.from_columns_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.from_columns_dict</span></code></a>(columns)</td>
 <td>Create a table from a mapping of column labels to column values.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.read_table.html#datascience.tables.Table.read_table" title="datascience.tables.Table.read_table"><code class="xref py py-obj docutils literal"><span class="pre">Table.read_table</span></code></a>(filepath_or_buffer,&nbsp;*args,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.read_table.html#datascience.tables.Table.read_table" title="datascience.tables.Table.read_table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.read_table</span></code></a>(filepath_or_buffer,&nbsp;*args,&nbsp;…)</td>
 <td>Read a table from a file or web address.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.from_df.html#datascience.tables.Table.from_df" title="datascience.tables.Table.from_df"><code class="xref py py-obj docutils literal"><span class="pre">Table.from_df</span></code></a>(df)</td>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.from_df.html#datascience.tables.Table.from_df" title="datascience.tables.Table.from_df"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.from_df</span></code></a>(df)</td>
 <td>Convert a Pandas DataFrame into a Table.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.from_array.html#datascience.tables.Table.from_array" title="datascience.tables.Table.from_array"><code class="xref py py-obj docutils literal"><span class="pre">Table.from_array</span></code></a>(arr)</td>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.from_array.html#datascience.tables.Table.from_array" title="datascience.tables.Table.from_array"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.from_array</span></code></a>(arr)</td>
 <td>Convert a structured NumPy array into a Table.</td>
 </tr>
 </tbody>
@@ -116,20 +110,20 @@ methods (mostly visualizations).</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.with_column.html#datascience.tables.Table.with_column" title="datascience.tables.Table.with_column"><code class="xref py py-obj docutils literal"><span class="pre">Table.with_column</span></code></a>(label,&nbsp;values,&nbsp;*rest)</td>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.with_column.html#datascience.tables.Table.with_column" title="datascience.tables.Table.with_column"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.with_column</span></code></a>(label,&nbsp;values,&nbsp;*rest)</td>
 <td>Return a new table with an additional or replaced column.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.with_columns.html#datascience.tables.Table.with_columns" title="datascience.tables.Table.with_columns"><code class="xref py py-obj docutils literal"><span class="pre">Table.with_columns</span></code></a>(*labels_and_values)</td>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.with_columns.html#datascience.tables.Table.with_columns" title="datascience.tables.Table.with_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.with_columns</span></code></a>(*labels_and_values)</td>
 <td>Return a table with additional or replaced columns.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.with_row.html#datascience.tables.Table.with_row" title="datascience.tables.Table.with_row"><code class="xref py py-obj docutils literal"><span class="pre">Table.with_row</span></code></a>(row)</td>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.with_row.html#datascience.tables.Table.with_row" title="datascience.tables.Table.with_row"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.with_row</span></code></a>(row)</td>
 <td>Return a table with an additional row.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.with_rows.html#datascience.tables.Table.with_rows" title="datascience.tables.Table.with_rows"><code class="xref py py-obj docutils literal"><span class="pre">Table.with_rows</span></code></a>(rows)</td>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.with_rows.html#datascience.tables.Table.with_rows" title="datascience.tables.Table.with_rows"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.with_rows</span></code></a>(rows)</td>
 <td>Return a table with additional rows.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.relabeled.html#datascience.tables.Table.relabeled" title="datascience.tables.Table.relabeled"><code class="xref py py-obj docutils literal"><span class="pre">Table.relabeled</span></code></a>(label,&nbsp;new_label)</td>
-<td>Return a new table with <code class="docutils literal"><span class="pre">label</span></code> specifying column label(s) replaced by corresponding <code class="docutils literal"><span class="pre">new_label</span></code>.</td>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.relabeled.html#datascience.tables.Table.relabeled" title="datascience.tables.Table.relabeled"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.relabeled</span></code></a>(label,&nbsp;new_label)</td>
+<td>Return a new table with <code class="docutils literal notranslate"><span class="pre">label</span></code> specifying column label(s) replaced by corresponding <code class="docutils literal notranslate"><span class="pre">new_label</span></code>.</td>
 </tr>
 </tbody>
 </table>
@@ -140,32 +134,32 @@ methods (mostly visualizations).</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.num_columns.html#datascience.tables.Table.num_columns" title="datascience.tables.Table.num_columns"><code class="xref py py-obj docutils literal"><span class="pre">Table.num_columns</span></code></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.num_columns.html#datascience.tables.Table.num_columns" title="datascience.tables.Table.num_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.num_columns</span></code></a></td>
 <td>Number of columns.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.columns.html#datascience.tables.Table.columns" title="datascience.tables.Table.columns"><code class="xref py py-obj docutils literal"><span class="pre">Table.columns</span></code></a></td>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.columns.html#datascience.tables.Table.columns" title="datascience.tables.Table.columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.columns</span></code></a></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.column.html#datascience.tables.Table.column" title="datascience.tables.Table.column"><code class="xref py py-obj docutils literal"><span class="pre">Table.column</span></code></a>(index_or_label)</td>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.column.html#datascience.tables.Table.column" title="datascience.tables.Table.column"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.column</span></code></a>(index_or_label)</td>
 <td>Return the values of a column as an array.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.num_rows.html#datascience.tables.Table.num_rows" title="datascience.tables.Table.num_rows"><code class="xref py py-obj docutils literal"><span class="pre">Table.num_rows</span></code></a></td>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.num_rows.html#datascience.tables.Table.num_rows" title="datascience.tables.Table.num_rows"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.num_rows</span></code></a></td>
 <td>Number of rows.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.rows.html#datascience.tables.Table.rows" title="datascience.tables.Table.rows"><code class="xref py py-obj docutils literal"><span class="pre">Table.rows</span></code></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.rows.html#datascience.tables.Table.rows" title="datascience.tables.Table.rows"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.rows</span></code></a></td>
 <td>Return a view of all rows.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.row.html#datascience.tables.Table.row" title="datascience.tables.Table.row"><code class="xref py py-obj docutils literal"><span class="pre">Table.row</span></code></a>(index)</td>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.row.html#datascience.tables.Table.row" title="datascience.tables.Table.row"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.row</span></code></a>(index)</td>
 <td>Return a row.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.labels.html#datascience.tables.Table.labels" title="datascience.tables.Table.labels"><code class="xref py py-obj docutils literal"><span class="pre">Table.labels</span></code></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.labels.html#datascience.tables.Table.labels" title="datascience.tables.Table.labels"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.labels</span></code></a></td>
 <td>Return a tuple of column labels.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.column_index.html#datascience.tables.Table.column_index" title="datascience.tables.Table.column_index"><code class="xref py py-obj docutils literal"><span class="pre">Table.column_index</span></code></a>(label)</td>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.column_index.html#datascience.tables.Table.column_index" title="datascience.tables.Table.column_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.column_index</span></code></a>(label)</td>
 <td>Return the index of a column by looking up its label.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.apply.html#datascience.tables.Table.apply" title="datascience.tables.Table.apply"><code class="xref py py-obj docutils literal"><span class="pre">Table.apply</span></code></a>(fn,&nbsp;*column_or_columns)</td>
-<td>Apply <code class="docutils literal"><span class="pre">fn</span></code> to each element or elements of <code class="docutils literal"><span class="pre">column_or_columns</span></code>.</td>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.apply.html#datascience.tables.Table.apply" title="datascience.tables.Table.apply"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.apply</span></code></a>(fn,&nbsp;*column_or_columns)</td>
+<td>Apply <code class="docutils literal notranslate"><span class="pre">fn</span></code> to each element or elements of <code class="docutils literal notranslate"><span class="pre">column_or_columns</span></code>.</td>
 </tr>
 </tbody>
 </table>
@@ -176,23 +170,23 @@ methods (mostly visualizations).</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.set_format.html#datascience.tables.Table.set_format" title="datascience.tables.Table.set_format"><code class="xref py py-obj docutils literal"><span class="pre">Table.set_format</span></code></a>(column_or_columns,&nbsp;formatter)</td>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.set_format.html#datascience.tables.Table.set_format" title="datascience.tables.Table.set_format"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.set_format</span></code></a>(column_or_columns,&nbsp;formatter)</td>
 <td>Set the format of a column.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.move_to_start.html#datascience.tables.Table.move_to_start" title="datascience.tables.Table.move_to_start"><code class="xref py py-obj docutils literal"><span class="pre">Table.move_to_start</span></code></a>(column_label)</td>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.move_to_start.html#datascience.tables.Table.move_to_start" title="datascience.tables.Table.move_to_start"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.move_to_start</span></code></a>(column_label)</td>
 <td>Move a column to the first in order.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.move_to_end.html#datascience.tables.Table.move_to_end" title="datascience.tables.Table.move_to_end"><code class="xref py py-obj docutils literal"><span class="pre">Table.move_to_end</span></code></a>(column_label)</td>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.move_to_end.html#datascience.tables.Table.move_to_end" title="datascience.tables.Table.move_to_end"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.move_to_end</span></code></a>(column_label)</td>
 <td>Move a column to the last in order.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.append.html#datascience.tables.Table.append" title="datascience.tables.Table.append"><code class="xref py py-obj docutils literal"><span class="pre">Table.append</span></code></a>(row_or_table)</td>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.append.html#datascience.tables.Table.append" title="datascience.tables.Table.append"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.append</span></code></a>(row_or_table)</td>
 <td>Append a row or all rows of a table.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.append_column.html#datascience.tables.Table.append_column" title="datascience.tables.Table.append_column"><code class="xref py py-obj docutils literal"><span class="pre">Table.append_column</span></code></a>(label,&nbsp;values)</td>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.append_column.html#datascience.tables.Table.append_column" title="datascience.tables.Table.append_column"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.append_column</span></code></a>(label,&nbsp;values)</td>
 <td>Appends a column to the table or replaces a column.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.relabel.html#datascience.tables.Table.relabel" title="datascience.tables.Table.relabel"><code class="xref py py-obj docutils literal"><span class="pre">Table.relabel</span></code></a>(column_label,&nbsp;new_label)</td>
-<td>Changes the label(s) of column(s) specified by <code class="docutils literal"><span class="pre">column_label</span></code> to labels in <code class="docutils literal"><span class="pre">new_label</span></code>.</td>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.relabel.html#datascience.tables.Table.relabel" title="datascience.tables.Table.relabel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.relabel</span></code></a>(column_label,&nbsp;new_label)</td>
+<td>Changes the label(s) of column(s) specified by <code class="docutils literal notranslate"><span class="pre">column_label</span></code> to labels in <code class="docutils literal notranslate"><span class="pre">new_label</span></code>.</td>
 </tr>
 </tbody>
 </table>
@@ -203,55 +197,55 @@ methods (mostly visualizations).</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.copy.html#datascience.tables.Table.copy" title="datascience.tables.Table.copy"><code class="xref py py-obj docutils literal"><span class="pre">Table.copy</span></code></a>(*[,&nbsp;shallow])</td>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.copy.html#datascience.tables.Table.copy" title="datascience.tables.Table.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.copy</span></code></a>(*[,&nbsp;shallow])</td>
 <td>Return a copy of a table.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.select.html#datascience.tables.Table.select" title="datascience.tables.Table.select"><code class="xref py py-obj docutils literal"><span class="pre">Table.select</span></code></a>(*column_or_columns)</td>
-<td>Return a table with only the columns in <code class="docutils literal"><span class="pre">column_or_columns</span></code>.</td>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.select.html#datascience.tables.Table.select" title="datascience.tables.Table.select"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.select</span></code></a>(*column_or_columns)</td>
+<td>Return a table with only the columns in <code class="docutils literal notranslate"><span class="pre">column_or_columns</span></code>.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.drop.html#datascience.tables.Table.drop" title="datascience.tables.Table.drop"><code class="xref py py-obj docutils literal"><span class="pre">Table.drop</span></code></a>(*column_or_columns)</td>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.drop.html#datascience.tables.Table.drop" title="datascience.tables.Table.drop"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.drop</span></code></a>(*column_or_columns)</td>
 <td>Return a Table with only columns other than selected label or labels.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.take.html#datascience.tables.Table.take" title="datascience.tables.Table.take"><code class="xref py py-obj docutils literal"><span class="pre">Table.take</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.take.html#datascience.tables.Table.take" title="datascience.tables.Table.take"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.take</span></code></a>()</td>
 <td>Return a new Table with selected rows taken by index.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.exclude.html#datascience.tables.Table.exclude" title="datascience.tables.Table.exclude"><code class="xref py py-obj docutils literal"><span class="pre">Table.exclude</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.exclude.html#datascience.tables.Table.exclude" title="datascience.tables.Table.exclude"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.exclude</span></code></a>()</td>
 <td>Return a new Table without a sequence of rows excluded by number.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.where.html#datascience.tables.Table.where" title="datascience.tables.Table.where"><code class="xref py py-obj docutils literal"><span class="pre">Table.where</span></code></a>(column_or_label[,&nbsp;…])</td>
-<td>Return a new <code class="docutils literal"><span class="pre">Table</span></code> containing rows where <code class="docutils literal"><span class="pre">value_or_predicate</span></code> returns True for values in <code class="docutils literal"><span class="pre">column_or_label</span></code>.</td>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.where.html#datascience.tables.Table.where" title="datascience.tables.Table.where"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.where</span></code></a>(column_or_label[,&nbsp;…])</td>
+<td>Return a new <code class="docutils literal notranslate"><span class="pre">Table</span></code> containing rows where <code class="docutils literal notranslate"><span class="pre">value_or_predicate</span></code> returns True for values in <code class="docutils literal notranslate"><span class="pre">column_or_label</span></code>.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.sort.html#datascience.tables.Table.sort" title="datascience.tables.Table.sort"><code class="xref py py-obj docutils literal"><span class="pre">Table.sort</span></code></a>(column_or_label[,&nbsp;descending,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.sort.html#datascience.tables.Table.sort" title="datascience.tables.Table.sort"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.sort</span></code></a>(column_or_label[,&nbsp;descending,&nbsp;…])</td>
 <td>Return a Table of rows sorted according to the values in a column.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.group.html#datascience.tables.Table.group" title="datascience.tables.Table.group"><code class="xref py py-obj docutils literal"><span class="pre">Table.group</span></code></a>(column_or_label[,&nbsp;collect])</td>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.group.html#datascience.tables.Table.group" title="datascience.tables.Table.group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.group</span></code></a>(column_or_label[,&nbsp;collect])</td>
 <td>Group rows by unique values in a column; count or aggregate others.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.groups.html#datascience.tables.Table.groups" title="datascience.tables.Table.groups"><code class="xref py py-obj docutils literal"><span class="pre">Table.groups</span></code></a>(labels[,&nbsp;collect])</td>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.groups.html#datascience.tables.Table.groups" title="datascience.tables.Table.groups"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.groups</span></code></a>(labels[,&nbsp;collect])</td>
 <td>Group rows by multiple columns, count or aggregate others.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.pivot.html#datascience.tables.Table.pivot" title="datascience.tables.Table.pivot"><code class="xref py py-obj docutils literal"><span class="pre">Table.pivot</span></code></a>(columns,&nbsp;rows[,&nbsp;values,&nbsp;…])</td>
-<td>Generate a table with a column for each unique value in <code class="docutils literal"><span class="pre">columns</span></code>, with rows for each unique value in <code class="docutils literal"><span class="pre">rows</span></code>.</td>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.pivot.html#datascience.tables.Table.pivot" title="datascience.tables.Table.pivot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.pivot</span></code></a>(columns,&nbsp;rows[,&nbsp;values,&nbsp;…])</td>
+<td>Generate a table with a column for each unique value in <code class="docutils literal notranslate"><span class="pre">columns</span></code>, with rows for each unique value in <code class="docutils literal notranslate"><span class="pre">rows</span></code>.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.stack.html#datascience.tables.Table.stack" title="datascience.tables.Table.stack"><code class="xref py py-obj docutils literal"><span class="pre">Table.stack</span></code></a>(key[,&nbsp;labels])</td>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.stack.html#datascience.tables.Table.stack" title="datascience.tables.Table.stack"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.stack</span></code></a>(key[,&nbsp;labels])</td>
 <td>Takes k original columns and returns two columns, with col.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.join.html#datascience.tables.Table.join" title="datascience.tables.Table.join"><code class="xref py py-obj docutils literal"><span class="pre">Table.join</span></code></a>(column_label,&nbsp;other[,&nbsp;other_label])</td>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.join.html#datascience.tables.Table.join" title="datascience.tables.Table.join"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.join</span></code></a>(column_label,&nbsp;other[,&nbsp;other_label])</td>
 <td>Creates a new table with the columns of self and other, containing rows for all values of a column that appear in both tables.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.stats.html#datascience.tables.Table.stats" title="datascience.tables.Table.stats"><code class="xref py py-obj docutils literal"><span class="pre">Table.stats</span></code></a>([ops])</td>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.stats.html#datascience.tables.Table.stats" title="datascience.tables.Table.stats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.stats</span></code></a>([ops])</td>
 <td>Compute statistics for each column and place them in a table.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.percentile.html#datascience.tables.Table.percentile" title="datascience.tables.Table.percentile"><code class="xref py py-obj docutils literal"><span class="pre">Table.percentile</span></code></a>(p)</td>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.percentile.html#datascience.tables.Table.percentile" title="datascience.tables.Table.percentile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.percentile</span></code></a>(p)</td>
 <td>Return a new table with one row containing the pth percentile for each column.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.sample.html#datascience.tables.Table.sample" title="datascience.tables.Table.sample"><code class="xref py py-obj docutils literal"><span class="pre">Table.sample</span></code></a>([k,&nbsp;with_replacement,&nbsp;weights])</td>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.sample.html#datascience.tables.Table.sample" title="datascience.tables.Table.sample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.sample</span></code></a>([k,&nbsp;with_replacement,&nbsp;weights])</td>
 <td>Return a new table where k rows are randomly sampled from the original table.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.split.html#datascience.tables.Table.split" title="datascience.tables.Table.split"><code class="xref py py-obj docutils literal"><span class="pre">Table.split</span></code></a>(k)</td>
-<td>Return a tuple of two tables where the first table contains <code class="docutils literal"><span class="pre">k</span></code> rows randomly sampled and the second contains the remaining rows.</td>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.split.html#datascience.tables.Table.split" title="datascience.tables.Table.split"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.split</span></code></a>(k)</td>
+<td>Return a tuple of two tables where the first table contains <code class="docutils literal notranslate"><span class="pre">k</span></code> rows randomly sampled and the second contains the remaining rows.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.bin.html#datascience.tables.Table.bin" title="datascience.tables.Table.bin"><code class="xref py py-obj docutils literal"><span class="pre">Table.bin</span></code></a>(*columns,&nbsp;**vargs)</td>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.bin.html#datascience.tables.Table.bin" title="datascience.tables.Table.bin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.bin</span></code></a>(*columns,&nbsp;**vargs)</td>
 <td>Group values by bin and compute counts per bin by column.</td>
 </tr>
 </tbody>
@@ -263,25 +257,25 @@ methods (mostly visualizations).</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.show.html#datascience.tables.Table.show" title="datascience.tables.Table.show"><code class="xref py py-obj docutils literal"><span class="pre">Table.show</span></code></a>([max_rows])</td>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.show.html#datascience.tables.Table.show" title="datascience.tables.Table.show"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.show</span></code></a>([max_rows])</td>
 <td>Display the table.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.as_text.html#datascience.tables.Table.as_text" title="datascience.tables.Table.as_text"><code class="xref py py-obj docutils literal"><span class="pre">Table.as_text</span></code></a>([max_rows,&nbsp;sep])</td>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.as_text.html#datascience.tables.Table.as_text" title="datascience.tables.Table.as_text"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.as_text</span></code></a>([max_rows,&nbsp;sep])</td>
 <td>Format table as text.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.as_html.html#datascience.tables.Table.as_html" title="datascience.tables.Table.as_html"><code class="xref py py-obj docutils literal"><span class="pre">Table.as_html</span></code></a>([max_rows])</td>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.as_html.html#datascience.tables.Table.as_html" title="datascience.tables.Table.as_html"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.as_html</span></code></a>([max_rows])</td>
 <td>Format table as HTML.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.index_by.html#datascience.tables.Table.index_by" title="datascience.tables.Table.index_by"><code class="xref py py-obj docutils literal"><span class="pre">Table.index_by</span></code></a>(column_or_label)</td>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.index_by.html#datascience.tables.Table.index_by" title="datascience.tables.Table.index_by"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.index_by</span></code></a>(column_or_label)</td>
 <td>Return a dict keyed by values in a column that contains lists of rows corresponding to each value.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.to_array.html#datascience.tables.Table.to_array" title="datascience.tables.Table.to_array"><code class="xref py py-obj docutils literal"><span class="pre">Table.to_array</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.to_array.html#datascience.tables.Table.to_array" title="datascience.tables.Table.to_array"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.to_array</span></code></a>()</td>
 <td>Convert the table to a structured NumPy array.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.to_df.html#datascience.tables.Table.to_df" title="datascience.tables.Table.to_df"><code class="xref py py-obj docutils literal"><span class="pre">Table.to_df</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.to_df.html#datascience.tables.Table.to_df" title="datascience.tables.Table.to_df"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.to_df</span></code></a>()</td>
 <td>Convert the table to a Pandas DataFrame.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.to_csv.html#datascience.tables.Table.to_csv" title="datascience.tables.Table.to_csv"><code class="xref py py-obj docutils literal"><span class="pre">Table.to_csv</span></code></a>(filename)</td>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.to_csv.html#datascience.tables.Table.to_csv" title="datascience.tables.Table.to_csv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.to_csv</span></code></a>(filename)</td>
 <td>Creates a CSV file with the provided filename.</td>
 </tr>
 </tbody>
@@ -293,25 +287,25 @@ methods (mostly visualizations).</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.plot.html#datascience.tables.Table.plot" title="datascience.tables.Table.plot"><code class="xref py py-obj docutils literal"><span class="pre">Table.plot</span></code></a>([column_for_xticks,&nbsp;select,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.plot.html#datascience.tables.Table.plot" title="datascience.tables.Table.plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.plot</span></code></a>([column_for_xticks,&nbsp;select,&nbsp;…])</td>
 <td>Plot line charts for the table.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.bar.html#datascience.tables.Table.bar" title="datascience.tables.Table.bar"><code class="xref py py-obj docutils literal"><span class="pre">Table.bar</span></code></a>([column_for_categories,&nbsp;select,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.bar.html#datascience.tables.Table.bar" title="datascience.tables.Table.bar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.bar</span></code></a>([column_for_categories,&nbsp;select,&nbsp;…])</td>
 <td>Plot bar charts for the table.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.barh.html#datascience.tables.Table.barh" title="datascience.tables.Table.barh"><code class="xref py py-obj docutils literal"><span class="pre">Table.barh</span></code></a>([column_for_categories,&nbsp;select,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.barh.html#datascience.tables.Table.barh" title="datascience.tables.Table.barh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.barh</span></code></a>([column_for_categories,&nbsp;select,&nbsp;…])</td>
 <td>Plot horizontal bar charts for the table.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.pivot_hist.html#datascience.tables.Table.pivot_hist" title="datascience.tables.Table.pivot_hist"><code class="xref py py-obj docutils literal"><span class="pre">Table.pivot_hist</span></code></a>(pivot_column_label,&nbsp;…[,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.pivot_hist.html#datascience.tables.Table.pivot_hist" title="datascience.tables.Table.pivot_hist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.pivot_hist</span></code></a>(pivot_column_label,&nbsp;…[,&nbsp;…])</td>
 <td>Draw histograms of each category in a column.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.hist.html#datascience.tables.Table.hist" title="datascience.tables.Table.hist"><code class="xref py py-obj docutils literal"><span class="pre">Table.hist</span></code></a>(*columns[,&nbsp;overlay,&nbsp;bins,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.hist.html#datascience.tables.Table.hist" title="datascience.tables.Table.hist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.hist</span></code></a>(*columns[,&nbsp;overlay,&nbsp;bins,&nbsp;…])</td>
 <td>Plots one histogram for each column in columns.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.scatter.html#datascience.tables.Table.scatter" title="datascience.tables.Table.scatter"><code class="xref py py-obj docutils literal"><span class="pre">Table.scatter</span></code></a>(column_for_x[,&nbsp;select,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.scatter.html#datascience.tables.Table.scatter" title="datascience.tables.Table.scatter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.scatter</span></code></a>(column_for_x[,&nbsp;select,&nbsp;…])</td>
 <td>Creates scatterplots, optionally adding a line of best fit.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.boxplot.html#datascience.tables.Table.boxplot" title="datascience.tables.Table.boxplot"><code class="xref py py-obj docutils literal"><span class="pre">Table.boxplot</span></code></a>(**vargs)</td>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.boxplot.html#datascience.tables.Table.boxplot" title="datascience.tables.Table.boxplot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.boxplot</span></code></a>(**vargs)</td>
 <td>Plots a boxplot for the table.</td>
 </tr>
 </tbody>
@@ -326,7 +320,7 @@ methods (mostly visualizations).</p>
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
   <p class="topless"><a href="tutorial.html"
-                        title="previous chapter">Start Here: <code class="docutils literal"><span class="pre">datascience</span></code> Tutorial</a></p>
+                        title="previous chapter">Start Here: <code class="docutils literal notranslate"><span class="pre">datascience</span></code> Tutorial</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="_autosummary/datascience.tables.Table.__init__.html"
                         title="next chapter">datascience.tables.Table.__init__</a></p>
@@ -339,12 +333,14 @@ methods (mostly visualizations).</p>
    </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -366,12 +362,12 @@ methods (mostly visualizations).</p>
         <li class="right" >
           <a href="tutorial.html" title="Start Here: datascience Tutorial"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.10.5 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.10.7 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
     </div>
   </body>
 </html>

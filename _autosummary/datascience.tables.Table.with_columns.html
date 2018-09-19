@@ -4,29 +4,23 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>datascience.tables.Table.with_columns &#8212; datascience 0.10.5 documentation</title>
+    <title>datascience.tables.Table.with_columns &#8212; datascience 0.10.7 documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '0.10.5',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="datascience.tables.Table.with_row" href="datascience.tables.Table.with_row.html" />
     <link rel="prev" title="datascience.tables.Table.with_column" href="datascience.tables.Table.with_column.html" /> 
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -42,8 +36,8 @@
         <li class="right" >
           <a href="datascience.tables.Table.with_column.html" title="datascience.tables.Table.with_column"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.10.5 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../tables.html" accesskey="U">Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.10.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../tables.html" accesskey="U">Tables (<code class="docutils literal notranslate"><span class="pre">datascience.tables</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -61,35 +55,35 @@
 <dl class="docutils">
 <dt>Args:</dt>
 <dd><dl class="first last docutils">
-<dt><code class="docutils literal"><span class="pre">labels_and_values</span></code>: An alternating list of labels and values or</dt>
+<dt><code class="docutils literal notranslate"><span class="pre">labels_and_values</span></code>: An alternating list of labels and values or</dt>
 <dd>a list of label-value pairs. If one of the labels is in
 existing table, then every value in the corresponding column is
-set to that value. If label has only a single value (<code class="docutils literal"><span class="pre">int</span></code>),
+set to that value. If label has only a single value (<code class="docutils literal notranslate"><span class="pre">int</span></code>),
 every row of corresponding column takes on that value.</dd>
 </dl>
 </dd>
 <dt>Raises:</dt>
 <dd><dl class="first last docutils">
-<dt><code class="docutils literal"><span class="pre">ValueError</span></code>: If</dt>
+<dt><code class="docutils literal notranslate"><span class="pre">ValueError</span></code>: If</dt>
 <dd><ul class="first last simple">
 <li><dl class="first docutils">
-<dt>any label in <code class="docutils literal"><span class="pre">labels_and_values</span></code> is not a valid column</dt>
+<dt>any label in <code class="docutils literal notranslate"><span class="pre">labels_and_values</span></code> is not a valid column</dt>
 <dd>name, i.e if label is not of type (str).</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
-<dt>if any value in <code class="docutils literal"><span class="pre">labels_and_values</span></code> is a list/array and</dt>
+<dt>if any value in <code class="docutils literal notranslate"><span class="pre">labels_and_values</span></code> is a list/array and</dt>
 <dd>does not have the same length as the number of rows in the
 table.</dd>
 </dl>
 </li>
 </ul>
 </dd>
-<dt><code class="docutils literal"><span class="pre">AssertionError</span></code>:</dt>
+<dt><code class="docutils literal notranslate"><span class="pre">AssertionError</span></code>:</dt>
 <dd><ul class="first last simple">
 <li><dl class="first docutils">
 <dt>‘incorrect columns format’, if passed more than one sequence</dt>
-<dd>(iterables) for  <code class="docutils literal"><span class="pre">labels_and_values</span></code>.</dd>
+<dd>(iterables) for  <code class="docutils literal notranslate"><span class="pre">labels_and_values</span></code>.</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
@@ -103,27 +97,27 @@ table.</dd>
 </dd>
 <dt>Returns:</dt>
 <dd>Copy of original table with new or replaced columns. Columns added
-in order of labels. Equivalent to <code class="docutils literal"><span class="pre">with_column(label,</span> <span class="pre">value)</span></code>
+in order of labels. Equivalent to <code class="docutils literal notranslate"><span class="pre">with_column(label,</span> <span class="pre">value)</span></code>
 when passed only one label-value pair.</dd>
 </dl>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">players</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span><span class="s1">&#39;player_id&#39;</span><span class="p">,</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">players</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span><span class="s1">&#39;player_id&#39;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">make_array</span><span class="p">(</span><span class="mi">110234</span><span class="p">,</span> <span class="mi">110235</span><span class="p">),</span> <span class="s1">&#39;wOBA&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="o">.</span><span class="mi">354</span><span class="p">,</span> <span class="o">.</span><span class="mi">236</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">players</span>
-<span class="go">player_id | wOBA</span>
-<span class="go">110234    | 0.354</span>
-<span class="go">110235    | 0.236</span>
+<span class="go">player_id  | wOBA</span>
+<span class="go">110,234    | 0.354</span>
+<span class="go">110,235    | 0.236</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">players</span> <span class="o">=</span> <span class="n">players</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span><span class="s1">&#39;salaries&#39;</span><span class="p">,</span> <span class="s1">&#39;N/A&#39;</span><span class="p">,</span> <span class="s1">&#39;season&#39;</span><span class="p">,</span> <span class="mi">2016</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">players</span>
-<span class="go">player_id | wOBA  | salaries | season</span>
-<span class="go">110234    | 0.354 | N/A      | 2016</span>
-<span class="go">110235    | 0.236 | N/A      | 2016</span>
+<span class="go">player_id  | wOBA  | salaries | season</span>
+<span class="go">110,234    | 0.354 | N/A      | 2,016</span>
+<span class="go">110,235    | 0.236 | N/A      | 2,016</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">salaries</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_column</span><span class="p">(</span><span class="s1">&#39;salary&#39;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;$500,000&#39;</span><span class="p">,</span> <span class="s1">&#39;$15,500,000&#39;</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">players</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span><span class="s1">&#39;salaries&#39;</span><span class="p">,</span> <span class="n">salaries</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s1">&#39;salary&#39;</span><span class="p">),</span>
 <span class="gp">... </span>    <span class="s1">&#39;years&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-<span class="go">player_id | wOBA  | salaries    | season | years</span>
-<span class="go">110234    | 0.354 | $500,000    | 2016   | 6</span>
-<span class="go">110235    | 0.236 | $15,500,000 | 2016   | 1</span>
+<span class="go">player_id  | wOBA  | salaries    | season  | years</span>
+<span class="go">110,234    | 0.354 | $500,000    | 2,016   | 6</span>
+<span class="go">110,235    | 0.236 | $15,500,000 | 2,016   | 1</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">players</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;$600,000&#39;</span><span class="p">,</span> <span class="s1">&#39;$20,000,000&#39;</span><span class="p">))</span>
 <span class="gt">Traceback (most recent call last):</span>
     <span class="o">...</span>
@@ -159,12 +153,14 @@ when passed only one label-value pair.</dd>
    </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -186,13 +182,13 @@ when passed only one label-value pair.</dd>
         <li class="right" >
           <a href="datascience.tables.Table.with_column.html" title="datascience.tables.Table.with_column"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.10.5 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../tables.html" >Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.10.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../tables.html" >Tables (<code class="docutils literal notranslate"><span class="pre">datascience.tables</span></code>)</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
     </div>
   </body>
 </html>

@@ -4,29 +4,23 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>datascience.tables.Table.group &#8212; datascience 0.10.5 documentation</title>
+    <title>datascience.tables.Table.group &#8212; datascience 0.10.7 documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '0.10.5',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="datascience.tables.Table.groups" href="datascience.tables.Table.groups.html" />
     <link rel="prev" title="datascience.tables.Table.sort" href="datascience.tables.Table.sort.html" /> 
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -42,8 +36,8 @@
         <li class="right" >
           <a href="datascience.tables.Table.sort.html" title="datascience.tables.Table.sort"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.10.5 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../tables.html" accesskey="U">Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.10.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../tables.html" accesskey="U">Tables (<code class="docutils literal notranslate"><span class="pre">datascience.tables</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -60,22 +54,22 @@
 <dd><p>Group rows by unique values in a column; count or aggregate others.</p>
 <dl class="docutils">
 <dt>Args:</dt>
-<dd><p class="first"><code class="docutils literal"><span class="pre">column_or_label</span></code>: values to group (column label or index, or array)</p>
-<p class="last"><code class="docutils literal"><span class="pre">collect</span></code>: a function applied to values in other columns for each group</p>
+<dd><p class="first"><code class="docutils literal notranslate"><span class="pre">column_or_label</span></code>: values to group (column label or index, or array)</p>
+<p class="last"><code class="docutils literal notranslate"><span class="pre">collect</span></code>: a function applied to values in other columns for each group</p>
 </dd>
 <dt>Returns:</dt>
-<dd>A Table with each row corresponding to a unique value in <code class="docutils literal"><span class="pre">column_or_label</span></code>,
-where the first column contains the unique values from <code class="docutils literal"><span class="pre">column_or_label</span></code>, and the
-second contains counts for each of the unique values. If <code class="docutils literal"><span class="pre">collect</span></code> is
+<dd>A Table with each row corresponding to a unique value in <code class="docutils literal notranslate"><span class="pre">column_or_label</span></code>,
+where the first column contains the unique values from <code class="docutils literal notranslate"><span class="pre">column_or_label</span></code>, and the
+second contains counts for each of the unique values. If <code class="docutils literal notranslate"><span class="pre">collect</span></code> is
 provided, a Table is returned with all original columns, each containing values
-calculated by first grouping rows according to <code class="docutils literal"><span class="pre">column_or_label</span></code>, then applying
-<code class="docutils literal"><span class="pre">collect</span></code> to each set of grouped values in the other columns.</dd>
+calculated by first grouping rows according to <code class="docutils literal notranslate"><span class="pre">column_or_label</span></code>, then applying
+<code class="docutils literal notranslate"><span class="pre">collect</span></code> to each set of grouped values in the other columns.</dd>
 <dt>Note:</dt>
-<dd>The grouped column will appear first in the result table. If <code class="docutils literal"><span class="pre">collect</span></code> does not
+<dd>The grouped column will appear first in the result table. If <code class="docutils literal notranslate"><span class="pre">collect</span></code> does not
 accept arguments with one of the column types, that column will be empty in the resulting
 table.</dd>
 </dl>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">marbles</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">marbles</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
 <span class="gp">... </span>   <span class="s2">&quot;Color&quot;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="s2">&quot;Red&quot;</span><span class="p">,</span> <span class="s2">&quot;Green&quot;</span><span class="p">,</span> <span class="s2">&quot;Blue&quot;</span><span class="p">,</span> <span class="s2">&quot;Red&quot;</span><span class="p">,</span> <span class="s2">&quot;Green&quot;</span><span class="p">,</span> <span class="s2">&quot;Green&quot;</span><span class="p">),</span>
 <span class="gp">... </span>   <span class="s2">&quot;Shape&quot;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="s2">&quot;Round&quot;</span><span class="p">,</span> <span class="s2">&quot;Rectangular&quot;</span><span class="p">,</span> <span class="s2">&quot;Rectangular&quot;</span><span class="p">,</span> <span class="s2">&quot;Round&quot;</span><span class="p">,</span> <span class="s2">&quot;Rectangular&quot;</span><span class="p">,</span> <span class="s2">&quot;Round&quot;</span><span class="p">),</span>
 <span class="gp">... </span>   <span class="s2">&quot;Amount&quot;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
@@ -129,12 +123,14 @@ table.</dd>
    </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -156,13 +152,13 @@ table.</dd>
         <li class="right" >
           <a href="datascience.tables.Table.sort.html" title="datascience.tables.Table.sort"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.10.5 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../tables.html" >Tables (<code class="docutils literal"><span class="pre">datascience.tables</span></code>)</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.10.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../tables.html" >Tables (<code class="docutils literal notranslate"><span class="pre">datascience.tables</span></code>)</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
     </div>
   </body>
 </html>
