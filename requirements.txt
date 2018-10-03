@@ -1,3 +1,7 @@
 folium==0.2.1
 sphinx
 setuptools
+matplotlib
+pandas
+scipy
+ipython
