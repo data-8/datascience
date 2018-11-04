@@ -1427,6 +1427,15 @@ class Table(collections.abc.MutableMapping):
         sample = self._with_columns(columns)
         return sample
 
+    def shuffle(self):
+        """Return a new table where all the rows are randomly shuffled from the
+        original table..
+
+        Returns:
+            A new instance of ``Table`` with all ``k`` rows shuffled.
+        """
+        return self.sample(with_replacement=False)
+
     def sample_from_distribution(self, distribution, k, proportions=False):
         """Return a new table with the same number of rows and a new column.
         The values in the distribution column are define a multinomial.

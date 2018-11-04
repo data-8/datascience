@@ -1196,6 +1196,38 @@ def test_sample_weights_with_none_k(table):
         assert len(set(u.rows)) == len(u.rows)
         i += 1
 
+def test_shuffle_basic(table):
+    """Tests that shuffle doesn't break"""
+    table.shuffle()
+
+def test_shuffle_correct_n(table):
+    """Tests that shuffle returns the correct number of rows"""
+    assert table.num_rows == table.shuffle().num_rows
+
+def test_shuffle_all_rows_appear(table):
+    """
+    Tests that all rows appear in shuffled table / there are no 
+    duplicated rows
+    """
+    assert set(table.column("letter")) == set(table.shuffle().column("letter"))
+
+def test_shuffle_different_order(table):
+    """
+    Tests that all rows do not always appear in the same order
+    as they were in the original table
+    """
+    # This is more or less a regression test - you could get very 
+    # unlucky and have no change in the order of the rows by complete 
+    # accident. However, this is highly unlikely to happen.
+    
+    original_order = table.column("letter")
+    print(original_order)
+    for _ in range(10):
+        if not np.array_equal(table.shuffle().column("letter"), original_order):
+            assert True
+            return
+    assert False
+
 def test_split_basic(table):
     """Test that table.split works."""
     table.split(3)
