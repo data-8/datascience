@@ -26,6 +26,9 @@ pip install datascience
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.10.8
+* Add `shuffle` function to `Table`.
+
 ### v0.10.7
 
 * Adds `hist_of_counts` function
