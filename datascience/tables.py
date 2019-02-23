@@ -1258,6 +1258,8 @@ class Table(collections.abc.MutableMapping):
         # Build joined table
         self_labels = list(self.labels)
         other_labels = [self._unused_label(s) for s in other.labels]
+        if (len(set(self_labels + other_labels)) != len(list(self_labels + other_labels))):
+            return other.join(other_label, self, column_label)
         other_labels_map = dict(zip(other.labels, other_labels))
         joined = type(self)(self_labels + other_labels).with_rows(joined_rows)
 
