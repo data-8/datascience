@@ -1135,7 +1135,15 @@ def test_join_with_column_already_duplicated(table, scrabble_table2):
     joined_backwards = scrabble_table2.join("letter", table)
     assert_array_equal(list(sorted(joined_backwards.labels)), list(sorted(joined_forwards.labels)))
     for col in joined_backwards.labels:
-        assert_array_equal(joined_backwards.column(col), joined_forwards.column(col))
+        assert_array_equal(joined_forwards.column(col), joined_backwards.column(col))
+    table_copy = table.with_columns("pointsplus1", scrabble_table2.column("pointsplus1"), 
+        "pointsplus1_2", scrabble_table2.column("pointsplus1") + 1)
+    joined_forwards = table_copy.join("letter", scrabble_table2)
+    joined_backwards = scrabble_table2.join("letter", table_copy)
+    assert_array_equal(len(list(sorted(joined_backwards.labels))), len(list(sorted(joined_forwards.labels))))
+    for col in joined_backwards.labels:
+        assert_array_equal(joined_forwards.column(col), joined_backwards.column(col))
+
 
 def test_percentile(numbers_table):
     assert_equal(numbers_table.percentile(76), """
