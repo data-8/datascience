@@ -129,7 +129,7 @@ class Table(collections.abc.MutableMapping):
                 vargs['sep'] = ','
         except AttributeError:
             pass
-        df = pandas.read_table(filepath_or_buffer, *args, **vargs)
+        df = pandas.read_csv(filepath_or_buffer, *args, **vargs)
         return cls.from_df(df)
 
     def _with_columns(self, columns):

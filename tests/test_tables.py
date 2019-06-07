@@ -1332,3 +1332,7 @@ def test_url_parse():
     with pytest.raises(ValueError):
         url = 'https://data8.berkeley.edu/something/something/dark/side'
         Table.read_table(url)
+
+def test_read_table():
+    """Test that Tables reads a csv file."""
+    assert isinstanceof(Table, Table().read_table("tests/us-unemployment.csv"))
