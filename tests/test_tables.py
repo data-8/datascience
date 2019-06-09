@@ -651,19 +651,19 @@ def test_append_column_with_formatter(table):
     table.append_column('new_col1', column_1, CurrencyFormatter)
     assert_equal(table, """
     letter | count | points | new_col1
-    a      | 9     | 1      | $10.00
-    b      | 3     | 2      | $20.00
-    c      | 3     | 2      | $30.00
-    z      | 1     | 10     | $40.00
+    a      | 9     | 1      | $10
+    b      | 3     | 2      | $20
+    c      | 3     | 2      | $30
+    z      | 1     | 10     | $40
     """)
     table.append_column('new_col2', column_2)
     print(table)
     assert_equal(table, """
-    letter | count | points | new_col1     | new_col2
-    a      | 9     | 1      | $10.00       | hello
-    b      | 3     | 2      | $20.00       | hello
-    c      | 3     | 2      | $30.00       | hello
-    z      | 1     | 10     | $40.00       | hello
+    letter | count | points | new_col1  | new_col2
+    a      | 9     | 1      | $10       | hello
+    b      | 3     | 2      | $20       | hello
+    c      | 3     | 2      | $30       | hello
+    z      | 1     | 10     | $40       | hello
     """)
 
 def test_with_column(table):
@@ -711,59 +711,59 @@ def test_with_column_with_formatter(table):
     """)
     assert_equal(table2, """
     letter | count | points | new_col1
-    a      | 9     | 1      | $10.00
-    b      | 3     | 2      | $20.00
-    c      | 3     | 2      | $30.00
-    z      | 1     | 10     | $40.00
+    a      | 9     | 1      | $10
+    b      | 3     | 2      | $20
+    c      | 3     | 2      | $30
+    z      | 1     | 10     | $40
     """)
     assert_equal(table3, """
-    letter | count | points | new_col1     | new_col2
-    a      | 9     | 1      | $10.00       | hello
-    b      | 3     | 2      | $20.00       | hello
-    c      | 3     | 2      | $30.00       | hello
-    z      | 1     | 10     | $40.00       | hello
+    letter | count | points | new_col1  | new_col2
+    a      | 9     | 1      | $10       | hello
+    b      | 3     | 2      | $20       | hello
+    c      | 3     | 2      | $30       | hello
+    z      | 1     | 10     | $40       | hello
     """)
 
 def test_with_columns():
     players = Table().with_columns('player_id', make_array(110234, 110235), 'wOBA', make_array(.354, .236))
     assert_equal(players, """
-    player_id | wOBA
-    110234    | 0.354
-    110235    | 0.236
+    player_id  | wOBA
+    110,234    | 0.354
+    110,235    | 0.236
     """)
     players = players.with_columns('salaries', 'N/A', 'season', 2016)
     assert_equal(players, """
-    player_id | wOBA  | salaries | season
-    110234    | 0.354 | N/A      | 2016
-    110235    | 0.236 | N/A      | 2016
+    player_id  | wOBA  | salaries | season
+    110,234    | 0.354 | N/A      | 2,016
+    110,235    | 0.236 | N/A      | 2,016
     """)
     salaries = Table().with_column('salary', make_array('$500,000', '$15,500,000'))
     players = players.with_columns('salaries', salaries.column('salary'), 'years', make_array(6, 1))
     assert_equal(players, """
-    player_id | wOBA  | salaries    | season | years
-    110234    | 0.354 | $500,000    | 2016   | 6
-    110235    | 0.236 | $15,500,000 | 2016   | 1
+    player_id  | wOBA  | salaries    | season | years
+    110,234    | 0.354 | $500,000    | 2,016   | 6
+    110,235    | 0.236 | $15,500,000 | 2,016   | 1
     """)
 
 def test_with_columns_with_formats():
     players = Table().with_columns('player_id', make_array(110234, 110235), 'wOBA', make_array(.354, .236))
     assert_equal(players, """
-    player_id | wOBA
-    110234    | 0.354
-    110235    | 0.236
+    player_id  | wOBA
+    110,234    | 0.354
+    110,235    | 0.236
     """)
     players = players.with_columns('salaries', 'N/A', 'season', 2016)
     assert_equal(players, """
-    player_id | wOBA  | salaries | season
-    110234    | 0.354 | N/A      | 2016
-    110235    | 0.236 | N/A      | 2016
+    player_id  | wOBA  | salaries | season
+    110,234    | 0.354 | N/A      | 2,016
+    110,235    | 0.236 | N/A      | 2,016
     """)
     salaries = Table().with_column('salary', make_array(500000, 15500000))
     players2 = players.with_columns('salaries', salaries.column('salary'), 'years', make_array(6, 1), formatter=CurrencyFormatter)
     assert_equal(players2, """
-    player_id | wOBA  | salaries      | season | years
-    110234    | 0.354 | $500,000.00    | 2016   | $6.00
-    110235    | 0.236 | $15,500,000.00  | 2016   | $1.00
+    player_id  | wOBA  | salaries     | season | years
+    110,234    | 0.354 | $500,000     | 2,016  | $6
+    110,235    | 0.236 | $15,500,000  | 2,016  | $1
     """)
 
     with(pytest.raises(Exception)):
