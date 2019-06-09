@@ -541,7 +541,9 @@ def test_apply(table):
     assert_array_equal(t.apply(lambda x, y: x * y, 'count', 'points'),
                        np.array([9, 6, 6, 10]))
 
-def test_first(t):
+def test_first(table):
+    t = table
+    t['totals'] = t['points'] * t['count']
     assert_equal(t, """
     letter | count | points | totals
     a      | 9     | 1      | 9
@@ -552,7 +554,9 @@ def test_first(t):
     assert(t.first(1), 9)
     assert(t.first("points"), 1)
 
-def test_last(t):
+def test_last(table):
+    t = table
+    t['totals'] = t['points'] * t['count']
     assert_equal(t, """
     letter | count | points | totals
     a      | 9     | 1      | 9
