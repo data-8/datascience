@@ -595,11 +595,11 @@ def test_move_to_end(table):
     assert table.labels == ('count', 'points', 'letter')
 
 def test_move_to_end_start_int_labels(table):
-    assert table.column_labels == ('letter', 'count', 'points')
+    assert table.labels == ('letter', 'count', 'points')
     table.move_to_start(2)
-    assert table.column_labels == ('points', 'letter', 'count')
+    assert table.labels == ('points', 'letter', 'count')
     table.move_to_end(1)
-    assert table.column_labels == ('points', 'count', 'letter')
+    assert table.labels == ('points', 'count', 'letter')
 
 
 def test_append_row(table):
