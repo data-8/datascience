@@ -1627,9 +1627,8 @@ class Table(collections.abc.MutableMapping):
 
 
         Args:
-            ``labels_and_values_and_formats``: An alternating list of labels, values, and (optionally) formatters or
-                a list of label-value pairs and/or label-value-formatter trios. If one of the labels is in
-                existing table, then every value in the corresponding column is
+            ``labels_and_values``: An alternating list of labels and values or a list of label-value pairs. 
+                If one of the labels is in existing table, then every value in the corresponding column is
                 set to that value. If label has only a single value (``int``),
                 every row of corresponding column takes on that value.
             ''formatter'' (single Formatter value): A single formatter value that will be applied to all columns 
@@ -1637,14 +1636,14 @@ class Table(collections.abc.MutableMapping):
 
         Raises:
             ``ValueError``: If
-                - any label in ``labels_and_values_and_formats`` is not a valid column
+                - any label in ``labels_and_values`` is not a valid column
                     name, i.e if label is not of type (str).
-                - if any value in ``labels_and_values_and_formats`` is a list/array and`
+                - if any value in ``labels_and_values`` is a list/array and`
                     does not have the same length as the number of rows in the
                     table.
             ``AssertionError``:
                 - 'incorrect columns format', if passed more than one sequence
-                    (iterables) for  ``labels_and_values_and_formats``.
+                    (iterables) for  ``labels_and_values``.
                 - 'even length sequence required' if missing a pair in
                     label-value pairs.
 
@@ -1667,12 +1666,12 @@ class Table(collections.abc.MutableMapping):
         110234    | 0.354 | N/A      | 2016
         110235    | 0.236 | N/A      | 2016
         >>> salaries = Table().with_column('salary',
-        ...     make_array('$500,000', '$15,500,000'))
+        ...     make_array(500000, 15500000))
         >>> players.with_columns('salaries', salaries.column('salary'),
-        ...     'years', make_array(6, 1))
-        player_id | wOBA  | salaries    | season | years
-        110234    | 0.354 | $500,000    | 2016   | 6
-        110235    | 0.236 | $15,500,000 | 2016   | 1
+        ...     'bonus', make_array(6, 1), CurrencyFormatter)
+        player_id | wOBA  | salaries    | season | bonus
+        110234    | 0.354 | $500,000    | 2016   | $6
+        110235    | 0.236 | $15,500,000 | 2016   | $1
         >>> players.with_columns(2, make_array('$600,000', '$20,000,000'))
         Traceback (most recent call last):
             ...
