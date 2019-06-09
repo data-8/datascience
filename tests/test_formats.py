@@ -32,7 +32,7 @@ def test_number_format():
     for fmt in [ds.NumberFormatter(2), ds.NumberFormatter]:
         us = ['1,000', '12,000']
         vs = ['1,000', '12,000.346']
-        t = ds.Table([us, vs], ['u', 'v'])
+        t = ds.Table().with_columns('u', us, 'v', vs)
         t.set_format(['u', 'v'], fmt)
         assert_equal(t, """
         u      | v
@@ -43,7 +43,7 @@ def test_number_format():
 
 def test_currency_format():
     vs = ['$60', '$162.5', '$1,625']
-    t = ds.Table([vs, vs], ['num', 'str'])
+    t = ds.Table().with_columns('num', vs, 'str', vs)
     t.set_format('num', ds.CurrencyFormatter('$', int_to_float=True))
     assert_equal(t, """
     num       | str
@@ -66,7 +66,7 @@ def test_currency_format():
 
 
 def test_currency_format_int():
-    t = ds.Table([[1, 2, 3]], ['money'])
+    t = ds.Table().with_column('money', [1, 2, 3])
     t.set_format(['money'], ds.CurrencyFormatter)
     assert_equal(t, """
     money
@@ -78,14 +78,14 @@ def test_currency_format_int():
 
 def test_date_format():
     vs = ['2015-07-01 22:39:44.900351']
-    t = ds.Table([vs], ['time'])
+    t = ds.Table().with_column('time', vs)
     t.set_format('time', ds.DateFormatter("%Y-%m-%d %H:%M:%S.%f"))
     assert isinstance(t['time'][0], float)
 
 
 def test_percent_formatter():
     vs = [0.1, 0.11111, 0.199999, 10]
-    t = ds.Table([vs], ['percent'])
+    t = ds.Table().with_column('percent', vs)
     t.set_format('percent', ds.PercentFormatter(1))
     assert_equal(t, """
     percent

@@ -126,13 +126,13 @@ def test_basic_rows(table):
 
 def test_select(table):
     t = table
-    test = t.select(['points', 1]).cumsum()
+    test = t.select('points', 1)
     assert_equal(test, """
     points | count
     1      | 9
-    3      | 12
-    5      | 15
-    15     | 16
+    2      | 3
+    2      | 3
+    10     | 1
     """)
 
 def test_drop(table):
@@ -538,7 +538,7 @@ def test_apply(table):
         t.apply(lambda x, y: x + y, 'count', 'score')
 
     # Deprecated behavior
-    assert_array_equal(t.apply(lambda x, y: x * y, ['count', 'points']),
+    assert_array_equal(t.apply(lambda x, y: x * y, 'count', 'points'),
                        np.array([9, 6, 6, 10]))
 
 
@@ -552,14 +552,14 @@ def test_tuples(table, table2):
     t = table
     u = table2
     different = [((5, 1), (1, 2, 2, 10)), ('short', 'long')]
-    t = Table(different, ['tuple', 'size'])
+    t = Table().with_columns('tuple', different[0], 'size', different[1])
     assert_equal(t, """
     tuple         | size
     (5, 1)        | short
     (1, 2, 2, 10) | long
     """)
     same = [((5, 4, 3, 1), (1, 2, 2, 10)), ('long', 'long')]
-    u = Table(same, ['tuple', 'size'])
+    u = Table().with_columns('tuple', same[0], 'size', same[1])
     assert_equal(u, """
     tuple         | size
     [5 4 3 1]     | long
@@ -570,7 +570,7 @@ def test_tuples(table, table2):
 def test_keys_and_values():
     """Tests that a table can be constructed from keys and values."""
     d = {1: 2, 3: 4}
-    t = Table([d.keys(), d.values()], ['keys', 'values'])
+    t = Table().with_columns('keys', d.keys(), 'values', d.values())
     assert_equal(t, """
     keys | values
     1    | 2
@@ -584,15 +584,15 @@ def test_keys_and_values():
 
 
 def test_move_to_start(table):
-    assert table.column_labels == ('letter', 'count', 'points')
+    assert table.labels == ('letter', 'count', 'points')
     table.move_to_start('points')
-    assert table.column_labels == ('points', 'letter', 'count')
+    assert table.labels == ('points', 'letter', 'count')
 
 
 def test_move_to_end(table):
-    assert table.column_labels == ('letter', 'count', 'points')
+    assert table.labels == ('letter', 'count', 'points')
     table.move_to_end('letter')
-    assert table.column_labels == ('count', 'points', 'letter')
+    assert table.labels == ('count', 'points', 'letter')
 
 
 def test_append_row(table):
@@ -738,7 +738,7 @@ def test_append_different_order(table, table3):
 
 
 def test_relabel():
-    table = Table([(1, 2, 3), (12345, 123, 5123)], ['points', 'id'])
+    table = Table().with_columns('points', (1, 2, 3), 'id', (12345, 123, 5123))
     table.relabel('id', 'todo')
     assert_equal(table, """
     points | todo
@@ -874,19 +874,19 @@ def test_remove_single(table):
 
 
 def test_empty():
-    t = Table.empty(['letter', 'count', 'points'])
+    t = Table(['letter', 'count', 'points'])
     assert_equal(t, """
     letter | count | points
     """)
 
 def test_empty_without_labels():
-    t = Table.empty()
+    t = Table()
     assert_equal(t, '')
 
 
 def test_from_rows():
     letters = [('a', 9, 1), ('b', 3, 2), ('c', 3, 2), ('z', 1, 10)]
-    t = Table.from_rows(letters, ['letter', 'count', 'points'])
+    t = Table().from_rows(letters, ['letter', 'count', 'points'])
     assert_equal(t, """
     letter | count | points
     a      | 9     | 1
@@ -948,7 +948,7 @@ def test_from_columns_dict():
 
 def test_group_by_tuples():
     tuples = [((5, 1), (1, 2, 2, 10), (1, 2, 2, 10)), (3, 3, 1)]
-    t = Table(tuples, ['tuples', 'ints'])
+    t = Table().with_columns('tuples', tuples[0], 'ints', tuples[1])
     assert_equal(t, """
     tuples        | ints
     (5, 1)        | 3
