@@ -8,7 +8,7 @@ env:
 sudo: false
 
 python:
-  - "3.4.2"
+  - "3.6"
 
 cache:
   apt: true

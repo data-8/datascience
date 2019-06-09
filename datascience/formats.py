@@ -51,7 +51,7 @@ class Formatter:
         if isinstance(value, (bool, np.bool_)):
             return str(value)
         elif isinstance(value, (int, np.integer)):
-            return '{:n}'.format(value)
+            return '{:,d}'.format(value)
         elif isinstance(value, (float, np.floating)):
             return '{:g}'.format(value)
         else:
@@ -85,11 +85,12 @@ class FunctionFormatter(Formatter):
 class NumberFormatter(Formatter):
     """Format numbers that may have delimiters."""
 
-    def __init__(self, decimals=2, decimal_point='.', separator=',', *args, **vargs):
+    def __init__(self, decimals=2, decimal_point='.', separator=',', int_to_float=False, *args, **vargs):
         super().__init__(*args, **vargs)
         self.decimals = decimals
         self.decimal_point = decimal_point
         self.separator = separator
+        self.int_to_float = int_to_float
 
     def convert_value(self, value):
         """Convert string 93,000.00 to float 93000.0."""
@@ -99,6 +100,8 @@ class NumberFormatter(Formatter):
                 return int(value)
             else:
                 return float(value.replace(self.decimal_point, '.'))
+        elif self.int_to_float:
+            return float(value)
         else:
             return value
 
@@ -109,7 +112,7 @@ class NumberFormatter(Formatter):
             return ('{:' + self.separator + '.' + str(self.decimals) + 'f}').format(value)
 
 
-class CurrencyFormatter(Formatter):
+class CurrencyFormatter(NumberFormatter):
     """Format currency and convert to float."""
 
     def __init__(self, symbol="$", *args, **vargs):
@@ -124,12 +127,12 @@ class CurrencyFormatter(Formatter):
         """
         if isinstance(value, str):
             assert value.startswith(self.symbol), "Currency does not start with " + self.symbol
-            return float(value.lstrip(self.symbol))
-        return float(value)
+            value = value.lstrip(self.symbol)
+        return super().convert_value(value)
 
     def format_value(self, value):
         """Format currency."""
-        return self.symbol + "{0:,.2f}".format(value)
+        return self.symbol + super().format_value(value)
 
 
 class DateFormatter(Formatter):
