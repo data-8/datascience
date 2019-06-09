@@ -82,7 +82,7 @@ def test_marker_map_table():
     lats = [51, 52, 53]
     lons = [-1, -2, -3]
     labels = ['A', 'B', 'C']
-    t = ds.Table([lats, lons, labels], ['A', 'B', 'C'])
+    t = ds.Table().with_columns('A', lats, 'B', lons, 'C', labels)
     ds.Marker.map_table(t).show()
     colors = ['red', 'green', 'yellow']
     t['colors'] = colors
