@@ -1417,7 +1417,7 @@ class Table(collections.abc.MutableMapping):
         >>> jobs.sample(k=2, weights=make_array(1, 0, 0))
         Traceback (most recent call last):
             ...
-        ValueError: a and p must have same size
+        ValueError: 'a' and 'p' must have same size
         """
         n = self.num_rows
         if k is None:
