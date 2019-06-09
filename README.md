@@ -26,6 +26,10 @@ pip install datascience
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.10.8
+* Fixes test suite and removes all deprecated code in the test suite caused by deprecated API calls from the
+datascience library.
+
 ### v0.10.7
 
 * Adds `hist_of_counts` function
