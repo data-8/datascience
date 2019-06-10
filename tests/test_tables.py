@@ -1,6 +1,7 @@
 import doctest
 import re
 import pytest
+import warnings
 import numpy as np
 from numpy.testing import assert_array_equal
 from datascience import *
@@ -285,6 +286,23 @@ def test_where_predicates(table):
     z      | 1     | 10     | 10
     """)
 
+def test_where_predicates_warning(table, capsys):
+    t1 = table.copy()
+    count1 = t1['count'] - 1
+    count1[0] += 1
+    t1['count1'] = count1
+    with warnings.catch_warnings(record=True) as w:
+        warnings.simplefilter("always")
+        with (pytest.raises(ValueError)):
+            test = t1.where('count', are.equal_to(t1.column("count1")))
+        assert len(w) == 1
+        assert "Do not pass an array or list to a predicate." in str(w[-1].message)
+    test = t1.where('count', are.equal_to, t1.column('count1'))
+    assert_equal(test, """
+    letter | count | points | count1
+    a      | 9     | 1      | 9
+    """)
+
 
 def test_sort(table):
     t = table
@@ -541,6 +559,32 @@ def test_apply(table):
     assert_array_equal(t.apply(lambda x, y: x * y, 'count', 'points'),
                        np.array([9, 6, 6, 10]))
 
+def test_first(table):
+    t = table
+    t['totals'] = t['points'] * t['count']
+    assert_equal(t, """
+    letter | count | points | totals
+    a      | 9     | 1      | 9
+    b      | 3     | 2      | 6
+    c      | 3     | 2      | 6
+    z      | 1     | 10     | 10
+    """)
+    assert(t.first(1), 9)
+    assert(t.first("points"), 1)
+
+def test_last(table):
+    t = table
+    t['totals'] = t['points'] * t['count']
+    assert_equal(t, """
+    letter | count | points | totals
+    a      | 9     | 1      | 9
+    b      | 3     | 2      | 6
+    c      | 3     | 2      | 6
+    z      | 1     | 10     | 10
+    """)
+    assert(t.last(1), 1)
+    assert(t.last("points"), 10)
+
 
 ########
 # Init #
@@ -594,6 +638,13 @@ def test_move_to_end(table):
     table.move_to_end('letter')
     assert table.labels == ('count', 'points', 'letter')
 
+def test_move_to_end_start_int_labels(table):
+    assert table.labels == ('letter', 'count', 'points')
+    table.move_to_start(2)
+    assert table.labels == ('points', 'letter', 'count')
+    table.move_to_end(1)
+    assert table.labels == ('points', 'count', 'letter')
+
 
 def test_append_row(table):
     row = ['g', 2, 2]
@@ -642,9 +693,15 @@ def test_append_column(table):
     c      | 3     | 2      | 30
     z      | 1     | 10     | 40
     """)
-    table.append_column('new_col2', column_2)
-    print(table)
+    ret_table = table.append_column('new_col2', column_2)
     assert_equal(table, """
+    letter | count | points | new_col1 | new_col2
+    a      | 9     | 1      | 10       | hello
+    b      | 3     | 2      | 20       | hello
+    c      | 3     | 2      | 30       | hello
+    z      | 1     | 10     | 40       | hello
+    """)
+    assert_equal(ret_table, """
     letter | count | points | new_col1 | new_col2
     a      | 9     | 1      | 10       | hello
     b      | 3     | 2      | 20       | hello
@@ -1182,6 +1239,13 @@ def test_pivot_bin(categories_table):
     2    | 1    | 2
     3    | 0    | 0
     """)
+
+def test_move_column(table):
+    assert table.column_labels == ('letter', 'count', 'points')
+    table = table.move_column("letter", 1)
+    assert table.column_labels == ('count', 'letter', 'points')
+    table = table.move_column(2, 1)
+    assert table.column_labels == ('count', 'points', 'letter')
 
 ##################
 # Export/Display #
