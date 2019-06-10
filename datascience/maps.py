@@ -49,16 +49,7 @@ class _FoliumWrapper(abc.ABC):
     @staticmethod
     def _inline_map(m, width, height):
         """Returns an embedded iframe of a folium.map."""
-        m._build_map()
-        src = m.HTML.replace('"', '&quot;')
-        style = "width: {}px; height: {}px".format(width, height)
-        html = '<iframe srcdoc="{}" style="{}"; border: none"></iframe>'.format(src, style)
-        # See https://github.com/python-visualization/folium/issues/176
-        if hasattr(m, 'json_data'):
-            for name, data in m.json_data.items():
-                stub = 'function(callback){callback(null, JSON.parse('
-                replace = stub + repr(json.dumps(data).replace('"', '&quot;')) + '))}'
-                html = html.replace('d3.json, ' + repr(name), replace)
+        html = m._repr_html_()
         return html
 
     @abc.abstractmethod
