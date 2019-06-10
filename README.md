@@ -26,6 +26,9 @@ pip install datascience
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.11.0
+* Added `join` for multiple columns.
+
 ### v0.10.15
 * Allow NumPy arrays to be appended into tables.
 

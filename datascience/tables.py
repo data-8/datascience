@@ -1193,13 +1193,13 @@ class Table(collections.abc.MutableMapping):
         rows for all values of a column that appear in both tables.
 
         Args:
-            ``column_label`` (``str``):  label of column in self that is used to
+            ``column_label``:  label of column or array of labels in self that is used to
                 join  rows of ``other``.
             ``other``: Table object to join with self on matching values of
                 ``column_label``.
 
         Kwargs:
-            ``other_label`` (``str``): default None, assumes ``column_label``.
+            ``other_label``: default None, assumes ``column_label``.
                 Otherwise in ``other`` used to join rows.
 
         Returns:
@@ -1252,7 +1252,26 @@ class Table(collections.abc.MutableMapping):
         3    | 2    | 4
         3    | 2    | 5
         1    | 10   | 6
+        >>> table.join(['a', 'b'], table2, ['a', 'd']) # joining on multiple columns
+        a    | b    | c    | e
+        1    | 10   | 6    | 6
+        9    | 1    | 3    | 3
         """
+        if self.num_rows == 0 or other.num_rows == 0:
+            return None
+        if not other_label:
+            other_label = column_label
+
+        # checking to see if joining on multiple columns
+        if _is_non_string_iterable(column_label):
+            # then we are going to be joining multiple labels
+            return self._multiple_join(column_label, other, other_label)
+
+        # original single column join
+        return self._join(column_label, other, other_label)
+
+    def _join(self, column_label, other, other_label=[]):
+        """joins when COLUMN_LABEL is a string"""
         if self.num_rows == 0 or other.num_rows == 0:
             return None
         if not other_label:
@@ -1260,7 +1279,18 @@ class Table(collections.abc.MutableMapping):
 
         self_rows = self.index_by(column_label)
         other_rows = other.index_by(other_label)
+        return self._join_helper([column_label], self_rows, other, [other_label], other_rows)
 
+    def _multiple_join(self, column_label, other, other_label=[]):
+        """joins when column_label is a non-string iterable"""
+        assert len(column_label) == len(other_label), 'unequal number of columns'
+
+        self_rows = self._multi_index(column_label)
+        other_rows = other._multi_index(other_label)
+        return self._join_helper(column_label, self_rows, other, other_label, other_rows)
+        
+
+    def _join_helper(self, column_label, self_rows, other, other_label, other_rows):
         # Gather joined rows from self_rows that have join values in other_rows
         joined_rows = []
         for v, rows in self_rows.items():
@@ -1281,12 +1311,16 @@ class Table(collections.abc.MutableMapping):
             joined._formats[other_labels_map[label]] = other._formats[label]
 
         # Remove redundant column, but perhaps save its formatting
-        del joined[other_labels_map[other_label]]
-        if column_label not in self._formats and other_label in other._formats:
-            joined._formats[column_label] = other._formats[other_label]
+        for duplicate in other_label:
+            del joined[other_labels_map[duplicate]]
+        for duplicate in other_label:
+            if duplicate not in self._formats and duplicate in other._formats:
+                joined._formats[duplicate] = other._formats[duplicate]
 
-        return joined.move_to_start(column_label).sort(column_label)
+        for col in column_label[::-1]:
+            joined = joined.move_to_start(col).sort(col)
 
+        return joined
 
     def stats(self, ops=(min, max, np.median, sum)):
         """Compute statistics for each column and place them in a table."""
@@ -1906,6 +1940,15 @@ class Table(collections.abc.MutableMapping):
         column = self._get_column(column_or_label)
         index = {}
         for key, row in zip(column, self.rows):
+            index.setdefault(key, []).append(row)
+        return index
+
+    def _multi_index(self, columns_or_labels):
+        """Returns a dict keyed by a tuple of the values that correspond to
+        the selected COLUMNS_OR_LABELS, with values corresponding to """
+        columns = [self._get_column(col) for col in columns_or_labels]
+        index = {}
+        for key, row in zip(zip(*columns), self.rows):
             index.setdefault(key, []).append(row)
         return index
 

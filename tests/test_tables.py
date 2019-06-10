@@ -41,6 +41,15 @@ def table3():
         'letter', ['x', 'y', 'z'],
         ])
 
+@pytest.fixture(scope='function')
+def table4():
+    """Setup fourth table; three overlapping columns with table."""
+    return Table().with_columns([
+        'letter', ['a', 'b', 'c', '8', 'a'],
+        'count', [9, 3, 2, 0, 9],
+        'different label', [1, 4, 2, 1, 1],
+        'name', ['Gamma', 'Delta', 'Epsilon', 'Alpha', 'Beta']
+        ])
 
 @pytest.fixture(scope='function')
 def numbers_table():
@@ -1300,6 +1309,71 @@ def test_join_with_two_labels_one_format(table):
     b      | 3     | 2      | 3       | $2.00
     c      | 3     | 2      | 3       | $2.00
     z      | 1     | 10     | 1       | $10.00
+    """)
+
+def test_join_one_list_with_one_label(table, table4):
+    table['totals'] = table['points'] * table['count']
+    test = table.join(['letter'], table4.drop('count', 'different label'))
+    assert_equal(test, """
+    letter | count | points | totals | name
+    a      | 9     | 1      | 9      | Gamma
+    a      | 9     | 1      | 9      | Beta
+    b      | 3     | 2      | 6      | Delta
+    c      | 3     | 2      | 6      | Epsilon
+    """)
+
+def test_join_two_lists_same_label(table, table4):
+    table['totals'] = table['points'] * table['count']
+    test = table.join(['letter'], table4.drop('count', 'different label'), ['letter'])
+    assert_equal(test, """
+    letter | count | points | totals | name
+    a      | 9     | 1      | 9      | Gamma
+    a      | 9     | 1      | 9      | Beta
+    b      | 3     | 2      | 6      | Delta
+    c      | 3     | 2      | 6      | Epsilon
+    """)
+
+def test_join_two_lists_different_labels(table, table4):
+	# also checks for multiple matches on one side
+    table['totals'] = table['points'] * table['count']
+    test = table.join(['points'], table4.drop('letter', 'count'), ['different label'])
+    assert_equal(test, """
+    points | letter | count | totals | name
+    1      | a      | 9     | 9      | Gamma
+    1      | a      | 9     | 9      | Alpha
+    1      | a      | 9     | 9      | Beta
+    2      | b      | 3     | 6      | Epsilon
+    2      | c      | 3     | 6      | Epsilon
+    """)
+
+def test_join_two_lists_2_columns(table, table4):
+    table['totals'] = table['points'] * table['count']
+    test = table.join(['letter', 'points'], table4, ['letter', 'different label'])
+    assert_equal(test, """
+    letter | points | count | totals | count_2 | name
+    a      | 1      | 9     | 9      | 9       | Gamma
+    a      | 1      | 9     | 9      | 9       | Beta
+    c      | 2      | 3     | 6      | 2       | Epsilon
+    """)
+
+def test_join_two_lists_3_columns(table, table4):
+    table['totals'] = table['points'] * table['count']
+    test = table.join(['letter', 'count', 'points'], table4, ['letter', 'count', 'different label'])
+    assert_equal(test, """
+    letter | count | points | totals | name
+    a      | 9     | 1      | 9      | Gamma
+    a      | 9     | 1      | 9      | Beta
+    """)
+
+def test_join_conflicting_column_names(table, table4):
+    table['totals'] = table['points'] * table['count']
+    test = table.join(['letter'], table4)
+    assert_equal(test, """
+    letter | count | points | totals | count_2 | different label | name
+    a      | 9     | 1      | 9      | 9       | 1               | Gamma
+    a      | 9     | 1      | 9      | 9       | 1               | Beta
+    b      | 3     | 2      | 6      | 3       | 4               | Delta
+    c      | 3     | 2      | 6      | 2       | 2               | Epsilon
     """)
 
 def test_percentile(numbers_table):
