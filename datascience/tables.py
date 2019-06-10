@@ -363,6 +363,14 @@ class Table(collections.abc.MutableMapping):
             rows = zip(*self.select(*column_or_columns).columns)
             return np.array([fn(*row) for row in rows])
 
+    def first(self, label):
+        """Return the zeroth item in a column."""
+        return self.column(label)[0]
+
+    def last(self, label):
+        """Return the last item in a column."""
+        return self.column(label)[-1]
+
     ############
     # Mutation #
     ############
@@ -383,12 +391,12 @@ class Table(collections.abc.MutableMapping):
 
     def move_to_start(self, column_label):
         """Move a column to the first in order."""
-        self._columns.move_to_end(column_label, last=False)
+        self._columns.move_to_end(self._as_label(column_label), last=False)
         return self
 
     def move_to_end(self, column_label):
         """Move a column to the last in order."""
-        self._columns.move_to_end(column_label)
+        self._columns.move_to_end(self._as_label(column_label))
         return self
 
     def append(self, row_or_table):
@@ -448,14 +456,12 @@ class Table(collections.abc.MutableMapping):
         c      | 3     | 2
         z      | 1     | 10
         >>> table.append_column('new_col1', make_array(10, 20, 30, 40))
-        >>> table
         letter | count | points | new_col1
         a      | 9     | 1      | 10
         b      | 3     | 2      | 20
         c      | 3     | 2      | 30
         z      | 1     | 10     | 40
         >>> table.append_column('new_col2', 'hello')
-        >>> table
         letter | count | points | new_col1 | new_col2
         a      | 9     | 1      | 10       | hello
         b      | 3     | 2      | 20       | hello
@@ -489,6 +495,7 @@ class Table(collections.abc.MutableMapping):
             self._num_rows = len(values)
 
         self._columns[label] = values
+        return self
 
     def relabel(self, column_label, new_label):
         """Changes the label(s) of column(s) specified by ``column_label`` to
@@ -1783,6 +1790,17 @@ class Table(collections.abc.MutableMapping):
             counts, _ = np.histogram(self[label], bins=bins, density=density)
             binned[label + ' ' + tag] = np.append(counts, 0)
         return binned
+
+    def move_column(self, label, index):
+        """Returns a new table with specified column moved to the specified column index."""
+        table = type(self)()
+        col_order = list(self._columns)
+        label_idx = col_order.index(self._as_label(label))
+        col_to_move = col_order.pop(label_idx)
+        col_order.insert(index, col_to_move)
+        for col in col_order:
+            table[col] = self[col]
+        return table
 
     ##########################
     # Exporting / Displaying #

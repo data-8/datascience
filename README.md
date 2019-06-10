@@ -27,8 +27,20 @@ pip install datascience
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 
-### v0.10.14
+### v0.10.13
 * Warning added for comparing iterables using predicates incorrectly.
+
+### v0.10.12
+* 'move_column' added.
+
+### v0.10.11
+* Created new methods 'first' and 'last'.
+
+### v0.10.10
+* 'append_column' now returns the table it is modifying.
+
+### v0.10.9
+* 'move_to_end' and 'move_to_start' can now take integer labels.
 
 ### v0.10.8
 * Fixes test suite and removes all deprecated code in the test suite caused by deprecated API calls from the
@@ -71,7 +83,6 @@ datascience library.
   column.
 * Deprecated Table method `pivot_hist`. Added an option to `hist` to
   simulate `pivot_hist`'s behavior.
->>>>>>> master
 
 ### v0.9.5
 
