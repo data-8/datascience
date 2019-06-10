@@ -27,8 +27,11 @@ pip install datascience
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 
+### v0.10.13
+* Warning added for comparing iterables using predicates incorrectly.
+
 ### v0.10.12
-- 'move_column' added.
+* 'move_column' added.
 
 ### v0.10.11
 * Created new methods 'first' and 'last'.
