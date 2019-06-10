@@ -253,8 +253,9 @@ def _equal_or_float_equal(x, y):
 ############
 def check_iterable(y):
     if hasattr(y, '__iter__'):
-            warnings.warn("You are checking against an iterable. If you are trying to test one iterable against another \
-                using 'Table.where', put your first iterable as your first argument, your predicate as your second  \
-                argument, and then your second iterable as your third argument.")
+            warnings.warn("Do not pass an array or list to a predicate. \
+                If you are trying to find rows where two columns are the \
+                same, use table.where('c', are.equal_to, table.column('d'))\
+                instead of table.where('c', are.equal_to(table.column('d'))).")
 
     

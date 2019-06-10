@@ -27,7 +27,7 @@ pip install datascience
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-### v0.9.6
+### v0.10.14
 
 - Warning added for comparing iterables using predicates incorrectly.
 
