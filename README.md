@@ -26,6 +26,9 @@ pip install datascience
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.11.1
+* `Table.append_column` now returns the table it is modifying.
+
 ### v0.11.0
 * Added `join` for multiple columns.
 
