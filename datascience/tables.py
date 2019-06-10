@@ -402,7 +402,9 @@ class Table(collections.abc.MutableMapping):
     def append(self, row_or_table):
         """Append a row or all rows of a table. An appended table must have all
         columns of self."""
-        if not row_or_table:
+        if isinstance(row_or_table, np.ndarray):
+            row_or_table = row_or_table.tolist()
+        elif not row_or_table:
             return
         if isinstance(row_or_table, Table):
             t = row_or_table

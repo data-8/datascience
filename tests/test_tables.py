@@ -658,6 +658,18 @@ def test_append_row(table):
     g      | 2     | 2
     """)
 
+def test_append_row_by_array(table):
+    row = np.array(['g', 2, 2])
+    table.append(row)
+    assert_equal(table, """
+    letter | count | points
+    a      | 9     | 1
+    b      | 3     | 2
+    c      | 3     | 2
+    z      | 1     | 10
+    g      | 2     | 2
+    """)
+
 
 def test_append_row_different_num_cols(table):
     """Makes sure that any incoming row must have the same amount of columns as the table."""
