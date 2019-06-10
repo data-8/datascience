@@ -422,7 +422,7 @@ class Table(collections.abc.MutableMapping):
         self._num_rows += n
         return self
 
-    def append_column(self, label, values):
+    def append_column(self, label, values, formatter=None):
         """Appends a column to the table or replaces a column.
 
         ``__setitem__`` is aliased to this method:
@@ -437,6 +437,8 @@ class Table(collections.abc.MutableMapping):
 
                 If a list or array, the new column contains the values in
                 ``values``, which must be the same length as the table.
+            ``formatter`` (single formatter): Adds a formatter to the column being 
+                appended. No formatter added by default.
 
         Returns:
             Original table with new or replaced column
@@ -497,6 +499,9 @@ class Table(collections.abc.MutableMapping):
             self._num_rows = len(values)
 
         self._columns[label] = values
+
+        if (formatter != None):
+            self.set_format(label, formatter)
         return self
 
     def relabel(self, column_label, new_label):
@@ -1555,7 +1560,7 @@ class Table(collections.abc.MutableMapping):
         self.append(self._with_columns(zip(*rows)))
         return self
 
-    def with_column(self, label, values, *rest):
+    def with_column(self, label, values, formatter=None):
         """Return a new table with an additional or replaced column.
 
         Args:
@@ -1566,8 +1571,7 @@ class Table(collections.abc.MutableMapping):
                 value in the new column is ``values``. If sequence of values,
                 new column takes on values in ``values``.
 
-            ``rest``: An alternating list of labels and values describing
-                additional columns. See with_columns for a full description.
+            ``formatter`` (single value): Specifies formatter for the new column. Defaults to no formatter.
 
         Raises:
             ``ValueError``: If
@@ -1608,23 +1612,28 @@ class Table(collections.abc.MutableMapping):
         """
         # Ensure that if with_column is called instead of with_columns;
         # no error is raised.
-        if rest:
-            return self.with_columns(label, values, *rest)
 
         new_table = self.copy()
-        new_table.append_column(label, values)
+        if formatter == {}:
+            formatter = None
+        elif isinstance(formatter, dict):
+            formatter = formatter["formatter"]
+        new_table.append_column(label, values, formatter)
         return new_table
 
-    def with_columns(self, *labels_and_values):
+    def with_columns(self, *labels_and_values, **formatter):
         """Return a table with additional or replaced columns.
 
 
         Args:
-            ``labels_and_values``: An alternating list of labels and values or
-                a list of label-value pairs. If one of the labels is in
+            ``labels_and_values``: An alternating list of labels and values 
+                or a list of label-value pairs. If one of the labels is in 
                 existing table, then every value in the corresponding column is
                 set to that value. If label has only a single value (``int``),
                 every row of corresponding column takes on that value.
+            ''formatter'' (single Formatter value): A single formatter value 
+                that will be applied to all columns being added using this 
+                function call.
 
         Raises:
             ``ValueError``: If
@@ -1649,21 +1658,21 @@ class Table(collections.abc.MutableMapping):
         >>> players = Table().with_columns('player_id',
         ...     make_array(110234, 110235), 'wOBA', make_array(.354, .236))
         >>> players
-        player_id | wOBA
-        110,234   | 0.354
-        110,235   | 0.236
+        player_id  | wOBA
+        110,234    | 0.354
+        110,235    | 0.236
         >>> players = players.with_columns('salaries', 'N/A', 'season', 2016)
         >>> players
-        player_id | wOBA  | salaries | season
-        110,234   | 0.354 | N/A      | 2,016
-        110,235   | 0.236 | N/A      | 2,016
+        player_id  | wOBA  | salaries | season
+        110,234    | 0.354 | N/A      | 2,016
+        110,235    | 0.236 | N/A      | 2,016
         >>> salaries = Table().with_column('salary',
-        ...     make_array('$500,000', '$15,500,000'))
+        ...     make_array(500000, 15500000))
         >>> players.with_columns('salaries', salaries.column('salary'),
-        ...     'years', make_array(6, 1))
-        player_id | wOBA  | salaries    | season  | years
-        110,234   | 0.354 | $500,000    | 2,016   | 6
-        110,235   | 0.236 | $15,500,000 | 2,016   | 1
+        ...     'bonus', make_array(6, 1), formatter=_formats.CurrencyFormatter)
+        player_id  | wOBA  | salaries    | season  | bonus
+        110,234    | 0.354 | $500,000    | 2,016   | $6
+        110,235    | 0.236 | $15,500,000 | 2,016   | $1
         >>> players.with_columns(2, make_array('$600,000', '$20,000,000'))
         Traceback (most recent call last):
             ...
@@ -1689,8 +1698,10 @@ class Table(collections.abc.MutableMapping):
         assert len(labels_and_values) % 2 == 0, 'Even length sequence required'
         for i in range(0, len(labels_and_values), 2):
             label, values = labels_and_values[i], labels_and_values[i+1]
-            self = self.with_column(label, values)
+            self = self.with_column(label, values, formatter)
         return self
+
+        
 
     def relabeled(self, label, new_label):
         """Return a new table with ``label`` specifying column label(s)
