@@ -29,8 +29,17 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### v0.11.0
 * Added `join` for multiple columns.
 
+### v0.10.15
+* Allow NumPy arrays to be appended into tables.
+
+### v0.10.14
+* Added optional formatters to "Table.with_column", "Table.with_columns", and "Table.append_column".  
+
+### v0.10.13
+* Warning added for comparing iterables using predicates incorrectly.
+
 ### v0.10.12
-- 'move_column' added.
+* 'move_column' added.
 
 ### v0.10.11
 * Created new methods 'first' and 'last'.
