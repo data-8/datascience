@@ -1267,7 +1267,6 @@ def test_shuffle_different_order(table):
     # accident. However, this is highly unlikely to happen.
     
     original_order = table.column("letter")
-    print(original_order)
     for _ in range(10):
         if not np.array_equal(table.shuffle().column("letter"), original_order):
             assert True
