@@ -1791,6 +1791,17 @@ class Table(collections.abc.MutableMapping):
             binned[label + ' ' + tag] = np.append(counts, 0)
         return binned
 
+    def move_column(self, label, index):
+        """Returns a new table with specified column moved to the specified column index."""
+        table = type(self)()
+        col_order = list(self._columns)
+        label_idx = col_order.index(self._as_label(label))
+        col_to_move = col_order.pop(label_idx)
+        col_order.insert(index, col_to_move)
+        for col in col_order:
+            table[col] = self[col]
+        return table
+
     ##########################
     # Exporting / Displaying #
     ##########################
