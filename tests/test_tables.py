@@ -620,6 +620,13 @@ def test_move_to_end(table):
     table.move_to_end('letter')
     assert table.labels == ('count', 'points', 'letter')
 
+def test_move_to_end_start_int_labels(table):
+    assert table.labels == ('letter', 'count', 'points')
+    table.move_to_start(2)
+    assert table.labels == ('points', 'letter', 'count')
+    table.move_to_end(1)
+    assert table.labels == ('points', 'count', 'letter')
+
 
 def test_append_row(table):
     row = ['g', 2, 2]
@@ -656,9 +663,15 @@ def test_append_column(table):
     c      | 3     | 2      | 30
     z      | 1     | 10     | 40
     """)
-    table.append_column('new_col2', column_2)
-    print(table)
+    ret_table = table.append_column('new_col2', column_2)
     assert_equal(table, """
+    letter | count | points | new_col1 | new_col2
+    a      | 9     | 1      | 10       | hello
+    b      | 3     | 2      | 20       | hello
+    c      | 3     | 2      | 30       | hello
+    z      | 1     | 10     | 40       | hello
+    """)
+    assert_equal(ret_table, """
     letter | count | points | new_col1 | new_col2
     a      | 9     | 1      | 10       | hello
     b      | 3     | 2      | 20       | hello
