@@ -448,14 +448,12 @@ class Table(collections.abc.MutableMapping):
         c      | 3     | 2
         z      | 1     | 10
         >>> table.append_column('new_col1', make_array(10, 20, 30, 40))
-        >>> table
         letter | count | points | new_col1
         a      | 9     | 1      | 10
         b      | 3     | 2      | 20
         c      | 3     | 2      | 30
         z      | 1     | 10     | 40
         >>> table.append_column('new_col2', 'hello')
-        >>> table
         letter | count | points | new_col1 | new_col2
         a      | 9     | 1      | 10       | hello
         b      | 3     | 2      | 20       | hello
@@ -489,6 +487,7 @@ class Table(collections.abc.MutableMapping):
             self._num_rows = len(values)
 
         self._columns[label] = values
+        return self
 
     def relabel(self, column_label, new_label):
         """Changes the label(s) of column(s) specified by ``column_label`` to
