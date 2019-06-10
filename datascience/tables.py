@@ -1256,7 +1256,7 @@ class Table(collections.abc.MutableMapping):
         # original single column join
         return self._join(column_label, other, other_label)
 
-    def _join(self, column_label, other, other_label=None):
+    def _join(self, column_label, other, other_label=[]):
         """joins when COLUMN_LABEL is a string"""
         if self.num_rows == 0 or other.num_rows == 0:
             return None
@@ -1265,40 +1265,18 @@ class Table(collections.abc.MutableMapping):
 
         self_rows = self.index_by(column_label)
         other_rows = other.index_by(other_label)
+        return self._join_helper([column_label], self_rows, other, [other_label], other_rows)
 
-        # Gather joined rows from self_rows that have join values in other_rows
-        joined_rows = []
-        for v, rows in self_rows.items():
-            if v in other_rows:
-                joined_rows += [row + o for row in rows for o in other_rows[v]]
-        if not joined_rows:
-            return None
-
-        # Build joined table
-        self_labels = list(self.labels)
-        other_labels = [self._unused_label(s) for s in other.labels]
-        other_labels_map = dict(zip(other.labels, other_labels))
-        joined = type(self)(self_labels + other_labels).with_rows(joined_rows)
-
-        # Copy formats from both tables
-        joined._formats.update(self._formats)
-        for label in other._formats:
-            joined._formats[other_labels_map[label]] = other._formats[label]
-
-        # Remove redundant column, but perhaps save its formatting
-        del joined[other_labels_map[other_label]]
-        if column_label not in self._formats and other_label in other._formats:
-            joined._formats[column_label] = other._formats[other_label]
-
-        return joined.move_to_start(column_label).sort(column_label)
-
-    def _multiple_join(self, column_label, other, other_label=None):
+    def _multiple_join(self, column_label, other, other_label=[]):
         """joins when column_label is a non-string iterable"""
         assert len(column_label) == len(other_label), 'unequal number of columns'
 
         self_rows = self._multi_index(column_label)
         other_rows = other._multi_index(other_label)
+        return self._join_helper(column_label, self_rows, other, other_label, other_rows)
+        
 
+    def _join_helper(self, column_label, self_rows, other, other_label, other_rows):
         # Gather joined rows from self_rows that have join values in other_rows
         joined_rows = []
         for v, rows in self_rows.items():
