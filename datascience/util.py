@@ -1,7 +1,8 @@
 """Utility functions"""
 
 __all__ = ['make_array', 'percentile', 'plot_cdf_area', 'plot_normal_cdf',
-           'table_apply', 'proportions_from_distribution', 'minimize']
+           'table_apply', 'proportions_from_distribution',
+           'sample_proportions', 'minimize']
 
 import numpy as np
 import pandas as pd
@@ -13,6 +14,8 @@ from scipy import optimize
 import functools
 import math
 
+# Change matplotlib formatting. TODO incorporate into a style?
+plt.rcParams["patch.force_edgecolor"] = True
 
 def make_array(*elements):
     """Returns an array containing all the arguments passed to this function.
@@ -105,6 +108,23 @@ def plot_normal_cdf(rbound=None, lbound=None, mean=0, sd=1):
 plot_cdf_area = plot_normal_cdf
 
 
+def sample_proportions(sample_size, probabilities):
+    """Return the proportion of random draws for each outcome in a distribution.
+
+    This function is similar to np.random.multinomial, but returns proportions
+    instead of counts.
+
+    Args:
+        ``sample_size``: The size of the sample to draw from the distribution.
+
+        ``probabilities``: An array of probabilities that forms a distribution.
+
+    Returns:
+        An array with the same length as ``probability`` that sums to 1.
+    """
+    return np.random.multinomial(sample_size, probabilities) / sample_size
+
+
 def proportions_from_distribution(table, label, sample_size,
                                   column_name='Random Sample'):
     """
@@ -114,8 +134,6 @@ def proportions_from_distribution(table, label, sample_size,
     This method uses ``np.random.multinomial`` to draw ``sample_size`` samples
     from the distribution in ``table.column(label)``, then divides by
     ``sample_size`` to create the resulting column of proportions.
-
-    Returns a new ``Table`` and does not modify ``table``.
 
     Args:
         ``table``: An instance of ``Table``.
@@ -136,8 +154,7 @@ def proportions_from_distribution(table, label, sample_size,
         ``ValueError``: If the ``label`` is not in the table, or if
             ``table.column(label)`` does not sum to 1.
     """
-    proportions = (np.random.multinomial(sample_size, table.column(label)) /
-                   sample_size)
+    proportions = sample_proportions(sample_size, table.column(label))
     return table.with_column('Random Sample', proportions)
 
 
@@ -225,4 +242,3 @@ def minimize(f, start=None, smooth=False, log=None, array=False, **vargs):
         return result.x.item(0)
     else:
         return result.x
-
