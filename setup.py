@@ -11,8 +11,8 @@ with open('requirements.txt') as fid:
 
 tests_requires = [
     'pytest',
-    'coverage == 3.7.1',
-    'coveralls == 0.5'
+    'coverage',
+    'coveralls'
 ]
 
 

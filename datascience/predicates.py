@@ -3,6 +3,7 @@
 import functools
 import numbers
 import numpy as np
+import warnings
 
 __all__ = ['are']
 
@@ -103,26 +104,31 @@ class are:
     @staticmethod
     def equal_to(y):
         """Equal to y."""
+        check_iterable(y)
         return _combinable(lambda x: _equal_or_float_equal(x, y))
 
     @staticmethod
     def above(y):
         """Greater than y."""
+        check_iterable(y)
         return _combinable(lambda x: x > y)
 
     @staticmethod
     def below(y):
         """Less than y."""
+        check_iterable(y)
         return _combinable(lambda x: x < y)
 
     @staticmethod
     def above_or_equal_to(y):
         """Greater than or equal to y."""
+        check_iterable(y)
         return _combinable(lambda x: x >= y or _equal_or_float_equal(x, y))
 
     @staticmethod
     def below_or_equal_to(y):
         """Less than or equal to y."""
+        check_iterable(y)
         return _combinable(lambda x: x <= y or _equal_or_float_equal(x, y))
 
     @staticmethod
@@ -153,26 +159,31 @@ class are:
     @staticmethod
     def not_equal_to(y):
         """Is not equal to y"""
+        check_iterable(y)
         return -(are.equal_to(y))
     
     @staticmethod
     def not_above(y):
         """Is not above y"""
+        check_iterable(y)
         return are.below_or_equal_to(y)
     
     @staticmethod
     def not_below(y):
         """Is not below y"""
+        check_iterable(y)
         return are.above_or_equal_to(y)
     
     @staticmethod
     def not_below_or_equal_to(y):
         """Is neither below y nor equal to y"""
+        check_iterable(y)
         return are.above(y)
     
     @staticmethod
     def not_above_or_equal_to(y):
         """Is neither above y nor equal to y"""
+        check_iterable(y)
         return are.below(y)
     
     @staticmethod
@@ -237,5 +248,14 @@ def _equal_or_float_equal(x, y):
     else:
         return x == y
 
+############
+# Utility #
+############
+def check_iterable(y):
+    if hasattr(y, '__iter__'):
+            warnings.warn("Do not pass an array or list to a predicate. \
+                If you are trying to find rows where two columns are the \
+                same, use table.where('c', are.equal_to, table.column('d'))\
+                instead of table.where('c', are.equal_to(table.column('d'))).")
 
     

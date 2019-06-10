@@ -26,6 +26,30 @@ pip install datascience
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.11.0
+* Added `join` for multiple columns.
+
+### v0.10.15
+* Allow NumPy arrays to be appended into tables.
+
+### v0.10.14
+* Added optional formatters to "Table.with_column", "Table.with_columns", and "Table.append_column".  
+
+### v0.10.13
+* Warning added for comparing iterables using predicates incorrectly.
+
+### v0.10.12
+* 'move_column' added.
+
+### v0.10.11
+* Created new methods 'first' and 'last'.
+
+### v0.10.10
+* 'append_column' now returns the table it is modifying.
+
+### v0.10.9
+* 'move_to_end' and 'move_to_start' can now take integer labels.
+
 ### v0.10.8
 * Fixes test suite and removes all deprecated code in the test suite caused by deprecated API calls from the
 datascience library.
