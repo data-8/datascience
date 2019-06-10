@@ -26,6 +26,9 @@ pip install datascience
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.10.11
+* Created new methods 'first' and 'last'.
+
 ### v0.10.10
 * 'append_column' now returns the table it is modifying.
 

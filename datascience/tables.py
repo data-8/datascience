@@ -363,6 +363,14 @@ class Table(collections.abc.MutableMapping):
             rows = zip(*self.select(*column_or_columns).columns)
             return np.array([fn(*row) for row in rows])
 
+    def first(self, label):
+        """Return the zeroth item in a column."""
+        return self.column(label)[0]
+
+    def last(self, label):
+        """Return the last item in a column."""
+        return self.column(label)[-1]
+
     ############
     # Mutation #
     ############
