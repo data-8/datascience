@@ -27,8 +27,11 @@ pip install datascience
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 
-### v0.10.13
+### v0.10.14
 * Added optional formatters to "Table.with_column", "Table.with_columns", and "Table.append_column".  
+
+### v0.10.13
+* Warning added for comparing iterables using predicates incorrectly.
 
 ### v0.10.12
 * 'move_column' added.
@@ -83,7 +86,6 @@ datascience library.
   column.
 * Deprecated Table method `pivot_hist`. Added an option to `hist` to
   simulate `pivot_hist`'s behavior.
->>>>>>> master
 
 ### v0.9.5
 
@@ -103,20 +105,11 @@ datascience library.
 
 ### v0.9.1
 
-<<<<<<< HEAD
-- Changed signature of `apply`, `hist`, and `bin` to accept multiple columns without a list
-- Deprecate `hist` argument name `counts` in favor of `bin_column`
-- Rename various positional args (technically could break some code, but won't)
-- Unified `with_column` and `with_columns` (not a breaking change)
-- Unified `group` and `groups` (not a breaking change)
->>>>>>> 7a7ca82dc790f6aabeffd8ef2340eed944dce07f
-=======
 * Changed signature of `apply`, `hist`, and `bin` to accept multiple columns without a list
 * Deprecate `hist` argument name `counts` in favor of `bin_column`
 * Rename various positional args (technically could break some code, but won't)
 * Unified `with_column` and `with_columns` (not a breaking change)
 * Unified `group` and `groups` (not a breaking change)
->>>>>>> master
 
 ### v0.9.0
 

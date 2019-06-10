@@ -1,6 +1,7 @@
 import doctest
 import re
 import pytest
+import warnings
 import numpy as np
 from numpy.testing import assert_array_equal
 from datascience import *
@@ -283,6 +284,23 @@ def test_where_predicates(table):
     letter | count | points | totals
     a      | 9     | 1      | 9
     z      | 1     | 10     | 10
+    """)
+
+def test_where_predicates_warning(table, capsys):
+    t1 = table.copy()
+    count1 = t1['count'] - 1
+    count1[0] += 1
+    t1['count1'] = count1
+    with warnings.catch_warnings(record=True) as w:
+        warnings.simplefilter("always")
+        with (pytest.raises(ValueError)):
+            test = t1.where('count', are.equal_to(t1.column("count1")))
+        assert len(w) == 1
+        assert "Do not pass an array or list to a predicate." in str(w[-1].message)
+    test = t1.where('count', are.equal_to, t1.column('count1'))
+    assert_equal(test, """
+    letter | count | points | count1
+    a      | 9     | 1      | 9
     """)
 
 
