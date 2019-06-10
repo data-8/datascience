@@ -26,6 +26,10 @@ pip install datascience
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+
+### v0.11.1
+* Add `shuffle` function to `Table`.
+
 ### v0.11.0
 * Added `join` for multiple columns.
 
