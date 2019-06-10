@@ -27,6 +27,9 @@ pip install datascience
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 
+### v0.10.14
+* Added optional formatters to "Table.with_column", "Table.with_columns", and "Table.append_column".  
+
 ### v0.10.13
 * Warning added for comparing iterables using predicates incorrectly.
 

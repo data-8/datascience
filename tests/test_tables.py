@@ -702,6 +702,27 @@ def test_append_column(table):
     with(pytest.raises(ValueError)):
         table.append_column(0, [1, 2, 3, 4])
 
+def test_append_column_with_formatter(table):
+    column_1 = [10, 20, 30, 40]
+    column_2 = 'hello'
+    table.append_column('new_col1', column_1, CurrencyFormatter)
+    assert_equal(table, """
+    letter | count | points | new_col1
+    a      | 9     | 1      | $10
+    b      | 3     | 2      | $20
+    c      | 3     | 2      | $30
+    z      | 1     | 10     | $40
+    """)
+    table.append_column('new_col2', column_2)
+    print(table)
+    assert_equal(table, """
+    letter | count | points | new_col1  | new_col2
+    a      | 9     | 1      | $10       | hello
+    b      | 3     | 2      | $20       | hello
+    c      | 3     | 2      | $30       | hello
+    z      | 1     | 10     | $40       | hello
+    """)
+
 def test_with_column(table):
     column_1 = [10, 20, 30, 40]
     column_2 = 'hello'
@@ -733,6 +754,77 @@ def test_with_column(table):
         table.append_column('bad_col', [1, 2])
     with(pytest.raises(ValueError)):
         table.append_column(0, [1, 2, 3, 4])
+def test_with_column_with_formatter(table):
+    column_1 = [10, 20, 30, 40]
+    column_2 = 'hello'
+    table2 = table.with_column('new_col1', column_1, CurrencyFormatter)
+    table3 = table2.with_column('new_col2', column_2)
+    assert_equal(table, """
+    letter | count | points
+    a      | 9     | 1
+    b      | 3     | 2
+    c      | 3     | 2
+    z      | 1     | 10
+    """)
+    assert_equal(table2, """
+    letter | count | points | new_col1
+    a      | 9     | 1      | $10
+    b      | 3     | 2      | $20
+    c      | 3     | 2      | $30
+    z      | 1     | 10     | $40
+    """)
+    assert_equal(table3, """
+    letter | count | points | new_col1  | new_col2
+    a      | 9     | 1      | $10       | hello
+    b      | 3     | 2      | $20       | hello
+    c      | 3     | 2      | $30       | hello
+    z      | 1     | 10     | $40       | hello
+    """)
+
+def test_with_columns():
+    players = Table().with_columns('player_id', make_array(110234, 110235), 'wOBA', make_array(.354, .236))
+    assert_equal(players, """
+    player_id  | wOBA
+    110,234    | 0.354
+    110,235    | 0.236
+    """)
+    players = players.with_columns('salaries', 'N/A', 'season', 2016)
+    assert_equal(players, """
+    player_id  | wOBA  | salaries | season
+    110,234    | 0.354 | N/A      | 2,016
+    110,235    | 0.236 | N/A      | 2,016
+    """)
+    salaries = Table().with_column('salary', make_array('$500,000', '$15,500,000'))
+    players = players.with_columns('salaries', salaries.column('salary'), 'years', make_array(6, 1))
+    assert_equal(players, """
+    player_id  | wOBA  | salaries    | season | years
+    110,234    | 0.354 | $500,000    | 2,016   | 6
+    110,235    | 0.236 | $15,500,000 | 2,016   | 1
+    """)
+
+def test_with_columns_with_formats():
+    players = Table().with_columns('player_id', make_array(110234, 110235), 'wOBA', make_array(.354, .236))
+    assert_equal(players, """
+    player_id  | wOBA
+    110,234    | 0.354
+    110,235    | 0.236
+    """)
+    players = players.with_columns('salaries', 'N/A', 'season', 2016)
+    assert_equal(players, """
+    player_id  | wOBA  | salaries | season
+    110,234    | 0.354 | N/A      | 2,016
+    110,235    | 0.236 | N/A      | 2,016
+    """)
+    salaries = Table().with_column('salary', make_array(500000, 15500000))
+    players2 = players.with_columns('salaries', salaries.column('salary'), 'years', make_array(6, 1), formatter=CurrencyFormatter)
+    assert_equal(players2, """
+    player_id  | wOBA  | salaries     | season | years
+    110,234    | 0.354 | $500,000     | 2,016  | $6
+    110,235    | 0.236 | $15,500,000  | 2,016  | $1
+    """)
+
+    with(pytest.raises(Exception)):
+        players3 = players.with_columns('salaries', salaries.column('salary'), make_array(7, 2), 'years', make_array(6, 1))
 
 def test_with_columns(table):
     column_1 = [10, 20, 30, 40]
@@ -740,17 +832,7 @@ def test_with_columns(table):
     table2 = table.with_columns(
         'new_col1', column_1,
         'new_col2', column_2)
-    table3 = table.with_column( # Incorrect method name still works
-        'new_col1', column_1,
-        'new_col2', column_2)
     assert_equal(table2, """
-    letter | count | points | new_col1 | new_col2
-    a      | 9     | 1      | 10       | hello
-    b      | 3     | 2      | 20       | hello
-    c      | 3     | 2      | 30       | hello
-    z      | 1     | 10     | 40       | hello
-    """)
-    assert_equal(table3, """
     letter | count | points | new_col1 | new_col2
     a      | 9     | 1      | 10       | hello
     b      | 3     | 2      | 20       | hello
