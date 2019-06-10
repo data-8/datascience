@@ -26,8 +26,12 @@ pip install datascience
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-### v0.10.8
+### v0.10.15
 * Add `shuffle` function to `Table`.
+
+### v0.10.8
+* Fixes test suite and removes all deprecated code in the test suite caused by deprecated API calls from the
+datascience library.
 
 ### v0.10.7
 

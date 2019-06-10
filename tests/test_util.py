@@ -29,7 +29,8 @@ def test_table_apply():
     data = np.ones([3, 100])
     data[1] = 2
     data[2] = 3
-    tab = ds.Table(data, ['a', 'b', 'c'])
+    # tab = ds.Table(data, ['a', 'b', 'c'])
+    tab = ds.Table().with_columns('a', data[0], 'b', data[1], 'c', data[2])
     newtab = util.table_apply(tab, np.mean)
     assert newtab.num_rows == 1
     assert all(newtab['a'] == np.mean(tab['a']))
