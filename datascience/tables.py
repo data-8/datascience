@@ -497,7 +497,7 @@ class Table(collections.abc.MutableMapping):
             self._num_rows = len(values)
 
         self._columns[label] = values
-        
+
         if (formatter != None):
             self.set_format(label, formatter)
         return self
@@ -1624,18 +1624,20 @@ class Table(collections.abc.MutableMapping):
 
 
         Args:
-            ``labels_and_values``: An alternating list of labels and values or a list of label-value pairs. 
-                If one of the labels is in existing table, then every value in the corresponding column is
+            ``labels_and_values``: An alternating list of labels and values 
+                or a list of label-value pairs. If one of the labels is in 
+                existing table, then every value in the corresponding column is
                 set to that value. If label has only a single value (``int``),
                 every row of corresponding column takes on that value.
-            ''formatter'' (single Formatter value): A single formatter value that will be applied to all columns 
-                being added using this function call.
+            ''formatter'' (single Formatter value): A single formatter value 
+                that will be applied to all columns being added using this 
+                function call.
 
         Raises:
             ``ValueError``: If
                 - any label in ``labels_and_values`` is not a valid column
                     name, i.e if label is not of type (str).
-                - if any value in ``labels_and_values`` is a list/array and`
+                - if any value in ``labels_and_values`` is a list/array and
                     does not have the same length as the number of rows in the
                     table.
             ``AssertionError``:
