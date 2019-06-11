@@ -26,6 +26,9 @@ pip install datascience
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.11.3
+Switch from pandas.read_table to pandas.read_csv, to avoid deprecation warnings.  Shouldn't change the behavior of the library.
+
 ### v0.11.2
 * `Table.append_column` now returns the table it is modifying.
 
