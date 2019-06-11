@@ -736,7 +736,6 @@ def test_append_column_with_formatter(table):
     z      | 1     | 10     | $40
     """)
     table.append_column('new_col2', column_2)
-    print(table)
     assert_equal(table, """
     letter | count | points | new_col1  | new_col2
     a      | 9     | 1      | $10       | hello
@@ -1398,11 +1397,11 @@ def test_pivot_bin(categories_table):
     """)
 
 def test_move_column(table):
-    assert table.column_labels == ('letter', 'count', 'points')
+    assert table.labels == ('letter', 'count', 'points')
     table = table.move_column("letter", 1)
-    assert table.column_labels == ('count', 'letter', 'points')
+    assert table.labels == ('count', 'letter', 'points')
     table = table.move_column(2, 1)
-    assert table.column_labels == ('count', 'points', 'letter')
+    assert table.labels == ('count', 'points', 'letter')
 
 ##################
 # Export/Display #

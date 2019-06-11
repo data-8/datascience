@@ -499,7 +499,6 @@ class Table(collections.abc.MutableMapping):
             self._num_rows = len(values)
 
         self._columns[label] = values
-        return self
 
         if (formatter != None):
             self.set_format(label, formatter)
