@@ -85,7 +85,7 @@ def u():
 
 def assert_equal(string1, string2):
     string1, string2 = str(string1), str(string2)
-    whitespace = re.compile('\s')
+    whitespace = re.compile(r'\s')
     purify = lambda s: whitespace.sub('', s)
     assert purify(string1) == purify(string2), "\n%s\n!=\n%s" % (string1, string2)
 
@@ -578,8 +578,8 @@ def test_first(table):
     c      | 3     | 2      | 6
     z      | 1     | 10     | 10
     """)
-    assert(t.first(1), 9)
-    assert(t.first("points"), 1)
+    assert_equal(t.first(1), 9)
+    assert_equal(t.first("points"), 1)
 
 def test_last(table):
     t = table
@@ -591,8 +591,8 @@ def test_last(table):
     c      | 3     | 2      | 6
     z      | 1     | 10     | 10
     """)
-    assert(t.last(1), 1)
-    assert(t.last("points"), 10)
+    assert_equal(t.last(1), 1)
+    assert_equal(t.last("points"), 10)
 
 
 ########
