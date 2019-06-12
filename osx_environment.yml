@@ -1,6 +1,8 @@
 name: datascience
 dependencies:
 - appnope
+- coverage
+- coveralls
 - cycler
 - decorator
 - freetype
@@ -17,6 +19,7 @@ dependencies:
 - pip
 - pyparsing
 - pyqt
+- pytest
 - python
 - python-dateutil
 - python.app
