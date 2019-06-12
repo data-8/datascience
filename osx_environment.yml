@@ -27,6 +27,7 @@ dependencies:
 - qt
 - readline
 - scipy
+- setuptools
 - simplegeneric
 - sip
 - six
@@ -39,8 +40,6 @@ dependencies:
 - pip:
   - alabaster
   - babel
-  - coverage
-  - coveralls
   - docopt
   - docutils
   - folium==0.2.1
@@ -49,10 +48,8 @@ dependencies:
   - markupsafe
   - py
   - pygments
-  - pytest
   - pyyaml
   - requests
-  - setuptools
   - snowballstemmer
   - sphinx
   - sphinx-rtd-theme
