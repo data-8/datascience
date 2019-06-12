@@ -49,8 +49,8 @@ setup(
     description = 'A Jupyter notebook Python library for introductory data science',
     author = 'John DeNero, David Culler, Alvin Wan, Sam Lau',
     author_email = 'ds8-instructors@berkeley.edu',
-    url = 'https://github.com/data-8/datascience',
-    download_url = 'https://github.com/data-8/datascience/archive/%s.zip' % version,
+    url = 'https://github.com/dsten/datascience',
+    download_url = 'https://github.com/dsten/datascience/archive/%s.zip' % version,
     keywords = ['data', 'tools', 'berkeley'],
     classifiers = []
 )
