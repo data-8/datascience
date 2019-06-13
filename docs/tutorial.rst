@@ -331,8 +331,7 @@ Let's compare the number of smokers to non-smokers.
 
 .. ipython:: python
 
-    @savefig m_smoker.png width=4in
-    smoker_and_wt.select('Maternal Smoker').hist(bins = [0, 1, 2]);
+    smoker_and_wt.select('Maternal Smoker').group('Maternal Smoker')
 
 We can also compare the distribution of birthweights between smokers and
 non-smokers.
