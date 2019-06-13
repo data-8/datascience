@@ -312,11 +312,11 @@ For more examples, check out `the TableDemos repo`_.
 From the text:
 
     The table ``baby`` contains data on a random sample of 1,174 mothers and
-    their newborn babies. The column ``birthwt`` contains the birth weight of
-    the baby, in ounces; ``gest_days`` is the number of gestational days, that
-    is, the number of days the baby was in the womb. There is also data on
-    maternal age, maternal height, maternal pregnancy weight, and whether or not
-    the mother was a smoker.
+    their newborn babies. The column ``Birth Weight`` contains the birth weight
+    of the baby, in ounces; ``Gestational Days`` is the number of gestational
+    days, that is, the number of days the baby was in the womb. There is also
+    data on maternal age, maternal height, maternal pregnancy weight, and
+    whether or not the mother was a smoker.
 
 .. ipython:: python
 
@@ -324,7 +324,7 @@ From the text:
     baby # Let's take a peek at the table
 
     # Select out columns we want.
-    smoker_and_wt = baby.select(['m_smoker', 'birthwt'])
+    smoker_and_wt = baby.select(['Maternal Smoker', 'Birth Weight'])
     smoker_and_wt
 
 Let's compare the number of smokers to non-smokers.
@@ -332,7 +332,7 @@ Let's compare the number of smokers to non-smokers.
 .. ipython:: python
 
     @savefig m_smoker.png width=4in
-    smoker_and_wt.select('m_smoker').hist(bins = [0, 1, 2]);
+    smoker_and_wt.select('Maternal Smoker').hist(bins = [0, 1, 2]);
 
 We can also compare the distribution of birthweights between smokers and
 non-smokers.
@@ -343,18 +343,18 @@ non-smokers.
     # We do this by grabbing the rows that correspond to mothers that don't
     # smoke, then plotting a histogram of just the birthweights.
     @savefig not_m_smoker_weights.png width=4in
-    smoker_and_wt.where('m_smoker', 0).select('birthwt').hist()
+    smoker_and_wt.where('Maternal Smoker', 0).select('Birth Weight').hist()
 
     # Smokers
     @savefig m_smoker_weights.png width=4in
-    smoker_and_wt.where('m_smoker', 1).select('birthwt').hist()
+    smoker_and_wt.where('Maternal Smoker', 1).select('Birth Weight').hist()
 
 What's the difference in mean birth weight of the two categories?
 
 .. ipython:: python
 
-    nonsmoking_mean = smoker_and_wt.where('m_smoker', 0).column('birthwt').mean()
-    smoking_mean = smoker_and_wt.where('m_smoker', 1).column('birthwt').mean()
+    nonsmoking_mean = smoker_and_wt.where('Maternal Smoker', 0).column('Birth Weight').mean()
+    smoking_mean = smoker_and_wt.where('Maternal Smoker', 1).column('Birth Weight').mean()
 
     observed_diff = nonsmoking_mean - smoking_mean
     observed_diff
@@ -363,7 +363,7 @@ Let's do the bootstrap test on the two categories.
 
 .. ipython:: python
 
-    num_nonsmokers = smoker_and_wt.where('m_smoker', 0).num_rows
+    num_nonsmokers = smoker_and_wt.where('Maternal Smoker', 0).num_rows
     def bootstrap_once():
         """
         Computes one bootstrapped difference in means.
@@ -371,8 +371,8 @@ Let's do the bootstrap test on the two categories.
         We then split according to the number of nonsmokers in the original sample.
         """
         resample = smoker_and_wt.sample(with_replacement = True)
-        bootstrap_diff = resample.column('birthwt')[:num_nonsmokers].mean() - \
-            resample.column('birthwt')[num_nonsmokers:].mean()
+        bootstrap_diff = resample.column('Birth Weight')[:num_nonsmokers].mean() - \
+            resample.column('Birth Weight')[num_nonsmokers:].mean()
         return bootstrap_diff
 
     repetitions = 1000
