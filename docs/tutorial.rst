@@ -10,7 +10,7 @@ For other useful tutorials and examples, see:
 - `The textbook introduction to Tables`_
 - `Example notebooks`_
 
-.. _The textbook introduction to Tables: http://www.inferentialthinking.com/chapter1/tables.html
+.. _The textbook introduction to Tables: https://www.inferentialthinking.com/chapters/06/Tables.html
 .. _Example notebooks: https://github.com/deculler/TableDemos
 
 .. contents:: Table of Contents
@@ -89,7 +89,7 @@ CSVs from URLs are also valid inputs to
 
 .. ipython:: python
 
-    Table.read_table('http://data8.org/textbook/notebooks/sat2014.csv')
+    Table.read_table('https://www.inferentialthinking.com/data/sat2014.csv')
 
 ------
 
@@ -300,13 +300,13 @@ converting to a pandas dataframe with :meth:`~datascience.tables.Table.to_df`:
 An Example
 ----------
 
-We'll recreate the steps in `Chapter 3 of the textbook`_ to see if there is a
+We'll recreate the steps in `Chapter 12 of the textbook`_ to see if there is a
 significant difference in birth weights between smokers and non-smokers using a
 bootstrap test.
 
 For more examples, check out `the TableDemos repo`_.
 
-.. _Chapter 3 of the textbook: http://data8.org/text/3_inference.html#Using-the-Bootstrap-Method-to-Test-Hypotheses
+.. _Chapter 12 of the textbook: https://www.inferentialthinking.com/chapters/12/1/AB_Testing.html
 .. _the TableDemos repo: https://github.com/deculler/TableDemos
 
 From the text:
@@ -320,7 +320,7 @@ From the text:
 
 .. ipython:: python
 
-    baby = Table.read_table('https://github.com/data-8/textbook/raw/9aa0a167bc514749338cd7754f2b339fd095ee9b/notebooks/baby.csv')
+    baby = Table.read_table('https://www.inferentialthinking.com/data/baby.csv')
     baby # Let's take a peek at the table
 
     # Select out columns we want.
