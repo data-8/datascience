@@ -241,6 +241,7 @@ class Table(collections.abc.MutableMapping):
 
     @property
     def columns(self):
+        """Return a tuple of columns, each with the values in that column."""
         return tuple(self._columns.values())
 
     def column(self, index_or_label):
