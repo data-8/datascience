@@ -505,16 +505,16 @@ class Circle(Marker):
     fill_opacity: float, default 0.6
         Circle fill opacity
 
-    For example, to draw three circles:
+    For example, to draw three circles::
 
-    t = Table().with_columns([
-            'lat', [37.8, 38, 37.9],
-            'lon', [-122, -122.1, -121.9],
-            'label', ['one', 'two', 'three'],
-            'color', ['red', 'green', 'blue'],
-            'radius', [3000, 4000, 5000],
-        ])
-    Circle.map_table(t)
+        t = Table().with_columns([
+                'lat', [37.8, 38, 37.9],
+                'lon', [-122, -122.1, -121.9],
+                'label', ['one', 'two', 'three'],
+                'color', ['red', 'green', 'blue'],
+                'radius', [3000, 4000, 5000],
+            ])
+        Circle.map_table(t)
     """
 
     _map_method_name = 'circle_marker'

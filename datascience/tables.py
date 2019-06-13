@@ -308,8 +308,9 @@ class Table(collections.abc.MutableMapping):
         If no ``column_or_columns`` provided, `fn`` is applied to each row.
 
         Args:
-            ``fn`` (function) -- The function to apply.
-            ``column_or_columns``: Columns containing the arguments to ``fn``
+            ``fn`` (function) -- The function to apply to each element
+                of ``column_or_columns``.
+            ``column_or_columns`` -- Columns containing the arguments to ``fn``
                 as either column labels (``str``) or column indices (``int``).
                 The number of columns must match the number of arguments
                 that ``fn`` expects.
@@ -1059,7 +1060,8 @@ class Table(collections.abc.MutableMapping):
                 Default None.
             ``collect`` -- aggregation function, used to group ``values``
                 over row-column combinations. Default None.
-            ``zero`` -- zero value for non-existent row-column combinations.
+            ``zero`` -- zero value to use for non-existent row-column
+                combinations.
 
         Raises:
             TypeError -- if ``collect`` is passed in and ``values`` is not,
@@ -1460,7 +1462,6 @@ class Table(collections.abc.MutableMapping):
         Traceback (most recent call last):
             ...
         ValueError: probabilities do not sum to 1
-
         # Weights must be length of table.
         >>> jobs.sample(k=2, weights=make_array(1, 0, 0))
         Traceback (most recent call last):
@@ -2041,6 +2042,7 @@ class Table(collections.abc.MutableMapping):
             Returns a line plot (connected scatter). Each plot is labeled using
             the values in `column_for_xticks` and one plot is produced for all
             other columns in self (or for the columns designated by `select`).
+
         >>> table = Table().with_columns(
         ...     'days',  make_array(0, 1, 2, 3, 4, 5),
         ...     'price', make_array(90.5, 90.00, 83.00, 95.50, 82.00, 82.00),
