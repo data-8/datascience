@@ -1,5 +1,7 @@
 name: datascience
 dependencies:
+- coverage
+- coveralls
 - cycler
 - decorator
 - fontconfig
@@ -20,6 +22,7 @@ dependencies:
 - pip
 - pyparsing
 - pyqt
+- pytest
 - python
 - python-dateutil
 - pytz
