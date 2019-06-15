@@ -1052,6 +1052,7 @@ def test_empty_without_labels():
     assert_equal(t, '')
 
 
+@pytest.mark.filterwarnings('ignore::FutureWarning')
 def test_from_rows():
     letters = [('a', 9, 1), ('b', 3, 2), ('c', 3, 2), ('z', 1, 10)]
     t = Table().from_rows(letters, ['letter', 'count', 'points'])
@@ -1093,6 +1094,7 @@ def test_from_records():
     """)
 
 
+@pytest.mark.filterwarnings('ignore::FutureWarning')
 def test_from_columns_dict():
     columns_dict = {
         'letter': ['a', 'b', 'c', 'z'],

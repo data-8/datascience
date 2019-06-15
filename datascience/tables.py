@@ -1364,7 +1364,7 @@ class Table(collections.abc.MutableMapping):
     def _get_column(self, column_or_label):
         """Convert label to column and check column length."""
         c = column_or_label
-        if isinstance(c, collections.Hashable) and c in self.labels:
+        if isinstance(c, collections.abc.Hashable) and c in self.labels:
             return self[c]
         elif isinstance(c, numbers.Integral):
             return self[c]
@@ -3031,7 +3031,7 @@ class _RowTaker(_RowSelector):
             ...
         IndexError: index 10 is out of bounds for axis 0 with size 6
         """
-        if isinstance(row_indices_or_slice, collections.Iterable):
+        if isinstance(row_indices_or_slice, collections.abc.Iterable):
             columns = [np.take(column, row_indices_or_slice, axis=0)
                        for column in self._table._columns.values()]
             return self._table._with_columns(columns)
@@ -3104,7 +3104,7 @@ class _RowExcluder(_RowSelector):
         A-           | 3.7
         B-           | 2.7
         """
-        if isinstance(row_indices_or_slice, collections.Iterable):
+        if isinstance(row_indices_or_slice, collections.abc.Iterable):
             without_row_indices = set(row_indices_or_slice)
             rows = [row for index, row in enumerate(self._table.rows[:])
                     if index not in without_row_indices]
