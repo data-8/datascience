@@ -1,6 +1,8 @@
 name: datascience
 dependencies:
 - appnope
+- coverage
+- coveralls
 - cycler
 - decorator
 - freetype
@@ -17,6 +19,7 @@ dependencies:
 - pip
 - pyparsing
 - pyqt
+- pytest
 - python
 - python-dateutil
 - python.app
@@ -24,6 +27,7 @@ dependencies:
 - qt
 - readline
 - scipy
+- setuptools
 - simplegeneric
 - sip
 - six
@@ -36,20 +40,12 @@ dependencies:
 - pip:
   - alabaster
   - babel
-  - coverage
-  - coveralls
-  - docopt
   - docutils
   - folium==0.2.1
   - ipython-genutils
   - jinja2
   - markupsafe
-  - py
   - pygments
-  - pytest
-  - pyyaml
-  - requests
-  - setuptools
   - snowballstemmer
   - sphinx
   - sphinx-rtd-theme

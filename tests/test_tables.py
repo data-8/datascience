@@ -295,6 +295,15 @@ def test_where_predicates(table):
     z      | 1     | 10     | 10
     """)
 
+@pytest.mark.filterwarnings("error")
+def test_where_predicates_nowarning_on_str(table):
+    t = table
+    test = t.where('letter', are.equal_to('a'))
+    assert_equal(test, """
+    letter | count | points
+    a      | 9     | 1
+    """)
+
 def test_where_predicates_warning(table, capsys):
     t1 = table.copy()
     count1 = t1['count'] - 1
@@ -1649,4 +1658,3 @@ def test_read_table():
     assert isinstance(Table().read_table("tests/us-unemployment-copy"), Table)
     assert isinstance(Table().read_table("tests/us-unemployment.txt"), Table)
     assert isinstance(Table().read_table("https://raw.githubusercontent.com/data-8/textbook/gh-pages/data/deflategate.csv"), Table)
-    

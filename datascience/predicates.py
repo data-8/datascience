@@ -252,10 +252,8 @@ def _equal_or_float_equal(x, y):
 # Utility #
 ############
 def check_iterable(y):
-    if hasattr(y, '__iter__'):
+    if isinstance(y, list) or isinstance(y, np.ndarray):
             warnings.warn("Do not pass an array or list to a predicate. \
                 If you are trying to find rows where two columns are the \
                 same, use table.where('c', are.equal_to, table.column('d'))\
                 instead of table.where('c', are.equal_to(table.column('d'))).")
-
-    
