@@ -1459,11 +1459,11 @@ class Table(collections.abc.MutableMapping):
         job  | wage
         a    | 10
         a    | 10
-        >>> jobs.sample(k=2, weights=make_array(1, 0, 1, 0)) # Weights must be length of table.
+        >>> jobs.sample(k=2, weights=make_array(1, 0, 1, 0))
         Traceback (most recent call last):
             ...
         ValueError: probabilities do not sum to 1
-        >>> jobs.sample(k=2, weights=make_array(1, 0, 0))
+        >>> jobs.sample(k=2, weights=make_array(1, 0, 0)) # Weights must be length of table.
         Traceback (most recent call last):
             ...
         ValueError: 'a' and 'p' must have same size
