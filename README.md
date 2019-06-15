@@ -2,7 +2,7 @@
 
 A Berkeley library for introductory data science.
 
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/dsten/datascience?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/data-8/datascience?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![Documentation Status](https://readthedocs.org/projects/datascience/badge/?version=master)](http://datascience.readthedocs.org/en/master/?badge=master)
 
 _written by Professor [John DeNero](http://denero.org), Professor
@@ -12,7 +12,7 @@ _written by Professor [John DeNero](http://denero.org), Professor
 For an example of usage, see the [Berkeley Data 8 class](http://data8.org/).
 
 [![Build Status](https://travis-ci.org/data-8/datascience.svg?branch=master)](https://travis-ci.org/data-8/datascience)
-[![Coverage Status](https://coveralls.io/repos/dsten/datascience/badge.svg?branch=master&service=github)](https://coveralls.io/github/dsten/datascience?branch=master)
+[![Coverage Status](https://coveralls.io/repos/data-8/datascience/badge.svg?branch=master&service=github)](https://coveralls.io/github/data-8/datascience?branch=master)
 
 ## Installation
 
@@ -26,8 +26,49 @@ pip install datascience
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-### v0.10.8
+
+### v0.11.5
 * Fixes bug where joining tables that have columns that are already duplicated will sometimes join incorrectly.
+
+### v0.11.4
+* Fix bug where we warned inappropriately when passing a string to an `are.*` predicate.
+
+### v0.11.3
+* Switch from pandas.read_table to pandas.read_csv, to avoid deprecation warnings.  Shouldn't change the behavior of the library.
+
+### v0.11.2
+* `Table.append_column` now returns the table it is modifying.
+
+### v0.11.1
+* Add `shuffle` function to `Table`.
+
+### v0.11.0
+* Added `join` for multiple columns.
+
+### v0.10.15
+* Allow NumPy arrays to be appended into tables.
+
+### v0.10.14
+* Added optional formatters to "Table.with_column", "Table.with_columns", and "Table.append_column".  
+
+### v0.10.13
+* Warning added for comparing iterables using predicates incorrectly.
+
+### v0.10.12
+* 'move_column' added.
+
+### v0.10.11
+* Created new methods 'first' and 'last'.
+
+### v0.10.10
+* 'append_column' now returns the table it is modifying.
+
+### v0.10.9
+* 'move_to_end' and 'move_to_start' can now take integer labels.
+
+### v0.10.8
+* Fixes test suite and removes all deprecated code in the test suite caused by deprecated API calls from the
+datascience library.
 
 ### v0.10.7
 
@@ -223,5 +264,6 @@ Here's another example.
 ## Publishing
 
 ```
-python setup.py sdist upload -r pypi
+python setup.py sdist
+twine upload dist/*
 ```

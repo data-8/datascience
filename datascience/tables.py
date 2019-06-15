@@ -129,7 +129,7 @@ class Table(collections.abc.MutableMapping):
                 vargs['sep'] = ','
         except AttributeError:
             pass
-        df = pandas.read_table(filepath_or_buffer, *args, **vargs)
+        df = pandas.read_csv(filepath_or_buffer, *args, **vargs)
         return cls.from_df(df)
 
     def _with_columns(self, columns):
@@ -151,7 +151,7 @@ class Table(collections.abc.MutableMapping):
         """Convert a Pandas DataFrame into a Table."""
         t = cls()
         labels = df.columns
-        for label in df.columns:
+        for label in labels:
             t.append_column(label, df[label])
         return t
 
@@ -363,6 +363,14 @@ class Table(collections.abc.MutableMapping):
             rows = zip(*self.select(*column_or_columns).columns)
             return np.array([fn(*row) for row in rows])
 
+    def first(self, label):
+        """Return the zeroth item in a column."""
+        return self.column(label)[0]
+
+    def last(self, label):
+        """Return the last item in a column."""
+        return self.column(label)[-1]
+
     ############
     # Mutation #
     ############
@@ -383,18 +391,20 @@ class Table(collections.abc.MutableMapping):
 
     def move_to_start(self, column_label):
         """Move a column to the first in order."""
-        self._columns.move_to_end(column_label, last=False)
+        self._columns.move_to_end(self._as_label(column_label), last=False)
         return self
 
     def move_to_end(self, column_label):
         """Move a column to the last in order."""
-        self._columns.move_to_end(column_label)
+        self._columns.move_to_end(self._as_label(column_label))
         return self
 
     def append(self, row_or_table):
         """Append a row or all rows of a table. An appended table must have all
         columns of self."""
-        if not row_or_table:
+        if isinstance(row_or_table, np.ndarray):
+            row_or_table = row_or_table.tolist()
+        elif not row_or_table:
             return
         if isinstance(row_or_table, Table):
             t = row_or_table
@@ -412,7 +422,7 @@ class Table(collections.abc.MutableMapping):
         self._num_rows += n
         return self
 
-    def append_column(self, label, values):
+    def append_column(self, label, values, formatter=None):
         """Appends a column to the table or replaces a column.
 
         ``__setitem__`` is aliased to this method:
@@ -427,6 +437,8 @@ class Table(collections.abc.MutableMapping):
 
                 If a list or array, the new column contains the values in
                 ``values``, which must be the same length as the table.
+            ``formatter`` (single formatter): Adds a formatter to the column being 
+                appended. No formatter added by default.
 
         Returns:
             Original table with new or replaced column
@@ -448,14 +460,12 @@ class Table(collections.abc.MutableMapping):
         c      | 3     | 2
         z      | 1     | 10
         >>> table.append_column('new_col1', make_array(10, 20, 30, 40))
-        >>> table
         letter | count | points | new_col1
         a      | 9     | 1      | 10
         b      | 3     | 2      | 20
         c      | 3     | 2      | 30
         z      | 1     | 10     | 40
         >>> table.append_column('new_col2', 'hello')
-        >>> table
         letter | count | points | new_col1 | new_col2
         a      | 9     | 1      | 10       | hello
         b      | 3     | 2      | 20       | hello
@@ -489,6 +499,10 @@ class Table(collections.abc.MutableMapping):
             self._num_rows = len(values)
 
         self._columns[label] = values
+
+        if (formatter != None):
+            self.set_format(label, formatter)
+        return self
 
     def relabel(self, column_label, new_label):
         """Changes the label(s) of column(s) specified by ``column_label`` to
@@ -1179,13 +1193,13 @@ class Table(collections.abc.MutableMapping):
         rows for all values of a column that appear in both tables.
 
         Args:
-            ``column_label`` (``str``):  label of column in self that is used to
+            ``column_label``:  label of column or array of labels in self that is used to
                 join  rows of ``other``.
             ``other``: Table object to join with self on matching values of
                 ``column_label``.
 
         Kwargs:
-            ``other_label`` (``str``): default None, assumes ``column_label``.
+            ``other_label``: default None, assumes ``column_label``.
                 Otherwise in ``other`` used to join rows.
 
         Returns:
@@ -1238,7 +1252,26 @@ class Table(collections.abc.MutableMapping):
         3    | 2    | 4
         3    | 2    | 5
         1    | 10   | 6
+        >>> table.join(['a', 'b'], table2, ['a', 'd']) # joining on multiple columns
+        a    | b    | c    | e
+        1    | 10   | 6    | 6
+        9    | 1    | 3    | 3
         """
+        if self.num_rows == 0 or other.num_rows == 0:
+            return None
+        if not other_label:
+            other_label = column_label
+
+        # checking to see if joining on multiple columns
+        if _is_non_string_iterable(column_label):
+            # then we are going to be joining multiple labels
+            return self._multiple_join(column_label, other, other_label)
+
+        # original single column join
+        return self._join(column_label, other, other_label)
+
+    def _join(self, column_label, other, other_label=[]):
+        """joins when COLUMN_LABEL is a string"""
         if self.num_rows == 0 or other.num_rows == 0:
             return None
         if not other_label:
@@ -1246,7 +1279,18 @@ class Table(collections.abc.MutableMapping):
 
         self_rows = self.index_by(column_label)
         other_rows = other.index_by(other_label)
+        return self._join_helper([column_label], self_rows, other, [other_label], other_rows)
 
+    def _multiple_join(self, column_label, other, other_label=[]):
+        """joins when column_label is a non-string iterable"""
+        assert len(column_label) == len(other_label), 'unequal number of columns'
+
+        self_rows = self._multi_index(column_label)
+        other_rows = other._multi_index(other_label)
+        return self._join_helper(column_label, self_rows, other, other_label, other_rows)
+        
+
+    def _join_helper(self, column_label, self_rows, other, other_label, other_rows):
         # Gather joined rows from self_rows that have join values in other_rows
         joined_rows = []
         for v, rows in self_rows.items():
@@ -1269,12 +1313,16 @@ class Table(collections.abc.MutableMapping):
             joined._formats[other_labels_map[label]] = other._formats[label]
 
         # Remove redundant column, but perhaps save its formatting
-        del joined[other_labels_map[other_label]]
-        if column_label not in self._formats and other_label in other._formats:
-            joined._formats[column_label] = other._formats[other_label]
+        for duplicate in other_label:
+            del joined[other_labels_map[duplicate]]
+        for duplicate in other_label:
+            if duplicate not in self._formats and duplicate in other._formats:
+                joined._formats[duplicate] = other._formats[duplicate]
 
-        return joined.move_to_start(column_label).sort(column_label)
+        for col in column_label[::-1]:
+            joined = joined.move_to_start(col).sort(col)
 
+        return joined
 
     def stats(self, ops=(min, max, np.median, sum)):
         """Compute statistics for each column and place them in a table."""
@@ -1331,7 +1379,7 @@ class Table(collections.abc.MutableMapping):
     def _get_column(self, column_or_label):
         """Convert label to column and check column length."""
         c = column_or_label
-        if isinstance(c, collections.Hashable) and c in self.labels:
+        if isinstance(c, collections.abc.Hashable) and c in self.labels:
             return self[c]
         elif isinstance(c, numbers.Integral):
             return self[c]
@@ -1432,7 +1480,7 @@ class Table(collections.abc.MutableMapping):
         >>> jobs.sample(k=2, weights=make_array(1, 0, 0))
         Traceback (most recent call last):
             ...
-        ValueError: a and p must have same size
+        ValueError: 'a' and 'p' must have same size
         """
         n = self.num_rows
         if k is None:
@@ -1441,6 +1489,15 @@ class Table(collections.abc.MutableMapping):
         columns = [[c[i] for i in index] for c in self.columns]
         sample = self._with_columns(columns)
         return sample
+
+    def shuffle(self):
+        """Return a new table where all the rows are randomly shuffled from the
+        original table..
+
+        Returns:
+            A new instance of ``Table`` with all ``k`` rows shuffled.
+        """
+        return self.sample(with_replacement=False)
 
     def sample_from_distribution(self, distribution, k, proportions=False):
         """Return a new table with the same number of rows and a new column.
@@ -1561,7 +1618,7 @@ class Table(collections.abc.MutableMapping):
         self.append(self._with_columns(zip(*rows)))
         return self
 
-    def with_column(self, label, values, *rest):
+    def with_column(self, label, values, formatter=None):
         """Return a new table with an additional or replaced column.
 
         Args:
@@ -1572,8 +1629,7 @@ class Table(collections.abc.MutableMapping):
                 value in the new column is ``values``. If sequence of values,
                 new column takes on values in ``values``.
 
-            ``rest``: An alternating list of labels and values describing
-                additional columns. See with_columns for a full description.
+            ``formatter`` (single value): Specifies formatter for the new column. Defaults to no formatter.
 
         Raises:
             ``ValueError``: If
@@ -1614,23 +1670,28 @@ class Table(collections.abc.MutableMapping):
         """
         # Ensure that if with_column is called instead of with_columns;
         # no error is raised.
-        if rest:
-            return self.with_columns(label, values, *rest)
 
         new_table = self.copy()
-        new_table.append_column(label, values)
+        if formatter == {}:
+            formatter = None
+        elif isinstance(formatter, dict):
+            formatter = formatter["formatter"]
+        new_table.append_column(label, values, formatter)
         return new_table
 
-    def with_columns(self, *labels_and_values):
+    def with_columns(self, *labels_and_values, **formatter):
         """Return a table with additional or replaced columns.
 
 
         Args:
-            ``labels_and_values``: An alternating list of labels and values or
-                a list of label-value pairs. If one of the labels is in
+            ``labels_and_values``: An alternating list of labels and values 
+                or a list of label-value pairs. If one of the labels is in 
                 existing table, then every value in the corresponding column is
                 set to that value. If label has only a single value (``int``),
                 every row of corresponding column takes on that value.
+            ''formatter'' (single Formatter value): A single formatter value 
+                that will be applied to all columns being added using this 
+                function call.
 
         Raises:
             ``ValueError``: If
@@ -1664,12 +1725,12 @@ class Table(collections.abc.MutableMapping):
         110,234    | 0.354 | N/A      | 2,016
         110,235    | 0.236 | N/A      | 2,016
         >>> salaries = Table().with_column('salary',
-        ...     make_array('$500,000', '$15,500,000'))
+        ...     make_array(500000, 15500000))
         >>> players.with_columns('salaries', salaries.column('salary'),
-        ...     'years', make_array(6, 1))
-        player_id  | wOBA  | salaries    | season  | years
-        110,234    | 0.354 | $500,000    | 2,016   | 6
-        110,235    | 0.236 | $15,500,000 | 2,016   | 1
+        ...     'bonus', make_array(6, 1), formatter=_formats.CurrencyFormatter)
+        player_id  | wOBA  | salaries    | season  | bonus
+        110,234    | 0.354 | $500,000    | 2,016   | $6
+        110,235    | 0.236 | $15,500,000 | 2,016   | $1
         >>> players.with_columns(2, make_array('$600,000', '$20,000,000'))
         Traceback (most recent call last):
             ...
@@ -1695,8 +1756,10 @@ class Table(collections.abc.MutableMapping):
         assert len(labels_and_values) % 2 == 0, 'Even length sequence required'
         for i in range(0, len(labels_and_values), 2):
             label, values = labels_and_values[i], labels_and_values[i+1]
-            self = self.with_column(label, values)
+            self = self.with_column(label, values, formatter)
         return self
+
+        
 
     def relabeled(self, label, new_label):
         """Return a new table with ``label`` specifying column label(s)
@@ -1799,6 +1862,17 @@ class Table(collections.abc.MutableMapping):
             binned[label + ' ' + tag] = np.append(counts, 0)
         return binned
 
+    def move_column(self, label, index):
+        """Returns a new table with specified column moved to the specified column index."""
+        table = type(self)()
+        col_order = list(self._columns)
+        label_idx = col_order.index(self._as_label(label))
+        col_to_move = col_order.pop(label_idx)
+        col_order.insert(index, col_to_move)
+        for col in col_order:
+            table[col] = self[col]
+        return table
+
     ##########################
     # Exporting / Displaying #
     ##########################
@@ -1890,6 +1964,15 @@ class Table(collections.abc.MutableMapping):
         column = self._get_column(column_or_label)
         index = {}
         for key, row in zip(column, self.rows):
+            index.setdefault(key, []).append(row)
+        return index
+
+    def _multi_index(self, columns_or_labels):
+        """Returns a dict keyed by a tuple of the values that correspond to
+        the selected COLUMNS_OR_LABELS, with values corresponding to """
+        columns = [self._get_column(col) for col in columns_or_labels]
+        index = {}
+        for key, row in zip(zip(*columns), self.rows):
             index.setdefault(key, []).append(row)
         return index
 
@@ -2963,7 +3046,7 @@ class _RowTaker(_RowSelector):
             ...
         IndexError: index 10 is out of bounds for axis 0 with size 6
         """
-        if isinstance(row_indices_or_slice, collections.Iterable):
+        if isinstance(row_indices_or_slice, collections.abc.Iterable):
             columns = [np.take(column, row_indices_or_slice, axis=0)
                        for column in self._table._columns.values()]
             return self._table._with_columns(columns)
@@ -3036,7 +3119,7 @@ class _RowExcluder(_RowSelector):
         A-           | 3.7
         B-           | 2.7
         """
-        if isinstance(row_indices_or_slice, collections.Iterable):
+        if isinstance(row_indices_or_slice, collections.abc.Iterable):
             without_row_indices = set(row_indices_or_slice)
             rows = [row for index, row in enumerate(self._table.rows[:])
                     if index not in without_row_indices]

@@ -1,6 +1,7 @@
 import doctest
 import re
 import pytest
+import warnings
 import numpy as np
 from numpy.testing import assert_array_equal
 from datascience import *
@@ -40,6 +41,15 @@ def table3():
         'letter', ['x', 'y', 'z'],
         ])
 
+@pytest.fixture(scope='function')
+def table4():
+    """Setup fourth table; three overlapping columns with table."""
+    return Table().with_columns([
+        'letter', ['a', 'b', 'c', '8', 'a'],
+        'count', [9, 3, 2, 0, 9],
+        'different label', [1, 4, 2, 1, 1],
+        'name', ['Gamma', 'Delta', 'Epsilon', 'Alpha', 'Beta']
+        ])
 
 @pytest.fixture(scope='function')
 def numbers_table():
@@ -85,7 +95,7 @@ def scrabble_table2():
 
 def assert_equal(string1, string2):
     string1, string2 = str(string1), str(string2)
-    whitespace = re.compile('\s')
+    whitespace = re.compile(r'\s')
     purify = lambda s: whitespace.sub('', s)
     assert purify(string1) == purify(string2), "\n%s\n!=\n%s" % (string1, string2)
 
@@ -105,8 +115,9 @@ def test_doctests():
 ############
 
 
-def test_basic(t):
+def test_basic(table):
     """Tests that t works"""
+    t = table
     assert_equal(t, """
     letter | count | points
     a      | 9     | 1
@@ -117,30 +128,35 @@ def test_basic(t):
 
 def test_column(table):
     """Test table.values()"""
-    assert_array_equal(table.column('letter'), np.array(['a', 'b', 'c', 'z']))
-    assert_array_equal(table.column(1), np.array([9, 3, 3, 1]))
+    t = table
+    assert_array_equal(t.column('letter'), np.array(['a', 'b', 'c', 'z']))
+    assert_array_equal(t.column(1), np.array([9, 3, 3, 1]))
 
 
-def test_basic_points(t):
+def test_basic_points(table):
+    t = table
     assert_array_equal(t['points'], np.array([1, 2, 2, 10]))
 
 
-def test_basic_rows(t):
+def test_basic_rows(table):
+    t = table
     assert_equal(
         t.rows[2],
         "Row(letter='c', count=3, points=2)")
 
-def test_select(t):
-    test = t.select(['points', 1]).cumsum()
+def test_select(table):
+    t = table
+    test = t.select('points', 1)
     assert_equal(test, """
     points | count
     1      | 9
-    3      | 12
-    5      | 15
-    15     | 16
+    2      | 3
+    2      | 3
+    10     | 1
     """)
 
-def test_drop(t):
+def test_drop(table):
+    t = table
     test = t.drop(['points', 1])
     assert_equal(test, """
     letter
@@ -150,7 +166,8 @@ def test_drop(t):
     z
     """)
 
-def test_take(t):
+def test_take(table):
+    t = table
     test = t.take([1, 2])
     assert_equal(test, """
     letter | count | points
@@ -159,7 +176,8 @@ def test_take(t):
     """)
 
 
-def test_take_slice(t):
+def test_take_slice(table):
+    t = table
     test = t.take[1:3]
     assert_equal(test, """
     letter | count | points
@@ -168,7 +186,8 @@ def test_take_slice(t):
     """)
 
 
-def test_take_slice_single(t):
+def test_take_slice_single(table):
+    t = table
     test = t.take[1]
     assert_equal(test, """
     letter | count | points
@@ -176,7 +195,8 @@ def test_take_slice_single(t):
     """)
 
 
-def test_take_iterable(t):
+def test_take_iterable(table):
+    t = table
     test = t.take[0, 2]
     assert_equal(test, """
     letter | count | points
@@ -185,7 +205,8 @@ def test_take_iterable(t):
     """)
 
 
-def test_exclude(t):
+def test_exclude(table):
+    t = table
     test = t.exclude([1, 3])
     assert_equal(test, """
     letter | count | points
@@ -194,7 +215,8 @@ def test_exclude(t):
     """)
 
 
-def test_exclude_slice(t):
+def test_exclude_slice(table):
+    t = table
     test = t.exclude[1:3]
     assert_equal(test, """
     letter | count | points
@@ -203,7 +225,8 @@ def test_exclude_slice(t):
     """)
 
 
-def test_exclude_slice_single(t):
+def test_exclude_slice_single(table):
+    t = table
     test = t.exclude[1]
     assert_equal(test, """
     letter | count | points
@@ -213,7 +236,8 @@ def test_exclude_slice_single(t):
     """)
 
 
-def test_exclude_iterable(t):
+def test_exclude_iterable(table):
+    t = table
     test = t.exclude[0, 2]
     assert_equal(test, """
     letter | count | points
@@ -222,7 +246,8 @@ def test_exclude_iterable(t):
     """)
 
 
-def test_stats(t):
+def test_stats(table):
+    t = table
     test = t.stats()
     assert_equal(test, """
     statistic | letter | count | points
@@ -233,7 +258,8 @@ def test_stats(t):
     """)
 
 
-def test_stats_with_numpy(t):
+def test_stats_with_numpy(table):
+    t = table
     test = t.stats([np.mean, np.std, np.var])
     assert_equal(test, """
     statistic | letter | count | points
@@ -242,7 +268,8 @@ def test_stats_with_numpy(t):
     var       |        | 9     | 13.1875""")
 
 
-def test_where(t):
+def test_where(table):
+    t = table
     test = t.where('points', 2)
     assert_equal(test, """
     letter | count | points
@@ -257,7 +284,8 @@ def test_where(t):
     """)
 
 
-def test_where_conditions(t):
+def test_where_conditions(table):
+    t = table
     t['totals'] = t['points'] * t['count']
     test = t.where(t['totals'] > 8)
     assert_equal(test, """
@@ -267,7 +295,8 @@ def test_where_conditions(t):
     """)
 
 
-def test_where_predicates(t):
+def test_where_predicates(table):
+    t = table
     t['totals'] = t['points'] * t['count']
     test = t.where('totals', are.between(9, 11))
     assert_equal(test, """
@@ -276,8 +305,36 @@ def test_where_predicates(t):
     z      | 1     | 10     | 10
     """)
 
+@pytest.mark.filterwarnings("error")
+def test_where_predicates_nowarning_on_str(table):
+    t = table
+    test = t.where('letter', are.equal_to('a'))
+    assert_equal(test, """
+    letter | count | points
+    a      | 9     | 1
+    """)
 
-def test_sort(t):
+def test_where_predicates_warning(table, capsys):
+    t1 = table.copy()
+    count1 = t1['count'] - 1
+    count1[0] += 1
+    t1['count1'] = count1
+    with warnings.catch_warnings(record=True) as w:
+        warnings.simplefilter("always")
+        with (pytest.raises(ValueError)):
+            test = t1.where('count', are.equal_to(t1.column("count1")))
+        assert len(w) == 1
+        assert "Do not pass an array or list to a predicate." in str(w[-1].message)
+    test = t1.where('count', are.equal_to, t1.column('count1'))
+    assert_equal(test, """
+    letter | count | points | count1
+    a      | 9     | 1      | 9
+    """)
+
+
+def test_sort(table):
+    t = table
+    t['totals'] = t['points'] * t['count']
     test = t.sort('points')
     assert_equal(test, """
     letter | count | points | totals
@@ -296,7 +353,9 @@ def test_sort(t):
     """)
 
 
-def test_sort_args(t):
+def test_sort_args(table):
+    t = table
+    t['totals'] = t['points'] * t['count']
     test = t.sort('points', descending=True, distinct=True)
     assert_equal(test, """
     letter | count | points | totals
@@ -306,7 +365,9 @@ def test_sort_args(t):
     """)
 
 
-def test_sort_syntax(t):
+def test_sort_syntax(table):
+    t = table
+    t['totals'] = t['points'] * t['count']
     test = t.sort(-t['totals'])
     assert_equal(test, """
     letter | count | points | totals
@@ -317,7 +378,8 @@ def test_sort_syntax(t):
     """)
 
 
-def test_group(t):
+def test_group(table):
+    t = table
     test = t.group('points')
     assert_equal(test, """
     points | count
@@ -334,7 +396,9 @@ def test_group(t):
     """)
 
 
-def test_group_with_func(t):
+def test_group_with_func(table):
+    t = table
+    t['totals'] = t['points'] * t['count']
     test = t.group('points', sum)
     assert_equal(test, """
     points | letter sum | count sum | totals sum
@@ -344,8 +408,9 @@ def test_group_with_func(t):
     """)
 
 
-def test_groups(t):
-    t = t.copy()
+def test_groups(table):
+    t = table.copy()
+    t['totals'] = t['points'] * t['count']
     t.append(('e', 12, 1, 12))
     t['early'] = t['letter'] < 'd'
     test = t.groups(['points', 'early'])
@@ -357,8 +422,9 @@ def test_groups(t):
     10     | False | 1
     """)
 
-def test_groups_using_group(t):
-    t = t.copy()
+def test_groups_using_group(table):
+    t = table.copy()
+    t['totals'] = t['points'] * t['count']
     t.append(('e', 12, 1, 12))
     t['early'] = t['letter'] < 'd'
     test = t.group(['points', 'early'])
@@ -370,8 +436,9 @@ def test_groups_using_group(t):
     10     | False | 1
     """)
 
-def test_groups_list(t):
-    t = t.copy()
+def test_groups_list(table):
+    t = table.copy()
+    t['totals'] = t['points'] * t['count']
     t.append(('e', 12, 1, 12))
     t['early'] = t['letter'] < 'd'
     test = t.groups(['points', 'early'], lambda s: s)
@@ -384,8 +451,9 @@ def test_groups_list(t):
     """)
 
 
-def test_groups_collect(t):
-    t = t.copy()
+def test_groups_collect(table):
+    t = table.copy()
+    t['totals'] = t['points'] * t['count']
     t.append(('e', 12, 1, 12))
     t['early'] = t['letter'] < 'd'
     test = t.select(['points', 'early', 'count']).groups(['points', 'early'], sum)
@@ -397,8 +465,11 @@ def test_groups_collect(t):
     10     | False | 1
     """)
 
-def test_join(t, u):
+def test_join(table, table2):
     """Tests that join works, not destructive"""
+    t = table
+    u = table2
+    t['totals'] = t['points'] * t['count']
     assert_equal(t.join('points', u), """
     points | letter | count | totals | names
     1      | a      | 9     | 9      | one
@@ -419,14 +490,18 @@ def test_join(t, u):
     z      | 1     | 10     | 10
     """)
 
-def test_join_html(t, u):
+def test_join_html(table, table2):
     """Test that join doesn't crash with formatting."""
+    t = table
+    u = table2
     t = t.set_format('count', NumberFormatter)
     t.as_html()
     u.join('points', t, 'points').as_html()
 
-def test_pivot_counts(t):
-    t = t.copy()
+def test_pivot_counts(table, table2):
+    t = table.copy()
+    u = table2
+    t['totals'] = t['points'] * t['count']
     t.append(('e', 12, 1, 12))
     t['early'] = t['letter'] < 'd'
     test = t.pivot('points', 'early')
@@ -436,8 +511,9 @@ def test_pivot_counts(t):
     True  | 1 | 2 | 0
     """)
 
-def test_pivot_counts_with_indices(t):
-    t = t.copy()
+def test_pivot_counts_with_indices(table):
+    t = table.copy()
+    t['totals'] = t['points'] * t['count']
     t.append(('e', 12, 1, 12))
     t['early'] = t['letter'] < 'd'
     test = t.pivot(2, 4)
@@ -447,8 +523,9 @@ def test_pivot_counts_with_indices(t):
     True  | 1 | 2 | 0
     """)
 
-def test_pivot_values(t):
-    t = t.copy()
+def test_pivot_values(table):
+    t = table.copy()
+    t['totals'] = t['points'] * t['count']
     t.append(('e', 12, 1, 12))
     t['early'] = t['letter'] < 'd'
     t['exists'] = 2
@@ -466,8 +543,9 @@ def test_pivot_values(t):
     """)
 
 
-def test_pivot_multiple_rows(t):
-    t = t.copy()
+def test_pivot_multiple_rows(table):
+    t = table.copy()
+    t['totals'] = t['points'] * t['count']
     t.append(('e', 12, 1, 12))
     t['early'] = t['letter'] < 'd'
     t['late'] = t['letter'] > 'c'
@@ -480,8 +558,9 @@ def test_pivot_multiple_rows(t):
     """)
 
 
-def test_pivot_sum(t):
-    t = t.copy()
+def test_pivot_sum(table):
+    t = table.copy()
+    t['totals'] = t['points'] * t['count']
     t.append(('e', 12, 1, 12))
     t['early'] = t['letter'] < 'd'
     t['exists'] = 1
@@ -493,8 +572,8 @@ def test_pivot_sum(t):
     """)
 
 
-def test_apply(t):
-    t = t.copy()
+def test_apply(table):
+    t = table.copy()
     assert_array_equal(t.apply(lambda x, y: x * y, 'count', 'points'),
                        np.array([9, 6, 6, 10]))
     assert_array_equal(t.apply(lambda x: x * x, 'points'),
@@ -505,8 +584,34 @@ def test_apply(t):
         t.apply(lambda x, y: x + y, 'count', 'score')
 
     # Deprecated behavior
-    assert_array_equal(t.apply(lambda x, y: x * y, ['count', 'points']),
+    assert_array_equal(t.apply(lambda x, y: x * y, 'count', 'points'),
                        np.array([9, 6, 6, 10]))
+
+def test_first(table):
+    t = table
+    t['totals'] = t['points'] * t['count']
+    assert_equal(t, """
+    letter | count | points | totals
+    a      | 9     | 1      | 9
+    b      | 3     | 2      | 6
+    c      | 3     | 2      | 6
+    z      | 1     | 10     | 10
+    """)
+    assert_equal(t.first(1), 9)
+    assert_equal(t.first("points"), 1)
+
+def test_last(table):
+    t = table
+    t['totals'] = t['points'] * t['count']
+    assert_equal(t, """
+    letter | count | points | totals
+    a      | 9     | 1      | 9
+    b      | 3     | 2      | 6
+    c      | 3     | 2      | 6
+    z      | 1     | 10     | 10
+    """)
+    assert_equal(t.last(1), 1)
+    assert_equal(t.last("points"), 10)
 
 
 ########
@@ -514,17 +619,19 @@ def test_apply(t):
 ########
 
 
-def test_tuples(t, u):
+def test_tuples(table, table2):
     """Tests that different-sized tuples are allowed."""
+    t = table
+    u = table2
     different = [((5, 1), (1, 2, 2, 10)), ('short', 'long')]
-    t = Table(different, ['tuple', 'size'])
+    t = Table().with_columns('tuple', different[0], 'size', different[1])
     assert_equal(t, """
     tuple         | size
     (5, 1)        | short
     (1, 2, 2, 10) | long
     """)
     same = [((5, 4, 3, 1), (1, 2, 2, 10)), ('long', 'long')]
-    u = Table(same, ['tuple', 'size'])
+    u = Table().with_columns('tuple', same[0], 'size', same[1])
     assert_equal(u, """
     tuple         | size
     [5 4 3 1]     | long
@@ -535,7 +642,7 @@ def test_tuples(t, u):
 def test_keys_and_values():
     """Tests that a table can be constructed from keys and values."""
     d = {1: 2, 3: 4}
-    t = Table([d.keys(), d.values()], ['keys', 'values'])
+    t = Table().with_columns('keys', d.keys(), 'values', d.values())
     assert_equal(t, """
     keys | values
     1    | 2
@@ -549,19 +656,38 @@ def test_keys_and_values():
 
 
 def test_move_to_start(table):
-    assert table.column_labels == ('letter', 'count', 'points')
+    assert table.labels == ('letter', 'count', 'points')
     table.move_to_start('points')
-    assert table.column_labels == ('points', 'letter', 'count')
+    assert table.labels == ('points', 'letter', 'count')
 
 
 def test_move_to_end(table):
-    assert table.column_labels == ('letter', 'count', 'points')
+    assert table.labels == ('letter', 'count', 'points')
     table.move_to_end('letter')
-    assert table.column_labels == ('count', 'points', 'letter')
+    assert table.labels == ('count', 'points', 'letter')
+
+def test_move_to_end_start_int_labels(table):
+    assert table.labels == ('letter', 'count', 'points')
+    table.move_to_start(2)
+    assert table.labels == ('points', 'letter', 'count')
+    table.move_to_end(1)
+    assert table.labels == ('points', 'count', 'letter')
 
 
 def test_append_row(table):
     row = ['g', 2, 2]
+    table.append(row)
+    assert_equal(table, """
+    letter | count | points
+    a      | 9     | 1
+    b      | 3     | 2
+    c      | 3     | 2
+    z      | 1     | 10
+    g      | 2     | 2
+    """)
+
+def test_append_row_by_array(table):
+    row = np.array(['g', 2, 2])
     table.append(row)
     assert_equal(table, """
     letter | count | points
@@ -595,9 +721,15 @@ def test_append_column(table):
     c      | 3     | 2      | 30
     z      | 1     | 10     | 40
     """)
-    table.append_column('new_col2', column_2)
-    print(table)
+    new_table = table.append_column('new_col2', column_2)
     assert_equal(table, """
+    letter | count | points | new_col1 | new_col2
+    a      | 9     | 1      | 10       | hello
+    b      | 3     | 2      | 20       | hello
+    c      | 3     | 2      | 30       | hello
+    z      | 1     | 10     | 40       | hello
+    """)
+    assert_equal(new_table, """
     letter | count | points | new_col1 | new_col2
     a      | 9     | 1      | 10       | hello
     b      | 3     | 2      | 20       | hello
@@ -609,6 +741,26 @@ def test_append_column(table):
         table.append_column('bad_col', [1, 2])
     with(pytest.raises(ValueError)):
         table.append_column(0, [1, 2, 3, 4])
+
+def test_append_column_with_formatter(table):
+    column_1 = [10, 20, 30, 40]
+    column_2 = 'hello'
+    table.append_column('new_col1', column_1, CurrencyFormatter)
+    assert_equal(table, """
+    letter | count | points | new_col1
+    a      | 9     | 1      | $10
+    b      | 3     | 2      | $20
+    c      | 3     | 2      | $30
+    z      | 1     | 10     | $40
+    """)
+    table.append_column('new_col2', column_2)
+    assert_equal(table, """
+    letter | count | points | new_col1  | new_col2
+    a      | 9     | 1      | $10       | hello
+    b      | 3     | 2      | $20       | hello
+    c      | 3     | 2      | $30       | hello
+    z      | 1     | 10     | $40       | hello
+    """)
 
 def test_with_column(table):
     column_1 = [10, 20, 30, 40]
@@ -641,6 +793,77 @@ def test_with_column(table):
         table.append_column('bad_col', [1, 2])
     with(pytest.raises(ValueError)):
         table.append_column(0, [1, 2, 3, 4])
+def test_with_column_with_formatter(table):
+    column_1 = [10, 20, 30, 40]
+    column_2 = 'hello'
+    table2 = table.with_column('new_col1', column_1, CurrencyFormatter)
+    table3 = table2.with_column('new_col2', column_2)
+    assert_equal(table, """
+    letter | count | points
+    a      | 9     | 1
+    b      | 3     | 2
+    c      | 3     | 2
+    z      | 1     | 10
+    """)
+    assert_equal(table2, """
+    letter | count | points | new_col1
+    a      | 9     | 1      | $10
+    b      | 3     | 2      | $20
+    c      | 3     | 2      | $30
+    z      | 1     | 10     | $40
+    """)
+    assert_equal(table3, """
+    letter | count | points | new_col1  | new_col2
+    a      | 9     | 1      | $10       | hello
+    b      | 3     | 2      | $20       | hello
+    c      | 3     | 2      | $30       | hello
+    z      | 1     | 10     | $40       | hello
+    """)
+
+def test_with_columns():
+    players = Table().with_columns('player_id', make_array(110234, 110235), 'wOBA', make_array(.354, .236))
+    assert_equal(players, """
+    player_id  | wOBA
+    110,234    | 0.354
+    110,235    | 0.236
+    """)
+    players = players.with_columns('salaries', 'N/A', 'season', 2016)
+    assert_equal(players, """
+    player_id  | wOBA  | salaries | season
+    110,234    | 0.354 | N/A      | 2,016
+    110,235    | 0.236 | N/A      | 2,016
+    """)
+    salaries = Table().with_column('salary', make_array('$500,000', '$15,500,000'))
+    players = players.with_columns('salaries', salaries.column('salary'), 'years', make_array(6, 1))
+    assert_equal(players, """
+    player_id  | wOBA  | salaries    | season | years
+    110,234    | 0.354 | $500,000    | 2,016   | 6
+    110,235    | 0.236 | $15,500,000 | 2,016   | 1
+    """)
+
+def test_with_columns_with_formats():
+    players = Table().with_columns('player_id', make_array(110234, 110235), 'wOBA', make_array(.354, .236))
+    assert_equal(players, """
+    player_id  | wOBA
+    110,234    | 0.354
+    110,235    | 0.236
+    """)
+    players = players.with_columns('salaries', 'N/A', 'season', 2016)
+    assert_equal(players, """
+    player_id  | wOBA  | salaries | season
+    110,234    | 0.354 | N/A      | 2,016
+    110,235    | 0.236 | N/A      | 2,016
+    """)
+    salaries = Table().with_column('salary', make_array(500000, 15500000))
+    players2 = players.with_columns('salaries', salaries.column('salary'), 'years', make_array(6, 1), formatter=CurrencyFormatter)
+    assert_equal(players2, """
+    player_id  | wOBA  | salaries     | season | years
+    110,234    | 0.354 | $500,000     | 2,016  | $6
+    110,235    | 0.236 | $15,500,000  | 2,016  | $1
+    """)
+
+    with(pytest.raises(Exception)):
+        players3 = players.with_columns('salaries', salaries.column('salary'), make_array(7, 2), 'years', make_array(6, 1))
 
 def test_with_columns(table):
     column_1 = [10, 20, 30, 40]
@@ -648,17 +871,7 @@ def test_with_columns(table):
     table2 = table.with_columns(
         'new_col1', column_1,
         'new_col2', column_2)
-    table3 = table.with_column( # Incorrect method name still works
-        'new_col1', column_1,
-        'new_col2', column_2)
     assert_equal(table2, """
-    letter | count | points | new_col1 | new_col2
-    a      | 9     | 1      | 10       | hello
-    b      | 3     | 2      | 20       | hello
-    c      | 3     | 2      | 30       | hello
-    z      | 1     | 10     | 40       | hello
-    """)
-    assert_equal(table3, """
     letter | count | points | new_col1 | new_col2
     a      | 9     | 1      | 10       | hello
     b      | 3     | 2      | 20       | hello
@@ -681,7 +894,8 @@ def test_append_table(table):
     """)
 
 
-def test_append_different_table(table, u):
+def test_append_different_table(table, table2):
+    u = table2
     with pytest.raises(ValueError):
         table.append(u)
 
@@ -702,7 +916,7 @@ def test_append_different_order(table, table3):
 
 
 def test_relabel():
-    table = Table([(1, 2, 3), (12345, 123, 5123)], ['points', 'id'])
+    table = Table().with_columns('points', (1, 2, 3), 'id', (12345, 123, 5123))
     table.relabel('id', 'todo')
     assert_equal(table, """
     points | todo
@@ -838,19 +1052,20 @@ def test_remove_single(table):
 
 
 def test_empty():
-    t = Table.empty(['letter', 'count', 'points'])
+    t = Table(['letter', 'count', 'points'])
     assert_equal(t, """
     letter | count | points
     """)
 
 def test_empty_without_labels():
-    t = Table.empty()
+    t = Table()
     assert_equal(t, '')
 
 
+@pytest.mark.filterwarnings('ignore::FutureWarning')
 def test_from_rows():
     letters = [('a', 9, 1), ('b', 3, 2), ('c', 3, 2), ('z', 1, 10)]
-    t = Table.from_rows(letters, ['letter', 'count', 'points'])
+    t = Table().from_rows(letters, ['letter', 'count', 'points'])
     assert_equal(t, """
     letter | count | points
     a      | 9     | 1
@@ -889,6 +1104,7 @@ def test_from_records():
     """)
 
 
+@pytest.mark.filterwarnings('ignore::FutureWarning')
 def test_from_columns_dict():
     columns_dict = {
         'letter': ['a', 'b', 'c', 'z'],
@@ -912,7 +1128,7 @@ def test_from_columns_dict():
 
 def test_group_by_tuples():
     tuples = [((5, 1), (1, 2, 2, 10), (1, 2, 2, 10)), (3, 3, 1)]
-    t = Table(tuples, ['tuples', 'ints'])
+    t = Table().with_columns('tuples', tuples[0], 'ints', tuples[1])
     assert_equal(t, """
     tuples        | ints
     (5, 1)        | 3
@@ -1133,17 +1349,91 @@ def test_join_with_column_already_duplicated(table, scrabble_table2):
 
     joined_forwards = table.join("letter", scrabble_table2)
     joined_backwards = scrabble_table2.join("letter", table)
+
+    # Test that the joined tables have the same labels
     assert_array_equal(list(sorted(joined_backwards.labels)), list(sorted(joined_forwards.labels)))
+
+    # Check for each label that the same contents are in the column
     for col in joined_backwards.labels:
         assert_array_equal(joined_forwards.column(col), joined_backwards.column(col))
+
+    # Create new test case
     table_copy = table.with_columns("pointsplus1", scrabble_table2.column("pointsplus1"), 
         "pointsplus1_2", scrabble_table2.column("pointsplus1") + 1)
     joined_forwards = table_copy.join("letter", scrabble_table2)
     joined_backwards = scrabble_table2.join("letter", table_copy)
+
+    # Test that the joined tables have the same labels
     assert_array_equal(len(list(sorted(joined_backwards.labels))), len(list(sorted(joined_forwards.labels))))
+
+    # Check for each label that the same contents are in the column
     for col in joined_backwards.labels:
         assert_array_equal(joined_forwards.column(col), joined_backwards.column(col))
 
+def test_join_one_list_with_one_label(table, table4):
+    table['totals'] = table['points'] * table['count']
+    test = table.join(['letter'], table4.drop('count', 'different label'))
+    assert_equal(test, """
+    letter | count | points | totals | name
+    a      | 9     | 1      | 9      | Gamma
+    a      | 9     | 1      | 9      | Beta
+    b      | 3     | 2      | 6      | Delta
+    c      | 3     | 2      | 6      | Epsilon
+    """)
+
+def test_join_two_lists_same_label(table, table4):
+    table['totals'] = table['points'] * table['count']
+    test = table.join(['letter'], table4.drop('count', 'different label'), ['letter'])
+    assert_equal(test, """
+    letter | count | points | totals | name
+    a      | 9     | 1      | 9      | Gamma
+    a      | 9     | 1      | 9      | Beta
+    b      | 3     | 2      | 6      | Delta
+    c      | 3     | 2      | 6      | Epsilon
+    """)
+
+def test_join_two_lists_different_labels(table, table4):
+	# also checks for multiple matches on one side
+    table['totals'] = table['points'] * table['count']
+    test = table.join(['points'], table4.drop('letter', 'count'), ['different label'])
+    assert_equal(test, """
+    points | letter | count | totals | name
+    1      | a      | 9     | 9      | Gamma
+    1      | a      | 9     | 9      | Alpha
+    1      | a      | 9     | 9      | Beta
+    2      | b      | 3     | 6      | Epsilon
+    2      | c      | 3     | 6      | Epsilon
+    """)
+
+def test_join_two_lists_2_columns(table, table4):
+    table['totals'] = table['points'] * table['count']
+    test = table.join(['letter', 'points'], table4, ['letter', 'different label'])
+    assert_equal(test, """
+    letter | points | count | totals | count_2 | name
+    a      | 1      | 9     | 9      | 9       | Gamma
+    a      | 1      | 9     | 9      | 9       | Beta
+    c      | 2      | 3     | 6      | 2       | Epsilon
+    """)
+
+def test_join_two_lists_3_columns(table, table4):
+    table['totals'] = table['points'] * table['count']
+    test = table.join(['letter', 'count', 'points'], table4, ['letter', 'count', 'different label'])
+    assert_equal(test, """
+    letter | count | points | totals | name
+    a      | 9     | 1      | 9      | Gamma
+    a      | 9     | 1      | 9      | Beta
+    """)
+
+def test_join_conflicting_column_names(table, table4):
+    table['totals'] = table['points'] * table['count']
+    test = table.join(['letter'], table4)
+    assert_equal(test, """
+    letter | count | points | totals | count_2 | different label | name
+    a      | 9     | 1      | 9      | 9       | 1               | Gamma
+    a      | 9     | 1      | 9      | 9       | 1               | Beta
+    b      | 3     | 2      | 6      | 3       | 4               | Delta
+    c      | 3     | 2      | 6      | 2       | 2               | Epsilon
+    """)
 
 def test_percentile(numbers_table):
     assert_equal(numbers_table.percentile(76), """
@@ -1164,6 +1454,13 @@ def test_pivot_bin(categories_table):
     2    | 1    | 2
     3    | 0    | 0
     """)
+
+def test_move_column(table):
+    assert table.labels == ('letter', 'count', 'points')
+    table = table.move_column("letter", 1)
+    assert table.labels == ('count', 'letter', 'points')
+    table = table.move_column(2, 1)
+    assert table.labels == ('count', 'points', 'letter')
 
 ##################
 # Export/Display #
@@ -1235,6 +1532,37 @@ def test_sample_weights_with_none_k(table):
         u = table.sample(with_replacement=False)
         assert len(set(u.rows)) == len(u.rows)
         i += 1
+
+def test_shuffle_basic(table):
+    """Tests that shuffle doesn't break"""
+    table.shuffle()
+
+def test_shuffle_correct_n(table):
+    """Tests that shuffle returns the correct number of rows"""
+    assert table.num_rows == table.shuffle().num_rows
+
+def test_shuffle_all_rows_appear(table):
+    """
+    Tests that all rows appear in shuffled table / there are no 
+    duplicated rows
+    """
+    assert set(table.column("letter")) == set(table.shuffle().column("letter"))
+
+def test_shuffle_different_order(table):
+    """
+    Tests that all rows do not always appear in the same order
+    as they were in the original table
+    """
+    # This is more or less a regression test - you could get very 
+    # unlucky and have no change in the order of the rows by complete 
+    # accident. However, this is highly unlikely to happen.
+    
+    original_order = table.column("letter")
+    for _ in range(10):
+        if not np.array_equal(table.shuffle().column("letter"), original_order):
+            assert True
+            return
+    assert False
 
 def test_split_basic(table):
     """Test that table.split works."""
@@ -1361,7 +1689,7 @@ def test_array_roundtrip(table):
     arr = table.values
     assert isinstance(arr, np.ndarray)
 
-    t = Table().with_columns([(nm, vals)
+    t = table.with_columns([(nm, vals)
                               for nm, vals in zip(table.labels, arr.T)])
     for (c0, c1) in zip(t.columns, table.columns):
         assert_equal(c0, c1)
@@ -1372,3 +1700,10 @@ def test_url_parse():
     with pytest.raises(ValueError):
         url = 'https://data8.berkeley.edu/something/something/dark/side'
         Table.read_table(url)
+
+def test_read_table():
+    """Test that Tables reads a csv file."""
+    assert isinstance(Table().read_table("tests/us-unemployment.csv"), Table)
+    assert isinstance(Table().read_table("tests/us-unemployment-copy"), Table)
+    assert isinstance(Table().read_table("tests/us-unemployment.txt"), Table)
+    assert isinstance(Table().read_table("https://raw.githubusercontent.com/data-8/textbook/gh-pages/data/deflategate.csv"), Table)
