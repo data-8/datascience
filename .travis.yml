@@ -1,5 +1,9 @@
 language: python
 
+dist: xenial
+services:
+  - xvfb
+
 env:
   global:
   - GH_REPO: github.com/data-8/datascience.git

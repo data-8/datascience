@@ -12,8 +12,8 @@ if [[ $TRAVIS_PULL_REQUEST == false && $TRAVIS_BRANCH == "master" ]] ; then
   # sam: The DISPLAY env variable needs to be set for matplotlib charts to be
   # generated on Travis. I don't know why just matplotlib.use doesn't work.
   export DISPLAY=:99.0
-  sh -e /etc/init.d/xvfb start
-  sleep 3 # give xvfb some time to start
+  # sh -e /etc/init.d/xvfb start
+  # sleep 3 # give xvfb some time to start
 
   echo "-- building docs --"
 
