@@ -6,7 +6,7 @@
 set -e # exit with nonzero exit code if anything fails
 
 # Only build docs on master branch
-if [[ $TRAVIS_PULL_REQUEST == false && $TRAVIS_BRANCH == "master" ]] ; then
+if [[ $TRAVIS_PULL_REQUEST == false ]] ; then #&& $TRAVIS_BRANCH == "master" ]] ; then
 
   # https://docs.travis-ci.com/user/gui-and-headless-browsers/#Using-xvfb-to-Run-Tests-That-Require-a-GUI
   # sam: The DISPLAY env variable needs to be set for matplotlib charts to be
