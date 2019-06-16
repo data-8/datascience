@@ -1,5 +1,5 @@
-datascience\.tables\.Table\.move\_to\_end
-=========================================
+datascience.tables.Table.move\_to\_end
+======================================
 
 .. currentmodule:: datascience.tables
 

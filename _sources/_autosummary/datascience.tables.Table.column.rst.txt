@@ -1,5 +1,5 @@
-datascience\.tables\.Table\.column
-==================================
+datascience.tables.Table.column
+===============================
 
 .. currentmodule:: datascience.tables
 

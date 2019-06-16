@@ -1,5 +1,5 @@
-datascience\.tables\.Table\.sample
-==================================
+datascience.tables.Table.sample
+===============================
 
 .. currentmodule:: datascience.tables
 

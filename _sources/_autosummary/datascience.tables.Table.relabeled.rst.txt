@@ -1,5 +1,5 @@
-datascience\.tables\.Table\.relabeled
-=====================================
+datascience.tables.Table.relabeled
+==================================
 
 .. currentmodule:: datascience.tables
 

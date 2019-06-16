@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>datascience.tables.Table.with_column &#8212; datascience 0.10.7 documentation</title>
+    <title>datascience.tables.Table.with_column &#8212; datascience 0.11.4 documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -14,7 +14,6 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -36,7 +35,7 @@
         <li class="right" >
           <a href="datascience.tables.Table.from_array.html" title="datascience.tables.Table.from_array"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.10.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.11.4 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" accesskey="U">Tables (<code class="docutils literal notranslate"><span class="pre">datascience.tables</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
@@ -50,19 +49,18 @@
 <h1>datascience.tables.Table.with_column<a class="headerlink" href="#datascience-tables-table-with-column" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="datascience.tables.Table.with_column">
-<code class="descclassname">Table.</code><code class="descname">with_column</code><span class="sig-paren">(</span><em>label</em>, <em>values</em>, <em>*rest</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.with_column"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.with_column" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">Table.</code><code class="descname">with_column</code><span class="sig-paren">(</span><em>label</em>, <em>values</em>, <em>formatter=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.with_column"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.with_column" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new table with an additional or replaced column.</p>
 <dl class="docutils">
 <dt>Args:</dt>
-<dd><dl class="first last docutils">
+<dd><dl class="first docutils">
 <dt><code class="docutils literal notranslate"><span class="pre">label</span></code> (str): The column label. If an existing label is used,</dt>
 <dd>the existing column will be replaced in the new table.</dd>
 <dt><code class="docutils literal notranslate"><span class="pre">values</span></code> (single value or sequence): If a single value, every</dt>
 <dd>value in the new column is <code class="docutils literal notranslate"><span class="pre">values</span></code>. If sequence of values,
 new column takes on values in <code class="docutils literal notranslate"><span class="pre">values</span></code>.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">rest</span></code>: An alternating list of labels and values describing</dt>
-<dd>additional columns. See with_columns for a full description.</dd>
 </dl>
+<p class="last"><code class="docutils literal notranslate"><span class="pre">formatter</span></code> (single value): Specifies formatter for the new column. Defaults to no formatter.</p>
 </dd>
 <dt>Raises:</dt>
 <dd><dl class="first last docutils">
@@ -164,13 +162,13 @@ new column takes on values in <code class="docutils literal notranslate"><span c
         <li class="right" >
           <a href="datascience.tables.Table.from_array.html" title="datascience.tables.Table.from_array"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.10.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.11.4 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" >Tables (<code class="docutils literal notranslate"><span class="pre">datascience.tables</span></code>)</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
     </div>
   </body>
 </html>

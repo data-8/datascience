@@ -1,5 +1,5 @@
-datascience\.tables\.Table\.hist
-================================
+datascience.tables.Table.hist
+=============================
 
 .. currentmodule:: datascience.tables
 

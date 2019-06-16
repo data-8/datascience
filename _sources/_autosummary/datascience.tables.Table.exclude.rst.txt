@@ -1,5 +1,5 @@
-datascience\.tables\.Table\.exclude
-===================================
+datascience.tables.Table.exclude
+================================
 
 .. currentmodule:: datascience.tables
 

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Maps (datascience.maps) &#8212; datascience 0.10.7 documentation</title>
+    <title>Maps (datascience.maps) &#8212; datascience 0.11.4 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -14,7 +14,6 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -36,7 +35,7 @@
         <li class="right" >
           <a href="_autosummary/datascience.tables.Table.boxplot.html" title="datascience.tables.Table.boxplot"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.10.7 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.11.4 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -206,18 +205,16 @@ radius – pixel radius of the circle</p>
 <dd>Circle fill opacity</dd>
 </dl>
 <p>For example, to draw three circles:</p>
-<dl class="docutils">
-<dt>t = Table().with_columns([</dt>
-<dd><blockquote class="first">
-<div>‘lat’, [37.8, 38, 37.9],
-‘lon’, [-122, -122.1, -121.9],
-‘label’, [‘one’, ‘two’, ‘three’],
-‘color’, [‘red’, ‘green’, ‘blue’],
-‘radius’, [3000, 4000, 5000],</div></blockquote>
-<p class="last">])</p>
-</dd>
-</dl>
-<p>Circle.map_table(t)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">([</span>
+        <span class="s1">&#39;lat&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mf">37.8</span><span class="p">,</span> <span class="mi">38</span><span class="p">,</span> <span class="mf">37.9</span><span class="p">],</span>
+        <span class="s1">&#39;lon&#39;</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">122</span><span class="p">,</span> <span class="o">-</span><span class="mf">122.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">121.9</span><span class="p">],</span>
+        <span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;one&#39;</span><span class="p">,</span> <span class="s1">&#39;two&#39;</span><span class="p">,</span> <span class="s1">&#39;three&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;radius&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">3000</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> <span class="mi">5000</span><span class="p">],</span>
+    <span class="p">])</span>
+<span class="n">Circle</span><span class="o">.</span><span class="n">map_table</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="class">
@@ -326,12 +323,12 @@ the first.</li>
         <li class="right" >
           <a href="_autosummary/datascience.tables.Table.boxplot.html" title="datascience.tables.Table.boxplot"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.10.7 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.11.4 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
     </div>
   </body>
 </html>

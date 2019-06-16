@@ -1,5 +1,5 @@
-datascience\.tables\.Table\.bin
-===============================
+datascience.tables.Table.bin
+============================
 
 .. currentmodule:: datascience.tables
 

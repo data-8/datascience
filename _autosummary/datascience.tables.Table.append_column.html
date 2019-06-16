@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>datascience.tables.Table.append_column &#8212; datascience 0.10.7 documentation</title>
+    <title>datascience.tables.Table.append_column &#8212; datascience 0.11.4 documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -14,7 +14,6 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -36,7 +35,7 @@
         <li class="right" >
           <a href="datascience.tables.Table.append.html" title="datascience.tables.Table.append"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.10.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.11.4 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" accesskey="U">Tables (<code class="docutils literal notranslate"><span class="pre">datascience.tables</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
@@ -50,7 +49,7 @@
 <h1>datascience.tables.Table.append_column<a class="headerlink" href="#datascience-tables-table-append-column" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="datascience.tables.Table.append_column">
-<code class="descclassname">Table.</code><code class="descname">append_column</code><span class="sig-paren">(</span><em>label</em>, <em>values</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.append_column"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.append_column" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">Table.</code><code class="descname">append_column</code><span class="sig-paren">(</span><em>label</em>, <em>values</em>, <em>formatter=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.append_column"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.append_column" title="Permalink to this definition">¶</a></dt>
 <dd><p>Appends a column to the table or replaces a column.</p>
 <dl class="docutils">
 <dt><code class="docutils literal notranslate"><span class="pre">__setitem__</span></code> is aliased to this method:</dt>
@@ -64,6 +63,8 @@
 <p class="last">If a list or array, the new column contains the values in
 <code class="docutils literal notranslate"><span class="pre">values</span></code>, which must be the same length as the table.</p>
 </dd>
+<dt><code class="docutils literal notranslate"><span class="pre">formatter</span></code> (single formatter): Adds a formatter to the column being </dt>
+<dd>appended. No formatter added by default.</dd>
 </dl>
 </dd>
 <dt>Returns:</dt>
@@ -91,14 +92,12 @@ as the number of rows in the table.</li>
 <span class="go">c      | 3     | 2</span>
 <span class="go">z      | 1     | 10</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">append_column</span><span class="p">(</span><span class="s1">&#39;new_col1&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span>
 <span class="go">letter | count | points | new_col1</span>
 <span class="go">a      | 9     | 1      | 10</span>
 <span class="go">b      | 3     | 2      | 20</span>
 <span class="go">c      | 3     | 2      | 30</span>
 <span class="go">z      | 1     | 10     | 40</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">append_column</span><span class="p">(</span><span class="s1">&#39;new_col2&#39;</span><span class="p">,</span> <span class="s1">&#39;hello&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span>
 <span class="go">letter | count | points | new_col1 | new_col2</span>
 <span class="go">a      | 9     | 1      | 10       | hello</span>
 <span class="go">b      | 3     | 2      | 20       | hello</span>
@@ -168,13 +167,13 @@ as the number of rows in the table.</li>
         <li class="right" >
           <a href="datascience.tables.Table.append.html" title="datascience.tables.Table.append"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.10.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.11.4 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" >Tables (<code class="docutils literal notranslate"><span class="pre">datascience.tables</span></code>)</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
     </div>
   </body>
 </html>

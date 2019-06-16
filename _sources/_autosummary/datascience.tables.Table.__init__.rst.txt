@@ -1,5 +1,5 @@
-datascience\.tables\.Table\.\_\_init\_\_
-========================================
+datascience.tables.Table.\_\_init\_\_
+=====================================
 
 .. currentmodule:: datascience.tables
 

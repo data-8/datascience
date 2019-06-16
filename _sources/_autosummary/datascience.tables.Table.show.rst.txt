@@ -1,5 +1,5 @@
-datascience\.tables\.Table\.show
-================================
+datascience.tables.Table.show
+=============================
 
 .. currentmodule:: datascience.tables
 

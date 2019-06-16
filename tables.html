@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Tables (datascience.tables) &#8212; datascience 0.10.7 documentation</title>
+    <title>Tables (datascience.tables) &#8212; datascience 0.11.4 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -14,7 +14,6 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -36,7 +35,7 @@
         <li class="right" >
           <a href="tutorial.html" title="Start Here: datascience Tutorial"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.10.7 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.11.4 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -110,10 +109,10 @@ methods (mostly visualizations).</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.with_column.html#datascience.tables.Table.with_column" title="datascience.tables.Table.with_column"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.with_column</span></code></a>(label,&nbsp;values,&nbsp;*rest)</td>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.with_column.html#datascience.tables.Table.with_column" title="datascience.tables.Table.with_column"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.with_column</span></code></a>(label,&nbsp;values[,&nbsp;formatter])</td>
 <td>Return a new table with an additional or replaced column.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.with_columns.html#datascience.tables.Table.with_columns" title="datascience.tables.Table.with_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.with_columns</span></code></a>(*labels_and_values)</td>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.with_columns.html#datascience.tables.Table.with_columns" title="datascience.tables.Table.with_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.with_columns</span></code></a>(*labels_and_values,&nbsp;…)</td>
 <td>Return a table with additional or replaced columns.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.with_row.html#datascience.tables.Table.with_row" title="datascience.tables.Table.with_row"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.with_row</span></code></a>(row)</td>
@@ -138,7 +137,7 @@ methods (mostly visualizations).</p>
 <td>Number of columns.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.columns.html#datascience.tables.Table.columns" title="datascience.tables.Table.columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.columns</span></code></a></td>
-<td></td>
+<td>Return a tuple of columns, each with the values in that column.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.column.html#datascience.tables.Table.column" title="datascience.tables.Table.column"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.column</span></code></a>(index_or_label)</td>
 <td>Return the values of a column as an array.</td>
@@ -182,7 +181,7 @@ methods (mostly visualizations).</p>
 <tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.append.html#datascience.tables.Table.append" title="datascience.tables.Table.append"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.append</span></code></a>(row_or_table)</td>
 <td>Append a row or all rows of a table.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.append_column.html#datascience.tables.Table.append_column" title="datascience.tables.Table.append_column"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.append_column</span></code></a>(label,&nbsp;values)</td>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.append_column.html#datascience.tables.Table.append_column" title="datascience.tables.Table.append_column"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.append_column</span></code></a>(label,&nbsp;values[,&nbsp;formatter])</td>
 <td>Appends a column to the table or replaces a column.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="_autosummary/datascience.tables.Table.relabel.html#datascience.tables.Table.relabel" title="datascience.tables.Table.relabel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.relabel</span></code></a>(column_label,&nbsp;new_label)</td>
@@ -362,12 +361,12 @@ methods (mostly visualizations).</p>
         <li class="right" >
           <a href="tutorial.html" title="Start Here: datascience Tutorial"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.10.7 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.11.4 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
     </div>
   </body>
 </html>
