@@ -2425,7 +2425,7 @@ class Table(collections.abc.MutableMapping):
 
     # Deprecated
     def pivot_hist(self, pivot_column_label, value_column_label, overlay=True, width=6, height=4, **vargs):
-        """Draw histograms of each category in a column."""
+        """Draw histograms of each category in a column. (Deprecated)"""
         warnings.warn("pivot_hist is deprecated; use "
                       "hist(value_column_label, group=pivot_column_label), or "
                       "with side_by_side=True if you really want side-by-side "
