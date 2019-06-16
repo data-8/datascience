@@ -1,6 +1,6 @@
 name: datascience
 dependencies:
-- coverage
+- coverage<5.0.0
 - coveralls
 - cycler
 - decorator
