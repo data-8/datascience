@@ -161,20 +161,15 @@ def proportions_from_distribution(table, label, sample_size,
 def table_apply(table, func, subset=None):
     """Applies a function to each column and returns a Table.
 
-    Uses pandas `apply` under the hood, then converts back to a Table
-
     Args:
-        table : instance of Table
-            The table to apply your function to
-        func : function
-            Any function that will work with DataFrame.apply
-        subset : list | None
-            A list of columns to apply the function to. If None, function
-            will be applied to all columns in table
+        ``table``: The table to apply your function to.
 
-    Returns
-    -------
-    tab : instance of Table
+        ``func``: The function to apply to each column.
+
+        ``subset``: A list of columns to apply the function to; if None,
+            the function will be applied to all columns in table.
+
+    Returns:
         A table with the given function applied. It will either be the
         shape == shape(table), or shape (1, table.shape[1])
     """
