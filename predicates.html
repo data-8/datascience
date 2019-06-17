@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Predicates (datascience.predicates) &#8212; datascience 0.11.4 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,6 +12,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -49,7 +48,7 @@
 <p>Predicate functions.</p>
 <dl class="class">
 <dt id="datascience.predicates.are">
-<em class="property">class </em><code class="descclassname">datascience.predicates.</code><code class="descname">are</code><a class="reference internal" href="_modules/datascience/predicates.html#are"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">datascience.predicates.</code><code class="sig-name descname">are</code><a class="reference internal" href="_modules/datascience/predicates.html#are"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are" title="Permalink to this definition">¶</a></dt>
 <dd><p>Predicate functions. The class is named “are” for calls to where.</p>
 <p>For example, given a table, predicates can be used to pick rows as follows.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">datascience</span> <span class="k">import</span> <span class="n">Table</span>
@@ -140,123 +139,123 @@
 <span class="go">S     | 30</span>
 </pre></div>
 </div>
-<dl class="staticmethod">
+<dl class="method">
 <dt id="datascience.predicates.are.above">
-<em class="property">static </em><code class="descname">above</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.above"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.above" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">above</code><span class="sig-paren">(</span><em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.above"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.above" title="Permalink to this definition">¶</a></dt>
 <dd><p>Greater than y.</p>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="datascience.predicates.are.above_or_equal_to">
-<em class="property">static </em><code class="descname">above_or_equal_to</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.above_or_equal_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.above_or_equal_to" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">above_or_equal_to</code><span class="sig-paren">(</span><em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.above_or_equal_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.above_or_equal_to" title="Permalink to this definition">¶</a></dt>
 <dd><p>Greater than or equal to y.</p>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="datascience.predicates.are.below">
-<em class="property">static </em><code class="descname">below</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.below"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.below" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">below</code><span class="sig-paren">(</span><em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.below"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.below" title="Permalink to this definition">¶</a></dt>
 <dd><p>Less than y.</p>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="datascience.predicates.are.below_or_equal_to">
-<em class="property">static </em><code class="descname">below_or_equal_to</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.below_or_equal_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.below_or_equal_to" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">below_or_equal_to</code><span class="sig-paren">(</span><em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.below_or_equal_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.below_or_equal_to" title="Permalink to this definition">¶</a></dt>
 <dd><p>Less than or equal to y.</p>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="datascience.predicates.are.between">
-<em class="property">static </em><code class="descname">between</code><span class="sig-paren">(</span><em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.between"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.between" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">between</code><span class="sig-paren">(</span><em class="sig-param">y</em>, <em class="sig-param">z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.between"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.between" title="Permalink to this definition">¶</a></dt>
 <dd><p>Greater than or equal to y and less than z.</p>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="datascience.predicates.are.between_or_equal_to">
-<em class="property">static </em><code class="descname">between_or_equal_to</code><span class="sig-paren">(</span><em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.between_or_equal_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.between_or_equal_to" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">between_or_equal_to</code><span class="sig-paren">(</span><em class="sig-param">y</em>, <em class="sig-param">z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.between_or_equal_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.between_or_equal_to" title="Permalink to this definition">¶</a></dt>
 <dd><p>Greater than or equal to y and less than or equal to z.</p>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="datascience.predicates.are.contained_in">
-<em class="property">static </em><code class="descname">contained_in</code><span class="sig-paren">(</span><em>superstring</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.contained_in"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.contained_in" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">contained_in</code><span class="sig-paren">(</span><em class="sig-param">superstring</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.contained_in"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.contained_in" title="Permalink to this definition">¶</a></dt>
 <dd><p>A string that is part of the given superstring.</p>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="datascience.predicates.are.containing">
-<em class="property">static </em><code class="descname">containing</code><span class="sig-paren">(</span><em>substring</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.containing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.containing" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">containing</code><span class="sig-paren">(</span><em class="sig-param">substring</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.containing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.containing" title="Permalink to this definition">¶</a></dt>
 <dd><p>A string that contains within it the given substring.</p>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="datascience.predicates.are.equal_to">
-<em class="property">static </em><code class="descname">equal_to</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.equal_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.equal_to" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">equal_to</code><span class="sig-paren">(</span><em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.equal_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.equal_to" title="Permalink to this definition">¶</a></dt>
 <dd><p>Equal to y.</p>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="datascience.predicates.are.not_above">
-<em class="property">static </em><code class="descname">not_above</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.not_above"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.not_above" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">not_above</code><span class="sig-paren">(</span><em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.not_above"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.not_above" title="Permalink to this definition">¶</a></dt>
 <dd><p>Is not above y</p>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="datascience.predicates.are.not_above_or_equal_to">
-<em class="property">static </em><code class="descname">not_above_or_equal_to</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.not_above_or_equal_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.not_above_or_equal_to" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">not_above_or_equal_to</code><span class="sig-paren">(</span><em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.not_above_or_equal_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.not_above_or_equal_to" title="Permalink to this definition">¶</a></dt>
 <dd><p>Is neither above y nor equal to y</p>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="datascience.predicates.are.not_below">
-<em class="property">static </em><code class="descname">not_below</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.not_below"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.not_below" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">not_below</code><span class="sig-paren">(</span><em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.not_below"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.not_below" title="Permalink to this definition">¶</a></dt>
 <dd><p>Is not below y</p>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="datascience.predicates.are.not_below_or_equal_to">
-<em class="property">static </em><code class="descname">not_below_or_equal_to</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.not_below_or_equal_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.not_below_or_equal_to" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">not_below_or_equal_to</code><span class="sig-paren">(</span><em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.not_below_or_equal_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.not_below_or_equal_to" title="Permalink to this definition">¶</a></dt>
 <dd><p>Is neither below y nor equal to y</p>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="datascience.predicates.are.not_between">
-<em class="property">static </em><code class="descname">not_between</code><span class="sig-paren">(</span><em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.not_between"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.not_between" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">not_between</code><span class="sig-paren">(</span><em class="sig-param">y</em>, <em class="sig-param">z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.not_between"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.not_between" title="Permalink to this definition">¶</a></dt>
 <dd><p>Is equal to y or less than y or greater than z</p>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="datascience.predicates.are.not_between_or_equal_to">
-<em class="property">static </em><code class="descname">not_between_or_equal_to</code><span class="sig-paren">(</span><em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.not_between_or_equal_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.not_between_or_equal_to" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">not_between_or_equal_to</code><span class="sig-paren">(</span><em class="sig-param">y</em>, <em class="sig-param">z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.not_between_or_equal_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.not_between_or_equal_to" title="Permalink to this definition">¶</a></dt>
 <dd><p>Is less than y or greater than z</p>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="datascience.predicates.are.not_contained_in">
-<em class="property">static </em><code class="descname">not_contained_in</code><span class="sig-paren">(</span><em>superstring</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.not_contained_in"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.not_contained_in" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">not_contained_in</code><span class="sig-paren">(</span><em class="sig-param">superstring</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.not_contained_in"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.not_contained_in" title="Permalink to this definition">¶</a></dt>
 <dd><p>A string that is not contained within the superstring</p>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="datascience.predicates.are.not_containing">
-<em class="property">static </em><code class="descname">not_containing</code><span class="sig-paren">(</span><em>substring</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.not_containing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.not_containing" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">not_containing</code><span class="sig-paren">(</span><em class="sig-param">substring</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.not_containing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.not_containing" title="Permalink to this definition">¶</a></dt>
 <dd><p>A string that does not contain substring</p>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="datascience.predicates.are.not_equal_to">
-<em class="property">static </em><code class="descname">not_equal_to</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.not_equal_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.not_equal_to" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">not_equal_to</code><span class="sig-paren">(</span><em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.not_equal_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.not_equal_to" title="Permalink to this definition">¶</a></dt>
 <dd><p>Is not equal to y</p>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="datascience.predicates.are.not_strictly_between">
-<em class="property">static </em><code class="descname">not_strictly_between</code><span class="sig-paren">(</span><em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.not_strictly_between"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.not_strictly_between" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">not_strictly_between</code><span class="sig-paren">(</span><em class="sig-param">y</em>, <em class="sig-param">z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.not_strictly_between"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.not_strictly_between" title="Permalink to this definition">¶</a></dt>
 <dd><p>Is equal to y or equal to z or less than y or greater than z</p>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="datascience.predicates.are.strictly_between">
-<em class="property">static </em><code class="descname">strictly_between</code><span class="sig-paren">(</span><em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.strictly_between"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.strictly_between" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">strictly_between</code><span class="sig-paren">(</span><em class="sig-param">y</em>, <em class="sig-param">z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/predicates.html#are.strictly_between"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.predicates.are.strictly_between" title="Permalink to this definition">¶</a></dt>
 <dd><p>Greater than y and less than z.</p>
 </dd></dl>
 
@@ -284,13 +283,11 @@
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -319,7 +316,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.1.
     </div>
   </body>
 </html>

@@ -1,0 +1,6 @@
+datascience.tables.Table.group\_bar
+===================================
+
+.. currentmodule:: datascience.tables
+
+.. automethod:: Table.group_bar

@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>datascience.tables.Table.relabel &#8212; datascience 0.11.4 documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,10 +12,11 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="datascience.tables.Table.copy" href="datascience.tables.Table.copy.html" />
+    <link rel="next" title="datascience.tables.Table.remove" href="datascience.tables.Table.remove.html" />
     <link rel="prev" title="datascience.tables.Table.append_column" href="datascience.tables.Table.append_column.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -30,7 +29,7 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="datascience.tables.Table.copy.html" title="datascience.tables.Table.copy"
+          <a href="datascience.tables.Table.remove.html" title="datascience.tables.Table.remove"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="datascience.tables.Table.append_column.html" title="datascience.tables.Table.append_column"
@@ -49,28 +48,26 @@
 <h1>datascience.tables.Table.relabel<a class="headerlink" href="#datascience-tables-table-relabel" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="datascience.tables.Table.relabel">
-<code class="descclassname">Table.</code><code class="descname">relabel</code><span class="sig-paren">(</span><em>column_label</em>, <em>new_label</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.relabel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.relabel" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Table.</code><code class="sig-name descname">relabel</code><span class="sig-paren">(</span><em class="sig-param">column_label</em>, <em class="sig-param">new_label</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.relabel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.relabel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Changes the label(s) of column(s) specified by <code class="docutils literal notranslate"><span class="pre">column_label</span></code> to
 labels in <code class="docutils literal notranslate"><span class="pre">new_label</span></code>.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><dl class="first last docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">column_label</span></code> – (single str or array of str) The label(s) of</dt>
-<dd>columns to be changed to <code class="docutils literal notranslate"><span class="pre">new_label</span></code>.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">new_label</span></code> – (single str or array of str): The label name(s)</dt>
-<dd>of columns to replace <code class="docutils literal notranslate"><span class="pre">column_label</span></code>.</dd>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">column_label</span></code> – (single str or array of str) The label(s) of</dt><dd><p>columns to be changed to <code class="docutils literal notranslate"><span class="pre">new_label</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">new_label</span></code> – (single str or array of str): The label name(s)</dt><dd><p>of columns to replace <code class="docutils literal notranslate"><span class="pre">column_label</span></code>.</p>
+</dd>
 </dl>
 </dd>
-<dt>Raises:</dt>
-<dd><dl class="first last docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">ValueError</span></code> – if <code class="docutils literal notranslate"><span class="pre">column_label</span></code> is not in table, or if</dt>
-<dd><code class="docutils literal notranslate"><span class="pre">column_label</span></code> and <code class="docutils literal notranslate"><span class="pre">new_label</span></code> are not of equal length.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">TypeError</span></code> – if <code class="docutils literal notranslate"><span class="pre">column_label</span></code> and/or <code class="docutils literal notranslate"><span class="pre">new_label</span></code> is not</dt>
-<dd><code class="docutils literal notranslate"><span class="pre">str</span></code>.</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">ValueError</span></code> – if <code class="docutils literal notranslate"><span class="pre">column_label</span></code> is not in table, or if</dt><dd><p><code class="docutils literal notranslate"><span class="pre">column_label</span></code> and <code class="docutils literal notranslate"><span class="pre">new_label</span></code> are not of equal length.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">TypeError</span></code> – if <code class="docutils literal notranslate"><span class="pre">column_label</span></code> and/or <code class="docutils literal notranslate"><span class="pre">new_label</span></code> is not</dt><dd><p><code class="docutils literal notranslate"><span class="pre">str</span></code>.</p>
+</dd>
 </dl>
 </dd>
-<dt>Returns:</dt>
-<dd>Original table with <code class="docutils literal notranslate"><span class="pre">new_label</span></code> in place of <code class="docutils literal notranslate"><span class="pre">column_label</span></code>.</dd>
+<dt>Returns:</dt><dd><p>Original table with <code class="docutils literal notranslate"><span class="pre">new_label</span></code> in place of <code class="docutils literal notranslate"><span class="pre">column_label</span></code>.</p>
+</dd>
 </dl>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="s1">&#39;points&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
@@ -107,8 +104,8 @@ labels in <code class="docutils literal notranslate"><span class="pre">new_label
   <p class="topless"><a href="datascience.tables.Table.append_column.html"
                         title="previous chapter">datascience.tables.Table.append_column</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="datascience.tables.Table.copy.html"
-                        title="next chapter">datascience.tables.Table.copy</a></p>
+  <p class="topless"><a href="datascience.tables.Table.remove.html"
+                        title="next chapter">datascience.tables.Table.remove</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -117,13 +114,11 @@ labels in <code class="docutils literal notranslate"><span class="pre">new_label
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -142,7 +137,7 @@ labels in <code class="docutils literal notranslate"><span class="pre">new_label
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="datascience.tables.Table.copy.html" title="datascience.tables.Table.copy"
+          <a href="datascience.tables.Table.remove.html" title="datascience.tables.Table.remove"
              >next</a> |</li>
         <li class="right" >
           <a href="datascience.tables.Table.append_column.html" title="datascience.tables.Table.append_column"
@@ -153,7 +148,7 @@ labels in <code class="docutils literal notranslate"><span class="pre">new_label
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.1.
     </div>
   </body>
 </html>

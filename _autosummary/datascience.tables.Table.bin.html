@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>datascience.tables.Table.bin &#8212; datascience 0.11.4 documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,10 +12,11 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="datascience.tables.Table.show" href="datascience.tables.Table.show.html" />
+    <link rel="next" title="datascience.tables.Table.pivot_bin" href="datascience.tables.Table.pivot_bin.html" />
     <link rel="prev" title="datascience.tables.Table.split" href="datascience.tables.Table.split.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -30,7 +29,7 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="datascience.tables.Table.show.html" title="datascience.tables.Table.show"
+          <a href="datascience.tables.Table.pivot_bin.html" title="datascience.tables.Table.pivot_bin"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="datascience.tables.Table.split.html" title="datascience.tables.Table.split"
@@ -49,32 +48,31 @@
 <h1>datascience.tables.Table.bin<a class="headerlink" href="#datascience-tables-table-bin" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="datascience.tables.Table.bin">
-<code class="descclassname">Table.</code><code class="descname">bin</code><span class="sig-paren">(</span><em>*columns</em>, <em>**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.bin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.bin" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Table.</code><code class="sig-name descname">bin</code><span class="sig-paren">(</span><em class="sig-param">*columns</em>, <em class="sig-param">**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.bin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.bin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Group values by bin and compute counts per bin by column.</p>
 <p>By default, bins are chosen to contain all values in all columns. The
 following named arguments from numpy.histogram can be applied to
 specialize bin widths:</p>
 <p>If the original table has n columns, the resulting binned table has
 n+1 columns, where column 0 contains the lower bound of each bin.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><dl class="first last docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">columns</span></code> (str or int): Labels or indices of columns to be</dt>
-<dd>binned. If empty, all columns are binned.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">bins</span></code> (int or sequence of scalars): If bins is an int,</dt>
-<dd>it defines the number of equal-width bins in the given range
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">columns</span></code> (str or int): Labels or indices of columns to be</dt><dd><p>binned. If empty, all columns are binned.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">bins</span></code> (int or sequence of scalars): If bins is an int,</dt><dd><p>it defines the number of equal-width bins in the given range
 (10, by default). If bins is a sequence, it defines the bin
 edges, including the rightmost edge, allowing for non-uniform
-bin widths.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">range</span></code> ((float, float)): The lower and upper range of</dt>
-<dd>the bins. If not provided, range contains all values in the
-table. Values outside the range are ignored.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">density</span></code> (bool): If False, the result will contain the number of</dt>
-<dd>samples in each bin. If True, the result is the value of the
+bin widths.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">range</span></code> ((float, float)): The lower and upper range of</dt><dd><p>the bins. If not provided, range contains all values in the
+table. Values outside the range are ignored.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">density</span></code> (bool): If False, the result will contain the number of</dt><dd><p>samples in each bin. If True, the result is the value of the
 probability density function at the bin, normalized such that
 the integral over the range is 1. Note that the sum of the
 histogram values will not be equal to 1 unless bins of unity
-width are chosen; it is not a probability mass function.</dd>
+width are chosen; it is not a probability mass function.</p>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -92,8 +90,8 @@ width are chosen; it is not a probability mass function.</dd>
   <p class="topless"><a href="datascience.tables.Table.split.html"
                         title="previous chapter">datascience.tables.Table.split</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="datascience.tables.Table.show.html"
-                        title="next chapter">datascience.tables.Table.show</a></p>
+  <p class="topless"><a href="datascience.tables.Table.pivot_bin.html"
+                        title="next chapter">datascience.tables.Table.pivot_bin</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -102,13 +100,11 @@ width are chosen; it is not a probability mass function.</dd>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -127,7 +123,7 @@ width are chosen; it is not a probability mass function.</dd>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="datascience.tables.Table.show.html" title="datascience.tables.Table.show"
+          <a href="datascience.tables.Table.pivot_bin.html" title="datascience.tables.Table.pivot_bin"
              >next</a> |</li>
         <li class="right" >
           <a href="datascience.tables.Table.split.html" title="datascience.tables.Table.split"
@@ -138,7 +134,7 @@ width are chosen; it is not a probability mass function.</dd>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.1.
     </div>
   </body>
 </html>

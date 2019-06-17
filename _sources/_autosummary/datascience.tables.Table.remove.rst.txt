@@ -1,0 +1,6 @@
+datascience.tables.Table.remove
+===============================
+
+.. currentmodule:: datascience.tables
+
+.. automethod:: Table.remove

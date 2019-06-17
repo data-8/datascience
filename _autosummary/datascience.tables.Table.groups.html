@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>datascience.tables.Table.groups &#8212; datascience 0.11.4 documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,6 +12,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -49,24 +48,23 @@
 <h1>datascience.tables.Table.groups<a class="headerlink" href="#datascience-tables-table-groups" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="datascience.tables.Table.groups">
-<code class="descclassname">Table.</code><code class="descname">groups</code><span class="sig-paren">(</span><em>labels</em>, <em>collect=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.groups" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Table.</code><code class="sig-name descname">groups</code><span class="sig-paren">(</span><em class="sig-param">labels</em>, <em class="sig-param">collect=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.groups" title="Permalink to this definition">¶</a></dt>
 <dd><p>Group rows by multiple columns, count or aggregate others.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><p class="first"><code class="docutils literal notranslate"><span class="pre">labels</span></code>: list of column names (or indices) to group on</p>
-<p class="last"><code class="docutils literal notranslate"><span class="pre">collect</span></code>: a function applied to values in other columns for each group</p>
+<dl>
+<dt>Args:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">labels</span></code>: list of column names (or indices) to group on</p>
+<p><code class="docutils literal notranslate"><span class="pre">collect</span></code>: a function applied to values in other columns for each group</p>
 </dd>
-<dt>Returns: A Table with each row corresponding to a unique combination of values in</dt>
-<dd>the columns specified in <code class="docutils literal notranslate"><span class="pre">labels</span></code>, where the first columns are those
+<dt>Returns: A Table with each row corresponding to a unique combination of values in</dt><dd><p>the columns specified in <code class="docutils literal notranslate"><span class="pre">labels</span></code>, where the first columns are those
 specified in <code class="docutils literal notranslate"><span class="pre">labels</span></code>, followed by a column of counts for each of the unique
 values. If <code class="docutils literal notranslate"><span class="pre">collect</span></code> is provided, a Table is returned with all original
 columns, each containing values calculated by first grouping rows according to
 to values in the <code class="docutils literal notranslate"><span class="pre">labels</span></code> column, then applying <code class="docutils literal notranslate"><span class="pre">collect</span></code> to each set of
-grouped values in the other columns.</dd>
-<dt>Note:</dt>
-<dd>The grouped columns will appear first in the result table. If <code class="docutils literal notranslate"><span class="pre">collect</span></code> does not
+grouped values in the other columns.</p>
+</dd>
+<dt>Note:</dt><dd><p>The grouped columns will appear first in the result table. If <code class="docutils literal notranslate"><span class="pre">collect</span></code> does not
 accept arguments with one of the column types, that column will be empty in the resulting
-table.</dd>
+table.</p>
+</dd>
 </dl>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">marbles</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
 <span class="gp">... </span>   <span class="s2">&quot;Color&quot;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="s2">&quot;Red&quot;</span><span class="p">,</span> <span class="s2">&quot;Green&quot;</span><span class="p">,</span> <span class="s2">&quot;Blue&quot;</span><span class="p">,</span> <span class="s2">&quot;Red&quot;</span><span class="p">,</span> <span class="s2">&quot;Green&quot;</span><span class="p">,</span> <span class="s2">&quot;Green&quot;</span><span class="p">),</span>
@@ -119,13 +117,11 @@ table.</dd>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -155,7 +151,7 @@ table.</dd>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.1.
     </div>
   </body>
 </html>

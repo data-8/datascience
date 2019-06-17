@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>datascience.tables.Table.with_columns &#8212; datascience 0.11.4 documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,6 +12,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -49,58 +48,54 @@
 <h1>datascience.tables.Table.with_columns<a class="headerlink" href="#datascience-tables-table-with-columns" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="datascience.tables.Table.with_columns">
-<code class="descclassname">Table.</code><code class="descname">with_columns</code><span class="sig-paren">(</span><em>*labels_and_values</em>, <em>**formatter</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.with_columns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.with_columns" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Table.</code><code class="sig-name descname">with_columns</code><span class="sig-paren">(</span><em class="sig-param">*labels_and_values</em>, <em class="sig-param">**formatter</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.with_columns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.with_columns" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a table with additional or replaced columns.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><dl class="first last docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">labels_and_values</span></code>: An alternating list of labels and values </dt>
-<dd>or a list of label-value pairs. If one of the labels is in 
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">labels_and_values</span></code>: An alternating list of labels and values </dt><dd><p>or a list of label-value pairs. If one of the labels is in 
 existing table, then every value in the corresponding column is
 set to that value. If label has only a single value (<code class="docutils literal notranslate"><span class="pre">int</span></code>),
-every row of corresponding column takes on that value.</dd>
-<dt>‘’formatter’’ (single Formatter value): A single formatter value </dt>
-<dd>that will be applied to all columns being added using this 
-function call.</dd>
+every row of corresponding column takes on that value.</p>
+</dd>
+<dt>‘’formatter’’ (single Formatter value): A single formatter value </dt><dd><p>that will be applied to all columns being added using this 
+function call.</p>
+</dd>
 </dl>
 </dd>
-<dt>Raises:</dt>
-<dd><dl class="first last docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">ValueError</span></code>: If</dt>
-<dd><ul class="first last simple">
-<li><dl class="first docutils">
-<dt>any label in <code class="docutils literal notranslate"><span class="pre">labels_and_values</span></code> is not a valid column</dt>
-<dd>name, i.e if label is not of type (str).</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt>if any value in <code class="docutils literal notranslate"><span class="pre">labels_and_values</span></code> is a list/array and</dt>
-<dd>does not have the same length as the number of rows in the
-table.</dd>
-</dl>
-</li>
-</ul>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">ValueError</span></code>: If</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>any label in <code class="docutils literal notranslate"><span class="pre">labels_and_values</span></code> is not a valid column</dt><dd><p>name, i.e if label is not of type (str).</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">AssertionError</span></code>:</dt>
-<dd><ul class="first last simple">
-<li><dl class="first docutils">
-<dt>‘incorrect columns format’, if passed more than one sequence</dt>
-<dd>(iterables) for  <code class="docutils literal notranslate"><span class="pre">labels_and_values</span></code>.</dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt>‘even length sequence required’ if missing a pair in</dt>
-<dd>label-value pairs.</dd>
+<li><dl class="simple">
+<dt>if any value in <code class="docutils literal notranslate"><span class="pre">labels_and_values</span></code> is a list/array and</dt><dd><p>does not have the same length as the number of rows in the
+table.</p>
+</dd>
 </dl>
 </li>
 </ul>
 </dd>
+<dt><code class="docutils literal notranslate"><span class="pre">AssertionError</span></code>:</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>‘incorrect columns format’, if passed more than one sequence</dt><dd><p>(iterables) for  <code class="docutils literal notranslate"><span class="pre">labels_and_values</span></code>.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>‘even length sequence required’ if missing a pair in</dt><dd><p>label-value pairs.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
 </dl>
 </dd>
-<dt>Returns:</dt>
-<dd>Copy of original table with new or replaced columns. Columns added
+<dt>Returns:</dt><dd><p>Copy of original table with new or replaced columns. Columns added
 in order of labels. Equivalent to <code class="docutils literal notranslate"><span class="pre">with_column(label,</span> <span class="pre">value)</span></code>
-when passed only one label-value pair.</dd>
+when passed only one label-value pair.</p>
+</dd>
 </dl>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">players</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span><span class="s1">&#39;player_id&#39;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">make_array</span><span class="p">(</span><span class="mi">110234</span><span class="p">,</span> <span class="mi">110235</span><span class="p">),</span> <span class="s1">&#39;wOBA&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="o">.</span><span class="mi">354</span><span class="p">,</span> <span class="o">.</span><span class="mi">236</span><span class="p">))</span>
@@ -154,13 +149,11 @@ when passed only one label-value pair.</dd>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -190,7 +183,7 @@ when passed only one label-value pair.</dd>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.1.
     </div>
   </body>
 </html>

@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>datascience.tables.Table.pivot &#8212; datascience 0.11.4 documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,6 +12,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -49,36 +48,34 @@
 <h1>datascience.tables.Table.pivot<a class="headerlink" href="#datascience-tables-table-pivot" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="datascience.tables.Table.pivot">
-<code class="descclassname">Table.</code><code class="descname">pivot</code><span class="sig-paren">(</span><em>columns</em>, <em>rows</em>, <em>values=None</em>, <em>collect=None</em>, <em>zero=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.pivot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.pivot" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Table.</code><code class="sig-name descname">pivot</code><span class="sig-paren">(</span><em class="sig-param">columns</em>, <em class="sig-param">rows</em>, <em class="sig-param">values=None</em>, <em class="sig-param">collect=None</em>, <em class="sig-param">zero=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.pivot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.pivot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a table with a column for each unique value in <code class="docutils literal notranslate"><span class="pre">columns</span></code>,
 with rows for each unique value in <code class="docutils literal notranslate"><span class="pre">rows</span></code>. Each row counts/aggregates
 the values that match both row and column based on <code class="docutils literal notranslate"><span class="pre">collect</span></code>.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><dl class="first last docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">columns</span></code> – a single column label or index, (<code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">int</span></code>),</dt>
-<dd>used to create new columns, based on its unique values.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">rows</span></code> – row labels or indices, (<code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">int</span></code> or list),</dt>
-<dd>used to create new rows based on it’s unique values.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">values</span></code> – column label in table for use in aggregation.</dt>
-<dd>Default None.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">collect</span></code> – aggregation function, used to group <code class="docutils literal notranslate"><span class="pre">values</span></code></dt>
-<dd>over row-column combinations. Default None.</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">zero</span></code> – zero value to use for non-existent row-column</dt>
-<dd>combinations.</dd>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">columns</span></code> – a single column label or index, (<code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">int</span></code>),</dt><dd><p>used to create new columns, based on its unique values.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">rows</span></code> – row labels or indices, (<code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">int</span></code> or list),</dt><dd><p>used to create new rows based on it’s unique values.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">values</span></code> – column label in table for use in aggregation.</dt><dd><p>Default None.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">collect</span></code> – aggregation function, used to group <code class="docutils literal notranslate"><span class="pre">values</span></code></dt><dd><p>over row-column combinations. Default None.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">zero</span></code> – zero value to use for non-existent row-column</dt><dd><p>combinations.</p>
+</dd>
 </dl>
 </dd>
-<dt>Raises:</dt>
-<dd><dl class="first last docutils">
-<dt>TypeError – if <code class="docutils literal notranslate"><span class="pre">collect</span></code> is passed in and <code class="docutils literal notranslate"><span class="pre">values</span></code> is not,</dt>
-<dd>vice versa.</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>TypeError – if <code class="docutils literal notranslate"><span class="pre">collect</span></code> is passed in and <code class="docutils literal notranslate"><span class="pre">values</span></code> is not,</dt><dd><p>vice versa.</p>
+</dd>
 </dl>
 </dd>
-<dt>Returns:</dt>
-<dd>New pivot table, with row-column combinations, as specified, with
+<dt>Returns:</dt><dd><p>New pivot table, with row-column combinations, as specified, with
 aggregated <code class="docutils literal notranslate"><span class="pre">values</span></code> by <code class="docutils literal notranslate"><span class="pre">collect</span></code> across the intersection of
 <code class="docutils literal notranslate"><span class="pre">columns</span></code> and <code class="docutils literal notranslate"><span class="pre">rows</span></code>. Simple counts provided if values and
-collect are None, as default.</dd>
+collect are None, as default.</p>
+</dd>
 </dl>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">titanic</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span><span class="s1">&#39;age&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">21</span><span class="p">,</span> <span class="mi">44</span><span class="p">,</span> <span class="mi">56</span><span class="p">,</span> <span class="mi">89</span><span class="p">,</span> <span class="mi">95</span>
 <span class="gp">... </span>   <span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">45</span><span class="p">),</span> <span class="s1">&#39;survival&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
@@ -146,13 +143,11 @@ collect are None, as default.</dd>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -182,7 +177,7 @@ collect are None, as default.</dd>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.1.
     </div>
   </body>
 </html>

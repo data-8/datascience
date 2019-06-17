@@ -1,0 +1,134 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>datascience.tables.Table.pivot_bin &#8212; datascience 0.11.4 documentation</title>
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="datascience.tables.Table.show" href="datascience.tables.Table.show.html" />
+    <link rel="prev" title="datascience.tables.Table.bin" href="datascience.tables.Table.bin.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="datascience.tables.Table.show.html" title="datascience.tables.Table.show"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="datascience.tables.Table.bin.html" title="datascience.tables.Table.bin"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.11.4 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../tables.html" accesskey="U">Tables (<code class="docutils literal notranslate"><span class="pre">datascience.tables</span></code>)</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="datascience-tables-table-pivot-bin">
+<h1>datascience.tables.Table.pivot_bin<a class="headerlink" href="#datascience-tables-table-pivot-bin" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="datascience.tables.Table.pivot_bin">
+<code class="sig-prename descclassname">Table.</code><code class="sig-name descname">pivot_bin</code><span class="sig-paren">(</span><em class="sig-param">pivot_columns</em>, <em class="sig-param">value_column</em>, <em class="sig-param">bins=None</em>, <em class="sig-param">**vargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.pivot_bin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.pivot_bin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Form a table with columns formed by the unique tuples in pivot_columns
+containing counts per bin of the values associated with each tuple in the value_column.</p>
+<p>By default, bins are chosen to contain all values in the value_column. The
+following named arguments from numpy.histogram can be applied to
+specialize bin widths:</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">bins</span></code> (int or sequence of scalars): If bins is an int,</dt><dd><p>it defines the number of equal-width bins in the given range
+(10, by default). If bins is a sequence, it defines the bin
+edges, including the rightmost edge, allowing for non-uniform
+bin widths.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">range</span></code> ((float, float)): The lower and upper range of</dt><dd><p>the bins. If not provided, range contains all values in the
+table. Values outside the range are ignored.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">normed</span></code> (bool): If False, the result will contain the number of</dt><dd><p>samples in each bin. If True, the result is normalized such that
+the integral over the range is 1.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="datascience.tables.Table.bin.html"
+                        title="previous chapter">datascience.tables.Table.bin</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="datascience.tables.Table.show.html"
+                        title="next chapter">datascience.tables.Table.show</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/_autosummary/datascience.tables.Table.pivot_bin.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="datascience.tables.Table.show.html" title="datascience.tables.Table.show"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="datascience.tables.Table.bin.html" title="datascience.tables.Table.bin"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.11.4 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../tables.html" >Tables (<code class="docutils literal notranslate"><span class="pre">datascience.tables</span></code>)</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.1.
+    </div>
+  </body>
+</html>

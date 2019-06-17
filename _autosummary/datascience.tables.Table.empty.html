@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>datascience.tables.Table.empty &#8212; datascience 0.11.4 documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,6 +12,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -47,21 +46,20 @@
             
   <div class="section" id="datascience-tables-table-empty">
 <h1>datascience.tables.Table.empty<a class="headerlink" href="#datascience-tables-table-empty" title="Permalink to this headline">¶</a></h1>
-<dl class="classmethod">
+<dl class="method">
 <dt id="datascience.tables.Table.empty">
-<em class="property">classmethod </em><code class="descclassname">Table.</code><code class="descname">empty</code><span class="sig-paren">(</span><em>labels=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.empty" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="sig-prename descclassname">Table.</code><code class="sig-name descname">empty</code><span class="sig-paren">(</span><em class="sig-param">labels=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.empty" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates an empty table. Column labels are optional. [Deprecated]</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><dl class="first last docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">labels</span></code> (None or list): If <code class="docutils literal notranslate"><span class="pre">None</span></code>, a table with 0</dt>
-<dd>columns is created.
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">labels</span></code> (None or list): If <code class="docutils literal notranslate"><span class="pre">None</span></code>, a table with 0</dt><dd><p>columns is created.
 If a list, each element is a column label in a table with
-0 rows.</dd>
+0 rows.</p>
+</dd>
 </dl>
 </dd>
-<dt>Returns:</dt>
-<dd>A new instance of <code class="docutils literal notranslate"><span class="pre">Table</span></code>.</dd>
+<dt>Returns:</dt><dd><p>A new instance of <code class="docutils literal notranslate"><span class="pre">Table</span></code>.</p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -87,13 +85,11 @@ If a list, each element is a column label in a table with
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -123,7 +119,7 @@ If a list, each element is a column label in a table with
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.1.
     </div>
   </body>
 </html>

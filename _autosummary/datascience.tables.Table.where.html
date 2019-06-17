@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>datascience.tables.Table.where &#8212; datascience 0.11.4 documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,11 +12,12 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="datascience.tables.Table.sort" href="datascience.tables.Table.sort.html" />
-    <link rel="prev" title="datascience.tables.Table.exclude" href="datascience.tables.Table.exclude.html" /> 
+    <link rel="prev" title="datascience.tables.Table.move_column" href="datascience.tables.Table.move_column.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -33,7 +32,7 @@
           <a href="datascience.tables.Table.sort.html" title="datascience.tables.Table.sort"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="datascience.tables.Table.exclude.html" title="datascience.tables.Table.exclude"
+          <a href="datascience.tables.Table.move_column.html" title="datascience.tables.Table.move_column"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.11.4 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" accesskey="U">Tables (<code class="docutils literal notranslate"><span class="pre">datascience.tables</span></code>)</a> &#187;</li> 
@@ -49,12 +48,11 @@
 <h1>datascience.tables.Table.where<a class="headerlink" href="#datascience-tables-table-where" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="datascience.tables.Table.where">
-<code class="descclassname">Table.</code><code class="descname">where</code><span class="sig-paren">(</span><em>column_or_label</em>, <em>value_or_predicate=None</em>, <em>other=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.where"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.where" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Table.</code><code class="sig-name descname">where</code><span class="sig-paren">(</span><em class="sig-param">column_or_label</em>, <em class="sig-param">value_or_predicate=None</em>, <em class="sig-param">other=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.where"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.where" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new <code class="docutils literal notranslate"><span class="pre">Table</span></code> containing rows where <code class="docutils literal notranslate"><span class="pre">value_or_predicate</span></code>
 returns True for values in <code class="docutils literal notranslate"><span class="pre">column_or_label</span></code>.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><p class="first"><code class="docutils literal notranslate"><span class="pre">column_or_label</span></code>: A column of the <code class="docutils literal notranslate"><span class="pre">Table</span></code> either as a label
+<dl>
+<dt>Args:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">column_or_label</span></code>: A column of the <code class="docutils literal notranslate"><span class="pre">Table</span></code> either as a label
 (<code class="docutils literal notranslate"><span class="pre">str</span></code>) or an index (<code class="docutils literal notranslate"><span class="pre">int</span></code>). Can also be an array of booleans;
 only the rows where the array value is <code class="docutils literal notranslate"><span class="pre">True</span></code> are kept.</p>
 <p><code class="docutils literal notranslate"><span class="pre">value_or_predicate</span></code>: If a function, it is applied to every value
@@ -62,19 +60,18 @@ in <code class="docutils literal notranslate"><span class="pre">column_or_label<
 returns True are kept. If a single value, only the rows where the
 values in <code class="docutils literal notranslate"><span class="pre">column_or_label</span></code> are equal to <code class="docutils literal notranslate"><span class="pre">value_or_predicate</span></code>
 are kept.</p>
-<p class="last"><code class="docutils literal notranslate"><span class="pre">other</span></code>: Optional additional column label for
+<p><code class="docutils literal notranslate"><span class="pre">other</span></code>: Optional additional column label for
 <code class="docutils literal notranslate"><span class="pre">value_or_predicate</span></code> to make pairwise comparisons. See the
 examples below for usage. When <code class="docutils literal notranslate"><span class="pre">other</span></code> is supplied,
 <code class="docutils literal notranslate"><span class="pre">value_or_predicate</span></code> must be a callable function.</p>
 </dd>
-<dt>Returns:</dt>
-<dd><p class="first">If <code class="docutils literal notranslate"><span class="pre">value_or_predicate</span></code> is a function, returns a new <code class="docutils literal notranslate"><span class="pre">Table</span></code>
+<dt>Returns:</dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">value_or_predicate</span></code> is a function, returns a new <code class="docutils literal notranslate"><span class="pre">Table</span></code>
 containing only the rows where <code class="docutils literal notranslate"><span class="pre">value_or_predicate(val)</span></code> is True
 for the <code class="docutils literal notranslate"><span class="pre">val``s</span> <span class="pre">in</span> <span class="pre">``column_or_label</span></code>.</p>
 <p>If <code class="docutils literal notranslate"><span class="pre">value_or_predicate</span></code> is a value, returns a new <code class="docutils literal notranslate"><span class="pre">Table</span></code>
 containing only the rows where the values in <code class="docutils literal notranslate"><span class="pre">column_or_label</span></code>
 are equal to <code class="docutils literal notranslate"><span class="pre">value_or_predicate</span></code>.</p>
-<p class="last">If <code class="docutils literal notranslate"><span class="pre">column_or_label</span></code> is an array of booleans, returns a new
+<p>If <code class="docutils literal notranslate"><span class="pre">column_or_label</span></code> is an array of booleans, returns a new
 <code class="docutils literal notranslate"><span class="pre">Table</span></code> containing only the rows where <code class="docutils literal notranslate"><span class="pre">column_or_label</span></code> is
 <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 </dd>
@@ -142,8 +139,8 @@ columns.</p>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="datascience.tables.Table.exclude.html"
-                        title="previous chapter">datascience.tables.Table.exclude</a></p>
+  <p class="topless"><a href="datascience.tables.Table.move_column.html"
+                        title="previous chapter">datascience.tables.Table.move_column</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="datascience.tables.Table.sort.html"
                         title="next chapter">datascience.tables.Table.sort</a></p>
@@ -155,13 +152,11 @@ columns.</p>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -183,7 +178,7 @@ columns.</p>
           <a href="datascience.tables.Table.sort.html" title="datascience.tables.Table.sort"
              >next</a> |</li>
         <li class="right" >
-          <a href="datascience.tables.Table.exclude.html" title="datascience.tables.Table.exclude"
+          <a href="datascience.tables.Table.move_column.html" title="datascience.tables.Table.move_column"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.11.4 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" >Tables (<code class="docutils literal notranslate"><span class="pre">datascience.tables</span></code>)</a> &#187;</li> 
@@ -191,7 +186,7 @@ columns.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.1.
     </div>
   </body>
 </html>

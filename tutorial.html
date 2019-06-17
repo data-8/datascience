@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Start Here: datascience Tutorial &#8212; datascience 0.11.4 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,6 +12,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -51,20 +50,20 @@
 <a class="reference internal" href="tables.html#tables-overview"><span class="std std-ref">Tables (datascience.tables)</span></a>.</p>
 <p>For other useful tutorials and examples, see:</p>
 <ul class="simple">
-<li><a class="reference external" href="https://www.inferentialthinking.com/chapters/06/Tables.html">The textbook introduction to Tables</a></li>
-<li><a class="reference external" href="https://github.com/deculler/TableDemos">Example notebooks</a></li>
+<li><p><a class="reference external" href="https://www.inferentialthinking.com/chapters/06/Tables.html">The textbook introduction to Tables</a></p></li>
+<li><p><a class="reference external" href="https://github.com/deculler/TableDemos">Example notebooks</a></p></li>
 </ul>
 <div class="contents local topic" id="table-of-contents">
 <p class="topic-title first">Table of Contents</p>
 <ul class="simple">
-<li><a class="reference internal" href="#getting-started" id="id1">Getting Started</a></li>
-<li><a class="reference internal" href="#creating-a-table" id="id2">Creating a Table</a></li>
-<li><a class="reference internal" href="#accessing-values" id="id3">Accessing Values</a></li>
-<li><a class="reference internal" href="#manipulating-data" id="id4">Manipulating Data</a></li>
-<li><a class="reference internal" href="#visualizing-data" id="id5">Visualizing Data</a></li>
-<li><a class="reference internal" href="#exporting" id="id6">Exporting</a></li>
-<li><a class="reference internal" href="#an-example" id="id7">An Example</a></li>
-<li><a class="reference internal" href="#drawing-maps" id="id8">Drawing Maps</a></li>
+<li><p><a class="reference internal" href="#getting-started" id="id1">Getting Started</a></p></li>
+<li><p><a class="reference internal" href="#creating-a-table" id="id2">Creating a Table</a></p></li>
+<li><p><a class="reference internal" href="#accessing-values" id="id3">Accessing Values</a></p></li>
+<li><p><a class="reference internal" href="#manipulating-data" id="id4">Manipulating Data</a></p></li>
+<li><p><a class="reference internal" href="#visualizing-data" id="id5">Visualizing Data</a></p></li>
+<li><p><a class="reference internal" href="#exporting" id="id6">Exporting</a></p></li>
+<li><p><a class="reference internal" href="#an-example" id="id7">An Example</a></p></li>
+<li><p><a class="reference internal" href="#drawing-maps" id="id8">Drawing Maps</a></p></li>
 </ul>
 </div>
 <div class="section" id="getting-started">
@@ -444,17 +443,17 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 
 <span class="gp">In [47]: </span><span class="n">normal_data</span>
 <span class="gh">Out[47]: </span><span class="go"></span>
-<span class="go">data1      | data2</span>
-<span class="go">-1.36413   | 4.06784</span>
-<span class="go">2.51696    | -0.46767</span>
-<span class="go">-0.0283258 | 7.62423</span>
-<span class="go">-0.0961806 | 1.04801</span>
-<span class="go">4.7318     | 7.80439</span>
-<span class="go">-2.86699   | 4.03196</span>
-<span class="go">1.81471    | -0.052887</span>
-<span class="go">2.93911    | 3.0215</span>
-<span class="go">0.448937   | 4.9464</span>
-<span class="go">-4.26454   | 2.15773</span>
+<span class="go">data1     | data2</span>
+<span class="go">0.425797  | 2.76986</span>
+<span class="go">0.520634  | 4.75911</span>
+<span class="go">1.19765   | 3.91718</span>
+<span class="go">1.26438   | 4.48606</span>
+<span class="go">-0.222692 | 6.64098</span>
+<span class="go">1.3335    | 2.23103</span>
+<span class="go">0.460715  | 2.22556</span>
+<span class="go">1.43661   | 7.16241</span>
+<span class="go">2.64668   | 11.1509</span>
+<span class="go">-1.41409  | 3.64963</span>
 <span class="go">... (90 rows omitted)</span>
 </pre></div>
 </div>
@@ -506,17 +505,17 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 converting to a pandas dataframe with <a class="reference internal" href="_autosummary/datascience.tables.Table.to_df.html#datascience.tables.Table.to_df" title="datascience.tables.Table.to_df"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_df()</span></code></a>:</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [56]: </span><span class="n">normal_data</span>
 <span class="gh">Out[56]: </span><span class="go"></span>
-<span class="go">data1      | data2</span>
-<span class="go">-1.36413   | 4.06784</span>
-<span class="go">2.51696    | -0.46767</span>
-<span class="go">-0.0283258 | 7.62423</span>
-<span class="go">-0.0961806 | 1.04801</span>
-<span class="go">4.7318     | 7.80439</span>
-<span class="go">-2.86699   | 4.03196</span>
-<span class="go">1.81471    | -0.052887</span>
-<span class="go">2.93911    | 3.0215</span>
-<span class="go">0.448937   | 4.9464</span>
-<span class="go">-4.26454   | 2.15773</span>
+<span class="go">data1     | data2</span>
+<span class="go">0.425797  | 2.76986</span>
+<span class="go">0.520634  | 4.75911</span>
+<span class="go">1.19765   | 3.91718</span>
+<span class="go">1.26438   | 4.48606</span>
+<span class="go">-0.222692 | 6.64098</span>
+<span class="go">1.3335    | 2.23103</span>
+<span class="go">0.460715  | 2.22556</span>
+<span class="go">1.43661   | 7.16241</span>
+<span class="go">2.64668   | 11.1509</span>
+<span class="go">-1.41409  | 3.64963</span>
 <span class="go">... (90 rows omitted)</span>
 
 <span class="go"># index = False prevents row numbers from appearing in the resulting CSV</span>
@@ -532,12 +531,13 @@ bootstrap test.</p>
 <p>For more examples, check out <a class="reference external" href="https://github.com/deculler/TableDemos">the TableDemos repo</a>.</p>
 <p>From the text:</p>
 <blockquote>
-<div>The table <code class="docutils literal notranslate"><span class="pre">baby</span></code> contains data on a random sample of 1,174 mothers and
+<div><p>The table <code class="docutils literal notranslate"><span class="pre">baby</span></code> contains data on a random sample of 1,174 mothers and
 their newborn babies. The column <code class="docutils literal notranslate"><span class="pre">Birth</span> <span class="pre">Weight</span></code> contains the birth weight
 of the baby, in ounces; <code class="docutils literal notranslate"><span class="pre">Gestational</span> <span class="pre">Days</span></code> is the number of gestational
 days, that is, the number of days the baby was in the womb. There is also
 data on maternal age, maternal height, maternal pregnancy weight, and
-whether or not the mother was a smoker.</div></blockquote>
+whether or not the mother was a smoker.</p>
+</div></blockquote>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [58]: </span><span class="n">baby</span> <span class="o">=</span> <span class="n">Table</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="s1">&#39;https://www.inferentialthinking.com/data/baby.csv&#39;</span><span class="p">)</span>
 
 <span class="gp">In [59]: </span><span class="n">baby</span> <span class="c1"># Let&#39;s take a peek at the table</span>
@@ -629,8 +629,8 @@ non-smokers.</p>
 
 <span class="gp">In [73]: </span><span class="n">bootstrapped_diff_means</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
 <span class="gh">Out[73]: </span><span class="go"></span>
-<span class="go">array([-0.86313512,  0.34400414,  1.14987888,  1.59220866,  1.17220165,</span>
-<span class="go">       -3.19886345,  0.5191584 ,  1.87009156,  0.15510459, -2.48756342])</span>
+<span class="go">array([-2.25763822, -0.62943157,  1.93003946, -0.38638268,  1.29602511,</span>
+<span class="go">        0.62266405,  1.25922879,  1.99669698, -1.86223319,  0.26331185])</span>
 
 <span class="gp">In [74]: </span><span class="n">num_diffs_greater</span> <span class="o">=</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">bootstrapped_diff_means</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">observed_diff</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
@@ -682,13 +682,11 @@ non-smokers.</p>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -717,7 +715,7 @@ non-smokers.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.1.
     </div>
   </body>
 </html>

@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Maps (datascience.maps) &#8212; datascience 0.11.4 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,6 +12,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -49,86 +48,86 @@
 <p>Draw maps using folium.</p>
 <dl class="class">
 <dt id="datascience.maps.Map">
-<em class="property">class </em><code class="descclassname">datascience.maps.</code><code class="descname">Map</code><span class="sig-paren">(</span><em>features=()</em>, <em>ids=()</em>, <em>width=960</em>, <em>height=500</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Map" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">datascience.maps.</code><code class="sig-name descname">Map</code><span class="sig-paren">(</span><em class="sig-param">features=()</em>, <em class="sig-param">ids=()</em>, <em class="sig-param">width=960</em>, <em class="sig-param">height=500</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Map" title="Permalink to this definition">¶</a></dt>
 <dd><p>A map from IDs to features. Keyword args are forwarded to folium.</p>
 <dl class="method">
 <dt id="datascience.maps.Map.color">
-<code class="descname">color</code><span class="sig-paren">(</span><em>values</em>, <em>ids=()</em>, <em>key_on='feature.id'</em>, <em>palette='YlOrBr'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map.color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Map.color" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">color</code><span class="sig-paren">(</span><em class="sig-param">values</em>, <em class="sig-param">ids=()</em>, <em class="sig-param">key_on='feature.id'</em>, <em class="sig-param">palette='YlOrBr'</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map.color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Map.color" title="Permalink to this definition">¶</a></dt>
 <dd><p>Color map features by binning values.</p>
 <p>values – a sequence of values or a table of keys and values
 ids – an ID for each value; if none are provided, indices are used
 key_on – attribute of each feature to match to ids
 palette – one of the following color brewer palettes:</p>
 <blockquote>
-<div>‘BuGn’, ‘BuPu’, ‘GnBu’, ‘OrRd’, ‘PuBu’, ‘PuBuGn’, ‘PuRd’, ‘RdPu’,
-‘YlGn’, ‘YlGnBu’, ‘YlOrBr’, and ‘YlOrRd’.</div></blockquote>
+<div><p>‘BuGn’, ‘BuPu’, ‘GnBu’, ‘OrRd’, ‘PuBu’, ‘PuBuGn’, ‘PuRd’, ‘RdPu’,
+‘YlGn’, ‘YlGnBu’, ‘YlOrBr’, and ‘YlOrRd’.</p>
+</div></blockquote>
 <p>Defaults from Folium:</p>
-<dl class="docutils">
-<dt>threshold_scale: list, default None</dt>
-<dd>Data range for D3 threshold scale. Defaults to the following range
+<dl class="simple">
+<dt>threshold_scale: list, default None</dt><dd><p>Data range for D3 threshold scale. Defaults to the following range
 of quantiles: [0, 0.5, 0.75, 0.85, 0.9], rounded to the nearest
-order-of-magnitude integer. Ex: 270 rounds to 200, 5600 to 6000.</dd>
-<dt>fill_opacity: float, default 0.6</dt>
-<dd>Area fill opacity, range 0-1.</dd>
-<dt>line_color: string, default ‘black’</dt>
-<dd>GeoJSON geopath line color.</dd>
-<dt>line_weight: int, default 1</dt>
-<dd>GeoJSON geopath line weight.</dd>
-<dt>line_opacity: float, default 1</dt>
-<dd>GeoJSON geopath line opacity, range 0-1.</dd>
-<dt>legend_name: string, default None</dt>
-<dd>Title for data legend. If not passed, defaults to columns[1].</dd>
+order-of-magnitude integer. Ex: 270 rounds to 200, 5600 to 6000.</p>
+</dd>
+<dt>fill_opacity: float, default 0.6</dt><dd><p>Area fill opacity, range 0-1.</p>
+</dd>
+<dt>line_color: string, default ‘black’</dt><dd><p>GeoJSON geopath line color.</p>
+</dd>
+<dt>line_weight: int, default 1</dt><dd><p>GeoJSON geopath line weight.</p>
+</dd>
+<dt>line_opacity: float, default 1</dt><dd><p>GeoJSON geopath line opacity, range 0-1.</p>
+</dd>
+<dt>legend_name: string, default None</dt><dd><p>Title for data legend. If not passed, defaults to columns[1].</p>
+</dd>
 </dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="datascience.maps.Map.copy">
-<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Map.copy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Map.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Copies the current Map into a new one and returns it.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="datascience.maps.Map.features">
-<code class="descname">features</code><a class="headerlink" href="#datascience.maps.Map.features" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">features</code><a class="headerlink" href="#datascience.maps.Map.features" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="datascience.maps.Map.format">
-<code class="descname">format</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map.format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Map.format" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">format</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map.format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Map.format" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply formatting.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="datascience.maps.Map.geojson">
-<code class="descname">geojson</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map.geojson"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Map.geojson" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">geojson</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map.geojson"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Map.geojson" title="Permalink to this definition">¶</a></dt>
 <dd><p>Render features as a FeatureCollection.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="datascience.maps.Map.overlay">
-<code class="descname">overlay</code><span class="sig-paren">(</span><em>feature</em>, <em>color='Blue'</em>, <em>opacity=0.6</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map.overlay"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Map.overlay" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">overlay</code><span class="sig-paren">(</span><em class="sig-param">feature</em>, <em class="sig-param">color='Blue'</em>, <em class="sig-param">opacity=0.6</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map.overlay"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Map.overlay" title="Permalink to this definition">¶</a></dt>
 <dd><p>Overlays <code class="docutils literal notranslate"><span class="pre">feature</span></code> on the map. Returns a new Map.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><dl class="first docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">feature</span></code>: a <code class="docutils literal notranslate"><span class="pre">Table</span></code> of map features, a list of map features,</dt>
-<dd>a Map, a Region, or a circle marker map table. The features will
-be overlayed on the Map with specified <code class="docutils literal notranslate"><span class="pre">color</span></code>.</dd>
+<dl>
+<dt>Args:</dt><dd><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">feature</span></code>: a <code class="docutils literal notranslate"><span class="pre">Table</span></code> of map features, a list of map features,</dt><dd><p>a Map, a Region, or a circle marker map table. The features will
+be overlayed on the Map with specified <code class="docutils literal notranslate"><span class="pre">color</span></code>.</p>
+</dd>
 </dl>
 <p><code class="docutils literal notranslate"><span class="pre">color</span></code> (<code class="docutils literal notranslate"><span class="pre">str</span></code>): Color of feature. Defaults to ‘Blue’</p>
-<dl class="last docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">opacity</span></code> (<code class="docutils literal notranslate"><span class="pre">float</span></code>): Opacity of overlain feature. Defaults to</dt>
-<dd>0.6.</dd>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">opacity</span></code> (<code class="docutils literal notranslate"><span class="pre">float</span></code>): Opacity of overlain feature. Defaults to</dt><dd><p>0.6.</p>
+</dd>
 </dl>
 </dd>
-<dt>Returns:</dt>
-<dd>A new <code class="docutils literal notranslate"><span class="pre">Map</span></code> with the overlain <code class="docutils literal notranslate"><span class="pre">feature</span></code>.</dd>
+<dt>Returns:</dt><dd><p>A new <code class="docutils literal notranslate"><span class="pre">Map</span></code> with the overlain <code class="docutils literal notranslate"><span class="pre">feature</span></code>.</p>
+</dd>
 </dl>
 </dd></dl>
 
-<dl class="classmethod">
+<dl class="method">
 <dt id="datascience.maps.Map.read_geojson">
-<em class="property">classmethod </em><code class="descname">read_geojson</code><span class="sig-paren">(</span><em>path_or_json_or_string</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map.read_geojson"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Map.read_geojson" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="sig-name descname">read_geojson</code><span class="sig-paren">(</span><em class="sig-param">path_or_json_or_string</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map.read_geojson"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Map.read_geojson" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a geoJSON string, object, or file. Return a dict of features keyed by ID.</p>
 </dd></dl>
 
@@ -136,57 +135,57 @@ be overlayed on the Map with specified <code class="docutils literal notranslate
 
 <dl class="class">
 <dt id="datascience.maps.Marker">
-<em class="property">class </em><code class="descclassname">datascience.maps.</code><code class="descname">Marker</code><span class="sig-paren">(</span><em>lat</em>, <em>lon</em>, <em>popup=''</em>, <em>color='blue'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Marker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Marker" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">datascience.maps.</code><code class="sig-name descname">Marker</code><span class="sig-paren">(</span><em class="sig-param">lat</em>, <em class="sig-param">lon</em>, <em class="sig-param">popup=''</em>, <em class="sig-param">color='blue'</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Marker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Marker" title="Permalink to this definition">¶</a></dt>
 <dd><p>A marker displayed with Folium’s simple_marker method.</p>
 <p>popup – text that pops up when marker is clicked
 color – fill color</p>
 <p>Defaults from Folium:</p>
-<dl class="docutils">
-<dt>marker_icon: string, default ‘info-sign’</dt>
-<dd>icon from (<a class="reference external" href="http://getbootstrap.com/components/">http://getbootstrap.com/components/</a>) you want on the
-marker</dd>
-<dt>clustered_marker: boolean, default False</dt>
-<dd>boolean of whether or not you want the marker clustered with
-other markers</dd>
-<dt>icon_angle: int, default 0</dt>
-<dd>angle of icon</dd>
-<dt>popup_width: int, default 300</dt>
-<dd>width of popup</dd>
+<dl class="simple">
+<dt>marker_icon: string, default ‘info-sign’</dt><dd><p>icon from (<a class="reference external" href="http://getbootstrap.com/components/">http://getbootstrap.com/components/</a>) you want on the
+marker</p>
+</dd>
+<dt>clustered_marker: boolean, default False</dt><dd><p>boolean of whether or not you want the marker clustered with
+other markers</p>
+</dd>
+<dt>icon_angle: int, default 0</dt><dd><p>angle of icon</p>
+</dd>
+<dt>popup_width: int, default 300</dt><dd><p>width of popup</p>
+</dd>
 </dl>
 <dl class="method">
 <dt id="datascience.maps.Marker.copy">
-<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Marker.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Marker.copy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Marker.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Marker.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a deep copy</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="datascience.maps.Marker.format">
-<code class="descname">format</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Marker.format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Marker.format" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">format</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Marker.format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Marker.format" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply formatting.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="datascience.maps.Marker.geojson">
-<code class="descname">geojson</code><span class="sig-paren">(</span><em>feature_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Marker.geojson"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Marker.geojson" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">geojson</code><span class="sig-paren">(</span><em class="sig-param">feature_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Marker.geojson"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Marker.geojson" title="Permalink to this definition">¶</a></dt>
 <dd><p>GeoJSON representation of the marker as a point.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="datascience.maps.Marker.lat_lons">
-<code class="descname">lat_lons</code><a class="headerlink" href="#datascience.maps.Marker.lat_lons" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">lat_lons</code><a class="headerlink" href="#datascience.maps.Marker.lat_lons" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sequence of lat_lons that describe a map feature (for zooming).</p>
 </dd></dl>
 
-<dl class="classmethod">
+<dl class="method">
 <dt id="datascience.maps.Marker.map">
-<em class="property">classmethod </em><code class="descname">map</code><span class="sig-paren">(</span><em>latitudes</em>, <em>longitudes</em>, <em>labels=None</em>, <em>colors=None</em>, <em>areas=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Marker.map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Marker.map" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="sig-name descname">map</code><span class="sig-paren">(</span><em class="sig-param">latitudes</em>, <em class="sig-param">longitudes</em>, <em class="sig-param">labels=None</em>, <em class="sig-param">colors=None</em>, <em class="sig-param">areas=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Marker.map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Marker.map" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return markers from columns of coordinates, labels, &amp; colors.</p>
 <p>The areas column is not applicable to markers, but sets circle areas.</p>
 </dd></dl>
 
-<dl class="classmethod">
+<dl class="method">
 <dt id="datascience.maps.Marker.map_table">
-<em class="property">classmethod </em><code class="descname">map_table</code><span class="sig-paren">(</span><em>table</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Marker.map_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Marker.map_table" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="sig-name descname">map_table</code><span class="sig-paren">(</span><em class="sig-param">table</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Marker.map_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Marker.map_table" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return markers from the colums of a table.</p>
 </dd></dl>
 
@@ -194,15 +193,15 @@ other markers</dd>
 
 <dl class="class">
 <dt id="datascience.maps.Circle">
-<em class="property">class </em><code class="descclassname">datascience.maps.</code><code class="descname">Circle</code><span class="sig-paren">(</span><em>lat</em>, <em>lon</em>, <em>popup=''</em>, <em>color='blue'</em>, <em>radius=10</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Circle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Circle" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">datascience.maps.</code><code class="sig-name descname">Circle</code><span class="sig-paren">(</span><em class="sig-param">lat</em>, <em class="sig-param">lon</em>, <em class="sig-param">popup=''</em>, <em class="sig-param">color='blue'</em>, <em class="sig-param">radius=10</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Circle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Circle" title="Permalink to this definition">¶</a></dt>
 <dd><p>A marker displayed with Folium’s circle_marker method.</p>
 <p>popup – text that pops up when marker is clicked
 color – fill color
 radius – pixel radius of the circle</p>
 <p>Defaults from Folium:</p>
-<dl class="docutils">
-<dt>fill_opacity: float, default 0.6</dt>
-<dd>Circle fill opacity</dd>
+<dl class="simple">
+<dt>fill_opacity: float, default 0.6</dt><dd><p>Circle fill opacity</p>
+</dd>
 </dl>
 <p>For example, to draw three circles:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">([</span>
@@ -219,53 +218,53 @@ radius – pixel radius of the circle</p>
 
 <dl class="class">
 <dt id="datascience.maps.Region">
-<em class="property">class </em><code class="descclassname">datascience.maps.</code><code class="descname">Region</code><span class="sig-paren">(</span><em>geojson</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Region"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Region" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">datascience.maps.</code><code class="sig-name descname">Region</code><span class="sig-paren">(</span><em class="sig-param">geojson</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Region"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Region" title="Permalink to this definition">¶</a></dt>
 <dd><p>A GeoJSON feature displayed with Folium’s geo_json method.</p>
 <dl class="method">
 <dt id="datascience.maps.Region.copy">
-<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Region.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Region.copy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Region.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Region.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a deep copy</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="datascience.maps.Region.format">
-<code class="descname">format</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Region.format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Region.format" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">format</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Region.format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Region.format" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply formatting.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="datascience.maps.Region.geojson">
-<code class="descname">geojson</code><span class="sig-paren">(</span><em>feature_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Region.geojson"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Region.geojson" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">geojson</code><span class="sig-paren">(</span><em class="sig-param">feature_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Region.geojson"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Region.geojson" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return GeoJSON with ID substituted.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="datascience.maps.Region.lat_lons">
-<code class="descname">lat_lons</code><a class="headerlink" href="#datascience.maps.Region.lat_lons" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">lat_lons</code><a class="headerlink" href="#datascience.maps.Region.lat_lons" title="Permalink to this definition">¶</a></dt>
 <dd><p>A flat list of (lat, lon) pairs.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="datascience.maps.Region.polygons">
-<code class="descname">polygons</code><a class="headerlink" href="#datascience.maps.Region.polygons" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">polygons</code><a class="headerlink" href="#datascience.maps.Region.polygons" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a list of polygons describing the region.</p>
 <ul class="simple">
-<li>Each polygon is a list of linear rings, where the first describes the
-exterior and the rest describe interior holes.</li>
-<li>Each linear ring is a list of positions where the last is a repeat of
-the first.</li>
-<li>Each position is a (lat, lon) pair.</li>
+<li><p>Each polygon is a list of linear rings, where the first describes the
+exterior and the rest describe interior holes.</p></li>
+<li><p>Each linear ring is a list of positions where the last is a repeat of
+the first.</p></li>
+<li><p>Each position is a (lat, lon) pair.</p></li>
 </ul>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="datascience.maps.Region.properties">
-<code class="descname">properties</code><a class="headerlink" href="#datascience.maps.Region.properties" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">properties</code><a class="headerlink" href="#datascience.maps.Region.properties" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="datascience.maps.Region.type">
-<code class="descname">type</code><a class="headerlink" href="#datascience.maps.Region.type" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">type</code><a class="headerlink" href="#datascience.maps.Region.type" title="Permalink to this definition">¶</a></dt>
 <dd><p>The GEOJSON type of the regions: Polygon or MultiPolygon.</p>
 </dd></dl>
 
@@ -293,13 +292,11 @@ the first.</li>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -328,7 +325,7 @@ the first.</li>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.1.
     </div>
   </body>
 </html>

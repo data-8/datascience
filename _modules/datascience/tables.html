@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>datascience.tables &#8212; datascience 0.11.4 documentation</title>
     <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,6 +12,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
     
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -405,13 +404,13 @@
             <span class="n">rows</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="o">*</span><span class="n">column_or_columns</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">])</span></div>
 
-    <span class="k">def</span> <span class="nf">first</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+<div class="viewcode-block" id="Table.first"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.first.html#datascience.tables.Table.first">[docs]</a>    <span class="k">def</span> <span class="nf">first</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the zeroth item in a column.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">label</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">label</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
 
-    <span class="k">def</span> <span class="nf">last</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+<div class="viewcode-block" id="Table.last"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.last.html#datascience.tables.Table.last">[docs]</a>    <span class="k">def</span> <span class="nf">last</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the last item in a column.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">label</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">label</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
 
     <span class="c1">############</span>
     <span class="c1"># Mutation #</span>
@@ -608,7 +607,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_formats</span><span class="p">[</span><span class="n">old_to_new</span><span class="p">[</span><span class="n">label</span><span class="p">]]</span> <span class="o">=</span> <span class="n">formatter</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row_or_row_indices</span><span class="p">):</span>
+<div class="viewcode-block" id="Table.remove"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.remove.html#datascience.tables.Table.remove">[docs]</a>    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row_or_row_indices</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Removes a row or multiple rows of a table in place.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">row_or_row_indices</span><span class="p">:</span>
             <span class="k">return</span>
@@ -618,7 +617,7 @@
             <span class="n">rows_remove</span> <span class="o">=</span> <span class="n">row_or_row_indices</span>
         <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_columns</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_columns</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">elem</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">elem</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">col</span><span class="p">])</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">rows_remove</span><span class="p">]</span>
-        <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
 
 
     <span class="c1">##################</span>
@@ -1180,7 +1179,7 @@
             <span class="n">pivoted</span><span class="p">[</span><span class="n">pivot</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span>
         <span class="k">return</span> <span class="n">pivoted</span></div>
 
-    <span class="k">def</span> <span class="nf">pivot_bin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pivot_columns</span><span class="p">,</span> <span class="n">value_column</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">)</span> <span class="p">:</span>
+<div class="viewcode-block" id="Table.pivot_bin"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.pivot_bin.html#datascience.tables.Table.pivot_bin">[docs]</a>    <span class="k">def</span> <span class="nf">pivot_bin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pivot_columns</span><span class="p">,</span> <span class="n">value_column</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">)</span> <span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Form a table with columns formed by the unique tuples in pivot_columns</span>
 <span class="sd">        containing counts per bin of the values associated with each tuple in the value_column.</span>
 
@@ -1219,7 +1218,7 @@
             <span class="n">col_vals</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
             <span class="n">counts</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">col_vals</span><span class="p">,</span><span class="o">**</span><span class="n">vargs</span><span class="p">)</span>
             <span class="n">binned</span><span class="p">[</span><span class="n">col_label</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">binned</span>
+        <span class="k">return</span> <span class="n">binned</span></div>
 
 <div class="viewcode-block" id="Table.stack"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.stack.html#datascience.tables.Table.stack">[docs]</a>    <span class="k">def</span> <span class="nf">stack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Takes k original columns and returns two columns, with col. 1 of</span>
@@ -1516,16 +1515,16 @@
         <span class="n">sample</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_columns</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">sample</span></div>
 
-    <span class="k">def</span> <span class="nf">shuffle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Table.shuffle"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.shuffle.html#datascience.tables.Table.shuffle">[docs]</a>    <span class="k">def</span> <span class="nf">shuffle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a new table where all the rows are randomly shuffled from the</span>
 <span class="sd">        original table..</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            A new instance of ``Table`` with all ``k`` rows shuffled.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">with_replacement</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">with_replacement</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">sample_from_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distribution</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">proportions</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Table.sample_from_distribution"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.sample_from_distribution.html#datascience.tables.Table.sample_from_distribution">[docs]</a>    <span class="k">def</span> <span class="nf">sample_from_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distribution</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">proportions</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a new table with the same number of rows and a new column.</span>
 <span class="sd">        The values in the distribution column are define a multinomial.</span>
 <span class="sd">        They are replaced by sample counts/proportions in the output.</span>
@@ -1554,7 +1553,7 @@
         <span class="k">if</span> <span class="n">proportions</span><span class="p">:</span>
             <span class="n">sample</span> <span class="o">=</span> <span class="n">sample</span> <span class="o">/</span> <span class="nb">sum</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
         <span class="n">label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unused_label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_as_label</span><span class="p">(</span><span class="n">distribution</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; sample&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_column</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">sample</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_column</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">sample</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Table.split"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.split.html#datascience.tables.Table.split">[docs]</a>    <span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a tuple of two tables where the first table contains</span>
@@ -1888,7 +1887,7 @@
             <span class="n">binned</span><span class="p">[</span><span class="n">label</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">tag</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">binned</span></div>
 
-    <span class="k">def</span> <span class="nf">move_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<div class="viewcode-block" id="Table.move_column"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.move_column.html#datascience.tables.Table.move_column">[docs]</a>    <span class="k">def</span> <span class="nf">move_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns a new table with specified column moved to the specified column index.&quot;&quot;&quot;</span>
         <span class="n">table</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)()</span>
         <span class="n">col_order</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_columns</span><span class="p">)</span>
@@ -1897,7 +1896,7 @@
         <span class="n">col_order</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">col_to_move</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">col_order</span><span class="p">:</span>
             <span class="n">table</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">col</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">table</span>
+        <span class="k">return</span> <span class="n">table</span></div>
 
     <span class="c1">##########################</span>
     <span class="c1"># Exporting / Displaying #</span>
@@ -2171,7 +2170,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_visualize</span><span class="p">(</span><span class="n">column_for_categories</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">xticks</span><span class="p">,</span> <span class="n">overlay</span><span class="p">,</span> <span class="n">draw</span><span class="p">,</span> <span class="n">annotate</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">group_bar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_label</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Table.group_bar"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.group_bar.html#datascience.tables.Table.group_bar">[docs]</a>    <span class="k">def</span> <span class="nf">group_bar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_label</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Plot a bar chart for the table.</span>
 
 <span class="sd">        The values of the specified column are grouped and counted, and one</span>
@@ -2197,7 +2196,7 @@
 <span class="sd">                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.bar</span>
 <span class="sd">                for additional arguments that can be passed into vargs.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">column_label</span><span class="p">)</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">column_label</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">column_label</span><span class="p">)</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">column_label</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Table.barh"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.barh.html#datascience.tables.Table.barh">[docs]</a>    <span class="k">def</span> <span class="nf">barh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_for_categories</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Plot horizontal bar charts for the table.</span>
@@ -2283,7 +2282,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_visualize</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">yticks</span><span class="p">,</span> <span class="n">overlay</span><span class="p">,</span> <span class="n">draw</span><span class="p">,</span> <span class="n">annotate</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">group_barh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_label</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Table.group_barh"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.group_barh.html#datascience.tables.Table.group_barh">[docs]</a>    <span class="k">def</span> <span class="nf">group_barh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_label</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Plot a horizontal bar chart for the table.</span>
 
 <span class="sd">        The values of the specified column are grouped and counted, and one</span>
@@ -2310,7 +2309,7 @@
 <span class="sd">                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.bar</span>
 <span class="sd">                for additional arguments that can be passed into vargs.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">column_label</span><span class="p">)</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="n">column_label</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">column_label</span><span class="p">)</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="n">column_label</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Table.scatter"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.scatter.html#datascience.tables.Table.scatter">[docs]</a>    <span class="k">def</span> <span class="nf">scatter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_for_x</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fit_line</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">colors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sizes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
@@ -2465,7 +2464,7 @@
 
     <span class="c1"># Deprecated</span>
 <div class="viewcode-block" id="Table.pivot_hist"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.pivot_hist.html#datascience.tables.Table.pivot_hist">[docs]</a>    <span class="k">def</span> <span class="nf">pivot_hist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pivot_column_label</span><span class="p">,</span> <span class="n">value_column_label</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Draw histograms of each category in a column.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Draw histograms of each category in a column. (Deprecated)&quot;&quot;&quot;</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;pivot_hist is deprecated; use &quot;</span>
                       <span class="s2">&quot;hist(value_column_label, group=pivot_column_label), or &quot;</span>
                       <span class="s2">&quot;with side_by_side=True if you really want side-by-side &quot;</span>
@@ -2694,7 +2693,7 @@
 
         <span class="n">draw_hist</span><span class="p">(</span><span class="n">values_dict</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">hist_of_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">columns</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bin_column</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="Table.hist_of_counts"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.hist_of_counts.html#datascience.tables.Table.hist_of_counts">[docs]</a>    <span class="k">def</span> <span class="nf">hist_of_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">columns</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bin_column</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                        <span class="n">group</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">side_by_side</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plots one count-based histogram for each column in columns. The</span>
@@ -2788,7 +2787,7 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Bins of unequal size should not be used &quot;</span>
                                  <span class="s2">&quot;with hist_of_counts. Please use hist() and &quot;</span>
                                  <span class="s2">&quot;make sure to set normed=True&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="o">*</span><span class="n">columns</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="n">overlay</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">bin_column</span><span class="o">=</span><span class="n">bin_column</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">,</span> <span class="n">side_by_side</span><span class="o">=</span><span class="n">side_by_side</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="o">*</span><span class="n">columns</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="n">overlay</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">bin_column</span><span class="o">=</span><span class="n">bin_column</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">,</span> <span class="n">side_by_side</span><span class="o">=</span><span class="n">side_by_side</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Table.boxplot"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.boxplot.html#datascience.tables.Table.boxplot">[docs]</a>    <span class="k">def</span> <span class="nf">boxplot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
@@ -3171,13 +3170,11 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -3201,7 +3198,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.1.
     </div>
   </body>
 </html>

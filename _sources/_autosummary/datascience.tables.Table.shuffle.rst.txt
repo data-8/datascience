@@ -1,0 +1,6 @@
+datascience.tables.Table.shuffle
+================================
+
+.. currentmodule:: datascience.tables
+
+.. automethod:: Table.shuffle

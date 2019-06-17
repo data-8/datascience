@@ -1,0 +1,6 @@
+datascience.tables.Table.pivot\_bin
+===================================
+
+.. currentmodule:: datascience.tables
+
+.. automethod:: Table.pivot_bin

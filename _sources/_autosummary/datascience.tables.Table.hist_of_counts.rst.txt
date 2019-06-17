@@ -1,0 +1,6 @@
+datascience.tables.Table.hist\_of\_counts
+=========================================
+
+.. currentmodule:: datascience.tables
+
+.. automethod:: Table.hist_of_counts

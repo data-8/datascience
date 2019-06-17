@@ -1,0 +1,6 @@
+datascience.tables.Table.group\_barh
+====================================
+
+.. currentmodule:: datascience.tables
+
+.. automethod:: Table.group_barh

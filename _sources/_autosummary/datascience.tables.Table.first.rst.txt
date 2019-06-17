@@ -1,0 +1,6 @@
+datascience.tables.Table.first
+==============================
+
+.. currentmodule:: datascience.tables
+
+.. automethod:: Table.first

@@ -3,4 +3,4 @@ datascience.tables.Table.num\_rows
 
 .. currentmodule:: datascience.tables
 
-.. autoattribute:: Table.num_rows
+.. autoproperty:: Table.num_rows
