@@ -1331,7 +1331,28 @@ def test_join_with_two_labels_one_format(table):
     z      | 1     | 10     | 1       | $10.00
     """)
 
-def test_join_with_column_already_duplicated(table, scrabble_table2):
+def test_join_with_column_already_duplicated_simple(table, scrabble_table2):
+    joined_forwards = table.join("letter", scrabble_table2)
+    joined_backwards = scrabble_table2.join("letter", table)
+
+    assert_equal(joined_forwards, """
+    letter | count | points | count_3 | count_2 | pointsplus1
+    a      | 9     | 1      | 9       | 9       | 2
+    b      | 3     | 2      | 3       | 3       | 3
+    c      | 3     | 2      | 3       | 3       | 3
+    z      | 1     | 10     | 1       | 1       | 11
+    """)
+
+    assert_equal(joined_backwards, """
+    letter | count | count_2 | pointsplus1 | count_3 | points
+    a      | 9     | 9       | 2           | 9       | 1
+    b      | 3     | 3       | 3           | 3       | 2
+    c      | 3     | 3       | 3           | 3       | 2
+    z      | 1     | 1       | 11          | 1       | 10
+    """)
+
+
+def test_join_with_column_already_duplicated_thorough(table, scrabble_table2):
     assert_equal(table, """
     letter | count | points
     a      | 9     | 1
