@@ -26,6 +26,10 @@ pip install datascience
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+
+### v0.11.5
+* Fixes bug where joining tables that have columns that are already duplicated will sometimes join incorrectly.
+
 ### v0.11.4
 * Fix bug where we warned inappropriately when passing a string to an `are.*` predicate.
 
