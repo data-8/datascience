@@ -2611,7 +2611,6 @@ class Table(collections.abc.MutableMapping):
 
         def draw_hist(values_dict):
             # This code is factored as a function for clarity only.
-            print(values_dict)
             n = len(values_dict)
             colors = [rgb_color + (self.default_alpha,) for rgb_color in
                 itertools.islice(itertools.cycle(self.chart_colors), n)]
