@@ -13,6 +13,7 @@ import urllib.parse
 import warnings
 
 import numpy as np
+np.set_printoptions(legacy='1.13')
 import matplotlib
 matplotlib.use('agg', warn=False)
 import matplotlib.pyplot as plt
