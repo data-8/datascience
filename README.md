@@ -26,6 +26,8 @@ pip install datascience
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.11.7
+* Fixes bug where x-label doesn't show up for grouped histogram in certain conditions.
 
 ### v0.11.5
 * Fixes bug where joining tables that have columns that are already duplicated will sometimes join incorrectly.
