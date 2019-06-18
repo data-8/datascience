@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Start Here: datascience Tutorial &#8212; datascience 0.11.4 documentation</title>
+    <title>Start Here: datascience Tutorial &#8212; datascience 0.11.5 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -34,7 +34,7 @@
         <li class="right" >
           <a href="index.html" title="Welcome to datascience’s documentation!"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.11.4 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.11.5 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -443,17 +443,17 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 
 <span class="gp">In [47]: </span><span class="n">normal_data</span>
 <span class="gh">Out[47]: </span><span class="go"></span>
-<span class="go">data1    | data2</span>
-<span class="go">3.17244  | 3.94268</span>
-<span class="go">3.44497  | 2.09629</span>
-<span class="go">-1.93425 | 5.44692</span>
-<span class="go">-1.43221 | -2.11912</span>
-<span class="go">1.87683  | 1.70116</span>
-<span class="go">0.772652 | 8.62851</span>
-<span class="go">2.64517  | 9.8696</span>
-<span class="go">-0.45884 | 2.24684</span>
-<span class="go">-2.1741  | 1.76802</span>
-<span class="go">4.04094  | 3.77723</span>
+<span class="go">data1     | data2</span>
+<span class="go">3.03548   | 5.45183</span>
+<span class="go">-1.5093   | 2.49161</span>
+<span class="go">-0.367506 | 1.83502</span>
+<span class="go">-0.109009 | 7.19725</span>
+<span class="go">-0.184458 | 3.17506</span>
+<span class="go">-0.456527 | 7.37386</span>
+<span class="go">-2.08145  | 1.26494</span>
+<span class="go">1.50027   | 3.88439</span>
+<span class="go">6.06656   | 5.39583</span>
+<span class="go">0.803498  | 5.81137</span>
 <span class="go">... (90 rows omitted)</span>
 </pre></div>
 </div>
@@ -505,17 +505,17 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 converting to a pandas dataframe with <a class="reference internal" href="_autosummary/datascience.tables.Table.to_df.html#datascience.tables.Table.to_df" title="datascience.tables.Table.to_df"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_df()</span></code></a>:</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [56]: </span><span class="n">normal_data</span>
 <span class="gh">Out[56]: </span><span class="go"></span>
-<span class="go">data1    | data2</span>
-<span class="go">3.17244  | 3.94268</span>
-<span class="go">3.44497  | 2.09629</span>
-<span class="go">-1.93425 | 5.44692</span>
-<span class="go">-1.43221 | -2.11912</span>
-<span class="go">1.87683  | 1.70116</span>
-<span class="go">0.772652 | 8.62851</span>
-<span class="go">2.64517  | 9.8696</span>
-<span class="go">-0.45884 | 2.24684</span>
-<span class="go">-2.1741  | 1.76802</span>
-<span class="go">4.04094  | 3.77723</span>
+<span class="go">data1     | data2</span>
+<span class="go">3.03548   | 5.45183</span>
+<span class="go">-1.5093   | 2.49161</span>
+<span class="go">-0.367506 | 1.83502</span>
+<span class="go">-0.109009 | 7.19725</span>
+<span class="go">-0.184458 | 3.17506</span>
+<span class="go">-0.456527 | 7.37386</span>
+<span class="go">-2.08145  | 1.26494</span>
+<span class="go">1.50027   | 3.88439</span>
+<span class="go">6.06656   | 5.39583</span>
+<span class="go">0.803498  | 5.81137</span>
 <span class="go">... (90 rows omitted)</span>
 
 <span class="go"># index = False prevents row numbers from appearing in the resulting CSV</span>
@@ -629,8 +629,8 @@ non-smokers.</p>
 
 <span class="gp">In [73]: </span><span class="n">bootstrapped_diff_means</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
 <span class="gh">Out[73]: </span><span class="go"></span>
-<span class="go">array([ 0.16853909, -2.36396545,  0.22911772,  0.29753645, -1.7772354 ,</span>
-<span class="go">       -1.94849551,  0.85343632,  0.06725475,  1.37930131,  3.32971952])</span>
+<span class="go">array([ 0.98203148,  0.89277694,  0.02953212, -2.93451864, -0.56737816,</span>
+<span class="go">        0.86200161, -0.72575529, -2.02502552,  1.32860125, -0.19166933])</span>
 
 <span class="gp">In [74]: </span><span class="n">num_diffs_greater</span> <span class="o">=</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">bootstrapped_diff_means</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">observed_diff</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
@@ -710,7 +710,7 @@ non-smokers.</p>
         <li class="right" >
           <a href="index.html" title="Welcome to datascience’s documentation!"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.11.4 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.11.5 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
