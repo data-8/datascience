@@ -26,6 +26,8 @@ pip install datascience
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.11.6
+* Fixed bug where Table#hist was sometimes truncating the x-axis label.
 
 ### v0.11.5
 * Fixes bug where joining tables that have columns that are already duplicated will sometimes join incorrectly.
