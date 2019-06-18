@@ -26,6 +26,9 @@ pip install datascience
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.11.5
+* Fixes bug where error terms show up while plotting
+
 ### v0.11.4
 * Fix bug where we warned inappropriately when passing a string to an `are.*` predicate.
 
