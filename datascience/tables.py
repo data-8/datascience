@@ -2586,7 +2586,12 @@ class Table(collections.abc.MutableMapping):
             # This code is factored as a function for clarity only.
             weight_columns = [c for c in self.labels if c != bin_column]
             bin_values = self.column(bin_column)
-            values_dict = [(w.rstrip(' count'), (bin_values, self.column(w))) for w in weight_columns]
+            print(bin_column)
+            print(weight_columns)
+            print(bin_values)
+            values_dict = [(w[:-6] if w.endswith(' count') else w, (bin_values, self.column(w))) \
+                for w in weight_columns]
+            print(values_dict)
             return values_dict
 
         def prepare_hist_with_group(group):
@@ -2662,6 +2667,8 @@ class Table(collections.abc.MutableMapping):
                     x_unit = ' (' + unit + ')' if unit else ''
                     if len(weights) == n:
                         vargs['weights'] = weights[i]
+                    # print(hist_name)
+                    # print(x_unit)
                     axis.set_xlabel(hist_name + x_unit, fontsize=16)
                     axis.hist(values_for_hist, color=color, **vargs)
                     _vertical_x(axis)
