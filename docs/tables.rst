@@ -72,6 +72,8 @@ Accessing values
     Table.rows
     Table.row
     Table.labels
+    Table.first
+    Table.last
 
     Table.column_index
     Table.apply
@@ -87,6 +89,7 @@ Mutation (modifies table in place)
     Table.append
     Table.append_column
     Table.relabel
+    Table.remove
 
 Transformation (creates a new table)
 
@@ -98,6 +101,7 @@ Transformation (creates a new table)
     Table.drop
     Table.take
     Table.exclude
+    Table.move_column
     Table.where
     Table.sort
     Table.group
@@ -108,8 +112,11 @@ Transformation (creates a new table)
     Table.stats
     Table.percentile
     Table.sample
+    Table.shuffle
+    Table.sample_from_distribution
     Table.split
     Table.bin
+    Table.pivot_bin
 
 Exporting / Displaying
 
@@ -131,8 +138,11 @@ Visualizations
 
     Table.plot
     Table.bar
+    Table.group_bar
     Table.barh
+    Table.group_barh
     Table.pivot_hist
     Table.hist
+    Table.hist_of_counts
     Table.scatter
     Table.boxplot

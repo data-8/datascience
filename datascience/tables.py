@@ -1305,6 +1305,8 @@ class Table(collections.abc.MutableMapping):
         # Build joined table
         self_labels = list(self.labels)
         other_labels = [self._unused_label(s) for s in other.labels]
+        if (len(set(self_labels + other_labels)) != len(list(self_labels + other_labels))):
+            other_labels = [self._unused_label_in_either_table(s, other) for s in other.labels]
         other_labels_map = dict(zip(other.labels, other_labels))
         joined = type(self)(self_labels + other_labels).with_rows(joined_rows)
 
@@ -1362,6 +1364,19 @@ class Table(collections.abc.MutableMapping):
         while label in existing:
             label = '{}_{}'.format(original, i)
             i += 1
+        return label
+
+    def _unused_label_in_either_table(self, label, other):
+        original = label
+        existing_self = self.labels
+        existing_other = other.labels
+        i = 2
+        while label in existing_self:
+            label = '{}_{}'.format(original, i)
+            i += 1
+            while label in existing_other:
+                label = '{}_{}'.format(original, i)
+                i += 1
         return label
 
     def _get_column(self, column_or_label):
@@ -2425,7 +2440,7 @@ class Table(collections.abc.MutableMapping):
 
     # Deprecated
     def pivot_hist(self, pivot_column_label, value_column_label, overlay=True, width=6, height=4, **vargs):
-        """Draw histograms of each category in a column."""
+        """Draw histograms of each category in a column. (Deprecated)"""
         warnings.warn("pivot_hist is deprecated; use "
                       "hist(value_column_label, group=pivot_column_label), or "
                       "with side_by_side=True if you really want side-by-side "

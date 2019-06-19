@@ -82,6 +82,16 @@ def u():
     """Setup second alphanumeric table"""
     return table2()
 
+@pytest.fixture(scope='function')
+def scrabble_table2():
+    """Setup Scrabble table"""
+    return Table().with_columns([
+        'letter', ['a', 'b', 'c', 'z'],
+        'count', [9, 3, 3, 1],
+        'count_2', [9, 3, 3, 1],
+        'pointsplus1', [2, 3, 3, 11],
+        ])
+
 
 def assert_equal(string1, string2):
     string1, string2 = str(string1), str(string2)
@@ -1320,6 +1330,66 @@ def test_join_with_two_labels_one_format(table):
     c      | 3     | 2      | 3       | $2.00
     z      | 1     | 10     | 1       | $10.00
     """)
+
+def test_join_with_column_already_duplicated_simple(table, scrabble_table2):
+    joined_forwards = table.join("letter", scrabble_table2)
+    joined_backwards = scrabble_table2.join("letter", table)
+
+    assert_equal(joined_forwards, """
+    letter | count | points | count_3 | count_2 | pointsplus1
+    a      | 9     | 1      | 9       | 9       | 2
+    b      | 3     | 2      | 3       | 3       | 3
+    c      | 3     | 2      | 3       | 3       | 3
+    z      | 1     | 10     | 1       | 1       | 11
+    """)
+
+    assert_equal(joined_backwards, """
+    letter | count | count_2 | pointsplus1 | count_3 | points
+    a      | 9     | 9       | 2           | 9       | 1
+    b      | 3     | 3       | 3           | 3       | 2
+    c      | 3     | 3       | 3           | 3       | 2
+    z      | 1     | 1       | 11          | 1       | 10
+    """)
+
+
+def test_join_with_column_already_duplicated_thorough(table, scrabble_table2):
+    assert_equal(table, """
+    letter | count | points
+    a      | 9     | 1
+    b      | 3     | 2
+    c      | 3     | 2
+    z      | 1     | 10
+    """)
+    assert_equal(scrabble_table2, """
+    letter | count | count_2 | pointsplus1
+    a      | 9     | 9      | 2
+    b      | 3     | 3      | 3
+    c      | 3     | 3      | 3
+    z      | 1     | 1      | 11
+    """)
+
+    joined_forwards = table.join("letter", scrabble_table2)
+    joined_backwards = scrabble_table2.join("letter", table)
+
+    # Test that the joined tables have the same labels
+    assert_array_equal(list(sorted(joined_backwards.labels)), list(sorted(joined_forwards.labels)))
+
+    # Check for each label that the same contents are in the column
+    for col in joined_backwards.labels:
+        assert_array_equal(joined_forwards.column(col), joined_backwards.column(col))
+
+    # Create new test case
+    table_copy = table.with_columns("pointsplus1", scrabble_table2.column("pointsplus1"), 
+        "pointsplus1_2", scrabble_table2.column("pointsplus1") + 1)
+    joined_forwards = table_copy.join("letter", scrabble_table2)
+    joined_backwards = scrabble_table2.join("letter", table_copy)
+
+    # Test that the joined tables have the same labels
+    assert_array_equal(len(list(sorted(joined_backwards.labels))), len(list(sorted(joined_forwards.labels))))
+
+    # Check for each label that the same contents are in the column
+    for col in joined_backwards.labels:
+        assert_array_equal(joined_forwards.column(col), joined_backwards.column(col))
 
 def test_join_one_list_with_one_label(table, table4):
     table['totals'] = table['points'] * table['count']
