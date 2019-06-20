@@ -2644,8 +2644,13 @@ class Table(collections.abc.MutableMapping):
                     axis.set_ylabel(y_label)
                     if vargs['density']:
                         axis.yaxis.set_major_formatter(percentage)
-                    if unit:
-                        axis.set_xlabel('(' + unit + ')', fontsize=16)
+                    x_unit = ' (' + unit + ')' if unit else ''
+                    if group is not None and len(self.labels) == 2:
+                        #There's a grouping in place but we're only plotting one column's values
+                        label_not_grouped = [l for l in self.labels if l != group][0]
+                        axis.set_xlabel(label_not_grouped + x_unit, fontsize=16)
+                    else:    
+                        axis.set_xlabel(x_unit, fontsize=16)
                     plt.legend(hist_names, loc=2, bbox_to_anchor=(1.05, 1))
                     type(self).plots.append(axis)
                 else:
