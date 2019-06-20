@@ -2611,62 +2611,63 @@ class Table(collections.abc.MutableMapping):
         values_dict = collections.OrderedDict(values_dict)
 
         def draw_hist(values_dict):
-            # This code is factored as a function for clarity only.
-            n = len(values_dict)
-            colors = [rgb_color + (self.default_alpha,) for rgb_color in
-                itertools.islice(itertools.cycle(self.chart_colors), n)]
-            hist_names = list(values_dict.keys())
-            values = [v[0] for v in values_dict.values()]
-            weights = [v[1] for v in values_dict.values() if len(v) > 1]
-            if n > len(weights) > 0:
-                raise ValueError("Weights were provided for some columns, but not "
-                                 " all, and that's not supported.")
-            if vargs['density']:
-                y_label = 'Percent per ' + (unit if unit else 'unit')
-                percentage = plt.FuncFormatter(lambda x, _: "{:g}".format(100*x))
-            else:
-                y_label = 'Count'
-
-            if overlay and n > 1:
-                # Reverse because legend prints bottom-to-top
-                values = values[::-1]
-                weights = weights[::-1]
-                colors = list(colors)[::-1]
-                if len(weights) == n:
-                    vargs['weights'] = weights
-                if not side_by_side:
-                    vargs.setdefault('histtype', 'stepfilled')
-                figure = plt.figure(figsize=(width, height))
-                plt.hist(values, color=colors, **vargs)
-                axis = figure.get_axes()[0]
-                _vertical_x(axis)
-                axis.set_ylabel(y_label)
+            with np.printoptions(legacy='1.13'):
+                # This code is factored as a function for clarity only.
+                n = len(values_dict)
+                colors = [rgb_color + (self.default_alpha,) for rgb_color in
+                    itertools.islice(itertools.cycle(self.chart_colors), n)]
+                hist_names = list(values_dict.keys())
+                values = [v[0] for v in values_dict.values()]
+                weights = [v[1] for v in values_dict.values() if len(v) > 1]
+                if n > len(weights) > 0:
+                    raise ValueError("Weights were provided for some columns, but not "
+                                     " all, and that's not supported.")
                 if vargs['density']:
-                    axis.yaxis.set_major_formatter(percentage)
-                if unit:
-                    axis.set_xlabel('(' + unit + ')', fontsize=16)
-                plt.legend(hist_names, loc=2, bbox_to_anchor=(1.05, 1))
-                type(self).plots.append(axis)
-            else:
-                _, axes = plt.subplots(n, 1, figsize=(width, height * n))
-                if 'bins' in vargs:
-                    bins = vargs['bins']
-                    if isinstance(bins, numbers.Integral) and bins > 76 or hasattr(bins, '__len__') and len(bins) > 76:
-                        # Use stepfilled when there are too many bins
+                    y_label = 'Percent per ' + (unit if unit else 'unit')
+                    percentage = plt.FuncFormatter(lambda x, _: "{:g}".format(100*x))
+                else:
+                    y_label = 'Count'
+
+                if overlay and n > 1:
+                    # Reverse because legend prints bottom-to-top
+                    values = values[::-1]
+                    weights = weights[::-1]
+                    colors = list(colors)[::-1]
+                    if len(weights) == n:
+                        vargs['weights'] = weights
+                    if not side_by_side:
                         vargs.setdefault('histtype', 'stepfilled')
-                if n == 1:
-                    axes = [axes]
-                for i, (axis, hist_name, values_for_hist, color) in enumerate(zip(axes, hist_names, values, colors)):
+                    figure = plt.figure(figsize=(width, height))
+                    plt.hist(values, color=colors, **vargs)
+                    axis = figure.get_axes()[0]
+                    _vertical_x(axis)
                     axis.set_ylabel(y_label)
                     if vargs['density']:
                         axis.yaxis.set_major_formatter(percentage)
-                    x_unit = ' (' + unit + ')' if unit else ''
-                    if len(weights) == n:
-                        vargs['weights'] = weights[i]
-                    axis.set_xlabel(hist_name + x_unit, fontsize=16)
-                    axis.hist(values_for_hist, color=color, **vargs)
-                    _vertical_x(axis)
+                    if unit:
+                        axis.set_xlabel('(' + unit + ')', fontsize=16)
+                    plt.legend(hist_names, loc=2, bbox_to_anchor=(1.05, 1))
                     type(self).plots.append(axis)
+                else:
+                    _, axes = plt.subplots(n, 1, figsize=(width, height * n))
+                    if 'bins' in vargs:
+                        bins = vargs['bins']
+                        if isinstance(bins, numbers.Integral) and bins > 76 or hasattr(bins, '__len__') and len(bins) > 76:
+                            # Use stepfilled when there are too many bins
+                            vargs.setdefault('histtype', 'stepfilled')
+                    if n == 1:
+                        axes = [axes]
+                    for i, (axis, hist_name, values_for_hist, color) in enumerate(zip(axes, hist_names, values, colors)):
+                        axis.set_ylabel(y_label)
+                        if vargs['density']:
+                            axis.yaxis.set_major_formatter(percentage)
+                        x_unit = ' (' + unit + ')' if unit else ''
+                        if len(weights) == n:
+                            vargs['weights'] = weights[i]
+                        axis.set_xlabel(hist_name + x_unit, fontsize=16)
+                        axis.hist(values_for_hist, color=color, **vargs)
+                        _vertical_x(axis)
+                        type(self).plots.append(axis)
 
         draw_hist(values_dict)
 
