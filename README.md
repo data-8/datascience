@@ -29,6 +29,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### v0.11.8
 * Fixes bug where x-label doesn't show up for grouped histogram in certain conditions.
 
+### v0.11.7
+* Fixed bug where Table#hist was sometimes truncating the x-axis label.
+
+### v0.11.6
+* Fixes bug where error terms show up while plotting
+
 ### v0.11.5
 * Fixes bug where joining tables that have columns that are already duplicated will sometimes join incorrectly.
 
