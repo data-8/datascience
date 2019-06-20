@@ -26,6 +26,9 @@ pip install datascience
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.12.0
+* Changes `Table#scatter`'s argument name of `colors` to `group` to mirror `Table#hist`.
+* Makes a grouped scatterplot's legend identical to a group histogram's legend.
 
 ### v0.11.5
 * Fixes bug where joining tables that have columns that are already duplicated will sometimes join incorrectly.
