@@ -2586,7 +2586,8 @@ class Table(collections.abc.MutableMapping):
             # This code is factored as a function for clarity only.
             weight_columns = [c for c in self.labels if c != bin_column]
             bin_values = self.column(bin_column)
-            values_dict = [(w.rstrip(' count'), (bin_values, self.column(w))) for w in weight_columns]
+            values_dict = [(w[:-6] if w.endswith(' count') else w, (bin_values, self.column(w))) \
+                for w in weight_columns]
             return values_dict
 
         def prepare_hist_with_group(group):

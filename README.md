@@ -26,6 +26,10 @@ pip install datascience
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+
+### v0.11.7
+* Fixed bug where Table#hist was sometimes truncating the x-axis label.
+
 ### v0.11.6
 * Fixes bug where error terms show up while plotting
 
