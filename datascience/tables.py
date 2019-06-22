@@ -2288,7 +2288,8 @@ class Table(collections.abc.MutableMapping):
         self.group(column_label).barh(column_label, **vargs)
 
     def scatter(self, column_for_x, select=None, overlay=True, fit_line=False,
-        group=None, labels=None, sizes=None, width=5, height=5, s=20, **vargs):
+        group=None, labels=None, sizes=None, width=5, height=5, s=20,
+        Colors=None, **vargs):
         """Creates scatterplots, optionally adding a line of best fit.
 
         Args:
@@ -2314,7 +2315,10 @@ class Table(collections.abc.MutableMapping):
             ``sizes``:  A column of values to set the relative areas of dots.
 
             ``s``: Size of dots. If sizes is also provided, then dots will be
-              in the range 0 to 2 * s.
+                in the range 0 to 2 * s.
+
+            ``colors``: (deprecated) A synonym for ``group``.  Retained
+                for backwards compatibility.
 
         Raises:
             ValueError -- Every column, ``column_for_x`` or ``select``, must be numerical
@@ -2351,6 +2355,14 @@ class Table(collections.abc.MutableMapping):
         options.update(vargs)
 
         x_data, y_labels =  self._split_column_and_labels(column_for_x)
+        if group is not None and colors is not None and group != colors:
+            warnings.warn("Do not pass both colors and group to scatter().")
+        if group is None and colors is not None:
+            # Backward compatibility
+            group = colors
+            # TODO: In a future release, warn that this is deprecated.
+            # Deprecated
+            # warnings.warn("scatter(colors=x) is deprecated. Use scatter(group=x)", FutureWarning)
         if group is not None:
             y_labels.remove(self._as_label(group))
         if sizes is not None:
