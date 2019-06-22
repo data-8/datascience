@@ -30,6 +30,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 * Changes `Table#scatter`'s argument name of `colors` to `group` to mirror `Table#hist`.
 * Makes a grouped scatterplot's legend identical to a group histogram's legend.
 
+### v0.11.8
+* Fixes bug where x-label doesn't show up for grouped histogram in certain conditions.
+
 ### v0.11.7
 * Fixed bug where Table#hist was sometimes truncating the x-axis label.
 
