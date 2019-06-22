@@ -2289,7 +2289,7 @@ class Table(collections.abc.MutableMapping):
 
     def scatter(self, column_for_x, select=None, overlay=True, fit_line=False,
         group=None, labels=None, sizes=None, width=5, height=5, s=20,
-        Colors=None, **vargs):
+        colors=None, **vargs):
         """Creates scatterplots, optionally adding a line of best fit.
 
         Args:
