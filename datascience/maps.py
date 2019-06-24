@@ -249,14 +249,18 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         m = self._create_map()
         data = pandas.DataFrame({id_name: ids, value_name: values})
         attrs = {
-            'geo_str': json.dumps(self.geojson()),
+            'geo_data': json.dumps(self.geojson()),
             'data': data,
             'columns': [id_name, value_name],
             'key_on': key_on,
             'fill_color': palette,
         }
         kwargs.update(attrs)
-        m.geo_json(**kwargs)
+        # m.geo_json(**kwargs)
+        folium.Choropleth(
+            **kwargs,
+            name='geojson'
+        ).add_to(m)
         colored = self.format()
         colored._folium_map = m
         return colored
@@ -359,13 +363,16 @@ class _MapFeature(_FoliumWrapper, abc.ABC):
     _map_method_name = ""
 
     # Default dimensions for displaying the feature in isolation
-    _width = 180
-    _height = 180
+    _width = 960
+    _height = 500
 
-    def draw_on(self, folium_map):
-        """Add feature to Folium map object."""
-        f = getattr(folium_map, self._map_method_name)
-        f(**self._folium_kwargs)
+    # def draw_on(self, folium_map):
+    #     """Add feature to Folium map object."""
+    #     # print(folium_map)
+    #     # print(self._map_method_name)
+    #     # print(self._folium_kwargs)
+    #     f = getattr(folium_map, self._map_method_name)
+    #     f(**self._folium_kwargs)
 
     def _set_folium_map(self):
         """A map containing only the feature."""
@@ -390,12 +397,19 @@ class _MapFeature(_FoliumWrapper, abc.ABC):
     def geojson(self, feature_id):
         """Return GeoJSON."""
 
+    @abc.abstractmethod
+    def draw_on(self, folium_map):
+        """Add feature to Folium map object."""
+
 
 class Marker(_MapFeature):
     """A marker displayed with Folium's simple_marker method.
 
     popup -- text that pops up when marker is clicked
-    color -- fill color
+    color -- The color of the marker. You can use:
+        [‘red’, ‘blue’, ‘green’, ‘purple’, ‘orange’, ‘darkred’,
+        ’lightred’, ‘beige’, ‘darkblue’, ‘darkgreen’, ‘cadetblue’, ‘darkpurple’, 
+        ‘white’, ‘pink’, ‘lightblue’, ‘lightgreen’, ‘gray’, ‘black’, ‘lightgray’]
 
     Defaults from Folium:
 
@@ -409,18 +423,23 @@ class Marker(_MapFeature):
         angle of icon
     popup_width: int, default 300
         width of popup
+
+    The icon can be further customized by by passing in attributes
+    into kwargs by using the attributes listed in 
+    `https://python-visualization.github.io/folium/modules.html#folium.map.Icon`.
     """
 
     _map_method_name = 'simple_marker'
-    _color_param = 'marker_color'
 
     def __init__(self, lat, lon, popup='', color='blue', **kwargs):
+        #TODO: Figure out clustered_marker (Adnan)
         assert isinstance(lat, _number)
         assert isinstance(lon, _number)
         self.lat_lon = (lat, lon)
         self._attrs = {
             'popup': popup,
-            self._color_param: color,
+            'color': color,
+            **kwargs
         }
         self._attrs.update(kwargs)
 
@@ -436,6 +455,10 @@ class Marker(_MapFeature):
     def _folium_kwargs(self):
         attrs = self._attrs.copy()
         attrs['location'] = self.lat_lon
+        icon_args = {k: attrs.pop(k) for k in attrs.keys() & {'color', 'marker_icon', 'clustered_marker', 'icon_angle', 'popup_width'}}
+        if 'marker_icon' in icon_args:
+            icon_args['icon'] = icon_args.pop('marker_icon')
+        attrs['icon'] = folium.Icon(**icon_args)
         return attrs
 
     def geojson(self, feature_id):
@@ -456,6 +479,9 @@ class Marker(_MapFeature):
         attrs.update(kwargs)
         lat, lon = self.lat_lon
         return type(self)(lat, lon, **attrs)
+
+    def draw_on(self, folium_map):
+        folium.Marker(**self._folium_kwargs).add_to(folium_map)
 
     @classmethod
     def _convert_point(cls, feature):
@@ -505,6 +531,9 @@ class Circle(Marker):
     fill_opacity: float, default 0.6
         Circle fill opacity
 
+    More options can be passed into kwargs by following the attributes
+    listed in `https://leafletjs.com/reference-1.4.0.html#circlemarker`.
+
     For example, to draw three circles::
 
         t = Table().with_columns([
@@ -523,6 +552,19 @@ class Circle(Marker):
 
     def __init__(self, lat, lon, popup='', color='blue', radius=10, **kwargs):
         super().__init__(lat, lon, popup, color, radius=radius, line_color=None, **kwargs)
+
+    @property
+    def _folium_kwargs(self):
+        attrs = self._attrs.copy()
+        attrs['location'] = self.lat_lon
+        if 'color' in attrs:
+            attrs['fill_color'] = attrs.pop('color')
+        if 'line_color' in attrs:
+            attrs['color'] = attrs.pop('line_color')
+        return attrs
+
+    def draw_on(self, folium_map):
+        folium.CircleMarker(**self._folium_kwargs).add_to(folium_map)
 
 
 class Region(_MapFeature):
@@ -579,7 +621,7 @@ class Region(_MapFeature):
     @property
     def _folium_kwargs(self):
         attrs = self._attrs.copy()
-        attrs['geo_str'] = json.dumps(self._geojson)
+        attrs['data'] = json.dumps(self._geojson)
         return attrs
 
     def geojson(self, feature_id):
@@ -596,6 +638,15 @@ class Region(_MapFeature):
         attrs = self._attrs.copy()
         attrs.update(kwargs)
         return Region(self._geojson, **attrs)
+
+    def draw_on(self, folium_map):
+        attrs = self._folium_kwargs
+        data = attrs.pop('data')
+        folium.GeoJson(
+            data=data,
+            style_function=lambda x: attrs,
+            name='geojson'
+        ).add_to(folium_map)
 
 
 def _lat_lons_from_geojson(s):
