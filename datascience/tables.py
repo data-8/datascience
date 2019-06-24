@@ -2317,8 +2317,9 @@ class Table(collections.abc.MutableMapping):
             ``s``: Size of dots. If sizes is also provided, then dots will be
                 in the range 0 to 2 * s.
 
-            ``colors``: (deprecated) A synonym for ``group``.  Retained
-                for backwards compatibility.
+            ``colors``: (deprecated) A synonym for ``group``. Retained
+                temporarily for backwards compatibility. This argument
+                will be removed in future releases.
 
         Raises:
             ValueError -- Every column, ``column_for_x`` or ``select``, must be numerical
