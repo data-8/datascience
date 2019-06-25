@@ -5,6 +5,7 @@ __all__ = ['Map', 'Marker', 'Circle', 'Region']
 
 import IPython.display
 import folium
+from folium.plugins import MarkerCluster
 import pandas
 import numpy as np
 
@@ -107,8 +108,16 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
 
     def _set_folium_map(self):
         self._folium_map = self._create_map()
+        if 'clustered_marker' in self._attrs and self._attrs['clustered_marker']:
+            marker_cluster = MarkerCluster().add_to(self._folium_map)
+            clustered = True
+        else:
+            clustered = False
         for feature in self._features.values():
-            feature.draw_on(self._folium_map)
+            if clustered and isinstance(feature, Marker):
+                feature.draw_on(marker_cluster)
+            else:
+                feature.draw_on(self._folium_map)
 
     def _create_map(self):
         attrs = {'width': self._width, 'height': self._height}
@@ -410,7 +419,7 @@ class Marker(_MapFeature):
         [‘red’, ‘blue’, ‘green’, ‘purple’, ‘orange’, ‘darkred’,
         ’lightred’, ‘beige’, ‘darkblue’, ‘darkgreen’, ‘cadetblue’, ‘darkpurple’, 
         ‘white’, ‘pink’, ‘lightblue’, ‘lightgreen’, ‘gray’, ‘black’, ‘lightgray’]
-
+    
     Defaults from Folium:
 
     marker_icon: string, default 'info-sign'
@@ -442,6 +451,11 @@ class Marker(_MapFeature):
             **kwargs
         }
         self._attrs.update(kwargs)
+        if 'clustered_marker' in kwargs and kwargs['clustered_marker']:
+            self.clustered_marker = folium.plugins.MarkerCluster()
+            self.cluster_attached_to_map = False
+        else:
+            self.clustered_marker = False
 
     @property
     def lat_lons(self):
@@ -491,10 +505,15 @@ class Marker(_MapFeature):
         return cls(lat, lon)
 
     @classmethod
-    def map(cls, latitudes, longitudes, labels=None, colors=None, areas=None, **kwargs):
+    def map(cls, latitudes, longitudes, labels=None, colors=None, areas=None, clustered_marker=False, **kwargs):
         """Return markers from columns of coordinates, labels, & colors.
 
         The areas column is not applicable to markers, but sets circle areas.
+
+        Arguments: (TODO) document all options
+        clustered_marker: boolean, default False
+            boolean of whether or not you want the marker clustered with other markers
+
         """
         assert len(latitudes) == len(longitudes)
         assert areas is None or hasattr(cls, '_has_radius'), "A " + cls.__name__ + " has no radius"
@@ -511,12 +530,12 @@ class Marker(_MapFeature):
             assert len(areas) == len(latitudes)
             inputs.append(np.array(areas) ** 0.5 / math.pi)
         ms = [cls(*args, **kwargs) for args in zip(*inputs)]
-        return Map(ms)
+        return Map(ms, clustered_marker=clustered_marker)
 
     @classmethod
-    def map_table(cls, table, **kwargs):
+    def map_table(cls, table, clustered_marker=False, **kwargs):
         """Return markers from the colums of a table."""
-        return cls.map(*table.columns, **kwargs)
+        return cls.map(*table.columns, clustered_marker=clustered_marker, **kwargs)
 
 
 class Circle(Marker):
@@ -551,7 +570,7 @@ class Circle(Marker):
     _has_radius = True
 
     def __init__(self, lat, lon, popup='', color='blue', radius=10, **kwargs):
-        super().__init__(lat, lon, popup, color, radius=radius, line_color=None, **kwargs)
+        super().__init__(lat, lon, popup, color, radius=radius, **kwargs)
 
     @property
     def _folium_kwargs(self):
