@@ -2288,7 +2288,8 @@ class Table(collections.abc.MutableMapping):
         self.group(column_label).barh(column_label, **vargs)
 
     def scatter(self, column_for_x, select=None, overlay=True, fit_line=False,
-        colors=None, labels=None, sizes=None, width=5, height=5, s=20, **vargs):
+        group=None, labels=None, sizes=None, width=5, height=5, s=20,
+        colors=None, **vargs):
         """Creates scatterplots, optionally adding a line of best fit.
 
         Args:
@@ -2306,14 +2307,19 @@ class Table(collections.abc.MutableMapping):
                 for additional arguments that can be passed into vargs. These
                 include: `marker` and `norm`, to name a couple.
 
-            ``colors``: A column of categories to be used for coloring dots.
+            ``group``: A column of categories to be used for coloring dots per 
+                each category grouping.
 
             ``labels``: A column of text labels to annotate dots.
 
             ``sizes``:  A column of values to set the relative areas of dots.
 
             ``s``: Size of dots. If sizes is also provided, then dots will be
-              in the range 0 to 2 * s.
+                in the range 0 to 2 * s.
+
+            ``colors``: (deprecated) A synonym for ``group``. Retained
+                temporarily for backwards compatibility. This argument
+                will be removed in future releases.
 
         Raises:
             ValueError -- Every column, ``column_for_x`` or ``select``, must be numerical
@@ -2350,22 +2356,30 @@ class Table(collections.abc.MutableMapping):
         options.update(vargs)
 
         x_data, y_labels =  self._split_column_and_labels(column_for_x)
-        if colors is not None:
-            y_labels.remove(self._as_label(colors))
+        if group is not None and colors is not None and group != colors:
+            warnings.warn("Do not pass both colors and group to scatter().")
+        if group is None and colors is not None:
+            # Backward compatibility
+            group = colors
+            # TODO: In a future release, warn that this is deprecated.
+            # Deprecated
+            # warnings.warn("scatter(colors=x) is deprecated. Use scatter(group=x)", FutureWarning)
+        if group is not None:
+            y_labels.remove(self._as_label(group))
         if sizes is not None:
             y_labels.remove(self._as_label(sizes))
         if select is not None:
             y_labels = self._as_labels(select)
-        if len(y_labels) > 1 and colors is not None and overlay:
-            warnings.warn("Colors and overlay are incompatible in a scatter")
+        if len(y_labels) > 1 and group is not None and overlay:
+            warnings.warn("Group and overlay are incompatible in a scatter")
             overlay = False
 
         def draw(axis, label, color):
-            if colors is not None:
-                colored = sorted(np.unique(self.column(colors)))
+            if group is not None:
+                colored = sorted(np.unique(self.column(group)))
                 color_list = list(itertools.islice(itertools.cycle(self.chart_colors), len(colored)))
                 color_map = collections.OrderedDict(zip(colored, color_list))
-                color = [color_map[x] for x in self.column(colors)]
+                color = [color_map[x] for x in self.column(group)]
             elif 'color' in options:
                 color = options.pop('color')
             y_data = self[label]
@@ -2386,9 +2400,11 @@ class Table(collections.abc.MutableMapping):
                         textcoords='offset points', ha='right', va='bottom',
                         bbox=dict(boxstyle='round,pad=0.5', fc='white', alpha=0.7),
                         arrowprops = dict(arrowstyle = '->', connectionstyle = 'arc3,rad=0', color='black'))
-            if colors is not None:
+            if group is not None:
                 import matplotlib.patches as mpatches
-                patches = [mpatches.Patch(color=c, label=v) for (v, c) in color_map.items()]
+                group_col_name = self._as_label(group)
+                patches = [mpatches.Patch(color=c, label="{0}={1}".format(group_col_name, v)) \
+                    for (v, c) in color_map.items()]
                 axis.legend(loc=2, bbox_to_anchor=(1.05, 1), handles=patches)
 
         x_label = self._as_label(column_for_x)
