@@ -26,6 +26,9 @@ pip install datascience
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.12.1
+* No longer support the `colors` argument for `Table#scatter`.
+
 ### v0.12.0
 * Changes `Table#scatter`'s argument name of `colors` to `group` to mirror `Table#hist`.
 * Makes a grouped scatterplot's legend identical to a group histogram's legend.
