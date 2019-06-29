@@ -123,6 +123,7 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         attrs = {'width': self._width, 'height': self._height}
         attrs.update(self._autozoom())
         attrs.update(self._attrs.copy())
+
         # Enforce zoom consistency
         attrs['max_zoom'] = max(attrs['zoom_start']+2, attrs['max_zoom'])
         attrs['min_zoom'] = min(attrs['zoom_start']-2, attrs['min_zoom'])
@@ -138,11 +139,6 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
             midpoint(bounds['min_lat'], bounds['max_lat']),
             midpoint(bounds['min_lon'], bounds['max_lon'])
         )
-
-        # self._folium_map.fit_bounds(
-        #     [bounds['min_long'], bounds['min_lat']],
-        #     [bounds['max_long'], bounds['max_lat']]
-        # )
 
         # remove the following with new Folium release
         # rough approximation, assuming max_zoom is 18
@@ -265,7 +261,6 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
             'fill_color': palette,
         }
         kwargs.update(attrs)
-        # m.geo_json(**kwargs)
         folium.Choropleth(
             **kwargs,
             name='geojson'
@@ -368,20 +363,9 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
 class _MapFeature(_FoliumWrapper, abc.ABC):
     """A feature displayed on a map. When displayed alone, a map is created."""
 
-    # Method name for a folium.Map to add the feature
-    _map_method_name = ""
-
     # Default dimensions for displaying the feature in isolation
     _width = 960
     _height = 500
-
-    # def draw_on(self, folium_map):
-    #     """Add feature to Folium map object."""
-    #     # print(folium_map)
-    #     # print(self._map_method_name)
-    #     # print(self._folium_kwargs)
-    #     f = getattr(folium_map, self._map_method_name)
-    #     f(**self._folium_kwargs)
 
     def _set_folium_map(self):
         """A map containing only the feature."""
@@ -438,8 +422,6 @@ class Marker(_MapFeature):
     `https://python-visualization.github.io/folium/modules.html#folium.map.Icon`.
     """
 
-    _map_method_name = 'simple_marker'
-
     def __init__(self, lat, lon, popup='', color='blue', **kwargs):
         #TODO: Figure out clustered_marker (Adnan)
         assert isinstance(lat, _number)
@@ -451,11 +433,6 @@ class Marker(_MapFeature):
             **kwargs
         }
         self._attrs.update(kwargs)
-        if 'clustered_marker' in kwargs and kwargs['clustered_marker']:
-            self.clustered_marker = folium.plugins.MarkerCluster()
-            self.cluster_attached_to_map = False
-        else:
-            self.clustered_marker = False
 
     @property
     def lat_lons(self):
@@ -565,8 +542,6 @@ class Circle(Marker):
         Circle.map_table(t)
     """
 
-    _map_method_name = 'circle_marker'
-    _color_param = 'fill_color'
     _has_radius = True
 
     def __init__(self, lat, lon, popup='', color='blue', radius=10, **kwargs):
@@ -588,8 +563,6 @@ class Circle(Marker):
 
 class Region(_MapFeature):
     """A GeoJSON feature displayed with Folium's geo_json method."""
-
-    _map_method_name = 'geo_json'
 
     def __init__(self, geojson, **kwargs):
         assert 'type' in geojson
