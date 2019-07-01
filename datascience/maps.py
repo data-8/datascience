@@ -49,16 +49,7 @@ class _FoliumWrapper(abc.ABC):
     @staticmethod
     def _inline_map(m, width, height):
         """Returns an embedded iframe of a folium.map."""
-        m._build_map()
-        src = m.HTML.replace('"', '&quot;')
-        style = "width: {}px; height: {}px".format(width, height)
-        html = '<iframe srcdoc="{}" style="{}"; border: none"></iframe>'.format(src, style)
-        # See https://github.com/python-visualization/folium/issues/176
-        if hasattr(m, 'json_data'):
-            for name, data in m.json_data.items():
-                stub = 'function(callback){callback(null, JSON.parse('
-                replace = stub + repr(json.dumps(data).replace('"', '&quot;')) + '))}'
-                html = html.replace('d3.json, ' + repr(name), replace)
+        html = m._repr_html_()
         return html
 
     @abc.abstractmethod
@@ -514,16 +505,16 @@ class Circle(Marker):
     fill_opacity: float, default 0.6
         Circle fill opacity
 
-    For example, to draw three circles:
+    For example, to draw three circles::
 
-    t = Table().with_columns([
-            'lat', [37.8, 38, 37.9],
-            'lon', [-122, -122.1, -121.9],
-            'label', ['one', 'two', 'three'],
-            'color', ['red', 'green', 'blue'],
-            'radius', [3000, 4000, 5000],
-        ])
-    Circle.map_table(t)
+        t = Table().with_columns([
+                'lat', [37.8, 38, 37.9],
+                'lon', [-122, -122.1, -121.9],
+                'label', ['one', 'two', 'three'],
+                'color', ['red', 'green', 'blue'],
+                'radius', [3000, 4000, 5000],
+            ])
+        Circle.map_table(t)
     """
 
     _map_method_name = 'circle_marker'

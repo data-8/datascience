@@ -129,7 +129,7 @@ class Table(collections.abc.MutableMapping):
                 vargs['sep'] = ','
         except AttributeError:
             pass
-        df = pandas.read_table(filepath_or_buffer, *args, **vargs)
+        df = pandas.read_csv(filepath_or_buffer, *args, **vargs)
         return cls.from_df(df)
 
     def _with_columns(self, columns):
@@ -151,7 +151,7 @@ class Table(collections.abc.MutableMapping):
         """Convert a Pandas DataFrame into a Table."""
         t = cls()
         labels = df.columns
-        for label in df.columns:
+        for label in labels:
             t.append_column(label, df[label])
         return t
 
@@ -241,6 +241,7 @@ class Table(collections.abc.MutableMapping):
 
     @property
     def columns(self):
+        """Return a tuple of columns, each with the values in that column."""
         return tuple(self._columns.values())
 
     def column(self, index_or_label):
@@ -253,9 +254,8 @@ class Table(collections.abc.MutableMapping):
         ...     'count',  make_array(2, 4),
         ... )
 
-        >>> tiles.column('letter')
-        array(['c', 'd'],
-              dtype='<U1')
+        >>> list(tiles.column('letter'))
+        ['c', 'd']
         >>> tiles.column(1)
         array([2, 4])
 
@@ -309,8 +309,9 @@ class Table(collections.abc.MutableMapping):
         If no ``column_or_columns`` provided, `fn`` is applied to each row.
 
         Args:
-            ``fn`` (function) -- The function to apply.
-            ``column_or_columns``: Columns containing the arguments to ``fn``
+            ``fn`` (function) -- The function to apply to each element
+                of ``column_or_columns``.
+            ``column_or_columns`` -- Columns containing the arguments to ``fn``
                 as either column labels (``str``) or column indices (``int``).
                 The number of columns must match the number of arguments
                 that ``fn`` expects.
@@ -364,6 +365,14 @@ class Table(collections.abc.MutableMapping):
             rows = zip(*self.select(*column_or_columns).columns)
             return np.array([fn(*row) for row in rows])
 
+    def first(self, label):
+        """Return the zeroth item in a column."""
+        return self.column(label)[0]
+
+    def last(self, label):
+        """Return the last item in a column."""
+        return self.column(label)[-1]
+
     ############
     # Mutation #
     ############
@@ -384,18 +393,20 @@ class Table(collections.abc.MutableMapping):
 
     def move_to_start(self, column_label):
         """Move a column to the first in order."""
-        self._columns.move_to_end(column_label, last=False)
+        self._columns.move_to_end(self._as_label(column_label), last=False)
         return self
 
     def move_to_end(self, column_label):
         """Move a column to the last in order."""
-        self._columns.move_to_end(column_label)
+        self._columns.move_to_end(self._as_label(column_label))
         return self
 
     def append(self, row_or_table):
         """Append a row or all rows of a table. An appended table must have all
         columns of self."""
-        if not row_or_table:
+        if isinstance(row_or_table, np.ndarray):
+            row_or_table = row_or_table.tolist()
+        elif not row_or_table:
             return
         if isinstance(row_or_table, Table):
             t = row_or_table
@@ -413,7 +424,7 @@ class Table(collections.abc.MutableMapping):
         self._num_rows += n
         return self
 
-    def append_column(self, label, values):
+    def append_column(self, label, values, formatter=None):
         """Appends a column to the table or replaces a column.
 
         ``__setitem__`` is aliased to this method:
@@ -428,6 +439,8 @@ class Table(collections.abc.MutableMapping):
 
                 If a list or array, the new column contains the values in
                 ``values``, which must be the same length as the table.
+            ``formatter`` (single formatter): Adds a formatter to the column being 
+                appended. No formatter added by default.
 
         Returns:
             Original table with new or replaced column
@@ -449,14 +462,12 @@ class Table(collections.abc.MutableMapping):
         c      | 3     | 2
         z      | 1     | 10
         >>> table.append_column('new_col1', make_array(10, 20, 30, 40))
-        >>> table
         letter | count | points | new_col1
         a      | 9     | 1      | 10
         b      | 3     | 2      | 20
         c      | 3     | 2      | 30
         z      | 1     | 10     | 40
         >>> table.append_column('new_col2', 'hello')
-        >>> table
         letter | count | points | new_col1 | new_col2
         a      | 9     | 1      | 10       | hello
         b      | 3     | 2      | 20       | hello
@@ -469,8 +480,7 @@ class Table(collections.abc.MutableMapping):
         >>> table.append_column('bad_col', [1, 2])
         Traceback (most recent call last):
             ...
-        ValueError: Column length mismatch. New column does not have the same
-        number of rows as table.
+        ValueError: Column length mismatch. New column does not have the same number of rows as table.
         """
         # TODO(sam): Allow append_column to take in a another table, copying
         # over formatter as needed.
@@ -491,6 +501,10 @@ class Table(collections.abc.MutableMapping):
             self._num_rows = len(values)
 
         self._columns[label] = values
+
+        if (formatter != None):
+            self.set_format(label, formatter)
+        return self
 
     def relabel(self, column_label, new_label):
         """Changes the label(s) of column(s) specified by ``column_label`` to
@@ -517,15 +531,15 @@ class Table(collections.abc.MutableMapping):
         ...     'id',     make_array(12345, 123, 5123))
         >>> table.relabel('id', 'yolo')
         points | yolo
-        1      | 12345
+        1      | 12,345
         2      | 123
-        3      | 5123
+        3      | 5,123
         >>> table.relabel(make_array('points', 'yolo'),
         ...   make_array('red', 'blue'))
         red  | blue
-        1    | 12345
+        1    | 12,345
         2    | 123
-        3    | 5123
+        3    | 5,123
         >>> table.relabel(make_array('red', 'green', 'blue'),
         ...   make_array('cyan', 'magenta', 'yellow', 'key'))
         Traceback (most recent call last):
@@ -1052,7 +1066,8 @@ class Table(collections.abc.MutableMapping):
                 Default None.
             ``collect`` -- aggregation function, used to group ``values``
                 over row-column combinations. Default None.
-            ``zero`` -- zero value for non-existent row-column combinations.
+            ``zero`` -- zero value to use for non-existent row-column
+                combinations.
 
         Raises:
             TypeError -- if ``collect`` is passed in and ``values`` is not,
@@ -1186,21 +1201,19 @@ class Table(collections.abc.MutableMapping):
         rows for all values of a column that appear in both tables.
 
         Args:
-            ``column_label`` (``str``):  label of column in self that is used to
+            ``column_label``:  label of column or array of labels in self that is used to
                 join  rows of ``other``.
             ``other``: Table object to join with self on matching values of
                 ``column_label``.
 
         Kwargs:
-            ``other_label`` (``str``): default None, assumes ``column_label``.
+            ``other_label``: default None, assumes ``column_label``.
                 Otherwise in ``other`` used to join rows.
 
         Returns:
             New table self joined with ``other`` by matching values in
             ``column_label`` and ``other_label``. If the resulting join is
-            empty, returns None. If a join value appears more than once in
-            ``self``, each row with that value will appear in resulting join,
-            but in ``other``, only the first row with that value will be used.
+            empty, returns None.
 
         >>> table = Table().with_columns('a', make_array(9, 3, 3, 1),
         ...     'b', make_array(1, 2, 2, 10),
@@ -1223,10 +1236,14 @@ class Table(collections.abc.MutableMapping):
         >>> table.join('a', table2)
         a    | b    | c    | d    | e
         1    | 10   | 6    | 2    | 4
+        1    | 10   | 6    | 2    | 5
+        1    | 10   | 6    | 10   | 6
         9    | 1    | 3    | 1    | 3
         >>> table.join('a', table2, 'a') # Equivalent to previous join
         a    | b    | c    | d    | e
         1    | 10   | 6    | 2    | 4
+        1    | 10   | 6    | 2    | 5
+        1    | 10   | 6    | 10   | 6
         9    | 1    | 3    | 1    | 3
         >>> table.join('a', table2, 'd') # Repeat column labels relabeled
         a    | b    | c    | a_2  | e
@@ -1243,17 +1260,26 @@ class Table(collections.abc.MutableMapping):
         3    | 2    | 4
         3    | 2    | 5
         1    | 10   | 6
-        >>> table2.join('a', table) # When we join, we get all three rows in table2 where a = 1
-        a    | d    | e    | b    | c
-        1    | 2    | 4    | 10   | 6
-        1    | 2    | 5    | 10   | 6
-        1    | 10   | 6    | 10   | 6
-        9    | 1    | 3    | 1    | 3
-        >>> table.join('a', table2) # Opposite join only keeps first row in table2 with a = 1
-        a    | b    | c    | d    | e
-        1    | 10   | 6    | 2    | 4
-        9    | 1    | 3    | 1    | 3
+        >>> table.join(['a', 'b'], table2, ['a', 'd']) # joining on multiple columns
+        a    | b    | c    | e
+        1    | 10   | 6    | 6
+        9    | 1    | 3    | 3
         """
+        if self.num_rows == 0 or other.num_rows == 0:
+            return None
+        if not other_label:
+            other_label = column_label
+
+        # checking to see if joining on multiple columns
+        if _is_non_string_iterable(column_label):
+            # then we are going to be joining multiple labels
+            return self._multiple_join(column_label, other, other_label)
+
+        # original single column join
+        return self._join(column_label, other, other_label)
+
+    def _join(self, column_label, other, other_label=[]):
+        """joins when COLUMN_LABEL is a string"""
         if self.num_rows == 0 or other.num_rows == 0:
             return None
         if not other_label:
@@ -1261,19 +1287,31 @@ class Table(collections.abc.MutableMapping):
 
         self_rows = self.index_by(column_label)
         other_rows = other.index_by(other_label)
+        return self._join_helper([column_label], self_rows, other, [other_label], other_rows)
 
+    def _multiple_join(self, column_label, other, other_label=[]):
+        """joins when column_label is a non-string iterable"""
+        assert len(column_label) == len(other_label), 'unequal number of columns'
+
+        self_rows = self._multi_index(column_label)
+        other_rows = other._multi_index(other_label)
+        return self._join_helper(column_label, self_rows, other, other_label, other_rows)
+        
+
+    def _join_helper(self, column_label, self_rows, other, other_label, other_rows):
         # Gather joined rows from self_rows that have join values in other_rows
         joined_rows = []
-        for label, rows in self_rows.items():
-            if label in other_rows:
-                other_row = other_rows[label][0]
-                joined_rows += [row + other_row for row in rows]
+        for v, rows in self_rows.items():
+            if v in other_rows:
+                joined_rows += [row + o for row in rows for o in other_rows[v]]
         if not joined_rows:
             return None
 
         # Build joined table
         self_labels = list(self.labels)
         other_labels = [self._unused_label(s) for s in other.labels]
+        if (len(set(self_labels + other_labels)) != len(list(self_labels + other_labels))):
+            other_labels = [self._unused_label_in_either_table(s, other) for s in other.labels]
         other_labels_map = dict(zip(other.labels, other_labels))
         joined = type(self)(self_labels + other_labels).with_rows(joined_rows)
 
@@ -1283,12 +1321,16 @@ class Table(collections.abc.MutableMapping):
             joined._formats[other_labels_map[label]] = other._formats[label]
 
         # Remove redundant column, but perhaps save its formatting
-        del joined[other_labels_map[other_label]]
-        if column_label not in self._formats and other_label in other._formats:
-            joined._formats[column_label] = other._formats[other_label]
+        for duplicate in other_label:
+            del joined[other_labels_map[duplicate]]
+        for duplicate in other_label:
+            if duplicate not in self._formats and duplicate in other._formats:
+                joined._formats[duplicate] = other._formats[duplicate]
 
-        return joined.move_to_start(column_label).sort(column_label)
+        for col in column_label[::-1]:
+            joined = joined.move_to_start(col).sort(col)
 
+        return joined
 
     def stats(self, ops=(min, max, np.median, sum)):
         """Compute statistics for each column and place them in a table."""
@@ -1329,10 +1371,23 @@ class Table(collections.abc.MutableMapping):
             i += 1
         return label
 
+    def _unused_label_in_either_table(self, label, other):
+        original = label
+        existing_self = self.labels
+        existing_other = other.labels
+        i = 2
+        while label in existing_self:
+            label = '{}_{}'.format(original, i)
+            i += 1
+            while label in existing_other:
+                label = '{}_{}'.format(original, i)
+                i += 1
+        return label
+
     def _get_column(self, column_or_label):
         """Convert label to column and check column length."""
         c = column_or_label
-        if isinstance(c, collections.Hashable) and c in self.labels:
+        if isinstance(c, collections.abc.Hashable) and c in self.labels:
             return self[c]
         elif isinstance(c, numbers.Integral):
             return self[c]
@@ -1428,12 +1483,10 @@ class Table(collections.abc.MutableMapping):
         Traceback (most recent call last):
             ...
         ValueError: probabilities do not sum to 1
-
-        # Weights must be length of table.
-        >>> jobs.sample(k=2, weights=make_array(1, 0, 0))
+        >>> jobs.sample(k=2, weights=make_array(1, 0, 0)) # Weights must be length of table.
         Traceback (most recent call last):
             ...
-        ValueError: a and p must have same size
+        ValueError: 'a' and 'p' must have same size
         """
         n = self.num_rows
         if k is None:
@@ -1442,6 +1495,15 @@ class Table(collections.abc.MutableMapping):
         columns = [[c[i] for i in index] for c in self.columns]
         sample = self._with_columns(columns)
         return sample
+
+    def shuffle(self):
+        """Return a new table where all the rows are randomly shuffled from the
+        original table..
+
+        Returns:
+            A new instance of ``Table`` with all ``k`` rows shuffled.
+        """
+        return self.sample(with_replacement=False)
 
     def sample_from_distribution(self, distribution, k, proportions=False):
         """Return a new table with the same number of rows and a new column.
@@ -1562,7 +1624,7 @@ class Table(collections.abc.MutableMapping):
         self.append(self._with_columns(zip(*rows)))
         return self
 
-    def with_column(self, label, values, *rest):
+    def with_column(self, label, values, formatter=None):
         """Return a new table with an additional or replaced column.
 
         Args:
@@ -1573,8 +1635,7 @@ class Table(collections.abc.MutableMapping):
                 value in the new column is ``values``. If sequence of values,
                 new column takes on values in ``values``.
 
-            ``rest``: An alternating list of labels and values describing
-                additional columns. See with_columns for a full description.
+            ``formatter`` (single value): Specifies formatter for the new column. Defaults to no formatter.
 
         Raises:
             ``ValueError``: If
@@ -1615,23 +1676,28 @@ class Table(collections.abc.MutableMapping):
         """
         # Ensure that if with_column is called instead of with_columns;
         # no error is raised.
-        if rest:
-            return self.with_columns(label, values, *rest)
 
         new_table = self.copy()
-        new_table.append_column(label, values)
+        if formatter == {}:
+            formatter = None
+        elif isinstance(formatter, dict):
+            formatter = formatter["formatter"]
+        new_table.append_column(label, values, formatter)
         return new_table
 
-    def with_columns(self, *labels_and_values):
+    def with_columns(self, *labels_and_values, **formatter):
         """Return a table with additional or replaced columns.
 
 
         Args:
-            ``labels_and_values``: An alternating list of labels and values or
-                a list of label-value pairs. If one of the labels is in
+            ``labels_and_values``: An alternating list of labels and values 
+                or a list of label-value pairs. If one of the labels is in 
                 existing table, then every value in the corresponding column is
                 set to that value. If label has only a single value (``int``),
                 every row of corresponding column takes on that value.
+            ''formatter'' (single Formatter value): A single formatter value 
+                that will be applied to all columns being added using this 
+                function call.
 
         Raises:
             ``ValueError``: If
@@ -1656,21 +1722,21 @@ class Table(collections.abc.MutableMapping):
         >>> players = Table().with_columns('player_id',
         ...     make_array(110234, 110235), 'wOBA', make_array(.354, .236))
         >>> players
-        player_id | wOBA
-        110234    | 0.354
-        110235    | 0.236
+        player_id  | wOBA
+        110,234    | 0.354
+        110,235    | 0.236
         >>> players = players.with_columns('salaries', 'N/A', 'season', 2016)
         >>> players
-        player_id | wOBA  | salaries | season
-        110234    | 0.354 | N/A      | 2016
-        110235    | 0.236 | N/A      | 2016
+        player_id  | wOBA  | salaries | season
+        110,234    | 0.354 | N/A      | 2,016
+        110,235    | 0.236 | N/A      | 2,016
         >>> salaries = Table().with_column('salary',
-        ...     make_array('$500,000', '$15,500,000'))
+        ...     make_array(500000, 15500000))
         >>> players.with_columns('salaries', salaries.column('salary'),
-        ...     'years', make_array(6, 1))
-        player_id | wOBA  | salaries    | season | years
-        110234    | 0.354 | $500,000    | 2016   | 6
-        110235    | 0.236 | $15,500,000 | 2016   | 1
+        ...     'bonus', make_array(6, 1), formatter=_formats.CurrencyFormatter)
+        player_id  | wOBA  | salaries    | season  | bonus
+        110,234    | 0.354 | $500,000    | 2,016   | $6
+        110,235    | 0.236 | $15,500,000 | 2,016   | $1
         >>> players.with_columns(2, make_array('$600,000', '$20,000,000'))
         Traceback (most recent call last):
             ...
@@ -1696,8 +1762,10 @@ class Table(collections.abc.MutableMapping):
         assert len(labels_and_values) % 2 == 0, 'Even length sequence required'
         for i in range(0, len(labels_and_values), 2):
             label, values = labels_and_values[i], labels_and_values[i+1]
-            self = self.with_column(label, values)
+            self = self.with_column(label, values, formatter)
         return self
+
+        
 
     def relabeled(self, label, new_label):
         """Return a new table with ``label`` specifying column label(s)
@@ -1800,6 +1868,17 @@ class Table(collections.abc.MutableMapping):
             binned[label + ' ' + tag] = np.append(counts, 0)
         return binned
 
+    def move_column(self, label, index):
+        """Returns a new table with specified column moved to the specified column index."""
+        table = type(self)()
+        col_order = list(self._columns)
+        label_idx = col_order.index(self._as_label(label))
+        col_to_move = col_order.pop(label_idx)
+        col_order.insert(index, col_to_move)
+        for col in col_order:
+            table[col] = self[col]
+        return table
+
     ##########################
     # Exporting / Displaying #
     ##########################
@@ -1877,11 +1956,11 @@ class Table(collections.abc.MutableMapping):
                 (3, ' '.join('<td>' + fmt(v, label=False) + '</td>' for
                     v, fmt in zip(row, fmts))),
                 (2, '</tr>'),
-                (1, '</tbody>'),
             ]
+        lines.append((1, '</tbody>'))
         lines.append((0, '</table>'))
         if omitted:
-            lines.append((0, '<p>... ({} rows omitted)</p'.format(omitted)))
+            lines.append((0, '<p>... ({} rows omitted)</p>'.format(omitted)))
         return '\n'.join(4 * indent * ' ' + text for indent, text in lines)
 
     def index_by(self, column_or_label):
@@ -1891,6 +1970,15 @@ class Table(collections.abc.MutableMapping):
         column = self._get_column(column_or_label)
         index = {}
         for key, row in zip(column, self.rows):
+            index.setdefault(key, []).append(row)
+        return index
+
+    def _multi_index(self, columns_or_labels):
+        """Returns a dict keyed by a tuple of the values that correspond to
+        the selected COLUMNS_OR_LABELS, with values corresponding to """
+        columns = [self._get_column(col) for col in columns_or_labels]
+        index = {}
+        for key, row in zip(zip(*columns), self.rows):
             index.setdefault(key, []).append(row)
         return index
 
@@ -1974,6 +2062,7 @@ class Table(collections.abc.MutableMapping):
             Returns a line plot (connected scatter). Each plot is labeled using
             the values in `column_for_xticks` and one plot is produced for all
             other columns in self (or for the columns designated by `select`).
+
         >>> table = Table().with_columns(
         ...     'days',  make_array(0, 1, 2, 3, 4, 5),
         ...     'price', make_array(90.5, 90.00, 83.00, 95.50, 82.00, 82.00),
@@ -2025,7 +2114,7 @@ class Table(collections.abc.MutableMapping):
         one plot is produced for every other column (or for the columns
         designated by `select`).
 
-        Every selected except column for `column_for_categories` must be numerical.
+        Every selected column except `column_for_categories` must be numerical.
 
         Args:
             column_for_categories (str): A column containing x-axis categories
@@ -2039,6 +2128,10 @@ class Table(collections.abc.MutableMapping):
                 for additional arguments that can be passed into vargs.
         """
         options = self.default_options.copy()
+
+        # Matplotlib tries to center the labels, but we already handle that
+        # TODO consider changing the custom centering code and using matplotlib's default
+        vargs['align'] = 'edge'
         options.update(vargs)
 
         xticks, labels = self._split_column_and_labels(column_for_categories)
@@ -2056,6 +2149,35 @@ class Table(collections.abc.MutableMapping):
                 axis.set_xticklabels(tick_labels, stretch='ultra-condensed')
 
         self._visualize(column_for_categories, labels, xticks, overlay, draw, annotate, width=width, height=height)
+
+
+    def group_bar(self, column_label, **vargs):
+        """Plot a bar chart for the table.
+
+        The values of the specified column are grouped and counted, and one
+        bar is produced for each group.
+
+        Note: This differs from ``bar`` in that there is no need to specify
+        bar heights; the height of a category's bar is the number of copies
+        of that category in the given column.  This method behaves more like
+        ``hist`` in that regard, while ``bar`` behaves more like ``plot`` or
+        ``scatter`` (which require the height of each point to be specified).
+
+        Args:
+            ``column_label`` (str or int): The name or index of a column
+
+        Kwargs:
+            overlay (bool): create a chart with one color per data column;
+                if False, each will be displayed separately.
+
+            width (float): The width of the plot, in inches
+            height (float): The height of the plot, in inches
+
+            vargs: Additional arguments that get passed into `plt.bar`.
+                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.bar
+                for additional arguments that can be passed into vargs.
+        """
+        self.group(column_label).bar(column_label, **vargs)
 
     def barh(self, column_for_categories=None, select=None, overlay=True, width=6, **vargs):
         """Plot horizontal bar charts for the table.
@@ -2100,6 +2222,9 @@ class Table(collections.abc.MutableMapping):
         <bar graph with furniture as categories and bars for count and price>
         """
         options = self.default_options.copy()
+        # Matplotlib tries to center the labels, but we already handle that
+        # TODO consider changing the custom centering code and using matplotlib's default
+        vargs['align'] = 'edge'
         options.update(vargs)
 
         yticks, labels = self._split_column_and_labels(column_for_categories)
@@ -2137,8 +2262,39 @@ class Table(collections.abc.MutableMapping):
 
         self._visualize('', labels, yticks, overlay, draw, annotate, width=width, height=height)
 
+
+    def group_barh(self, column_label, **vargs):
+        """Plot a horizontal bar chart for the table.
+
+        The values of the specified column are grouped and counted, and one
+        bar is produced for each group.
+
+        Note: This differs from ``barh`` in that there is no need to specify
+        bar heights; the size of a category's bar is the number of copies
+        of that category in the given column.  This method behaves more like
+        ``hist`` in that regard, while ``barh`` behaves more like ``plot`` or
+        ``scatter`` (which require the second coordinate of each point to be
+        specified in another column).
+
+        Args:
+            ``column_label`` (str or int): The name or index of a column
+
+        Kwargs:
+            overlay (bool): create a chart with one color per data column;
+                if False, each will be displayed separately.
+
+            width (float): The width of the plot, in inches
+            height (float): The height of the plot, in inches
+
+            vargs: Additional arguments that get passed into `plt.bar`.
+                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.bar
+                for additional arguments that can be passed into vargs.
+        """
+        self.group(column_label).barh(column_label, **vargs)
+
     def scatter(self, column_for_x, select=None, overlay=True, fit_line=False,
-        colors=None, labels=None, sizes=None, width=5, height=5, s=20, **vargs):
+        group=None, labels=None, sizes=None, width=5, height=5, s=20,
+        colors=None, **vargs):
         """Creates scatterplots, optionally adding a line of best fit.
 
         Args:
@@ -2156,14 +2312,19 @@ class Table(collections.abc.MutableMapping):
                 for additional arguments that can be passed into vargs. These
                 include: `marker` and `norm`, to name a couple.
 
-            ``colors``: A column of categories to be used for coloring dots.
+            ``group``: A column of categories to be used for coloring dots per 
+                each category grouping.
 
             ``labels``: A column of text labels to annotate dots.
 
             ``sizes``:  A column of values to set the relative areas of dots.
 
             ``s``: Size of dots. If sizes is also provided, then dots will be
-              in the range 0 to 2 * s.
+                in the range 0 to 2 * s.
+
+            ``colors``: (deprecated) A synonym for ``group``. Retained
+                temporarily for backwards compatibility. This argument
+                will be removed in future releases.
 
         Raises:
             ValueError -- Every column, ``column_for_x`` or ``select``, must be numerical
@@ -2200,22 +2361,30 @@ class Table(collections.abc.MutableMapping):
         options.update(vargs)
 
         x_data, y_labels =  self._split_column_and_labels(column_for_x)
-        if colors is not None:
-            y_labels.remove(self._as_label(colors))
+        if group is not None and colors is not None and group != colors:
+            warnings.warn("Do not pass both colors and group to scatter().")
+        if group is None and colors is not None:
+            # Backward compatibility
+            group = colors
+            # TODO: In a future release, warn that this is deprecated.
+            # Deprecated
+            # warnings.warn("scatter(colors=x) is deprecated. Use scatter(group=x)", FutureWarning)
+        if group is not None:
+            y_labels.remove(self._as_label(group))
         if sizes is not None:
             y_labels.remove(self._as_label(sizes))
         if select is not None:
             y_labels = self._as_labels(select)
-        if len(y_labels) > 1 and colors is not None and overlay:
-            warnings.warn("Colors and overlay are incompatible in a scatter")
+        if len(y_labels) > 1 and group is not None and overlay:
+            warnings.warn("Group and overlay are incompatible in a scatter")
             overlay = False
 
         def draw(axis, label, color):
-            if colors is not None:
-                colored = sorted(np.unique(self.column(colors)))
+            if group is not None:
+                colored = sorted(np.unique(self.column(group)))
                 color_list = list(itertools.islice(itertools.cycle(self.chart_colors), len(colored)))
                 color_map = collections.OrderedDict(zip(colored, color_list))
-                color = [color_map[x] for x in self.column(colors)]
+                color = [color_map[x] for x in self.column(group)]
             elif 'color' in options:
                 color = options.pop('color')
             y_data = self[label]
@@ -2236,9 +2405,11 @@ class Table(collections.abc.MutableMapping):
                         textcoords='offset points', ha='right', va='bottom',
                         bbox=dict(boxstyle='round,pad=0.5', fc='white', alpha=0.7),
                         arrowprops = dict(arrowstyle = '->', connectionstyle = 'arc3,rad=0', color='black'))
-            if colors is not None:
+            if group is not None:
                 import matplotlib.patches as mpatches
-                patches = [mpatches.Patch(color=c, label=v) for (v, c) in color_map.items()]
+                group_col_name = self._as_label(group)
+                patches = [mpatches.Patch(color=c, label="{0}={1}".format(group_col_name, v)) \
+                    for (v, c) in color_map.items()]
                 axis.legend(loc=2, bbox_to_anchor=(1.05, 1), handles=patches)
 
         x_label = self._as_label(column_for_x)
@@ -2288,8 +2459,13 @@ class Table(collections.abc.MutableMapping):
         labels = [label for i, label in enumerate(self.labels) if column_or_label not in (i, label)]
         return column, labels
 
+    # Deprecated
     def pivot_hist(self, pivot_column_label, value_column_label, overlay=True, width=6, height=4, **vargs):
-        """Draw histograms of each category in a column."""
+        """Draw histograms of each category in a column. (Deprecated)"""
+        warnings.warn("pivot_hist is deprecated; use "
+                      "hist(value_column_label, group=pivot_column_label), or "
+                      "with side_by_side=True if you really want side-by-side "
+                      "bars.")
         pvt_labels = np.unique(self[pivot_column_label])
         pvt_columns = [self[value_column_label][np.where(self[pivot_column_label] == pivot)] for pivot in pvt_labels]
         n = len(pvt_labels)
@@ -2319,15 +2495,17 @@ class Table(collections.abc.MutableMapping):
         for label, column in zip(pvt_labels,vals):
             t[label] = column
 
-    def hist(self, *columns, overlay=True, bins=None, bin_column=None, unit=None, counts=None, width=6, height=4, **vargs):
+    def hist(self, *columns, overlay=True, bins=None, bin_column=None, unit=None, counts=None, group=None, side_by_side=False, width=6, height=4, **vargs):
         """Plots one histogram for each column in columns. If no column is
-        specificed, plot all columns.
+        specified, plot all columns.
 
         Kwargs:
             overlay (bool): If True, plots 1 chart with all the histograms
                 overlaid on top of each other (instead of the default behavior
                 of one histogram for each column in the table). Also adds a
-                legend that matches each bar color to its column.
+                legend that matches each bar color to its column.  Note that
+                if the histograms are not overlaid, they are not forced to the
+                same scale.
 
             bins (list or int): Lower bound for each bin in the
                 histogram or number of bins. If None, bins will
@@ -2339,11 +2517,25 @@ class Table(collections.abc.MutableMapping):
 
             counts (column name or index): Deprecated name for bin_column.
 
+            unit (string): A name for the units of the plotted column (e.g.
+                'kg'), to be used in the plot.
+
+            group (column name or index): A column of categories.  The rows are
+                grouped by the values in this column, and a separate histogram is
+                generated for each group.  The histograms are overlaid or plotted
+                separately depending on the overlay argument.  If None, no such
+                grouping is done.
+
+            side_by_side (bool): Whether histogram bins should be plotted side by
+                side (instead of directly overlaid).  Makes sense only when
+                plotting multiple histograms, either by passing several columns
+                or by using the group option.
+
             vargs: Additional arguments that get passed into :func:plt.hist.
                 See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.hist
                 for additional arguments that can be passed into vargs. These
-                include: `range`, `normed`, `cumulative`, and `orientation`,
-                to name a few.
+                include: `range`, `normed`/`density`, `cumulative`, and
+                `orientation`, to name a few.
 
         >>> t = Table().with_columns(
         ...     'count',  make_array(9, 3, 3, 1),
@@ -2363,88 +2555,244 @@ class Table(collections.abc.MutableMapping):
         ...     'proportion', make_array(0.25, 0.5, 0.25))
         >>> t.hist(bin_column='value') # doctest: +SKIP
         <histogram of values weighted by corresponding proportions>
+
+        >>> t = Table().with_columns(
+        ...     'value',    make_array(1,   2,   3,   2,   5  ),
+        ...     'category', make_array('a', 'a', 'a', 'b', 'b'))
+        >>> t.hist('value', group='category') # doctest: +SKIP
+        <two overlaid histograms of the data [1, 2, 3] and [2, 5]>
         """
         if counts is not None and bin_column is None:
             warnings.warn("counts arg of hist is deprecated; use bin_column")
             bin_column=counts
         if columns:
+            columns_included = list(columns)
             if bin_column is not None:
-                columns = list(columns) + [bin_column]
-            self = self.select(*columns)
+                columns_included.append(bin_column)
+            if group is not None:
+                columns_included.append(group)
+            self = self.select(*columns_included)
+        if group is not None:
+            if bin_column is not None:
+                raise ValueError("Using bin_column and group together is "
+                                 "currently unsupported.")
+            if len(columns) > 1:
+                raise ValueError("Using group with multiple histogram value "
+                                 "columns is currently unsupported.")
 
         # Check for non-numerical values and raise a ValueError if any found
         for col in self:
-            if any(isinstance(cell, np.flexible) for cell in self[col]):
+            if col != group and any(isinstance(cell, np.flexible) for cell in self[col]):
                 raise ValueError("The column '{0}' contains non-numerical "
                     "values. A histogram cannot be drawn for this table."
                     .format(col))
 
-        columns = self._columns.copy()
 
         if bin_column is not None and bins is None:
             bins = np.unique(self.column(bin_column))
         if bins is not None:
             vargs['bins'] = bins
 
-        if 'normed' not in vargs:
-            vargs['normed'] = True
-        percentage = plt.FuncFormatter(lambda x, _: "{:g}".format(100*x))
+        # Matplotlib has deprecated the normed keyword.
+        # TODO consider changing this function to use density= instead too
+        if 'normed' not in vargs and 'density' not in vargs:
+            vargs['density'] = True
+        elif 'normed' in vargs and 'density' not in vargs:
+            vargs['density'] = vargs.pop('normed')
+        elif 'normed' in vargs and 'density' in vargs:
+            raise ValueError("You can't specify both normed and density. "
+                             "Use one or the other.")
 
-        counted_values = counted_label = None
+        def prepare_hist_with_bin_column(bin_column):
+            # This code is factored as a function for clarity only.
+            weight_columns = [c for c in self.labels if c != bin_column]
+            bin_values = self.column(bin_column)
+            values_dict = [(w[:-6] if w.endswith(' count') else w, (bin_values, self.column(w))) \
+                for w in weight_columns]
+            return values_dict
+
+        def prepare_hist_with_group(group):
+            # This code is factored as a function for clarity only.
+            grouped = self.group(group, np.array)
+            if grouped.num_rows > 20:
+                warnings.warn("It looks like you're making a grouped histogram with "
+                              "a lot of groups ({:d}), which is probably incorrect."
+                              .format(grouped.num_rows))
+            return [("{}={}".format(group, k), (v[0][1],)) for k, v in grouped.index_by(group).items()]
+
+        # Populate values_dict: An ordered dict from column name to singleton
+        # tuple of array of values or a (values, weights) pair of arrays.  If
+        # any values have weights, they all must have weights.
         if bin_column is not None:
-            counted_label = self._as_label(bin_column)
-            counted_values = self.column(counted_label)
-            columns.pop(counted_label)
-
-        n = len(columns)
-        colors = [rgb_color + (self.default_alpha,) for rgb_color in
-            itertools.islice(itertools.cycle(self.chart_colors), n)]
-        if overlay and n > 1:
-            # Reverse because legend prints bottom-to-top
-            column_keys = list(columns.keys())[::-1]
-            values = list(columns.values())[::-1]
-            colors = list(colors)[::-1]
-            if counted_values is not None:
-                vargs['weights'] = np.transpose(values)
-                values = np.repeat(counted_values, n).reshape(-1,n)
-            vargs.setdefault('histtype', 'stepfilled')
-            figure = plt.figure(figsize=(width, height))
-            plt.hist(values, color=colors, **vargs)
-            axis = figure.get_axes()[0]
-            _vertical_x(axis)
-            if vargs['normed']:
-                axis.set_ylabel('Percent per ' + (unit if unit else 'unit'))
-                axis.yaxis.set_major_formatter(percentage)
-            else:
-                axis.set_ylabel('Count')
-            if unit:
-                axis.set_xlabel('(' + unit + ')', fontsize=16)
-            plt.legend(columns.keys(), loc=2, bbox_to_anchor=(1.05, 1))
-            type(self).plots.append(axis)
+            values_dict = prepare_hist_with_bin_column(bin_column)
+        elif group is not None:
+            values_dict = prepare_hist_with_group(group)
         else:
-            _, axes = plt.subplots(n, 1, figsize=(width, height * n))
-            # Use stepfilled when there are too many bins
-            if isinstance(bins, numbers.Integral) and bins > 76 or hasattr(bins, '__len__') and len(bins) > 76:
-                vargs.setdefault('histtype', 'stepfilled')
-            if n == 1:
-                axes = [axes]
-            for axis, label, color in zip(axes, columns.keys(), colors):
-                if vargs['normed']:
-                    axis.set_ylabel('Percent per ' + (unit if unit else 'unit'))
-                    axis.yaxis.set_major_formatter(percentage)
+            values_dict = [(k, (self.column(k),)) for k in self.labels]
+        values_dict = collections.OrderedDict(values_dict)
+
+        def draw_hist(values_dict):
+            with np.printoptions(legacy='1.13'):
+                # This code is factored as a function for clarity only.
+                n = len(values_dict)
+                colors = [rgb_color + (self.default_alpha,) for rgb_color in
+                    itertools.islice(itertools.cycle(self.chart_colors), n)]
+                hist_names = list(values_dict.keys())
+                values = [v[0] for v in values_dict.values()]
+                weights = [v[1] for v in values_dict.values() if len(v) > 1]
+                if n > len(weights) > 0:
+                    raise ValueError("Weights were provided for some columns, but not "
+                                     " all, and that's not supported.")
+                if vargs['density']:
+                    y_label = 'Percent per ' + (unit if unit else 'unit')
+                    percentage = plt.FuncFormatter(lambda x, _: "{:g}".format(100*x))
                 else:
-                    axis.set_ylabel('Count')
-                x_unit = ' (' + unit + ')' if unit else ''
-                if counted_values is None:
-                    values = columns[label]
-                    axis.set_xlabel(label + x_unit, fontsize=16)
+                    y_label = 'Count'
+
+                if overlay and n > 1:
+                    # Reverse because legend prints bottom-to-top
+                    values = values[::-1]
+                    weights = weights[::-1]
+                    colors = list(colors)[::-1]
+                    if len(weights) == n:
+                        vargs['weights'] = weights
+                    if not side_by_side:
+                        vargs.setdefault('histtype', 'stepfilled')
+                    figure = plt.figure(figsize=(width, height))
+                    plt.hist(values, color=colors, **vargs)
+                    axis = figure.get_axes()[0]
+                    _vertical_x(axis)
+                    axis.set_ylabel(y_label)
+                    if vargs['density']:
+                        axis.yaxis.set_major_formatter(percentage)
+                    x_unit = ' (' + unit + ')' if unit else ''
+                    if group is not None and len(self.labels) == 2:
+                        #There's a grouping in place but we're only plotting one column's values
+                        label_not_grouped = [l for l in self.labels if l != group][0]
+                        axis.set_xlabel(label_not_grouped + x_unit, fontsize=16)
+                    else:    
+                        axis.set_xlabel(x_unit, fontsize=16)
+                    plt.legend(hist_names, loc=2, bbox_to_anchor=(1.05, 1))
+                    type(self).plots.append(axis)
                 else:
-                    values = counted_values
-                    vargs['weights'] = columns[label]
-                    axis.set_xlabel(label.rstrip(' count') + x_unit, fontsize=16)
-                axis.hist(values, color=color, **vargs)
-                _vertical_x(axis)
-                type(self).plots.append(axis)
+                    _, axes = plt.subplots(n, 1, figsize=(width, height * n))
+                    if 'bins' in vargs:
+                        bins = vargs['bins']
+                        if isinstance(bins, numbers.Integral) and bins > 76 or hasattr(bins, '__len__') and len(bins) > 76:
+                            # Use stepfilled when there are too many bins
+                            vargs.setdefault('histtype', 'stepfilled')
+                    if n == 1:
+                        axes = [axes]
+                    for i, (axis, hist_name, values_for_hist, color) in enumerate(zip(axes, hist_names, values, colors)):
+                        axis.set_ylabel(y_label)
+                        if vargs['density']:
+                            axis.yaxis.set_major_formatter(percentage)
+                        x_unit = ' (' + unit + ')' if unit else ''
+                        if len(weights) == n:
+                            vargs['weights'] = weights[i]
+                        axis.set_xlabel(hist_name + x_unit, fontsize=16)
+                        axis.hist(values_for_hist, color=color, **vargs)
+                        _vertical_x(axis)
+                        type(self).plots.append(axis)
+
+        draw_hist(values_dict)
+
+    def hist_of_counts(self, *columns, overlay=True, bins=None, bin_column=None,
+                       group=None, side_by_side=False, width=6, height=4, **vargs):
+        """
+        Plots one count-based histogram for each column in columns. The
+        heights of each bar will represent the counts, and all the bins
+        must be of equal size.
+
+        If no column is specified, plot all columns.
+
+        Kwargs:
+            overlay (bool): If True, plots 1 chart with all the histograms
+                overlaid on top of each other (instead of the default behavior
+                of one histogram for each column in the table). Also adds a
+                legend that matches each bar color to its column.  Note that
+                if the histograms are not overlaid, they are not forced to the
+                same scale.
+
+            bins (array or int): Lower bound for each bin in the
+                histogram or number of bins. If None, bins will
+                be chosen automatically.
+
+            bin_column (column name or index): A column of bin lower bounds.
+                All other columns are treated as counts of these bins.
+                If None, each value in each row is assigned a count of 1.
+
+            group (column name or index): A column of categories.  The rows are
+                grouped by the values in this column, and a separate histogram is
+                generated for each group.  The histograms are overlaid or plotted
+                separately depending on the overlay argument.  If None, no such
+                grouping is done.
+
+            side_by_side (bool): Whether histogram bins should be plotted side by
+                side (instead of directly overlaid).  Makes sense only when
+                plotting multiple histograms, either by passing several columns
+                or by using the group option.
+
+            vargs: Additional arguments that get passed into :func:plt.hist.
+                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.hist
+                for additional arguments that can be passed into vargs. These
+                include: `range`, `cumulative`, and
+                `orientation`, to name a few.
+
+        >>> t = Table().with_columns(
+        ...     'count',  make_array(9, 3, 3, 1),
+        ...     'points', make_array(1, 2, 2, 10))
+        >>> t
+        count | points
+        9     | 1
+        3     | 2
+        3     | 2
+        1     | 10
+        >>> t.hist_of_counts() # doctest: +SKIP
+        <histogram of values in count with counts on y-axis>
+        <histogram of values in points with counts on y-axis>
+
+        >>> t = Table().with_columns(
+        ...     'value', make_array(101, 102, 103),
+        ...     'count', make_array(5, 10, 5))
+        >>> t.hist_of_counts(bin_column='value') # doctest: +SKIP
+        <histogram of values weighted by corresponding counts>
+
+        >>> t = Table().with_columns(
+        ...     'value',    make_array(1,   2,   3,   2,   5  ),
+        ...     'category', make_array('a', 'a', 'a', 'b', 'b'))
+        >>> t.hist('value', group='category') # doctest: +SKIP
+        <two overlaid histograms of the data [1, 2, 3] and [2, 5]>
+        """
+
+        if bin_column is not None and bins is None:
+            bins = np.unique(self.column(bin_column))
+            # TODO ensure counts are integers even when `columns` is empty
+            for column in columns:
+                if not _is_array_integer(self.column(column)):
+                    raise ValueError('The column {0} contains non-integer values '
+                                     'When using hist_of_counts with bin_columns, '
+                                     'all columns should contain counts.'
+                                     .format(column))
+
+        if vargs.get('normed', False) or vargs.get('density', False):
+            raise ValueError("hist_of_counts is for displaying counts only, "
+                             "and should not be used with the normed or "
+                             "density keyword arguments")
+        vargs['density'] = False
+
+        if bins is not None:
+            if len(bins) < 2:
+                raise ValueError("bins must have at least two items")
+            diffs = np.diff(sorted(bins))
+            # Diffs should all be equal (up to floating point error)
+            normalized_diff_deviances = np.abs((diffs - diffs[0])/diffs[0])
+            if np.any(normalized_diff_deviances > 1e-11):
+                raise ValueError("Bins of unequal size should not be used "
+                                 "with hist_of_counts. Please use hist() and "
+                                 "make sure to set normed=True")
+        return self.hist(*columns, overlay=overlay, bins=bins, bin_column=bin_column, group=group, side_by_side=side_by_side, width=width, height=height, **vargs)
+
 
     def boxplot(self, **vargs):
         """Plots a boxplot for the table.
@@ -2541,6 +2889,19 @@ class Table(collections.abc.MutableMapping):
         def __repr__(self):
             return '{0}({1})'.format(type(self).__name__, repr(self._table))
 
+
+def _is_array_integer(arr):
+    """Returns True if an array contains integers (integer type or near-int
+    float values) and False otherwise.
+
+    >>> _is_array_integer(np.arange(10))
+    True
+    >>> _is_array_integer(np.arange(7.0, 20.0, 1.0))
+    True
+    >>> _is_array_integer(np.arange(0, 1, 0.1))
+    False
+    """
+    return issubclass(arr.dtype.type, np.integer) or np.allclose(arr, np.round(arr))
 
 def _zero_on_type_error(column_fn):
     """Wrap a function on an np.ndarray to return 0 on a type error."""
@@ -2715,7 +3076,7 @@ class _RowTaker(_RowSelector):
             ...
         IndexError: index 10 is out of bounds for axis 0 with size 6
         """
-        if isinstance(row_indices_or_slice, collections.Iterable):
+        if isinstance(row_indices_or_slice, collections.abc.Iterable):
             columns = [np.take(column, row_indices_or_slice, axis=0)
                        for column in self._table._columns.values()]
             return self._table._with_columns(columns)
@@ -2788,7 +3149,7 @@ class _RowExcluder(_RowSelector):
         A-           | 3.7
         B-           | 2.7
         """
-        if isinstance(row_indices_or_slice, collections.Iterable):
+        if isinstance(row_indices_or_slice, collections.abc.Iterable):
             without_row_indices = set(row_indices_or_slice)
             rows = [row for index, row in enumerate(self._table.rows[:])
                     if index not in without_row_indices]

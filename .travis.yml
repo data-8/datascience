@@ -1,14 +1,17 @@
 language: python
 
+dist: xenial
+services:
+  - xvfb
+
 env:
   global:
-  - GH_REPO: github.com/dsten/datascience.git
-  - secure: "Ndq+rOhIGAOSb1wRUCayt0TjGGikJrZOOkS1b4Qi1qFyDzrJdWy80B6fd6ZslRWNAg1YKuvj2nbCOlaXL4gC4uXjZO8ag7tRnUCW8aCp9qJtVxLVGf43Yk+tKaTdPajgmBAEw785Ua0LmTrZRTvUQzybPd4BFQVnLQ9CQ7N0KFT0COtCLC5SJaBy3/sclodaDVv2zGv/WzQPsqtsyDqi5emz43WA8EsjieSNh9rbegY5i9TijjSyt4+sR9YTSakqR6/7vvDdhLZvPkbzAJNlvy1v1FkDNtv3QKHV05Nj17UDyXeF/gs3FmkioiZdtxswF9YZBAAXuc3Lo/fOQyBjS5HPPylSkq2gBVAWSRwcSKdz0CTO4Re2YKrFigWpbm/zJzT/O+8vRrYKoejyqNweO7gRwlumVPrmyUph0wvN8XTvm01np6ZUHMgaCLS2kKLjr8fZ9l+aah3EubGx5Qp2wPAx+IC2rqLjjkibd41g3zG7DGR+r9HwW20K4VjbptTHKTHICi6rvq9HiLqBEKH6Cmv+hF4h5rwH71apcZzFaxGt/KYEsX11T1BalA0FwVn8pKZSacsh8jNMnkWgv+5G5dqwocURKUBY4x1VoCXqbvQ8mPjX88ookr3hbvpxXwkwAltGMo3H8Y7a5JcGxU4w/NXm6VSRxkukHrLtnKa8kNQ="
-
+  - GH_REPO: github.com/data-8/datascience.git
+  - secure: "qnq+fVBiLA2MtG+/e/AndJlI12mteQtW9oikGi7wHGXKuy1JEE5lVh9kM6SRNHJPX7zVg/SB43nne65bSd4/PADWXxfx05tn90KmwA1lo0C1lRSija8OfJpsR5diJrY8hRs3jePp2m61tsqmWOn+bo1EFVj4P/z9U/4xp/snCk6/vw1Q3Hxtk2JzYrW1FxEbG+xXIepUpXeYmB4hjHtkCAqKnJpGiDSlQkJy7zWKfUvyzp9L3LZIPfWLg91asvrqc3o+TdVdqfM+CRdhdSHgqD4cp2dcaH94fy8wFWHf5XVCf4ZlBWrT1NjyTqN52lF/HcnHzORQhBCDk0wiD/kfZ+/7KWVp3lsE2/QVCc5dE1jdfO0h5cbqQgzdNA5gdiCIMoA39LARlX1+CkkQJlQ/6R4GsYtoBut1yiS6GhKhXs0Dnmd3DNLxleRfdKIkIM9ilBhb1fuDQaeRLJIr8wDfzigeZ3QHp29iKXgRRWD6bwbD7PiLYxnJs0NIaa9xu5rvV/4Q/DwYXyOjBzWdoJX9u+pDjVcZxva6Dj8l7zUSG5QCiYm3SQekKOegorBbcQdkHMOwyx+CVUYfeazAbQryJzAacmCH3Gvoc1q2wD3n5P9NzHj/V+/Llh8O1MzeHxDzflgf2bVsHpaOUl/cyNaJ3nldGCktgLP6XZ6DI1o1PWU="
 sudo: false
 
 python:
-  - "3.4.2"
+  - "3.6"
 
 cache:
   apt: true
