@@ -582,7 +582,7 @@ class Table(collections.abc.MutableMapping):
             self._add_column_and_format(table, label, column)
         return table
 
-    def select(self, *column_or_columns, **kwargs):
+    def select(self, *column_or_columns, shallow=False):
         """Return a table with only the columns in ``column_or_columns``.
 
         Args:
@@ -632,10 +632,10 @@ class Table(collections.abc.MutableMapping):
         labels = self._varargs_as_labels(column_or_columns)
         table = type(self)()
         for label in labels:
-            #if "copy_values" in kwargs and not kwargs["copy_values"]:
-            self._add_column_and_format(table, label, self[label])
-            #else:
-            #    self._add_column_and_format(table, label, np.copy(self[label]))
+            if shallow:
+                self._add_column_and_format(table, label, self[label])
+            else:
+               self._add_column_and_format(table, label, np.copy(self[label]))
         return table
 
     # These, along with a snippet below, are necessary for Sphinx to
