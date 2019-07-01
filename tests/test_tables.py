@@ -155,8 +155,10 @@ def test_select(table):
     10     | 1
     """)
 
-def test_select_with_copy_values(t):
-    test = t.select(["points"], copy_values=False)
+def test_select_with_copy_values(table):
+    t = table.copy()
+    test = t.select(["points"], shallow=True)
+    test1 = t.select(["points"], shallow=False) #default setting
     assert_equal(test, """
     points
     1      
@@ -164,14 +166,27 @@ def test_select_with_copy_values(t):
     2      
     10     
     """)
-    t.with_row(["f", 7, 8])
+    t["points"][0] = 999
+    assert_equal(t.select("points"), """
+    points
+    999     
+    2      
+    2      
+    10     
+    """)
     assert_equal(test, """
     points
-    1      
+    999     
     2      
     2      
-    10 
-    8    
+    10     
+    """)
+    assert_equal(test1, """
+    points 
+    1   
+    2      
+    2      
+    10     
     """)
 
 def test_drop(table):
