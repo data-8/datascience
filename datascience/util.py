@@ -17,7 +17,7 @@ import math
 # Change matplotlib formatting. TODO incorporate into a style?
 plt.rcParams["patch.force_edgecolor"] = True
 
-def make_array(*elements):
+def make_array(*elements, dtype=None):
     """Returns an array containing all the arguments passed to this function.
     A simple way to make an array with a few elements.
 
@@ -33,6 +33,8 @@ def make_array(*elements):
     >>> make_array()
     array([], dtype=float64)
     """
+    if dtype:
+        return np.array(elements, dtype=dtype)
     return np.array(elements)
 
 
