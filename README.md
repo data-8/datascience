@@ -26,6 +26,10 @@ pip install datascience
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.12.1
+* Adds optional argument to `Table#from_df` to allow to keep indexes when converting from 
+Pandas dataframe.
+
 ### v0.12.0
 * Changes `Table#scatter`'s argument name of `colors` to `group` to mirror `Table#hist`.
 * Makes a grouped scatterplot's legend identical to a group histogram's legend.
