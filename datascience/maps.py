@@ -315,18 +315,18 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         return result
 
     @classmethod
-    def read_geojson(cls, path_or_json_or_string):
+    def read_geojson(cls, path_or_json_or_string_or_url):
         """Read a geoJSON string, object, or file. Return a dict of features keyed by ID."""
-        assert path_or_json_or_string
+        assert path_or_json_or_string_or_url
         data = None
-        if isinstance(path_or_json_or_string, (dict, list)):
-            data = path_or_json_or_string
+        if isinstance(path_or_json_or_string_or_url, (dict, list)):
+            data = path_or_json_or_string_or_url
         try:
-            data = json.loads(path_or_json_or_string)
+            data = json.loads(path_or_json_or_string_or_url)
         except ValueError:
             pass
         try:
-            path = path_or_json_or_string
+            path = path_or_json_or_string_or_url
             if path.endswith('.gz') or path.endswith('.gzip'):
                 import gzip
                 contents = gzip.open(path, 'r').read().decode('utf-8')
@@ -336,6 +336,10 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         except FileNotFoundError:
             pass
         # TODO web address
+        if not data:
+            import urllib.request
+            with urllib.request.urlopen(path_or_json_or_string_or_url) as url:
+                data = json.loads(url.read().decode())
         assert data, 'MapData accepts a valid geoJSON object, geoJSON string, or path to a geoJSON file'
         return cls(cls._read_geojson_features(data))
 
