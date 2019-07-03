@@ -26,6 +26,9 @@ pip install datascience
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.13.1
+* Adds support to `Map#read_geojson` for reading in GeoJSON from links.
+
 ### v0.13.0
 * Removes deprecated argument for Table#__init__.
 

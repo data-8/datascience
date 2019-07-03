@@ -316,7 +316,7 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
 
     @classmethod
     def read_geojson(cls, path_or_json_or_string_or_url):
-        """Read a geoJSON string, object, or file. Return a dict of features keyed by ID."""
+        """Read a geoJSON string, object, file, or URL. Return a dict of features keyed by ID."""
         assert path_or_json_or_string_or_url
         data = None
         if isinstance(path_or_json_or_string_or_url, (dict, list)):
@@ -335,12 +335,11 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
             data = json.loads(contents)
         except FileNotFoundError:
             pass
-        # TODO web address
         if not data:
             import urllib.request
             with urllib.request.urlopen(path_or_json_or_string_or_url) as url:
                 data = json.loads(url.read().decode())
-        assert data, 'MapData accepts a valid geoJSON object, geoJSON string, or path to a geoJSON file'
+        assert data, 'MapData accepts a valid geoJSON object, geoJSON string, path to a geoJSON file, or URL'
         return cls(cls._read_geojson_features(data))
 
     @staticmethod
