@@ -3081,11 +3081,6 @@ class _RowTaker(_RowSelector):
             ...
         IndexError: index 10 is out of bounds for axis 0 with size 6
         """
-        # print(row_indices_or_slice)
-        # print(args)
-        # if args:
-        #     print(np.array(row_indices_or_slice, args))
-        #     return self.__getitem__(np.array(row_indices_or_slice, args))
         if isinstance(row_indices_or_slice, collections.abc.Iterable):
             columns = [np.take(column, row_indices_or_slice, axis=0)
                        for column in self._table._columns.values()]
@@ -3141,6 +3136,12 @@ class _RowExcluder(_RowSelector):
         B-           | 2.7
         >>> t.exclude(range(3))
         letter grade | gpa
+        B+           | 3.3
+        B            | 3
+        B-           | 2.7
+        >>> t.exclude(0, 2)
+        letter grade | gpa
+        A            | 4
         B+           | 3.3
         B            | 3
         B-           | 2.7
