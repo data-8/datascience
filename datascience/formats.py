@@ -51,7 +51,7 @@ class Formatter:
         if isinstance(value, (bool, np.bool_)):
             return str(value)
         elif isinstance(value, (int, np.integer)):
-            return '{:,d}'.format(value)
+            return '{:d}'.format(value)
         elif isinstance(value, (float, np.floating)):
             return '{:g}'.format(value)
         else:
