@@ -26,6 +26,9 @@ pip install datascience
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.13.1
+* Adds support for other built-in tile sets other than `OpenStreetMap` to `Map`.
+
 ### v0.13.0
 * Removes deprecated argument for Table#__init__.
 
