@@ -4,6 +4,7 @@ import functools
 import numbers
 import numpy as np
 import warnings
+warnings.simplefilter('always', SyntaxWarning)
 
 __all__ = ['are']
 
@@ -256,4 +257,5 @@ def check_iterable(y):
             warnings.warn("Do not pass an array or list to a predicate. \
                 If you are trying to find rows where two columns are the \
                 same, use table.where('c', are.equal_to, table.column('d'))\
-                instead of table.where('c', are.equal_to(table.column('d'))).")
+                instead of table.where('c', are.equal_to(table.column('d'))).", 
+                SyntaxWarning)
