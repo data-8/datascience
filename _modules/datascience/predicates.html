@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>datascience.predicates &#8212; datascience 0.12.1 documentation</title>
+    <title>datascience.predicates &#8212; datascience 0.13.0 documentation</title>
     <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.12.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.13.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -43,6 +43,7 @@
 <span class="kn">import</span> <span class="nn">numbers</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s1">&#39;always&#39;</span><span class="p">,</span> <span class="ne">SyntaxWarning</span><span class="p">)</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;are&#39;</span><span class="p">]</span>
 
@@ -295,7 +296,8 @@
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Do not pass an array or list to a predicate. </span><span class="se">\</span>
 <span class="s2">                If you are trying to find rows where two columns are the </span><span class="se">\</span>
 <span class="s2">                same, use table.where(&#39;c&#39;, are.equal_to, table.column(&#39;d&#39;))</span><span class="se">\</span>
-<span class="s2">                instead of table.where(&#39;c&#39;, are.equal_to(table.column(&#39;d&#39;))).&quot;</span><span class="p">)</span>
+<span class="s2">                instead of table.where(&#39;c&#39;, are.equal_to(table.column(&#39;d&#39;))).&quot;</span><span class="p">,</span> 
+                <span class="ne">SyntaxWarning</span><span class="p">)</span>
 </pre></div>
 
           </div>
@@ -326,7 +328,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.12.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.13.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
