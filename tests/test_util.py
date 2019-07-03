@@ -8,19 +8,14 @@ def test_doctests():
     results = doctest.testmod(util, optionflags=doctest.NORMALIZE_WHITESPACE)
     assert results.failed == 0
 
-def test_make_array_dtype():
+def test_make_array():
     test1 = ds.make_array(0)
     assert len(test1) == 1
     test2 = ds.make_array(2, 3, 4)
     assert sum(test2) == 9
+    assert test2.dtype == "int64"
     test3 = ds.make_array("foo", "bar")
     assert test3.dtype == "<U3"
-    test4 = ds.make_array(1, 2, 3, dtype="int32")
-    assert test4.dtype == "int32"
-    test5 = ds.make_array(1, 2, 3, dtype="int64")
-    assert test5.dtype == "int64"
-    test6 = ds.make_array("foo", "bar", dtype="<U6")
-    assert test6.dtype == "<U6"
 
 
 def test_percentile():
