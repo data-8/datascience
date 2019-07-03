@@ -77,9 +77,12 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         elif isinstance(features, _MapFeature):
             features = {0: features}
         assert isinstance(features, dict), 'Map takes a list or dict of features'
+        tile_style = None
+        if "tiles" in kwargs:
+            tile_style = kwargs.pop("tiles")
         self._features = features
         self._attrs = {
-            'tiles': 'OpenStreetMap',
+            'tiles': tile_style if tile_style else 'OpenStreetMap',
             'max_zoom': 17,
             'min_zoom': 10,
         }
