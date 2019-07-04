@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>datascience.tables &#8212; datascience 0.13.0 documentation</title>
+    <title>datascience.tables &#8212; datascience 0.13.1 documentation</title>
     <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.13.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.13.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -3041,8 +3041,14 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_table</span> <span class="o">=</span> <span class="n">table</span>
 
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row_numbers_or_slice</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">row_numbers_or_slice</span><span class="p">]</span>
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row_numbers_or_slice</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">args</span><span class="p">:</span>
+            <span class="n">all_args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+            <span class="n">all_args</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">row_numbers_or_slice</span><span class="p">)</span>
+            <span class="n">all_args</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">all_args</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">all_args</span> <span class="o">=</span> <span class="n">row_numbers_or_slice</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">all_args</span><span class="p">)</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
@@ -3097,6 +3103,10 @@
 <span class="sd">        letter grade | gpa</span>
 <span class="sd">        A+           | 4</span>
 <span class="sd">        A            | 4</span>
+<span class="sd">        A-           | 3.7</span>
+<span class="sd">        &gt;&gt;&gt; grades.take(0, 2)</span>
+<span class="sd">        letter grade | gpa</span>
+<span class="sd">        A+           | 4</span>
 <span class="sd">        A-           | 3.7</span>
 <span class="sd">        &gt;&gt;&gt; grades.take(10)</span>
 <span class="sd">        Traceback (most recent call last):</span>
@@ -3158,6 +3168,12 @@
 <span class="sd">        B-           | 2.7</span>
 <span class="sd">        &gt;&gt;&gt; t.exclude(range(3))</span>
 <span class="sd">        letter grade | gpa</span>
+<span class="sd">        B+           | 3.3</span>
+<span class="sd">        B            | 3</span>
+<span class="sd">        B-           | 2.7</span>
+<span class="sd">        &gt;&gt;&gt; t.exclude(0, 2)</span>
+<span class="sd">        letter grade | gpa</span>
+<span class="sd">        A            | 4</span>
 <span class="sd">        B+           | 3.3</span>
 <span class="sd">        B            | 3</span>
 <span class="sd">        B-           | 2.7</span>
@@ -3223,7 +3239,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.13.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.13.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
