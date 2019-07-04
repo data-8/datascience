@@ -26,6 +26,9 @@ pip install datascience
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.13.2
+* Changes default formatting of numbers in printed output to 12345 instead of 12,345.
+
 ### v0.13.0
 * Removes deprecated argument for Table#__init__.
 
