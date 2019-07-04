@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>datascience.tables &#8212; datascience 0.13.1 documentation</title>
+    <title>datascience.tables &#8212; datascience 0.13.2 documentation</title>
     <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.13.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.13.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -563,15 +563,15 @@
 <span class="sd">        ...     &#39;id&#39;,     make_array(12345, 123, 5123))</span>
 <span class="sd">        &gt;&gt;&gt; table.relabel(&#39;id&#39;, &#39;yolo&#39;)</span>
 <span class="sd">        points | yolo</span>
-<span class="sd">        1      | 12,345</span>
+<span class="sd">        1      | 12345</span>
 <span class="sd">        2      | 123</span>
-<span class="sd">        3      | 5,123</span>
+<span class="sd">        3      | 5123</span>
 <span class="sd">        &gt;&gt;&gt; table.relabel(make_array(&#39;points&#39;, &#39;yolo&#39;),</span>
 <span class="sd">        ...   make_array(&#39;red&#39;, &#39;blue&#39;))</span>
 <span class="sd">        red  | blue</span>
-<span class="sd">        1    | 12,345</span>
+<span class="sd">        1    | 12345</span>
 <span class="sd">        2    | 123</span>
-<span class="sd">        3    | 5,123</span>
+<span class="sd">        3    | 5123</span>
 <span class="sd">        &gt;&gt;&gt; table.relabel(make_array(&#39;red&#39;, &#39;green&#39;, &#39;blue&#39;),</span>
 <span class="sd">        ...   make_array(&#39;cyan&#39;, &#39;magenta&#39;, &#39;yellow&#39;, &#39;key&#39;))</span>
 <span class="sd">        Traceback (most recent call last):</span>
@@ -1749,21 +1749,21 @@
 <span class="sd">        &gt;&gt;&gt; players = Table().with_columns(&#39;player_id&#39;,</span>
 <span class="sd">        ...     make_array(110234, 110235), &#39;wOBA&#39;, make_array(.354, .236))</span>
 <span class="sd">        &gt;&gt;&gt; players</span>
-<span class="sd">        player_id  | wOBA</span>
-<span class="sd">        110,234    | 0.354</span>
-<span class="sd">        110,235    | 0.236</span>
+<span class="sd">        player_id | wOBA</span>
+<span class="sd">        110234    | 0.354</span>
+<span class="sd">        110235    | 0.236</span>
 <span class="sd">        &gt;&gt;&gt; players = players.with_columns(&#39;salaries&#39;, &#39;N/A&#39;, &#39;season&#39;, 2016)</span>
 <span class="sd">        &gt;&gt;&gt; players</span>
-<span class="sd">        player_id  | wOBA  | salaries | season</span>
-<span class="sd">        110,234    | 0.354 | N/A      | 2,016</span>
-<span class="sd">        110,235    | 0.236 | N/A      | 2,016</span>
+<span class="sd">        player_id | wOBA  | salaries | season</span>
+<span class="sd">        110234    | 0.354 | N/A      | 2016</span>
+<span class="sd">        110235    | 0.236 | N/A      | 2016</span>
 <span class="sd">        &gt;&gt;&gt; salaries = Table().with_column(&#39;salary&#39;,</span>
 <span class="sd">        ...     make_array(500000, 15500000))</span>
 <span class="sd">        &gt;&gt;&gt; players.with_columns(&#39;salaries&#39;, salaries.column(&#39;salary&#39;),</span>
 <span class="sd">        ...     &#39;bonus&#39;, make_array(6, 1), formatter=_formats.CurrencyFormatter)</span>
-<span class="sd">        player_id  | wOBA  | salaries    | season  | bonus</span>
-<span class="sd">        110,234    | 0.354 | $500,000    | 2,016   | $6</span>
-<span class="sd">        110,235    | 0.236 | $15,500,000 | 2,016   | $1</span>
+<span class="sd">        player_id | wOBA  | salaries    | season | bonus</span>
+<span class="sd">        110234    | 0.354 | $500,000    | 2016   | $6</span>
+<span class="sd">        110235    | 0.236 | $15,500,000 | 2016   | $1</span>
 <span class="sd">        &gt;&gt;&gt; players.with_columns(2, make_array(&#39;$600,000&#39;, &#39;$20,000,000&#39;))</span>
 <span class="sd">        Traceback (most recent call last):</span>
 <span class="sd">            ...</span>
@@ -3239,7 +3239,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.13.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.13.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

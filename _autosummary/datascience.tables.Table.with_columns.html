@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>datascience.tables.Table.with_columns &#8212; datascience 0.13.1 documentation</title>
+    <title>datascience.tables.Table.with_columns &#8212; datascience 0.13.2 documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -34,7 +34,7 @@
         <li class="right" >
           <a href="datascience.tables.Table.with_column.html" title="datascience.tables.Table.with_column"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.13.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.13.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" accesskey="U">Tables (<code class="docutils literal notranslate"><span class="pre">datascience.tables</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
@@ -100,21 +100,21 @@ when passed only one label-value pair.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">players</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span><span class="s1">&#39;player_id&#39;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">make_array</span><span class="p">(</span><span class="mi">110234</span><span class="p">,</span> <span class="mi">110235</span><span class="p">),</span> <span class="s1">&#39;wOBA&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="o">.</span><span class="mi">354</span><span class="p">,</span> <span class="o">.</span><span class="mi">236</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">players</span>
-<span class="go">player_id  | wOBA</span>
-<span class="go">110,234    | 0.354</span>
-<span class="go">110,235    | 0.236</span>
+<span class="go">player_id | wOBA</span>
+<span class="go">110234    | 0.354</span>
+<span class="go">110235    | 0.236</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">players</span> <span class="o">=</span> <span class="n">players</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span><span class="s1">&#39;salaries&#39;</span><span class="p">,</span> <span class="s1">&#39;N/A&#39;</span><span class="p">,</span> <span class="s1">&#39;season&#39;</span><span class="p">,</span> <span class="mi">2016</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">players</span>
-<span class="go">player_id  | wOBA  | salaries | season</span>
-<span class="go">110,234    | 0.354 | N/A      | 2,016</span>
-<span class="go">110,235    | 0.236 | N/A      | 2,016</span>
+<span class="go">player_id | wOBA  | salaries | season</span>
+<span class="go">110234    | 0.354 | N/A      | 2016</span>
+<span class="go">110235    | 0.236 | N/A      | 2016</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">salaries</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_column</span><span class="p">(</span><span class="s1">&#39;salary&#39;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">make_array</span><span class="p">(</span><span class="mi">500000</span><span class="p">,</span> <span class="mi">15500000</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">players</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span><span class="s1">&#39;salaries&#39;</span><span class="p">,</span> <span class="n">salaries</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s1">&#39;salary&#39;</span><span class="p">),</span>
 <span class="gp">... </span>    <span class="s1">&#39;bonus&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">formatter</span><span class="o">=</span><span class="n">_formats</span><span class="o">.</span><span class="n">CurrencyFormatter</span><span class="p">)</span>
-<span class="go">player_id  | wOBA  | salaries    | season  | bonus</span>
-<span class="go">110,234    | 0.354 | $500,000    | 2,016   | $6</span>
-<span class="go">110,235    | 0.236 | $15,500,000 | 2,016   | $1</span>
+<span class="go">player_id | wOBA  | salaries    | season | bonus</span>
+<span class="go">110234    | 0.354 | $500,000    | 2016   | $6</span>
+<span class="go">110235    | 0.236 | $15,500,000 | 2016   | $1</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">players</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="s1">&#39;$600,000&#39;</span><span class="p">,</span> <span class="s1">&#39;$20,000,000&#39;</span><span class="p">))</span>
 <span class="gt">Traceback (most recent call last):</span>
     <span class="o">...</span>
@@ -177,7 +177,7 @@ when passed only one label-value pair.</p>
         <li class="right" >
           <a href="datascience.tables.Table.with_column.html" title="datascience.tables.Table.with_column"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.13.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.13.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" >Tables (<code class="docutils literal notranslate"><span class="pre">datascience.tables</span></code>)</a> &#187;</li> 
       </ul>
     </div>

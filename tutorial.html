@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Start Here: datascience Tutorial &#8212; datascience 0.13.1 documentation</title>
+    <title>Start Here: datascience Tutorial &#8212; datascience 0.13.2 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -34,7 +34,7 @@
         <li class="right" >
           <a href="index.html" title="Welcome to datascience’s documentation!"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.13.1 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.13.2 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -138,16 +138,16 @@ the content of an example file:</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [6]: </span><span class="n">Table</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="s1">&#39;https://www.inferentialthinking.com/data/sat2014.csv&#39;</span><span class="p">)</span>
 <span class="gh">Out[6]: </span><span class="go"></span>
 <span class="go">State        | Participation Rate | Critical Reading | Math | Writing | Combined</span>
-<span class="go">North Dakota | 2.3                | 612              | 620  | 584     | 1,816</span>
-<span class="go">Illinois     | 4.6                | 599              | 616  | 587     | 1,802</span>
-<span class="go">Iowa         | 3.1                | 605              | 611  | 578     | 1,794</span>
-<span class="go">South Dakota | 2.9                | 604              | 609  | 579     | 1,792</span>
-<span class="go">Minnesota    | 5.9                | 598              | 610  | 578     | 1,786</span>
-<span class="go">Michigan     | 3.8                | 593              | 610  | 581     | 1,784</span>
-<span class="go">Wisconsin    | 3.9                | 596              | 608  | 578     | 1,782</span>
-<span class="go">Missouri     | 4.2                | 595              | 597  | 579     | 1,771</span>
-<span class="go">Wyoming      | 3.3                | 590              | 599  | 573     | 1,762</span>
-<span class="go">Kansas       | 5.3                | 591              | 596  | 566     | 1,753</span>
+<span class="go">North Dakota | 2.3                | 612              | 620  | 584     | 1816</span>
+<span class="go">Illinois     | 4.6                | 599              | 616  | 587     | 1802</span>
+<span class="go">Iowa         | 3.1                | 605              | 611  | 578     | 1794</span>
+<span class="go">South Dakota | 2.9                | 604              | 609  | 579     | 1792</span>
+<span class="go">Minnesota    | 5.9                | 598              | 610  | 578     | 1786</span>
+<span class="go">Michigan     | 3.8                | 593              | 610  | 581     | 1784</span>
+<span class="go">Wisconsin    | 3.9                | 596              | 608  | 578     | 1782</span>
+<span class="go">Missouri     | 4.2                | 595              | 597  | 579     | 1771</span>
+<span class="go">Wyoming      | 3.3                | 590              | 599  | 573     | 1762</span>
+<span class="go">Kansas       | 5.3                | 591              | 596  | 566     | 1753</span>
 <span class="go">... (41 rows omitted)</span>
 </pre></div>
 </div>
@@ -443,17 +443,17 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 
 <span class="gp">In [47]: </span><span class="n">normal_data</span>
 <span class="gh">Out[47]: </span><span class="go"></span>
-<span class="go">data1     | data2</span>
-<span class="go">1.1457    | 4.65432</span>
-<span class="go">4.52908   | 3.64439</span>
-<span class="go">3.73585   | 5.84494</span>
-<span class="go">2.87596   | 5.2929</span>
-<span class="go">3.53302   | 10.4711</span>
-<span class="go">-0.719215 | 3.50178</span>
-<span class="go">0.355712  | -1.14279</span>
-<span class="go">1.6459    | -0.18032</span>
-<span class="go">-1.68078  | 0.980079</span>
-<span class="go">3.62477   | 8.25226</span>
+<span class="go">data1      | data2</span>
+<span class="go">0.348399   | 0.629521</span>
+<span class="go">-0.552868  | 4.0772</span>
+<span class="go">-0.0588372 | 3.51955</span>
+<span class="go">-0.897279  | 2.30081</span>
+<span class="go">0.247716   | 4.18278</span>
+<span class="go">-0.593424  | 7.92455</span>
+<span class="go">2.00627    | 5.65318</span>
+<span class="go">-2.38459   | 4.12884</span>
+<span class="go">3.32132    | 2.79566</span>
+<span class="go">-2.94158   | 3.09668</span>
 <span class="go">... (90 rows omitted)</span>
 </pre></div>
 </div>
@@ -505,17 +505,17 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 converting to a pandas dataframe with <a class="reference internal" href="_autosummary/datascience.tables.Table.to_df.html#datascience.tables.Table.to_df" title="datascience.tables.Table.to_df"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_df()</span></code></a>:</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [56]: </span><span class="n">normal_data</span>
 <span class="gh">Out[56]: </span><span class="go"></span>
-<span class="go">data1     | data2</span>
-<span class="go">1.1457    | 4.65432</span>
-<span class="go">4.52908   | 3.64439</span>
-<span class="go">3.73585   | 5.84494</span>
-<span class="go">2.87596   | 5.2929</span>
-<span class="go">3.53302   | 10.4711</span>
-<span class="go">-0.719215 | 3.50178</span>
-<span class="go">0.355712  | -1.14279</span>
-<span class="go">1.6459    | -0.18032</span>
-<span class="go">-1.68078  | 0.980079</span>
-<span class="go">3.62477   | 8.25226</span>
+<span class="go">data1      | data2</span>
+<span class="go">0.348399   | 0.629521</span>
+<span class="go">-0.552868  | 4.0772</span>
+<span class="go">-0.0588372 | 3.51955</span>
+<span class="go">-0.897279  | 2.30081</span>
+<span class="go">0.247716   | 4.18278</span>
+<span class="go">-0.593424  | 7.92455</span>
+<span class="go">2.00627    | 5.65318</span>
+<span class="go">-2.38459   | 4.12884</span>
+<span class="go">3.32132    | 2.79566</span>
+<span class="go">-2.94158   | 3.09668</span>
 <span class="go">... (90 rows omitted)</span>
 
 <span class="go"># index = False prevents row numbers from appearing in the resulting CSV</span>
@@ -629,8 +629,8 @@ non-smokers.</p>
 
 <span class="gp">In [73]: </span><span class="n">bootstrapped_diff_means</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
 <span class="gh">Out[73]: </span><span class="go"></span>
-<span class="go">array([ 1.80230053, -0.38924692,  0.11395402,  0.40553651, -1.64401481,</span>
-<span class="go">        0.84243034, -0.12831482,  0.82148788,  1.53426269, -1.23338666])</span>
+<span class="go">array([-0.48138093, -1.04995963,  0.41252342,  0.7738166 , -0.88373021,</span>
+<span class="go">       -0.38965218, -0.99096546, -0.14068894, -1.13477459,  0.76690891])</span>
 
 <span class="gp">In [74]: </span><span class="n">num_diffs_greater</span> <span class="o">=</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">bootstrapped_diff_means</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">observed_diff</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
@@ -710,7 +710,7 @@ non-smokers.</p>
         <li class="right" >
           <a href="index.html" title="Welcome to datascience’s documentation!"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.13.1 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.13.2 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
