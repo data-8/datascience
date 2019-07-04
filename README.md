@@ -26,8 +26,21 @@ pip install datascience
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-### v0.12.1
+### v0.13.3
 * Adds a new optional argument to `make_array` to specify the dtype of the data.
+
+### v0.13.2
+* Changes default formatting of numbers in printed output to 12345 instead of 12,345.
+
+### v0.13.1
+* Allows for the following notations ("floating arguments") to be used with 
+`Table#take` and `Table#exclude`: ex.`t.take(0, 1, 2, 3)` and `t.exclude(0, 2, 4)`.
+
+### v0.13.0
+* Removes deprecated argument for Table#__init__.
+
+### v0.12.1
+* Update mapping code to work with the latest version of Folium (0.9.1).
 
 ### v0.12.0
 * Changes `Table#scatter`'s argument name of `colors` to `group` to mirror `Table#hist`.

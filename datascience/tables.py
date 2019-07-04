@@ -28,7 +28,7 @@ class Table(collections.abc.MutableMapping):
     """A sequence of string-labeled columns."""
     plots = collections.deque(maxlen=10)
 
-    def __init__(self, labels=None, _deprecated=None, *, formatter=_formats.default_formatter):
+    def __init__(self, labels=None, formatter=_formats.default_formatter):
         """Create an empty table with column labels.
 
         >>> tiles = Table(make_array('letter', 'count', 'points'))
@@ -44,16 +44,9 @@ class Table(collections.abc.MutableMapping):
         self._columns = collections.OrderedDict()
         self._formats = dict()
         self.formatter = formatter
-
-        if _deprecated is not None:
-            warnings.warn("Two-argument __init__ is deprecated. Use Table().with_columns(...)", FutureWarning)
-            columns, labels = labels, _deprecated
-            columns = columns if columns is not None else []
-            labels = labels if labels is not None else []
-            assert len(labels) == len(columns), 'label/column number mismatch'
-        else:
-            labels = labels if labels is not None else []
-            columns = [[] for _ in labels]
+        
+        labels = labels if labels is not None else []
+        columns = [[] for _ in labels]
 
         self._num_rows = 0 if len(columns) is 0 else len(columns[0])
 
@@ -531,15 +524,15 @@ class Table(collections.abc.MutableMapping):
         ...     'id',     make_array(12345, 123, 5123))
         >>> table.relabel('id', 'yolo')
         points | yolo
-        1      | 12,345
+        1      | 12345
         2      | 123
-        3      | 5,123
+        3      | 5123
         >>> table.relabel(make_array('points', 'yolo'),
         ...   make_array('red', 'blue'))
         red  | blue
-        1    | 12,345
+        1    | 12345
         2    | 123
-        3    | 5,123
+        3    | 5123
         >>> table.relabel(make_array('red', 'green', 'blue'),
         ...   make_array('cyan', 'magenta', 'yellow', 'key'))
         Traceback (most recent call last):
@@ -1717,21 +1710,21 @@ class Table(collections.abc.MutableMapping):
         >>> players = Table().with_columns('player_id',
         ...     make_array(110234, 110235), 'wOBA', make_array(.354, .236))
         >>> players
-        player_id  | wOBA
-        110,234    | 0.354
-        110,235    | 0.236
+        player_id | wOBA
+        110234    | 0.354
+        110235    | 0.236
         >>> players = players.with_columns('salaries', 'N/A', 'season', 2016)
         >>> players
-        player_id  | wOBA  | salaries | season
-        110,234    | 0.354 | N/A      | 2,016
-        110,235    | 0.236 | N/A      | 2,016
+        player_id | wOBA  | salaries | season
+        110234    | 0.354 | N/A      | 2016
+        110235    | 0.236 | N/A      | 2016
         >>> salaries = Table().with_column('salary',
         ...     make_array(500000, 15500000))
         >>> players.with_columns('salaries', salaries.column('salary'),
         ...     'bonus', make_array(6, 1), formatter=_formats.CurrencyFormatter)
-        player_id  | wOBA  | salaries    | season  | bonus
-        110,234    | 0.354 | $500,000    | 2,016   | $6
-        110,235    | 0.236 | $15,500,000 | 2,016   | $1
+        player_id | wOBA  | salaries    | season | bonus
+        110234    | 0.354 | $500,000    | 2016   | $6
+        110235    | 0.236 | $15,500,000 | 2016   | $1
         >>> players.with_columns(2, make_array('$600,000', '$20,000,000'))
         Traceback (most recent call last):
             ...
@@ -3009,8 +3002,14 @@ class _RowSelector(metaclass=abc.ABCMeta):
     def __init__(self, table):
         self._table = table
 
-    def __call__(self, row_numbers_or_slice):
-        return self[row_numbers_or_slice]
+    def __call__(self, row_numbers_or_slice, *args):
+        if args:
+            all_args = list(args)
+            all_args.insert(0, row_numbers_or_slice)
+            all_args = np.array(all_args)
+        else:
+            all_args = row_numbers_or_slice
+        return self.__getitem__(all_args)
 
     @abc.abstractmethod
     def __getitem__(self, item):
@@ -3065,6 +3064,10 @@ class _RowTaker(_RowSelector):
         letter grade | gpa
         A+           | 4
         A            | 4
+        A-           | 3.7
+        >>> grades.take(0, 2)
+        letter grade | gpa
+        A+           | 4
         A-           | 3.7
         >>> grades.take(10)
         Traceback (most recent call last):
@@ -3126,6 +3129,12 @@ class _RowExcluder(_RowSelector):
         B-           | 2.7
         >>> t.exclude(range(3))
         letter grade | gpa
+        B+           | 3.3
+        B            | 3
+        B-           | 2.7
+        >>> t.exclude(0, 2)
+        letter grade | gpa
+        A            | 4
         B+           | 3.3
         B            | 3
         B-           | 2.7
