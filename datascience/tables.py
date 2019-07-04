@@ -28,7 +28,7 @@ class Table(collections.abc.MutableMapping):
     """A sequence of string-labeled columns."""
     plots = collections.deque(maxlen=10)
 
-    def __init__(self, labels=None, _deprecated=None, *, formatter=_formats.default_formatter):
+    def __init__(self, labels=None, formatter=_formats.default_formatter):
         """Create an empty table with column labels.
 
         >>> tiles = Table(make_array('letter', 'count', 'points'))
@@ -44,16 +44,9 @@ class Table(collections.abc.MutableMapping):
         self._columns = collections.OrderedDict()
         self._formats = dict()
         self.formatter = formatter
-
-        if _deprecated is not None:
-            warnings.warn("Two-argument __init__ is deprecated. Use Table().with_columns(...)", FutureWarning)
-            columns, labels = labels, _deprecated
-            columns = columns if columns is not None else []
-            labels = labels if labels is not None else []
-            assert len(labels) == len(columns), 'label/column number mismatch'
-        else:
-            labels = labels if labels is not None else []
-            columns = [[] for _ in labels]
+        
+        labels = labels if labels is not None else []
+        columns = [[] for _ in labels]
 
         self._num_rows = 0 if len(columns) is 0 else len(columns[0])
 
