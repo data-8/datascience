@@ -204,6 +204,15 @@ def test_take_iterable(table):
     c      | 3     | 2
     """)
 
+def test_take_floating_args(table):
+    t = table
+    test = t.take(0, 2)
+    assert_equal(test, """
+    letter | count | points
+    a      | 9     | 1
+    c      | 3     | 2
+    """)
+
 
 def test_exclude(table):
     t = table
@@ -243,6 +252,15 @@ def test_exclude_iterable(table):
     letter | count | points
     b      | 3     | 2
     z      | 1     | 10
+    """)
+
+def test_exclude_floating_args(table):
+    t = table
+    test = t.exclude(1, 3)
+    assert_equal(test, """
+    letter | count | points
+    a      | 9     | 1
+    c      | 3     | 2
     """)
 
 
