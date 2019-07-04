@@ -21,7 +21,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 `Table#take` and `Table#exclude`: ex.`t.take(0, 1, 2, 3)` and `t.exclude(0, 2, 4)`.
 
 ### v0.13.0
-* Removes deprecated argument for Table#__init__.
+* Removes deprecated argument for `Table#__init__`.
 
 ### v0.12.1
 * Update mapping code to work with the latest version of Folium (0.9.1).
