@@ -26,6 +26,10 @@ pip install datascience
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.13.1
+* Allows for the following notations ("floating arguments") to be used with 
+`Table#take` and `Table#exclude`: ex.`t.take(0, 1, 2, 3)` and `t.exclude(0, 2, 4)`.
+
 ### v0.13.0
 * Removes deprecated argument for Table#__init__.
 

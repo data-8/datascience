@@ -3002,8 +3002,14 @@ class _RowSelector(metaclass=abc.ABCMeta):
     def __init__(self, table):
         self._table = table
 
-    def __call__(self, row_numbers_or_slice):
-        return self[row_numbers_or_slice]
+    def __call__(self, row_numbers_or_slice, *args):
+        if args:
+            all_args = list(args)
+            all_args.insert(0, row_numbers_or_slice)
+            all_args = np.array(all_args)
+        else:
+            all_args = row_numbers_or_slice
+        return self.__getitem__(all_args)
 
     @abc.abstractmethod
     def __getitem__(self, item):
@@ -3058,6 +3064,10 @@ class _RowTaker(_RowSelector):
         letter grade | gpa
         A+           | 4
         A            | 4
+        A-           | 3.7
+        >>> grades.take(0, 2)
+        letter grade | gpa
+        A+           | 4
         A-           | 3.7
         >>> grades.take(10)
         Traceback (most recent call last):
@@ -3119,6 +3129,12 @@ class _RowExcluder(_RowSelector):
         B-           | 2.7
         >>> t.exclude(range(3))
         letter grade | gpa
+        B+           | 3.3
+        B            | 3
+        B-           | 2.7
+        >>> t.exclude(0, 2)
+        letter grade | gpa
+        A            | 4
         B+           | 3.3
         B            | 3
         B-           | 2.7
