@@ -33,6 +33,10 @@ def make_array(*elements):
     >>> make_array()
     array([], dtype=float64)
     """
+    if elements and all(isinstance(item, (int, np.integer)) for item in elements):
+        # Specifically added for Windows machines where the default 
+        # integer is int32 - see GH issue #339.
+        return np.array(elements, dtype="int64")
     return np.array(elements)
 
 

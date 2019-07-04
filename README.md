@@ -29,6 +29,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### v0.13.4
 * Adds support to `Map#read_geojson` for reading in GeoJSON from links.
 
+### v0.13.3
+* Adds a new optional argument to `make_array` to specify the dtype of the data.
+
 ### v0.13.2
 * Changes default formatting of numbers in printed output to 12345 instead of 12,345.
 
