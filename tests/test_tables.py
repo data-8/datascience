@@ -204,6 +204,15 @@ def test_take_iterable(table):
     c      | 3     | 2
     """)
 
+def test_take_floating_args(table):
+    t = table
+    test = t.take(0, 2)
+    assert_equal(test, """
+    letter | count | points
+    a      | 9     | 1
+    c      | 3     | 2
+    """)
+
 
 def test_exclude(table):
     t = table
@@ -243,6 +252,15 @@ def test_exclude_iterable(table):
     letter | count | points
     b      | 3     | 2
     z      | 1     | 10
+    """)
+
+def test_exclude_floating_args(table):
+    t = table
+    test = t.exclude(1, 3)
+    assert_equal(test, """
+    letter | count | points
+    a      | 9     | 1
+    c      | 3     | 2
     """)
 
 
@@ -823,43 +841,43 @@ def test_with_column_with_formatter(table):
 def test_with_columns():
     players = Table().with_columns('player_id', make_array(110234, 110235), 'wOBA', make_array(.354, .236))
     assert_equal(players, """
-    player_id  | wOBA
-    110,234    | 0.354
-    110,235    | 0.236
+    player_id | wOBA
+    110234    | 0.354
+    110235    | 0.236
     """)
     players = players.with_columns('salaries', 'N/A', 'season', 2016)
     assert_equal(players, """
-    player_id  | wOBA  | salaries | season
-    110,234    | 0.354 | N/A      | 2,016
-    110,235    | 0.236 | N/A      | 2,016
+    player_id | wOBA  | salaries | season
+    110234    | 0.354 | N/A      | 2016
+    110235    | 0.236 | N/A      | 2016
     """)
     salaries = Table().with_column('salary', make_array('$500,000', '$15,500,000'))
     players = players.with_columns('salaries', salaries.column('salary'), 'years', make_array(6, 1))
     assert_equal(players, """
-    player_id  | wOBA  | salaries    | season | years
-    110,234    | 0.354 | $500,000    | 2,016   | 6
-    110,235    | 0.236 | $15,500,000 | 2,016   | 1
+    player_id | wOBA  | salaries    | season | years
+    110234    | 0.354 | $500,000    | 2016   | 6
+    110235    | 0.236 | $15,500,000 | 2016   | 1
     """)
 
 def test_with_columns_with_formats():
     players = Table().with_columns('player_id', make_array(110234, 110235), 'wOBA', make_array(.354, .236))
     assert_equal(players, """
     player_id  | wOBA
-    110,234    | 0.354
-    110,235    | 0.236
+    110234    | 0.354
+    110235    | 0.236
     """)
     players = players.with_columns('salaries', 'N/A', 'season', 2016)
     assert_equal(players, """
-    player_id  | wOBA  | salaries | season
-    110,234    | 0.354 | N/A      | 2,016
-    110,235    | 0.236 | N/A      | 2,016
+    player_id | wOBA  | salaries | season
+    110234    | 0.354 | N/A      | 2016
+    110235    | 0.236 | N/A      | 2016
     """)
     salaries = Table().with_column('salary', make_array(500000, 15500000))
     players2 = players.with_columns('salaries', salaries.column('salary'), 'years', make_array(6, 1), formatter=CurrencyFormatter)
     assert_equal(players2, """
-    player_id  | wOBA  | salaries     | season | years
-    110,234    | 0.354 | $500,000     | 2,016  | $6
-    110,235    | 0.236 | $15,500,000  | 2,016  | $1
+    player_id | wOBA  | salaries     | season | years
+    110234    | 0.354 | $500,000     | 2016   | $6
+    110235    | 0.236 | $15,500,000  | 2016   | $1
     """)
 
     with(pytest.raises(Exception)):
@@ -920,23 +938,23 @@ def test_relabel():
     table.relabel('id', 'todo')
     assert_equal(table, """
     points | todo
-    1      | 12,345
+    1      | 12345
     2      | 123
-    3      | 5,123
+    3      | 5123
     """)
     table.relabel(1, 'yolo')
     assert_equal(table, """
     points | yolo
-    1      | 12,345
+    1      | 12345
     2      | 123
-    3      | 5,123
+    3      | 5123
     """)
     table.relabel(['points', 'yolo'], ['red', 'blue'])
     assert_equal(table, """
     red    | blue
-    1      | 12,345
+    1      | 12345
     2      | 123
-    3      | 5,123
+    3      | 5123
     """)
     with(pytest.raises(ValueError)):
         table.relabel(['red', 'blue'], ['magenta', 'cyan', 'yellow'])

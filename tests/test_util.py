@@ -4,10 +4,18 @@ import datascience as ds
 from datascience import util
 import numpy as np
 
-
 def test_doctests():
     results = doctest.testmod(util, optionflags=doctest.NORMALIZE_WHITESPACE)
     assert results.failed == 0
+
+def test_make_array():
+    test1 = ds.make_array(0)
+    assert len(test1) == 1
+    test2 = ds.make_array(2, 3, 4)
+    assert sum(test2) == 9
+    assert test2.dtype == "int64"
+    test3 = ds.make_array("foo", "bar")
+    assert test3.dtype == "<U3"
 
 
 def test_percentile():
