@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.13.5
+* Adds support for other built-in tile sets other than `OpenStreetMap` to `Map`.
+
 ### v0.13.4
 * Adds support to `Map#read_geojson` for reading in GeoJSON from links.
 
