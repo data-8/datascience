@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.13.6
+* Adds a warning to help students realize why `Table.with_columns(...)` doesn't work.
+
 ### v0.13.5
 * Adds support for other built-in tile sets other than `OpenStreetMap` to `Map`.
 
