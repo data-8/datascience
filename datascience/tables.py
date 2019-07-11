@@ -148,7 +148,13 @@ class Table(collections.abc.MutableMapping):
 
     @classmethod
     def from_df(cls, df, keep_index=False):
-        """Convert a Pandas DataFrame into a Table."""
+        """Convert a Pandas DataFrame into a Table.
+
+        `keep_index` -- keeps the index of the DataFrame 
+            and turns it into a column called `index` in 
+            the new Table
+
+        """
         t = cls()
         if keep_index:
             t.append_column("index", df.index.values)
