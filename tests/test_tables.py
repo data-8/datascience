@@ -859,6 +859,10 @@ def test_with_columns():
     110235    | 0.236 | $15,500,000 | 2016   | 1
     """)
 
+def test_with_columns_exception_for_incorrect_usage():
+    with(pytest.raises(TypeError)):
+        Table.with_columns('player_id', make_array(110234, 110235), 'wOBA', make_array(.354, .236))
+
 def test_with_columns_with_formats():
     players = Table().with_columns('player_id', make_array(110234, 110235), 'wOBA', make_array(.354, .236))
     assert_equal(players, """
