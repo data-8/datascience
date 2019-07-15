@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.14.0
+* Declares all dependencies required for this package in requirements.txt.
+
 ### v0.13.6
 * Adds a warning to help students realize why `Table.with_columns(...)` doesn't work.
 
