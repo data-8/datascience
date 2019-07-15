@@ -1734,6 +1734,9 @@ class Table(collections.abc.MutableMapping):
             ...
         ValueError: Column length mismatch. New column does not have the same number of rows as table.
         """
+        if not isinstance(self, Table):
+            raise TypeError('Use Table().with_columns() to create a new table, \
+                not Table.with_columns()')
         if len(labels_and_values) == 1:
             labels_and_values = labels_and_values[0]
         if isinstance(labels_and_values, collections.abc.Mapping):
