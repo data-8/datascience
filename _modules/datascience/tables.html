@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>datascience.tables &#8212; datascience 0.14.0 documentation</title>
+    <title>datascience.tables &#8212; datascience 0.14.1 documentation</title>
     <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.14.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.14.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -179,9 +179,17 @@
             <span class="n">table</span><span class="o">.</span><span class="n">_formats</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_formats</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
 
 <div class="viewcode-block" id="Table.from_df"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.from_df.html#datascience.tables.Table.from_df">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_df</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">df</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Convert a Pandas DataFrame into a Table.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">from_df</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">keep_index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert a Pandas DataFrame into a Table.</span>
+
+<span class="sd">        `keep_index` -- keeps the index of the DataFrame </span>
+<span class="sd">            and turns it into a column called `index` in </span>
+<span class="sd">            the new Table</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">t</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">keep_index</span><span class="p">:</span>
+            <span class="n">t</span><span class="o">.</span><span class="n">append_column</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
         <span class="n">labels</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span>
         <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">:</span>
             <span class="n">t</span><span class="o">.</span><span class="n">append_column</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="n">label</span><span class="p">])</span>
@@ -3242,7 +3250,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.14.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.14.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

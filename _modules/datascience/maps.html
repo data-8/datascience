@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>datascience.maps &#8212; datascience 0.14.0 documentation</title>
+    <title>datascience.maps &#8212; datascience 0.14.1 documentation</title>
     <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.14.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.14.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -445,9 +445,9 @@
 
 <span class="sd">    popup -- text that pops up when marker is clicked</span>
 <span class="sd">    color -- The color of the marker. You can use:</span>
-<span class="sd">        [‘red’, ‘blue’, ‘green’, ‘purple’, ‘orange’, ‘darkred’,</span>
-<span class="sd">        ’lightred’, ‘beige’, ‘darkblue’, ‘darkgreen’, ‘cadetblue’, ‘darkpurple’, </span>
-<span class="sd">        ‘white’, ‘pink’, ‘lightblue’, ‘lightgreen’, ‘gray’, ‘black’, ‘lightgray’]</span>
+<span class="sd">    [‘red’, ‘blue’, ‘green’, ‘purple’, ‘orange’, ‘darkred’,</span>
+<span class="sd">    ’lightred’, ‘beige’, ‘darkblue’, ‘darkgreen’, ‘cadetblue’, ‘darkpurple’, </span>
+<span class="sd">    ‘white’, ‘pink’, ‘lightblue’, ‘lightgreen’, ‘gray’, ‘black’, ‘lightgray’]</span>
 <span class="sd">    </span>
 <span class="sd">    Defaults from Folium:</span>
 
@@ -468,7 +468,6 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">popup</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="c1">#TODO: Figure out clustered_marker (Adnan)</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">_number</span><span class="p">)</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">_number</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lat_lon</span> <span class="o">=</span> <span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
@@ -533,6 +532,7 @@
 <span class="sd">        The areas column is not applicable to markers, but sets circle areas.</span>
 
 <span class="sd">        Arguments: (TODO) document all options</span>
+<span class="sd">        </span>
 <span class="sd">        clustered_marker: boolean, default False</span>
 <span class="sd">            boolean of whether or not you want the marker clustered with other markers</span>
 
@@ -726,7 +726,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.14.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.14.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
