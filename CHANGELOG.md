@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.14.1
+* Adds optional argument to `Table#from_df` that keeps the index when
+converting from a Pandas dataframe.
+
 ### v0.14.0
 * Declares all dependencies required for this package in requirements.txt.
 
