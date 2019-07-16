@@ -48,6 +48,7 @@ setup(
     tests_require = tests_requires,
     cmdclass = {'test': PyTest},
     description = 'A Jupyter notebook Python library for introductory data science',
+    long_description = description,
     author = 'John DeNero, David Culler, Alvin Wan, Sam Lau',
     author_email = 'ds8-instructors@berkeley.edu',
     url = 'https://github.com/data-8/datascience',
