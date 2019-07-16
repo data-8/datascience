@@ -1720,6 +1720,15 @@ def test_df_roundtrip(table):
     for (c0, c1) in zip(t.columns, table.columns):
         assert_equal(c0, c1)
 
+def test_from_df_with_index(table):
+    from bokeh.sampledata.autompg import autompg as df
+    assert isinstance(df, pd.DataFrame)
+    test_no_index = Table.from_df(df)
+    assert not ("index" in test_no_index.labels)
+    test_with_index = Table.from_df(df, keep_index=True)
+    assert "index" in test_with_index.labels
+    assert test_with_index.num_columns == (test_no_index.num_columns + 1)
+
 def test_array_roundtrip(table):
     arr = table.to_array()
     assert isinstance(arr, np.ndarray)

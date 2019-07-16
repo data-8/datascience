@@ -23,6 +23,3 @@ pip install datascience
 ```
 
 A log of all changes can be found in CHANGELOG.md.
-
-Information for developing or modifying this package can be
-found in DEVELOPERS.md.
