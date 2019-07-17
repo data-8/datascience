@@ -2486,7 +2486,7 @@ class Table(collections.abc.MutableMapping):
         for label, column in zip(pvt_labels,vals):
             t[label] = column
 
-    def hist(self, *columns, overlay=True, bins=None, bin_column=None, unit=None, counts=None, group=None, side_by_side=False, width=6, height=4, **vargs):
+    def hist(self, *columns, overlay=True, bins=None, bin_column=None, unit=None, counts=None, group=None, side_by_side=False, left_end=None, right_end=None, width=6, height=4, **vargs):
         """Plots one histogram for each column in columns. If no column is
         specified, plot all columns.
 
@@ -2521,6 +2521,13 @@ class Table(collections.abc.MutableMapping):
                 side (instead of directly overlaid).  Makes sense only when
                 plotting multiple histograms, either by passing several columns
                 or by using the group option.
+
+            left_end (int or float) and right_end (int or float): (Not supported 
+                for overlayed histograms) The left and right edges of the shading of 
+                the histogram. If only one of these is None, then that property 
+                will be treated as the extreme edge of the histogram. If both are 
+                left None, then no shading will occur.
+
 
             vargs: Additional arguments that get passed into :func:plt.hist.
                 See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.hist
@@ -2621,6 +2628,11 @@ class Table(collections.abc.MutableMapping):
         else:
             values_dict = [(k, (self.column(k),)) for k in self.labels]
         values_dict = collections.OrderedDict(values_dict)
+        if left_end or right_end:
+            if not left_end:
+                left_end = min([min(self.column(k)) for k in self.labels if np.issubdtype(self.column(k).dtype, np.number)])
+            elif not right_end:
+                right_end = max([max(self.column(k)) for k in self.labels if np.issubdtype(self.column(k).dtype, np.number)])
 
         def draw_hist(values_dict):
             with np.printoptions(legacy='1.13'):
@@ -2682,7 +2694,32 @@ class Table(collections.abc.MutableMapping):
                         if len(weights) == n:
                             vargs['weights'] = weights[i]
                         axis.set_xlabel(hist_name + x_unit, fontsize=16)
-                        axis.hist(values_for_hist, color=color, **vargs)
+                        heights, bins, patches = axis.hist(values_for_hist, color=color, **vargs)
+                        bins = bins[:-1]
+                        if left_end and right_end:
+                            mask = (bins >= left_end) & (bins <= right_end)
+                            # axis.hist(bins[mask], bins=bins, weights=heights[mask], color="red", **vargs)
+                            y_pos = bins[mask]
+                            heights_masked = heights[mask]
+                            widths = np.diff(y_pos)
+                            if len(y_pos) == 0:
+                                y_pos = make_array(left_end)
+                                widths = make_array(right_end - left_end)
+                                heights_masked = make_array(heights[np.argmax(bins >= left_end) - 1])
+                            if left_end < y_pos[0]:
+                                widths = np.insert(widths, 0, y_pos[0] - left_end, axis=0)
+                                y_pos = np.insert(y_pos, 0, left_end, axis=0)
+                                heights_masked = np.insert(heights_masked, 0, heights[np.argmax(mask) - 1])
+                            if right_end > y_pos[-1]:
+                                widths = np.append(widths, right_end - y_pos[-1])
+                            # print(bins)
+                            # print(y_pos)
+                            # print(heights_masked)
+                            # print(widths)
+                            # print(len(y_pos))
+                            # print(len(heights_masked))
+                            # print(len(widths))
+                            axis.bar(y_pos, heights_masked, width=widths, color="red", align="edge")
                         _vertical_x(axis)
                         type(self).plots.append(axis)
 
