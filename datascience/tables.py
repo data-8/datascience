@@ -140,9 +140,17 @@ class Table(collections.abc.MutableMapping):
             table._formats[label] = self._formats[label]
 
     @classmethod
-    def from_df(cls, df):
-        """Convert a Pandas DataFrame into a Table."""
+    def from_df(cls, df, keep_index=False):
+        """Convert a Pandas DataFrame into a Table.
+
+        `keep_index` -- keeps the index of the DataFrame 
+            and turns it into a column called `index` in 
+            the new Table
+
+        """
         t = cls()
+        if keep_index:
+            t.append_column("index", df.index.values)
         labels = df.columns
         for label in labels:
             t.append_column(label, df[label])
