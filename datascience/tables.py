@@ -2698,7 +2698,6 @@ class Table(collections.abc.MutableMapping):
                         bins = bins[:-1]
                         if left_end and right_end:
                             mask = (bins >= left_end) & (bins <= right_end)
-                            # axis.hist(bins[mask], bins=bins, weights=heights[mask], color="red", **vargs)
                             y_pos = bins[mask]
                             heights_masked = heights[mask]
                             widths = np.diff(y_pos)
@@ -2712,13 +2711,6 @@ class Table(collections.abc.MutableMapping):
                                 heights_masked = np.insert(heights_masked, 0, heights[np.argmax(mask) - 1])
                             if right_end > y_pos[-1]:
                                 widths = np.append(widths, right_end - y_pos[-1])
-                            # print(bins)
-                            # print(y_pos)
-                            # print(heights_masked)
-                            # print(widths)
-                            # print(len(y_pos))
-                            # print(len(heights_masked))
-                            # print(len(widths))
                             axis.bar(y_pos, heights_masked, width=widths, color="red", align="edge")
                         _vertical_x(axis)
                         type(self).plots.append(axis)
