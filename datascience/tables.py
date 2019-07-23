@@ -2711,7 +2711,7 @@ class Table(collections.abc.MutableMapping):
                                 heights_masked = np.insert(heights_masked, 0, heights[np.argmax(mask) - 1])
                             if right_end > y_pos[-1]:
                                 widths = np.append(widths, right_end - y_pos[-1])
-                            axis.bar(y_pos, heights_masked, width=widths, color="red", align="edge")
+                            axis.bar(y_pos, heights_masked, width=widths, color=self.chart_colors[1], align="edge")
                         _vertical_x(axis)
                         type(self).plots.append(axis)
 
