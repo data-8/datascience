@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.15.0
+* Added support for shading part of a histogram, e.g., for highlighting
+the tail of a distribution.
+
 ### v0.14.0
 * Declares all dependencies required for this package in requirements.txt.
 
