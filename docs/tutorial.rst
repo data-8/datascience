@@ -385,6 +385,12 @@ Let's do the bootstrap test on the two categories.
     p_value
 
 
-Drawing Maps
-------------
-To come.
+Maps
+-----
+
+
+
+
+
+
+
