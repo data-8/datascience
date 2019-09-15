@@ -2636,10 +2636,10 @@ class Table(collections.abc.MutableMapping):
         else:
             values_dict = [(k, (self.column(k),)) for k in self.labels]
         values_dict = collections.OrderedDict(values_dict)
-        if left_end or right_end:
-            if not left_end:
+        if left_end is not None or right_end is not None:
+            if left_end is None:
                 left_end = min([min(self.column(k)) for k in self.labels if np.issubdtype(self.column(k).dtype, np.number)])
-            elif not right_end:
+            elif right_end is None:
                 right_end = max([max(self.column(k)) for k in self.labels if np.issubdtype(self.column(k).dtype, np.number)])
 
         def draw_hist(values_dict):
@@ -2703,23 +2703,10 @@ class Table(collections.abc.MutableMapping):
                             vargs['weights'] = weights[i]
                         axis.set_xlabel(hist_name + x_unit, fontsize=16)
                         heights, bins, patches = axis.hist(values_for_hist, color=color, **vargs)
-                        bins = bins[:-1]
-                        if left_end and right_end:
-                            mask = (bins >= left_end) & (bins <= right_end)
-                            y_pos = bins[mask]
-                            heights_masked = heights[mask]
-                            widths = np.diff(y_pos)
-                            if len(y_pos) == 0:
-                                y_pos = make_array(left_end)
-                                widths = make_array(right_end - left_end)
-                                heights_masked = make_array(heights[np.argmax(bins >= left_end) - 1])
-                            if left_end < y_pos[0]:
-                                widths = np.insert(widths, 0, y_pos[0] - left_end, axis=0)
-                                y_pos = np.insert(y_pos, 0, left_end, axis=0)
-                                heights_masked = np.insert(heights_masked, 0, heights[np.argmax(mask) - 1])
-                            if right_end > y_pos[-1]:
-                                widths = np.append(widths, right_end - y_pos[-1])
-                            axis.bar(y_pos, heights_masked, width=widths, color=self.chart_colors[1], align="edge")
+                        if left_end is not None and right_end is not None:
+                            x_shade, height_shade, width_shade = _compute_shading(heights, bins, left_end, right_end)
+                            axis.bar(x_shade, height_shade, width=width_shade,
+                                     color=self.chart_colors[1], align="edge")
                         _vertical_x(axis)
                         type(self).plots.append(axis)
 
@@ -2947,6 +2934,27 @@ def _zero_on_type_error(column_fn):
             else:
                 raise
     return wrapped
+
+def _compute_shading(heights, bins, left_end, right_end):
+    shade_start_idx = np.max(np.where(bins <= left_end)[0], initial=0)
+    shade_end_idx = np.max(np.where(bins < right_end)[0], initial=0) + 1
+    # x_shade are the bin starts, so ignore bins[-1], which is the RHS of the last bin
+    x_shade = bins[:-1][shade_start_idx:shade_end_idx]
+    height_shade = heights[shade_start_idx:shade_end_idx]
+    width_shade = np.diff(bins[shade_start_idx:(shade_end_idx+1)])
+
+    if left_end > x_shade[0]:
+        # shrink the width by the unshaded area, then move the bin start
+        width_shade[0] -= (left_end - x_shade[0])
+        x_shade[0] = left_end
+
+    original_ending = (x_shade[-1] + width_shade[-1])
+    if right_end < original_ending:
+        width_shade[-1] -= (original_ending - right_end)
+
+    print(left_end, right_end)
+    print(x_shade, height_shade, width_shade)
+    return x_shade, height_shade, width_shade
 
 
 def _fill_with_zeros(partials, rows, zero=None):
