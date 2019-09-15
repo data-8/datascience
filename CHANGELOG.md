@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.15.1
+* Fixed a bug related to histogram shading
+
 ### v0.15.0
 * Added support for shading part of a histogram, e.g., for highlighting
 the tail of a distribution.
