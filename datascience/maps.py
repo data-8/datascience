@@ -487,7 +487,7 @@ class Marker(_MapFeature):
         return cls(lat, lon)
 
     @classmethod
-    def map(cls, latitudes, longitudes, labels=None, colors=None, areas=None, clustered_marker=False, **kwargs):
+    def map(cls, latitudes, longitudes, labels=None, colors=None, areas=None, other_attrs = None, clustered_marker=False, **kwargs):
         """Return markers from columns of coordinates, labels, & colors.
 
         The areas column is not applicable to markers, but sets circle areas.
@@ -497,7 +497,12 @@ class Marker(_MapFeature):
         clustered_marker: boolean, default False
             boolean of whether or not you want the marker clustered with other markers
 
+        other_attrs: dictionary of (key) property names to (value) property values, default None
+            A dictionary that list any other attributes that the class Marker/Circle should have 
+
         """
+        assert latitudes is not None
+        assert longitudes is not None
         assert len(latitudes) == len(longitudes)
         assert areas is None or hasattr(cls, '_has_radius'), "A " + cls.__name__ + " has no radius"
         inputs = [latitudes, longitudes]
@@ -512,14 +517,53 @@ class Marker(_MapFeature):
         if areas is not None:
             assert len(areas) == len(latitudes)
             inputs.append(np.array(areas) ** 0.5 / math.pi)
-        ms = [cls(*args, **kwargs) for args in zip(*inputs)]
+        if other_attrs is not None:
+            other_attrs_processed = []
+            for i in range(len(latitudes)):
+                other_attrs_processed.append({})
+            for prop in other_attrs:
+                for i in range(len(other_attrs[prop])):
+                    other_attrs_processed[i][prop] = other_attrs[prop][i]
+            for dic in other_attrs_processed:
+                dic.update(kwargs)
+        else:
+            other_attrs_processed = []
+
+        if other_attrs_processed:
+            ms = [cls(*args, **other_attrs_processed[row_num]) for row_num, args in enumerate(zip(*inputs))]
+        else:
+            ms = [cls(*args, **kwargs) for row_num, args in enumerate(zip(*inputs))]
         return Map(ms, clustered_marker=clustered_marker)
 
     @classmethod
     def map_table(cls, table, clustered_marker=False, **kwargs):
-        """Return markers from the colums of a table."""
-        return cls.map(*table.columns, clustered_marker=clustered_marker, **kwargs)
+        """Return markers from the colums of a table.
+        
+        The first two columns of the table must be the latitudes and longitudes
+        (in that order), followed by 'labels', 'colors', and/or 'areas' (if applicable)
+        in any order with columns explicitly stating what property they are representing.
+        """
+        lat, lon, lab, color, areas, other_attrs = None, None, None, None, None, {}
 
+        for index, col in enumerate(table.labels):
+            this_col = table.column(col)
+            if index == 0:
+                lat = this_col
+            elif index == 1:
+                lon = this_col
+            elif col == "labels":
+                lab = this_col
+            elif col == "colors":
+                color = this_col
+            elif col == "areas":
+                areas = this_col
+            else:
+                other_attrs[col] = this_col
+        if not other_attrs:
+            other_attrs = None
+        return cls.map(latitudes=lat, longitudes=lon, labels=lab,
+            colors=color, areas=areas, other_attrs=other_attrs, 
+            clustered_marker=clustered_marker, **kwargs)
 
 class Circle(Marker):
     """A marker displayed with Folium's circle_marker method.
