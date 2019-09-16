@@ -140,9 +140,17 @@ class Table(collections.abc.MutableMapping):
             table._formats[label] = self._formats[label]
 
     @classmethod
-    def from_df(cls, df):
-        """Convert a Pandas DataFrame into a Table."""
+    def from_df(cls, df, keep_index=False):
+        """Convert a Pandas DataFrame into a Table.
+
+        `keep_index` -- keeps the index of the DataFrame 
+            and turns it into a column called `index` in 
+            the new Table
+
+        """
         t = cls()
+        if keep_index:
+            t.append_column("index", df.index.values)
         labels = df.columns
         for label in labels:
             t.append_column(label, df[label])
@@ -2486,7 +2494,7 @@ class Table(collections.abc.MutableMapping):
         for label, column in zip(pvt_labels,vals):
             t[label] = column
 
-    def hist(self, *columns, overlay=True, bins=None, bin_column=None, unit=None, counts=None, group=None, side_by_side=False, width=6, height=4, **vargs):
+    def hist(self, *columns, overlay=True, bins=None, bin_column=None, unit=None, counts=None, group=None, side_by_side=False, left_end=None, right_end=None, width=6, height=4, **vargs):
         """Plots one histogram for each column in columns. If no column is
         specified, plot all columns.
 
@@ -2521,6 +2529,13 @@ class Table(collections.abc.MutableMapping):
                 side (instead of directly overlaid).  Makes sense only when
                 plotting multiple histograms, either by passing several columns
                 or by using the group option.
+
+            left_end (int or float) and right_end (int or float): (Not supported 
+                for overlayed histograms) The left and right edges of the shading of 
+                the histogram. If only one of these is None, then that property 
+                will be treated as the extreme edge of the histogram. If both are 
+                left None, then no shading will occur.
+
 
             vargs: Additional arguments that get passed into :func:plt.hist.
                 See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.hist
@@ -2621,6 +2636,11 @@ class Table(collections.abc.MutableMapping):
         else:
             values_dict = [(k, (self.column(k),)) for k in self.labels]
         values_dict = collections.OrderedDict(values_dict)
+        if left_end is not None or right_end is not None:
+            if left_end is None:
+                left_end = min([min(self.column(k)) for k in self.labels if np.issubdtype(self.column(k).dtype, np.number)])
+            elif right_end is None:
+                right_end = max([max(self.column(k)) for k in self.labels if np.issubdtype(self.column(k).dtype, np.number)])
 
         def draw_hist(values_dict):
             with np.printoptions(legacy='1.13'):
@@ -2682,7 +2702,11 @@ class Table(collections.abc.MutableMapping):
                         if len(weights) == n:
                             vargs['weights'] = weights[i]
                         axis.set_xlabel(hist_name + x_unit, fontsize=16)
-                        axis.hist(values_for_hist, color=color, **vargs)
+                        heights, bins, patches = axis.hist(values_for_hist, color=color, **vargs)
+                        if left_end is not None and right_end is not None:
+                            x_shade, height_shade, width_shade = _compute_shading(heights, bins, left_end, right_end)
+                            axis.bar(x_shade, height_shade, width=width_shade,
+                                     color=self.chart_colors[1], align="edge")
                         _vertical_x(axis)
                         type(self).plots.append(axis)
 
@@ -2910,6 +2934,27 @@ def _zero_on_type_error(column_fn):
             else:
                 raise
     return wrapped
+
+def _compute_shading(heights, bins, left_end, right_end):
+    shade_start_idx = np.max(np.where(bins <= left_end)[0], initial=0)
+    shade_end_idx = np.max(np.where(bins < right_end)[0], initial=0) + 1
+    # x_shade are the bin starts, so ignore bins[-1], which is the RHS of the last bin
+    x_shade = bins[:-1][shade_start_idx:shade_end_idx]
+    height_shade = heights[shade_start_idx:shade_end_idx]
+    width_shade = np.diff(bins[shade_start_idx:(shade_end_idx+1)])
+
+    if left_end > x_shade[0]:
+        # shrink the width by the unshaded area, then move the bin start
+        width_shade[0] -= (left_end - x_shade[0])
+        x_shade[0] = left_end
+
+    original_ending = (x_shade[-1] + width_shade[-1])
+    if right_end < original_ending:
+        width_shade[-1] -= (original_ending - right_end)
+
+    print(left_end, right_end)
+    print(x_shade, height_shade, width_shade)
+    return x_shade, height_shade, width_shade
 
 
 def _fill_with_zeros(partials, rows, zero=None):

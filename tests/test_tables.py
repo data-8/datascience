@@ -1657,6 +1657,63 @@ def test_subtable():
 # Visualize #
 #############
 
+def test_compute_shading():
+
+    h = np.arange(5)
+    def single_test(start, end, x_expected, h_expected, w_expected):
+        h_this = h[:]
+        bins = np.arange(0, 51, 10)
+        x_actual, h_actual, w_actual = tables._compute_shading(h_this, bins, start, end)
+        assert np.allclose(x_actual, x_expected)
+        assert np.allclose(h_actual, h_expected)
+        assert np.allclose(w_actual, w_expected)
+
+    # Given the entire range, create all bins
+    single_test(0, 50,
+                np.arange(0, 41, 10), h,
+                10 * np.ones(5))
+
+    # Test subrange that aligns with bin start/ends
+    single_test(0, 30,
+                np.arange(0, 21, 10), h[:3],
+                np.array([10, 10, 10]))
+
+    # Test subrange that doesn't align with bin start/ends
+    single_test(5, 45,
+                np.array([5, 10, 20, 30, 40]), h,
+                np.array([5, 10, 10, 10, 5]))
+
+    # Test subrange that crosses only one bin boundary
+    single_test(5, 15,
+                np.array([5, 10]), h[:2],
+                np.array([5, 5]))
+
+    # Test subrange within a single bin
+    single_test(23, 28,
+                np.array([23]), h[2:3],
+                np.array([5]))
+
+    # Test subrange starting before data range
+    single_test(-32, 28,
+                np.array([0, 10, 20]), h[:3],
+                np.array([10, 10, 8]))
+
+    # Test subrange ending after data range
+    single_test(23, 200,
+                np.array([23, 30, 40]), h[2:],
+                np.array([7, 10, 10]))
+
+    # Test subrange with exactly first bin
+    single_test(0, 10,
+                np.array([0]), h[0:1],
+                np.array([10]))
+
+    # Test subrange with exactly last bin
+    single_test(40, 50,
+                np.array([40]), h[4:5],
+                np.array([10]))
+
+
 def test_scatter(numbers_table):
     """Tests that Table.scatter doesn't raise an error when the table doesn't
     contains non-numerical values. Not working right now because of TKinter
@@ -1719,6 +1776,15 @@ def test_df_roundtrip(table):
 
     for (c0, c1) in zip(t.columns, table.columns):
         assert_equal(c0, c1)
+
+def test_from_df_with_index(table):
+    from bokeh.sampledata.autompg import autompg as df
+    assert isinstance(df, pd.DataFrame)
+    test_no_index = Table.from_df(df)
+    assert not ("index" in test_no_index.labels)
+    test_with_index = Table.from_df(df, keep_index=True)
+    assert "index" in test_with_index.labels
+    assert test_with_index.num_columns == (test_no_index.num_columns + 1)
 
 def test_array_roundtrip(table):
     arr = table.to_array()

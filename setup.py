@@ -12,7 +12,8 @@ with open('requirements.txt') as fid:
 tests_requires = [
     'pytest',
     'coverage==4.5.3',
-    'coveralls'
+    'coveralls',
+    'bokeh'
 ]
 
 
@@ -47,6 +48,7 @@ setup(
     tests_require = tests_requires,
     cmdclass = {'test': PyTest},
     description = 'A Jupyter notebook Python library for introductory data science',
+    long_description = 'A Jupyter notebook Python library for introductory data science',
     author = 'John DeNero, David Culler, Alvin Wan, Sam Lau',
     author_email = 'ds8-instructors@berkeley.edu',
     url = 'https://github.com/data-8/datascience',

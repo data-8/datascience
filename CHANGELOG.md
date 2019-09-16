@@ -7,6 +7,17 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### v0.15.2
 * Adds more flexibility to `Marker#map_table` for user-defined options for markers.
 
+### v0.15.1
+* Fixed a bug related to histogram shading
+
+### v0.15.0
+* Added support for shading part of a histogram, e.g., for highlighting
+the tail of a distribution.
+
+### v0.14.1
+* Adds optional argument to `Table#from_df` that keeps the index when
+converting from a Pandas dataframe.
+
 ### v0.14.0
 * Declares all dependencies required for this package in requirements.txt.
 

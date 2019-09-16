@@ -406,9 +406,9 @@ class Marker(_MapFeature):
 
     popup -- text that pops up when marker is clicked
     color -- The color of the marker. You can use:
-        [‘red’, ‘blue’, ‘green’, ‘purple’, ‘orange’, ‘darkred’,
-        ’lightred’, ‘beige’, ‘darkblue’, ‘darkgreen’, ‘cadetblue’, ‘darkpurple’, 
-        ‘white’, ‘pink’, ‘lightblue’, ‘lightgreen’, ‘gray’, ‘black’, ‘lightgray’]
+    [‘red’, ‘blue’, ‘green’, ‘purple’, ‘orange’, ‘darkred’,
+    ’lightred’, ‘beige’, ‘darkblue’, ‘darkgreen’, ‘cadetblue’, ‘darkpurple’, 
+    ‘white’, ‘pink’, ‘lightblue’, ‘lightgreen’, ‘gray’, ‘black’, ‘lightgray’]
     
     Defaults from Folium:
 
@@ -429,7 +429,6 @@ class Marker(_MapFeature):
     """
 
     def __init__(self, lat, lon, popup='', color='blue', **kwargs):
-        #TODO: Figure out clustered_marker (Adnan)
         assert isinstance(lat, _number)
         assert isinstance(lon, _number)
         self.lat_lon = (lat, lon)
@@ -494,6 +493,7 @@ class Marker(_MapFeature):
         The areas column is not applicable to markers, but sets circle areas.
 
         Arguments: (TODO) document all options
+        
         clustered_marker: boolean, default False
             boolean of whether or not you want the marker clustered with other markers
 
