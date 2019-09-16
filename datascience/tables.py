@@ -2638,9 +2638,15 @@ class Table(collections.abc.MutableMapping):
         values_dict = collections.OrderedDict(values_dict)
         if left_end is not None or right_end is not None:
             if left_end is None:
-                left_end = min([min(self.column(k)) for k in self.labels if np.issubdtype(self.column(k).dtype, np.number)])
+                if bins[0]:
+                    left_end = bins[0]
+                else:
+                    left_end = min([min(self.column(k)) for k in self.labels if np.issubdtype(self.column(k).dtype, np.number)])
             elif right_end is None:
-                right_end = max([max(self.column(k)) for k in self.labels if np.issubdtype(self.column(k).dtype, np.number)])
+                if bins[-1]:
+                    right_end = bins[-1]
+                else:
+                    right_end = max([max(self.column(k)) for k in self.labels if np.issubdtype(self.column(k).dtype, np.number)])
 
         def draw_hist(values_dict):
             with np.printoptions(legacy='1.13'):
@@ -2704,7 +2710,7 @@ class Table(collections.abc.MutableMapping):
                         axis.set_xlabel(hist_name + x_unit, fontsize=16)
                         heights, bins, patches = axis.hist(values_for_hist, color=color, **vargs)
                         if left_end is not None and right_end is not None:
-                            x_shade, height_shade, width_shade = _compute_shading(heights, bins, left_end, right_end)
+                            x_shade, height_shade, width_shade = _compute_shading(heights, bins.copy(), left_end, right_end)
                             axis.bar(x_shade, height_shade, width=width_shade,
                                      color=self.chart_colors[1], align="edge")
                         _vertical_x(axis)
@@ -2951,9 +2957,6 @@ def _compute_shading(heights, bins, left_end, right_end):
     original_ending = (x_shade[-1] + width_shade[-1])
     if right_end < original_ending:
         width_shade[-1] -= (original_ending - right_end)
-
-    print(left_end, right_end)
-    print(x_shade, height_shade, width_shade)
     return x_shade, height_shade, width_shade
 
 
