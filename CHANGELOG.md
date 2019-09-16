@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-### v0.14.1
+### v0.15.2
 * Adds more flexibility to `Marker#map_table` for user-defined options for markers.
 
 ### v0.14.0
