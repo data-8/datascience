@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>datascience.tables &#8212; datascience 0.15.2 documentation</title>
+    <title>datascience.tables &#8212; datascience 0.15.3 documentation</title>
     <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.15.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.15.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -2677,9 +2677,15 @@
         <span class="n">values_dict</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">(</span><span class="n">values_dict</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">left_end</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">right_end</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">left_end</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">left_end</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">k</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">)])</span>
+                <span class="k">if</span> <span class="n">bins</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="n">left_end</span> <span class="o">=</span> <span class="n">bins</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">left_end</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">k</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">)])</span>
             <span class="k">elif</span> <span class="n">right_end</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">right_end</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">k</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">)])</span>
+                <span class="k">if</span> <span class="n">bins</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="n">right_end</span> <span class="o">=</span> <span class="n">bins</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">right_end</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">k</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">)])</span>
 
         <span class="k">def</span> <span class="nf">draw_hist</span><span class="p">(</span><span class="n">values_dict</span><span class="p">):</span>
             <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">printoptions</span><span class="p">(</span><span class="n">legacy</span><span class="o">=</span><span class="s1">&#39;1.13&#39;</span><span class="p">):</span>
@@ -2743,7 +2749,7 @@
                         <span class="n">axis</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">hist_name</span> <span class="o">+</span> <span class="n">x_unit</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
                         <span class="n">heights</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">patches</span> <span class="o">=</span> <span class="n">axis</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">values_for_hist</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">)</span>
                         <span class="k">if</span> <span class="n">left_end</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">right_end</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                            <span class="n">x_shade</span><span class="p">,</span> <span class="n">height_shade</span><span class="p">,</span> <span class="n">width_shade</span> <span class="o">=</span> <span class="n">_compute_shading</span><span class="p">(</span><span class="n">heights</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">left_end</span><span class="p">,</span> <span class="n">right_end</span><span class="p">)</span>
+                            <span class="n">x_shade</span><span class="p">,</span> <span class="n">height_shade</span><span class="p">,</span> <span class="n">width_shade</span> <span class="o">=</span> <span class="n">_compute_shading</span><span class="p">(</span><span class="n">heights</span><span class="p">,</span> <span class="n">bins</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">left_end</span><span class="p">,</span> <span class="n">right_end</span><span class="p">)</span>
                             <span class="n">axis</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">x_shade</span><span class="p">,</span> <span class="n">height_shade</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width_shade</span><span class="p">,</span>
                                      <span class="n">color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">chart_colors</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">align</span><span class="o">=</span><span class="s2">&quot;edge&quot;</span><span class="p">)</span>
                         <span class="n">_vertical_x</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
@@ -2990,9 +2996,6 @@
     <span class="n">original_ending</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_shade</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">width_shade</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
     <span class="k">if</span> <span class="n">right_end</span> <span class="o">&lt;</span> <span class="n">original_ending</span><span class="p">:</span>
         <span class="n">width_shade</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-=</span> <span class="p">(</span><span class="n">original_ending</span> <span class="o">-</span> <span class="n">right_end</span><span class="p">)</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="n">left_end</span><span class="p">,</span> <span class="n">right_end</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">x_shade</span><span class="p">,</span> <span class="n">height_shade</span><span class="p">,</span> <span class="n">width_shade</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">x_shade</span><span class="p">,</span> <span class="n">height_shade</span><span class="p">,</span> <span class="n">width_shade</span>
 
 
@@ -3287,7 +3290,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.15.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.15.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
