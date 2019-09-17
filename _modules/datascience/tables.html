@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>datascience.tables &#8212; datascience 0.15.0 documentation</title>
+    <title>datascience.tables &#8212; datascience 0.15.2 documentation</title>
     <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.15.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.15.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -2675,10 +2675,10 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">values_dict</span> <span class="o">=</span> <span class="p">[(</span><span class="n">k</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">k</span><span class="p">),))</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">]</span>
         <span class="n">values_dict</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">(</span><span class="n">values_dict</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">left_end</span> <span class="ow">or</span> <span class="n">right_end</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">left_end</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">left_end</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">right_end</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">left_end</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">left_end</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">k</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">)])</span>
-            <span class="k">elif</span> <span class="ow">not</span> <span class="n">right_end</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">right_end</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">right_end</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">k</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">)])</span>
 
         <span class="k">def</span> <span class="nf">draw_hist</span><span class="p">(</span><span class="n">values_dict</span><span class="p">):</span>
@@ -2742,23 +2742,10 @@
                             <span class="n">vargs</span><span class="p">[</span><span class="s1">&#39;weights&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">weights</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
                         <span class="n">axis</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">hist_name</span> <span class="o">+</span> <span class="n">x_unit</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
                         <span class="n">heights</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">patches</span> <span class="o">=</span> <span class="n">axis</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">values_for_hist</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">)</span>
-                        <span class="n">bins</span> <span class="o">=</span> <span class="n">bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-                        <span class="k">if</span> <span class="n">left_end</span> <span class="ow">and</span> <span class="n">right_end</span><span class="p">:</span>
-                            <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">bins</span> <span class="o">&gt;=</span> <span class="n">left_end</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">bins</span> <span class="o">&lt;=</span> <span class="n">right_end</span><span class="p">)</span>
-                            <span class="n">y_pos</span> <span class="o">=</span> <span class="n">bins</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
-                            <span class="n">heights_masked</span> <span class="o">=</span> <span class="n">heights</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
-                            <span class="n">widths</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">y_pos</span><span class="p">)</span>
-                            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_pos</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                                <span class="n">y_pos</span> <span class="o">=</span> <span class="n">make_array</span><span class="p">(</span><span class="n">left_end</span><span class="p">)</span>
-                                <span class="n">widths</span> <span class="o">=</span> <span class="n">make_array</span><span class="p">(</span><span class="n">right_end</span> <span class="o">-</span> <span class="n">left_end</span><span class="p">)</span>
-                                <span class="n">heights_masked</span> <span class="o">=</span> <span class="n">make_array</span><span class="p">(</span><span class="n">heights</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">bins</span> <span class="o">&gt;=</span> <span class="n">left_end</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
-                            <span class="k">if</span> <span class="n">left_end</span> <span class="o">&lt;</span> <span class="n">y_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-                                <span class="n">widths</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">widths</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">left_end</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-                                <span class="n">y_pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">y_pos</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">left_end</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-                                <span class="n">heights_masked</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">heights_masked</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">heights</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
-                            <span class="k">if</span> <span class="n">right_end</span> <span class="o">&gt;</span> <span class="n">y_pos</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
-                                <span class="n">widths</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">widths</span><span class="p">,</span> <span class="n">right_end</span> <span class="o">-</span> <span class="n">y_pos</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-                            <span class="n">axis</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">y_pos</span><span class="p">,</span> <span class="n">heights_masked</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">widths</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">chart_colors</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">align</span><span class="o">=</span><span class="s2">&quot;edge&quot;</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">left_end</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">right_end</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="n">x_shade</span><span class="p">,</span> <span class="n">height_shade</span><span class="p">,</span> <span class="n">width_shade</span> <span class="o">=</span> <span class="n">_compute_shading</span><span class="p">(</span><span class="n">heights</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">left_end</span><span class="p">,</span> <span class="n">right_end</span><span class="p">)</span>
+                            <span class="n">axis</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">x_shade</span><span class="p">,</span> <span class="n">height_shade</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width_shade</span><span class="p">,</span>
+                                     <span class="n">color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">chart_colors</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">align</span><span class="o">=</span><span class="s2">&quot;edge&quot;</span><span class="p">)</span>
                         <span class="n">_vertical_x</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
                         <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
 
@@ -2986,6 +2973,27 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span>
     <span class="k">return</span> <span class="n">wrapped</span>
+
+<span class="k">def</span> <span class="nf">_compute_shading</span><span class="p">(</span><span class="n">heights</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">left_end</span><span class="p">,</span> <span class="n">right_end</span><span class="p">):</span>
+    <span class="n">shade_start_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">bins</span> <span class="o">&lt;=</span> <span class="n">left_end</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">initial</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">shade_end_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">bins</span> <span class="o">&lt;</span> <span class="n">right_end</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">initial</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="c1"># x_shade are the bin starts, so ignore bins[-1], which is the RHS of the last bin</span>
+    <span class="n">x_shade</span> <span class="o">=</span> <span class="n">bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">shade_start_idx</span><span class="p">:</span><span class="n">shade_end_idx</span><span class="p">]</span>
+    <span class="n">height_shade</span> <span class="o">=</span> <span class="n">heights</span><span class="p">[</span><span class="n">shade_start_idx</span><span class="p">:</span><span class="n">shade_end_idx</span><span class="p">]</span>
+    <span class="n">width_shade</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">bins</span><span class="p">[</span><span class="n">shade_start_idx</span><span class="p">:(</span><span class="n">shade_end_idx</span><span class="o">+</span><span class="mi">1</span><span class="p">)])</span>
+
+    <span class="k">if</span> <span class="n">left_end</span> <span class="o">&gt;</span> <span class="n">x_shade</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="c1"># shrink the width by the unshaded area, then move the bin start</span>
+        <span class="n">width_shade</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-=</span> <span class="p">(</span><span class="n">left_end</span> <span class="o">-</span> <span class="n">x_shade</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">x_shade</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">left_end</span>
+
+    <span class="n">original_ending</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_shade</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">width_shade</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">right_end</span> <span class="o">&lt;</span> <span class="n">original_ending</span><span class="p">:</span>
+        <span class="n">width_shade</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-=</span> <span class="p">(</span><span class="n">original_ending</span> <span class="o">-</span> <span class="n">right_end</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">left_end</span><span class="p">,</span> <span class="n">right_end</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">x_shade</span><span class="p">,</span> <span class="n">height_shade</span><span class="p">,</span> <span class="n">width_shade</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x_shade</span><span class="p">,</span> <span class="n">height_shade</span><span class="p">,</span> <span class="n">width_shade</span>
 
 
 <span class="k">def</span> <span class="nf">_fill_with_zeros</span><span class="p">(</span><span class="n">partials</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">zero</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -3279,13 +3287,13 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.15.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.15.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
     </div>
   </body>
 </html>
