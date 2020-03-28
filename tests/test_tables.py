@@ -52,6 +52,16 @@ def table4():
         ])
 
 @pytest.fixture(scope='function')
+def table5():
+    """Setup fifth table; has NaNs in it"""
+    return Table().with_columns([
+        'letter', ['a', 'b', 'c', 'd', 'y', 'z'],
+        'count', [9, 3, 3, 4, 2, 1],
+        'points', [1, 2, 2, 2, 4, 10],
+        'person_id', [np.float64('nan'), np.float64('nan'), 1, 2, 3, np.float64('nan')]
+        ])
+
+@pytest.fixture(scope='function')
 def numbers_table():
     """Setup table containing only numbers"""
     return Table().with_columns([
@@ -396,7 +406,7 @@ def test_sort_syntax(table):
     """)
 
 
-def test_group(table):
+def test_group(table, table5):
     t = table
     test = t.group('points')
     assert_equal(test, """
@@ -411,6 +421,18 @@ def test_group(table):
     1      | 1
     2      | 2
     10     | 1
+    """)
+
+def test_group_nans(table5):
+    t = table5
+    print(t)
+    test = t.group('person_id')
+    assert_equal(test, """
+    person_id  | count
+    nan        | 3
+    1          | 1
+    2          | 1
+    3          | 1
     """)
 
 

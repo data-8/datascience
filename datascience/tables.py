@@ -1969,10 +1969,9 @@ class Table(collections.abc.MutableMapping):
         column = self._get_column(column_or_label)
         index = {}
         for key, row in zip(column, self.rows):
-            if np.isnan(key):
+            if pandas.isnull(key):
                 key = np.nan
             index.setdefault(key, []).append(row)
-        print(index)
         return index
 
     def _multi_index(self, columns_or_labels):
