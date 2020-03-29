@@ -1969,8 +1969,16 @@ class Table(collections.abc.MutableMapping):
         column = self._get_column(column_or_label)
         index = {}
         for key, row in zip(column, self.rows):
-            if pandas.isnull(key):
-                key = np.nan
+            if isinstance(key, tuple):
+                key_transformed = list(key)
+            else:
+                key_transformed = [key]
+            has_null = pandas.isnull(key_transformed)
+            if any(has_null):
+                for i in range(len(key_transformed)):
+                    if pandas.isnull(key_transformed[i]):
+                        key_transformed[i] = np.nan
+            key = tuple(key_transformed) if len(key_transformed) > 1 else key_transformed[0]
             index.setdefault(key, []).append(row)
         return index
 
@@ -3016,7 +3024,7 @@ def _assert_same(values):
     assert len(values) > 0
     first, rest = values[0], values[1:]
     for v in rest:
-        assert v == first
+        assert (v == first) or (pandas.isnull(v) and pandas.isnull(first))
     return first
 
 

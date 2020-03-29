@@ -58,7 +58,7 @@ def table5():
         'letter', ['a', 'b', 'c', 'd', 'y', 'z'],
         'count', [9, 3, 3, 4, 2, 1],
         'points', [1, 2, 2, 2, 4, 10],
-        'person_id', [np.float64('nan'), np.float64('nan'), 1, 2, 3, np.float64('nan')]
+        'person_id', [np.float64('nan'), np.float64('nan'), np.float64('nan'), 1, 2, 3]
         ])
 
 @pytest.fixture(scope='function')
@@ -425,7 +425,6 @@ def test_group(table, table5):
 
 def test_group_nans(table5):
     t = table5
-    print(t)
     test = t.group('person_id')
     assert_equal(test, """
     person_id  | count
@@ -503,6 +502,18 @@ def test_groups_collect(table):
     1      | True  | 9
     2      | True  | 6
     10     | False | 1
+    """)
+
+def test_groups_nans(table5):
+    t = table5
+    test = t.group(['person_id', 'points'])
+    assert_equal(test, """
+    person_id  | points |count
+    nan        | 1      | 1
+    nan        | 2      | 2
+    1          | 2      | 1
+    2          | 4      | 1
+    3          | 10     | 1
     """)
 
 def test_join(table, table2):
