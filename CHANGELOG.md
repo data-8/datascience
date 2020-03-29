@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.15.4
+* Fixes bug with grouping tables with np.float64('nan') type objects.
+
 ### v0.15.3
 * Fixed a bug that was introduced by v0.15.1.
 
