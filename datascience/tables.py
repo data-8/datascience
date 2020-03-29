@@ -562,11 +562,12 @@ class Table(collections.abc.MutableMapping):
         rewrite = lambda s: old_to_new[s] if s in old_to_new else s
         columns = [(rewrite(s), c) for s, c in self._columns.items()]
         self._columns = collections.OrderedDict(columns)
-        for label in self._formats:
+        for label in column_label:
             # TODO(denero) Error when old and new columns share a name
-            if label in column_label:
+            if label in self._formats:
                 formatter = self._formats.pop(label)
                 self._formats[old_to_new[label]] = formatter
+                
         return self
 
     def remove(self, row_or_row_indices):
