@@ -572,7 +572,7 @@ class Table(collections.abc.MutableMapping):
 
     def remove(self, row_or_row_indices):
         """Removes a row or multiple rows of a table in place."""
-        if not row_or_row_indices:
+        if not row_or_row_indices and not isinstance(row_or_row_indices, int):
             return
         if isinstance(row_or_row_indices, int):
             rows_remove = [row_or_row_indices]
@@ -580,6 +580,7 @@ class Table(collections.abc.MutableMapping):
             rows_remove = row_or_row_indices
         for col in self._columns:
             self._columns[col] = [elem for i, elem in enumerate(self[col]) if i not in rows_remove]
+        self.num_rows -= len(rows_remove)
         return self
 
 
