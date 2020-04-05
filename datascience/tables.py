@@ -580,7 +580,7 @@ class Table(collections.abc.MutableMapping):
             rows_remove = row_or_row_indices
         for col in self._columns:
             self._columns[col] = [elem for i, elem in enumerate(self[col]) if i not in rows_remove]
-        self.num_rows -= len(rows_remove)
+        self._num_rows -= len(rows_remove)
         return self
 
 
