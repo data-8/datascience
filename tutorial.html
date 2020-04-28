@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>Start Here: datascience Tutorial &#8212; datascience 0.15.4 documentation</title>
+    <title>Start Here: datascience Tutorial &#8212; datascience 0.15.5 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -34,7 +34,7 @@
         <li class="right" >
           <a href="index.html" title="Welcome to datascience’s documentation!"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.15.4 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.15.5 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -444,16 +444,16 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 <span class="gp">In [47]: </span><span class="n">normal_data</span>
 <span class="gh">Out[47]: </span><span class="go"></span>
 <span class="go">data1     | data2</span>
-<span class="go">-2.02512  | 6.82281</span>
-<span class="go">0.705308  | 5.63605</span>
-<span class="go">2.19182   | 3.1498</span>
-<span class="go">-0.813615 | 2.22276</span>
-<span class="go">3.26138   | 0.970105</span>
-<span class="go">0.948623  | 12.5152</span>
-<span class="go">0.444055  | 6.60169</span>
-<span class="go">3.08566   | 4.97408</span>
-<span class="go">0.278992  | 5.99984</span>
-<span class="go">3.07365   | 7.97136</span>
+<span class="go">-1.40616  | 4.73646</span>
+<span class="go">1.6357    | 10.4463</span>
+<span class="go">1.05626   | 4.5485</span>
+<span class="go">1.14073   | 9.16536</span>
+<span class="go">2.35047   | -2.22196</span>
+<span class="go">4.27773   | 5.15768</span>
+<span class="go">-0.125966 | 9.00356</span>
+<span class="go">0.99609   | -1.65623</span>
+<span class="go">2.04675   | 4.3817</span>
+<span class="go">0.996192  | 4.36333</span>
 <span class="go">... (90 rows omitted)</span>
 </pre></div>
 </div>
@@ -506,16 +506,16 @@ converting to a pandas dataframe with <a class="reference internal" href="_autos
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [56]: </span><span class="n">normal_data</span>
 <span class="gh">Out[56]: </span><span class="go"></span>
 <span class="go">data1     | data2</span>
-<span class="go">-2.02512  | 6.82281</span>
-<span class="go">0.705308  | 5.63605</span>
-<span class="go">2.19182   | 3.1498</span>
-<span class="go">-0.813615 | 2.22276</span>
-<span class="go">3.26138   | 0.970105</span>
-<span class="go">0.948623  | 12.5152</span>
-<span class="go">0.444055  | 6.60169</span>
-<span class="go">3.08566   | 4.97408</span>
-<span class="go">0.278992  | 5.99984</span>
-<span class="go">3.07365   | 7.97136</span>
+<span class="go">-1.40616  | 4.73646</span>
+<span class="go">1.6357    | 10.4463</span>
+<span class="go">1.05626   | 4.5485</span>
+<span class="go">1.14073   | 9.16536</span>
+<span class="go">2.35047   | -2.22196</span>
+<span class="go">4.27773   | 5.15768</span>
+<span class="go">-0.125966 | 9.00356</span>
+<span class="go">0.99609   | -1.65623</span>
+<span class="go">2.04675   | 4.3817</span>
+<span class="go">0.996192  | 4.36333</span>
 <span class="go">... (90 rows omitted)</span>
 
 <span class="go"># index = False prevents row numbers from appearing in the resulting CSV</span>
@@ -629,8 +629,8 @@ non-smokers.</p>
 
 <span class="gp">In [73]: </span><span class="n">bootstrapped_diff_means</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
 <span class="gh">Out[73]: </span><span class="go"></span>
-<span class="go">array([ 0.53592638,  2.07128601,  0.50036412, -0.67047549,  0.02850831,</span>
-<span class="go">       -0.28705151, -1.33387266,  0.39884821, -0.86552097, -0.08257842])</span>
+<span class="go">array([ 0.28687173, -1.23522708,  0.44236025, -0.50343556, -0.15038164,</span>
+<span class="go">        0.53947621, -2.0629005 ,  0.90995323, -0.56732636,  1.82842604])</span>
 
 <span class="gp">In [74]: </span><span class="n">num_diffs_greater</span> <span class="o">=</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">bootstrapped_diff_means</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">observed_diff</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
@@ -710,12 +710,12 @@ non-smokers.</p>
         <li class="right" >
           <a href="index.html" title="Welcome to datascience’s documentation!"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.15.4 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.15.5 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.3.
     </div>
   </body>
 </html>
