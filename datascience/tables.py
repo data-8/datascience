@@ -18,6 +18,8 @@ matplotlib.use('agg', warn=False)
 import matplotlib.pyplot as plt
 import pandas
 import IPython
+import plotly.graph_objects as go
+from plotly.suplots import make_subplots
 
 import datascience.formats as _formats
 import datascience.util as _util
@@ -2233,46 +2235,50 @@ class Table(collections.abc.MutableMapping):
         <bar graph with furniture as categories and bars for count and price>
         """
         options = self.default_options.copy()
-        # Matplotlib tries to center the labels, but we already handle that
-        # TODO consider changing the custom centering code and using matplotlib's default
-        vargs['align'] = 'edge'
         options.update(vargs)
 
         yticks, labels = self._split_column_and_labels(column_for_categories)
         if select is not None:
             labels = self._as_labels(select)
-        n = len(labels)
-
-        index = np.arange(self.num_rows)
-        margin = 0.1
-        bwidth = 1 - 2 * margin
-        if overlay:
-            bwidth /= len(labels)
-
-        if 'height' in options:
-            height = options.pop('height')
-        else:
-            height = max(4, len(index)/2)
-
-        def draw(axis, label, color):
-            if overlay:
-                ypos = index + margin + (1-2*margin)*(n - 1 - labels.index(label))/n
-            else:
-                ypos = index
-            # barh plots entries in reverse order from bottom to top
-            axis.barh(ypos, self[label][::-1], bwidth,  color=color, **options)
-
         ylabel = self._as_label(column_for_categories)
 
-        def annotate(axis, ticks):
-            axis.set_yticks(index+0.5) # Center labels on bars
-            # barh plots entries in reverse order from bottom to top
-            axis.set_yticklabels(ticks[::-1], stretch='ultra-condensed')
-            axis.set_xlabel(axis.get_ylabel())
-            axis.set_ylabel(ylabel)
+        def make_unique_labels(labels):
+        # Since Plotly bar charts don't allow duplicate labels, this function
+        # takes in a list of labels and pads duplicates with a unique amount of 
+        # zero width white space. 
+            unique_labels = list(set(labels))
+            if len(unique_labels) != len(labels):
+                space_count = dict(zip(unique_labels, [0] * len(unique_labels)))
+                updated_labels = [''] * len(labels)
+                for i in range(len(labels)):
+                    updated_labels[i] = ''.join([labels[i], '\u200c' * space_count[labels[i]]])
+                    space_count[labels[i]] += 1
+                return updated_labels
+            return labels
+        yticks = make_unique_labels(labels)
 
-        self._visualize('', labels, yticks, overlay, draw, annotate, width=width, height=height)
-
+        if overlay:
+            fig = go.Figure()
+            for i in range(len(labels)):
+                fig.add_trace(go.Bar(
+                    x = self.column(labels[i]),
+                    y = yticks,
+                    name = labels[i],
+                    orientation = 'h'))
+            fig.update_yaxes(title_text = ylabel)
+            if len(labels) == 1:
+                fig.update_xaxes(title_text = labels[0])
+        else:
+            fig = make_subplots(rows = len(labels), cols = 1)
+            for i in range(len(labels)):
+                fig.append_trace(go.Bar(
+                    x = self.column(labels[i]), 
+                    y = yticks, 
+                    name = labels[i], 
+                    orientation = 'h'), row = i + 1, col = 1)
+                fig.update_yaxes(title_text = ylabel)
+                fig.update_xaxes(title_text = labels[i], row = i + 1, col = 1
+        fig.show()
 
     def group_barh(self, column_label, **vargs):
         """Plot a horizontal bar chart for the table.
