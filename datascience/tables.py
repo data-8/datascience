@@ -2182,11 +2182,6 @@ class Table(collections.abc.MutableMapping):
             self = self.sort(x_data)
             x_data = np.sort(x_data)
 
-#         def draw(axis, label, color):
-#             # if x_data is None:
-#             #     axis.plot(self[label], color=color, **options)
-#             # else:
-#             #     axis.plot(x_data, self[label], color=color, **options)
         n = len(y_labels)
         colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors), n))
         if overlay and n > 1:
@@ -2225,8 +2220,6 @@ class Table(collections.abc.MutableMapping):
                 )
 
         fig.show()
-
-#         self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x, width=width, height=height)
 
     def bar(self, column_for_categories=None, select=None, overlay=True, width=6, height=4, **vargs):
         """Plot bar charts for the table.
