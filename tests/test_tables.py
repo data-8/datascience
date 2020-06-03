@@ -1100,6 +1100,20 @@ def test_remove_single(table):
     z      | 1     | 10
     """)
 
+def test_remove_zeroth_row(table):
+    table.remove(0)
+    assert_equal(table, """
+    letter | count | points
+    b      | 3     | 2
+    c      | 3     | 2
+    z      | 1     | 10
+    """)
+
+def test_remove_num_rows(table):
+    num_rows_before = table.num_rows
+    table.remove(0)
+    assert table.num_rows + 1 == num_rows_before
+
 
 ##########
 # Create #
