@@ -18,6 +18,8 @@ matplotlib.use('agg', warn=False)
 import matplotlib.pyplot as plt
 import pandas
 import IPython
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
 import datascience.formats as _formats
 import datascience.util as _util
@@ -2045,6 +2047,13 @@ class Table(collections.abc.MutableMapping):
         (30/256, 100/256, 0.0),
         (172/256, 60/256, 72/256),
     )
+    plotly_chart_colors = (
+        (0, 30, 66),
+        (156, 200, 44),
+        (0, 150, 207),
+        (30, 100, 0),
+        (172, 60, 72),
+    )
     chart_colors += tuple(tuple((x+0.7)/2 for x in c) for c in chart_colors)
 
     default_alpha = 0.7
@@ -2115,6 +2124,95 @@ class Table(collections.abc.MutableMapping):
                 axis.plot(self[label], color=color, **options)
             else:
                 axis.plot(x_data, self[label], color=color, **options)
+
+        self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x, width=width, height=height)
+    
+    def iplot(self, column_for_xticks=None, select=None, overlay=True, width=6, height=4, **vargs):
+        """Plot line charts for the table.
+
+        Args:
+            column_for_xticks (``str/array``): A column containing x-axis labels
+
+        Kwargs:
+            overlay (bool): create a chart with one color per data column;
+                if False, each plot will be displayed separately.
+
+            vargs: Additional arguments that get passed into `plt.plot`.
+                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot
+                for additional arguments that can be passed into vargs.
+        Raises:
+            ValueError -- Every selected column must be numerical.
+
+        Returns:
+            Returns a line plot (connected scatter). Each plot is labeled using
+            the values in `column_for_xticks` and one plot is produced for all
+            other columns in self (or for the columns designated by `select`).
+
+        >>> table = Table().with_columns(
+        ...     'days',  make_array(0, 1, 2, 3, 4, 5),
+        ...     'price', make_array(90.5, 90.00, 83.00, 95.50, 82.00, 82.00),
+        ...     'projection', make_array(90.75, 82.00, 82.50, 82.50, 83.00, 82.50))
+        >>> table
+        days | price | projection
+        0    | 90.5  | 90.75
+        1    | 90    | 82
+        2    | 83    | 82.5
+        3    | 95.5  | 82.5
+        4    | 82    | 83
+        5    | 82    | 82.5
+        >>> table.plot('days') # doctest: +SKIP
+        <line graph with days as x-axis and lines for price and projection>
+        >>> table.plot('days', overlay=False) # doctest: +SKIP
+        <line graph with days as x-axis and line for price>
+        <line graph with days as x-axis and line for projection>
+        >>> table.plot('days', 'price') # doctest: +SKIP
+        <line graph with days as x-axis and line for price>
+        """
+        options = self.default_options.copy()
+        options.update(vargs)
+
+        if column_for_xticks is not None:
+            x_data, y_labels = self._split_column_and_labels(column_for_xticks)
+            x_label = self._as_label(column_for_xticks)
+        else:
+            x_data, y_labels = None, self.labels
+            x_label = None
+        if select is not None:
+            y_labels = self._as_labels(select)
+
+        if x_data is not None:
+            self = self.sort(x_data)
+            x_data = np.sort(x_data)
+
+        def draw(axis, label, color):
+            # if x_data is None:
+            #     axis.plot(self[label], color=color, **options)
+            # else:
+            #     axis.plot(x_data, self[label], color=color, **options)
+            n = len(y_labels)
+            colors = list(itertools.islice(itertools.cycle(plotly_chart_colors), n))
+            if overlay:
+                fig = go.Figure()
+            else:
+                fig = make_subplots(rows=n, cols=1)
+
+            for i, label in enumerate(y_labels):
+                fig.add_trace(
+                    go.Scatter(
+                        x=x_data,
+                        y=self[label],
+                        mode='lines',
+                        name=label,
+                        line=dict(color=colors[i])
+                    ),
+                    row = i + 1 if overlay else None,
+                    col = 1 if overlay else None
+                )
+
+            fig.update_layout(
+                xaxis_title=x_label,
+                yaxis_title=y_labels[0] if len(y_labels) == 1 else None
+            )
 
         self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x, width=width, height=height)
 
