@@ -2271,7 +2271,7 @@ class Table(collections.abc.MutableMapping):
             axis.set_xlabel(axis.get_ylabel())
             axis.set_ylabel(ylabel)
 
-        self._visualize('', labels, yticks, overlay, draw, annotate, width=width, height=height)
+        # self._visualize('', labels, yticks, overlay, draw, annotate, width=width, height=height)
 
 
     def group_barh(self, column_label, **vargs):
