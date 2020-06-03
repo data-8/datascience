@@ -2190,7 +2190,7 @@ class Table(collections.abc.MutableMapping):
             # else:
             #     axis.plot(x_data, self[label], color=color, **options)
             n = len(y_labels)
-            colors = list(itertools.islice(itertools.cycle(plotly_chart_colors), n))
+            colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors), n))
             if overlay:
                 fig = go.Figure()
             else:
