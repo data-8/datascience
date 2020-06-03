@@ -2184,7 +2184,7 @@ class Table(collections.abc.MutableMapping):
 
         n = len(y_labels)
         colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors), n))
-        if overlay and n > 1:
+        if overlay:
             fig = go.Figure()
             for i, label in enumerate(y_labels):
                 fig.add_trace(
@@ -2218,6 +2218,7 @@ class Table(collections.abc.MutableMapping):
                     row = i + 1,
                     col = 1,
                 )
+            fig.update_layout(height=200 * n)
 
         fig.show()
 
