@@ -2047,12 +2047,13 @@ class Table(collections.abc.MutableMapping):
         (30/256, 100/256, 0.0),
         (172/256, 60/256, 72/256),
     )
-    plotly_chart_colors = (
-        (0, 30, 66),
+    plotly_chart_colors = tuple(
+        f"rgb({tup[0]},{tup[1]},{tup[2]}" for tup in
+        ((0, 30, 66),
         (156, 200, 44),
         (0, 150, 207),
         (30, 100, 0),
-        (172, 60, 72),
+        (172, 60, 72),)
     )
     chart_colors += tuple(tuple((x+0.7)/2 for x in c) for c in chart_colors)
 
