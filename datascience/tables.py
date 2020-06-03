@@ -2047,15 +2047,12 @@ class Table(collections.abc.MutableMapping):
         (30/256, 100/256, 0.0),
         (172/256, 60/256, 72/256),
     )
-    plotly_chart_colors = tuple(
-        f"rgb({tup[0]},{tup[1]},{tup[2]}" for tup in
-        ((0, 30, 66),
-        (156, 200, 44),
-        (0, 150, 207),
-        (30, 100, 0),
-        (172, 60, 72),)
-    )
     chart_colors += tuple(tuple((x+0.7)/2 for x in c) for c in chart_colors)
+    
+    plotly_chart_colors = tuple(
+        f"rgb({tup[0]},{tup[1]},{tup[2]})" for tup in
+        tuple(tuple(int(256 * val) for val in tup) for tup in chart_colors)
+    )
 
     default_alpha = 0.7
 
@@ -2185,18 +2182,15 @@ class Table(collections.abc.MutableMapping):
             self = self.sort(x_data)
             x_data = np.sort(x_data)
 
-        def draw(axis, label, color):
-            # if x_data is None:
-            #     axis.plot(self[label], color=color, **options)
-            # else:
-            #     axis.plot(x_data, self[label], color=color, **options)
-            n = len(y_labels)
-            colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors), n))
-            if overlay:
-                fig = go.Figure()
-            else:
-                fig = make_subplots(rows=n, cols=1)
-
+#         def draw(axis, label, color):
+#             # if x_data is None:
+#             #     axis.plot(self[label], color=color, **options)
+#             # else:
+#             #     axis.plot(x_data, self[label], color=color, **options)
+        n = len(y_labels)
+        colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors), n))
+        if overlay and n > 1:
+            fig = go.Figure()
             for i, label in enumerate(y_labels):
                 fig.add_trace(
                     go.Scatter(
@@ -2205,17 +2199,34 @@ class Table(collections.abc.MutableMapping):
                         mode='lines',
                         name=label,
                         line=dict(color=colors[i])
-                    ),
-                    row = i + 1 if overlay else None,
-                    col = 1 if overlay else None
+                    )
                 )
-
             fig.update_layout(
                 xaxis_title=x_label,
                 yaxis_title=y_labels[0] if len(y_labels) == 1 else None
             )
+        else:
+            fig = make_subplots(
+                rows=n, 
+                cols=1,
+                x_title=x_label,
+            )
+            for i, label in enumerate(y_labels):
+                fig.append_trace(
+                    go.Scatter(
+                        x=x_data,
+                        y=self[label],
+                        mode='lines',
+                        name=label,
+                        line=dict(color=colors[i])
+                    ),
+                    row = i + 1,
+                    col = 1,
+                )
 
-        self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x, width=width, height=height)
+        fig.show()
+
+#         self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x, width=width, height=height)
 
     def bar(self, column_for_categories=None, select=None, overlay=True, width=6, height=4, **vargs):
         """Plot bar charts for the table.
