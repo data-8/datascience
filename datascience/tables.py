@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 import pandas
 import IPython
 import plotly.graph_objects as go
-from plotly.suplots import make_subplots
+from plotly.subplots import make_subplots
 
 import datascience.formats as _formats
 import datascience.util as _util
