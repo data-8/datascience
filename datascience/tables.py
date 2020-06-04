@@ -2282,7 +2282,7 @@ class Table(collections.abc.MutableMapping):
                     y = yticks,
                     name = labels[i],
                     orientation = 'h', 
-                    width = 0.8,
+                    width = [0.8] * len(yticks),
                     marker_color = colors[i]))
             fig.update_yaxes(title_text = ylabel, type = 'category', dtick = 1, showticklabels = True)
             if len(labels) == 1:
@@ -2299,7 +2299,7 @@ class Table(collections.abc.MutableMapping):
                     y = yticks, 
                     name = labels[i], 
                     orientation = 'h', 
-                    width = 0.8,
+                    width = [0.8] * len(yticks),
                     marker_color = colors[i]), row = i + 1, col = 1)
                 fig.update_yaxes(title_text = ylabel, type = 'category', dtick = 1, showticklabels = True)
         fig.show()
