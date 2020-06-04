@@ -2283,7 +2283,7 @@ class Table(collections.abc.MutableMapping):
                     name = labels[i],
                     orientation = 'h', 
                     marker_color = colors[i]))
-            fig.update_yaxes(title_text = ylabel, type = 'category')
+            fig.update_yaxes(title_text = ylabel, type = 'category', dtick = 1)
             if len(labels) == 1:
                 fig.update_xaxes(title_text = labels[0])
         else:
@@ -2299,7 +2299,7 @@ class Table(collections.abc.MutableMapping):
                     name = labels[i], 
                     orientation = 'h', 
                     marker_color = colors[i]), row = i + 1, col = 1)
-                fig.update_yaxes(title_text = ylabel, type = 'category')
+                fig.update_yaxes(title_text = ylabel, type = 'category', dtick = 1)
         fig.show()
 
     def group_barh(self, column_label, **vargs):
