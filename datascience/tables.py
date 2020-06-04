@@ -2257,10 +2257,11 @@ class Table(collections.abc.MutableMapping):
                 return updated_labels
             return labels
         yticks = make_unique_labels(yticks)
+        print(yticks)
 
         if overlay:
             fig = go.Figure()
-            for i in range(len(labels)):
+            for i in range(len(labels) - 1, -1, -1):
                 fig.add_trace(go.Bar(
                     x = self.column(labels[i]),
                     y = yticks,
@@ -2271,7 +2272,7 @@ class Table(collections.abc.MutableMapping):
                 fig.update_xaxes(title_text = labels[0])
         else:
             fig = make_subplots(rows = len(labels), cols = 1)
-            for i in range(len(labels)):
+            for i in range(len(labels) - 1, -1, -1):
                 fig.append_trace(go.Bar(
                     x = self.column(labels[i]), 
                     y = yticks, 
