@@ -2110,6 +2110,10 @@ class Table(collections.abc.MutableMapping):
         >>> table.plot('days', 'price') # doctest: +SKIP
         <line graph with days as x-axis and line for price>
         """
+        global _INTERACTIVE_PLOTS
+        if _INTERACTIVE_PLOTS:
+            return self.iplot(column_for_xticks, select, overlay, width, height, **vargs)
+        
         options = self.default_options.copy()
         options.update(vargs)
 
