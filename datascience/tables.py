@@ -26,6 +26,8 @@ import datascience.util as _util
 from datascience.util import make_array
 import datascience.predicates as _predicates
 
+_INTERACTIVE_PLOTS = False
+
 class Table(collections.abc.MutableMapping):
     """A sequence of string-labeled columns."""
     plots = collections.deque(maxlen=10)
@@ -2059,6 +2061,13 @@ class Table(collections.abc.MutableMapping):
     default_options = {
         'alpha': default_alpha,
     }
+
+    @staticmethod
+    def use_interactive_plots():
+        """Sets global var that redirects all plots with interactive equivalents to those equivalents
+        """
+        global _INTERACTIVE_PLOTS
+        _INTERACTIVE_PLOTS = True
 
     def plot(self, column_for_xticks=None, select=None, overlay=True, width=6, height=4, **vargs):
         """Plot line charts for the table.
