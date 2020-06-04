@@ -2049,6 +2049,12 @@ class Table(collections.abc.MutableMapping):
     )
     chart_colors += tuple(tuple((x+0.7)/2 for x in c) for c in chart_colors)
 
+    plotly_chart_colors = tuple(
+        f"rgb({tup[0]},{tup[1]},{tup[2]})" for tup in
+        tuple(tuple(int(256 * val) for val in tup) for tup in chart_colors)
+    )
+
+
     default_alpha = 0.7
 
     default_options = {
@@ -2257,6 +2263,8 @@ class Table(collections.abc.MutableMapping):
             return labels
         yticks = make_unique_labels(yticks)
 
+        colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors), n))
+
         if 'height' in options:
             height = options.pop('height')
         else:
@@ -2273,10 +2281,8 @@ class Table(collections.abc.MutableMapping):
                     x = self.column(labels[i]),
                     y = yticks,
                     name = labels[i],
-                    orientation = 'h'))
-                if i == 1:
-                # Hard-coded case for gold as second color
-                    fig.update_traces(marker_color = '#FECB52'
+                    orientation = 'h', 
+                    marker_color = colors[i]))
             fig.update_yaxes(title_text = ylabel, type = 'category')
             if len(labels) == 1:
                 fig.update_xaxes(title_text = labels[0])
@@ -2291,11 +2297,9 @@ class Table(collections.abc.MutableMapping):
                     x = self.column(labels[i]), 
                     y = yticks, 
                     name = labels[i], 
-                    orientation = 'h'), row = i + 1, col = 1)
+                    orientation = 'h', 
+                    marker_color = colors[i]), row = i + 1, col = 1)
                 fig.update_yaxes(title_text = ylabel, type = 'category')
-                if i == 1:
-                # Hard-coded case for gold as second color
-                    fig.update_traces(marker_color = '#FECB52'
         fig.show()
 
     def group_barh(self, column_label, **vargs):
