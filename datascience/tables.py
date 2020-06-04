@@ -2263,7 +2263,7 @@ class Table(collections.abc.MutableMapping):
             return labels
         yticks = make_unique_labels(yticks)
 
-        colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors), n))
+        colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors), len(labels)))
 
         if 'height' in options:
             height = options.pop('height')
