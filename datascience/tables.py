@@ -2274,6 +2274,9 @@ class Table(collections.abc.MutableMapping):
                     y = yticks,
                     name = labels[i],
                     orientation = 'h'))
+                if i == 1:
+                # Hard-coded case for gold as second color
+                    fig.update_traces(marker_color = '#FECB52'
             fig.update_yaxes(title_text = ylabel, type = 'category')
             if len(labels) == 1:
                 fig.update_xaxes(title_text = labels[0])
@@ -2290,6 +2293,9 @@ class Table(collections.abc.MutableMapping):
                     name = labels[i], 
                     orientation = 'h'), row = i + 1, col = 1)
                 fig.update_yaxes(title_text = ylabel, type = 'category')
+                if i == 1:
+                # Hard-coded case for gold as second color
+                    fig.update_traces(marker_color = '#FECB52'
         fig.show()
 
     def group_barh(self, column_label, **vargs):
