@@ -2192,7 +2192,7 @@ class Table(collections.abc.MutableMapping):
         """
         self.group(column_label).bar(column_label, **vargs)
 
-    def barh(self, column_for_categories=None, select=None, overlay=True, width=600, **vargs):
+    def barh(self, column_for_categories=None, select=None, overlay=True, width=None, **vargs):
         """Plot horizontal bar charts for the table.
 
         Args:
@@ -2260,10 +2260,14 @@ class Table(collections.abc.MutableMapping):
         if 'height' in options:
             height = options.pop('height')
         else:
-            height = max(400, len(labels) * 50)
+            height = None
 
         if overlay:
-            fig = go.Figure(layout = go.Layout(height = height, width = width))
+            fig = go.Figure()
+            if width:
+                fig.update_layout(width = width)
+            if height:
+                fig.update_layout(height = height)
             for i in range(len(labels)):
                 fig.add_trace(go.Bar(
                     x = self.column(labels[i]),
@@ -2275,6 +2279,10 @@ class Table(collections.abc.MutableMapping):
                 fig.update_xaxes(title_text = labels[0])
         else:
             fig = make_subplots(rows = len(labels), cols = 1, subplot_titles = labels)
+            if width:
+                fig.update_layout(width = width)
+            if height:
+                fig.update_layout(height = height)
             for i in range(len(labels)):
                 fig.append_trace(go.Bar(
                     x = self.column(labels[i]), 
