@@ -2265,20 +2265,18 @@ class Table(collections.abc.MutableMapping):
                     y = yticks,
                     name = labels[i],
                     orientation = 'h'))
-            fig.update_yaxes(title_text = ylabel)
+            fig.update_yaxes(title_text = ylabel, type = 'category')
             if len(labels) == 1:
                 fig.update_xaxes(title_text = labels[0])
         else:
-            fig = make_subplots(rows = len(labels), cols = 1)
+            fig = make_subplots(rows = len(labels), cols = 1, subplot_titles = labels)
             for i in range(len(labels)):
                 fig.append_trace(go.Bar(
                     x = self.column(labels[i]), 
                     y = yticks, 
                     name = labels[i], 
                     orientation = 'h'), row = i + 1, col = 1)
-                fig.update_yaxes(title_text = ylabel)
-                fig.update_xaxes(title_text = labels[i], row = i + 1, col = 1)
-        fig.update_layout(yaxis_type = 'category')
+                fig.update_yaxes(title_text = ylabel, type = 'category')
         fig.show()
 
     def group_barh(self, column_label, **vargs):
