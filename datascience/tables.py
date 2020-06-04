@@ -2255,7 +2255,7 @@ class Table(collections.abc.MutableMapping):
                     space_count[labels[i]] += 1
                 return updated_labels
             return labels
-        yticks = make_unique_labels(labels)
+        yticks = make_unique_labels(yticks)
 
         print("yticks: " + str(yticks))
         print("ylabel: " + str(ylabel))
