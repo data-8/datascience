@@ -2257,6 +2257,11 @@ class Table(collections.abc.MutableMapping):
             return labels
         yticks = make_unique_labels(yticks)
 
+        if 'height' in options:
+            height = options.pop('height')
+        else:
+            height = max(400, len(labels) / 2)
+
         if overlay:
             fig = go.Figure(layout = go.Layout(height = height, width = width))
             for i in range(len(labels)):
