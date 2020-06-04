@@ -2192,7 +2192,7 @@ class Table(collections.abc.MutableMapping):
         """
         self.group(column_label).bar(column_label, **vargs)
 
-    def barh(self, column_for_categories=None, select=None, overlay=True, width=6, **vargs):
+    def barh(self, column_for_categories=None, select=None, overlay=True, width=600, **vargs):
         """Plot horizontal bar charts for the table.
 
         Args:
@@ -2258,7 +2258,7 @@ class Table(collections.abc.MutableMapping):
         yticks = make_unique_labels(yticks)
 
         if overlay:
-            fig = go.Figure()
+            fig = go.Figure(layout = go.Layout(height = height, width = width))
             for i in range(len(labels)):
                 fig.add_trace(go.Bar(
                     x = self.column(labels[i]),
