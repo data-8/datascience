@@ -2246,6 +2246,7 @@ class Table(collections.abc.MutableMapping):
         # Since Plotly bar charts don't allow duplicate labels, this function
         # takes in a list of labels and pads duplicates with a unique amount of 
         # zero width white space. 
+            labels = list(map(str, labels))
             unique_labels = list(set(labels))
             if len(unique_labels) != len(labels):
                 space_count = dict(zip(unique_labels, [0] * len(unique_labels)))
@@ -2260,7 +2261,6 @@ class Table(collections.abc.MutableMapping):
         if overlay:
             fig = go.Figure()
             for i in range(len(labels)):
-                print("labels[i] column: " + str(self.column(labels[i])))
                 fig.add_trace(go.Bar(
                     x = self.column(labels[i]),
                     y = yticks,
