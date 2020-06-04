@@ -2257,10 +2257,6 @@ class Table(collections.abc.MutableMapping):
             return labels
         yticks = make_unique_labels(yticks)
 
-        print("yticks: " + str(yticks))
-        print("ylabel: " + str(ylabel))
-        print("labels: " + str(labels))
-
         if overlay:
             fig = go.Figure()
             for i in range(len(labels)):
