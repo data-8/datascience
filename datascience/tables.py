@@ -2269,6 +2269,8 @@ class Table(collections.abc.MutableMapping):
             height = options.pop('height')
         elif len(yticks) > 5:
             height = len(yticks) * 30
+        else:
+            height = None
 
         if overlay:
             fig = go.Figure()
