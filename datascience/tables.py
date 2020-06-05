@@ -2267,11 +2267,10 @@ class Table(collections.abc.MutableMapping):
 
         if 'height' in options:
             height = options.pop('height')
-        elif len(yticks) > 20:
-            height = len(yticks) * 30
         else:
-            height = None
-        
+            bar_width = 5
+            margin = 1
+            height = max(len(yticks) * (margin + bar_width * len(labels)), 400)
 
         print("height: " + str(height))
 
