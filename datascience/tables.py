@@ -2272,8 +2272,6 @@ class Table(collections.abc.MutableMapping):
             margin = 5
             height = max(len(yticks) * (margin + bar_width * len(labels)), 400)
 
-        print("height: " + str(height))
-
         if overlay:
             fig = go.Figure()
             if width:
