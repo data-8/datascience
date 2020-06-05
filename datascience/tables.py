@@ -2232,7 +2232,7 @@ class Table(collections.abc.MutableMapping):
                     col = 1,
                 )
                 fig.update_yaxes(title_text=label, row=i+1, col=1)
-            fig.update_layout(height=200 * n)
+            fig.update_layout(height=200 * n, showlegend=False)
 
         fig.show()
 
