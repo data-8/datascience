@@ -2225,12 +2225,13 @@ class Table(collections.abc.MutableMapping):
                         x=x_data,
                         y=self[label],
                         mode='lines',
-                        name=label,
+                        # name=label,
                         line=dict(color=colors[i])
                     ),
                     row = i + 1,
                     col = 1,
                 )
+                fig.update_yaxes(title_text=label, row=i+1, col=1)
             fig.update_layout(height=200 * n)
 
         fig.show()
