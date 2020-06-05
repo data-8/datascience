@@ -2272,6 +2272,8 @@ class Table(collections.abc.MutableMapping):
         else:
             height = None
 
+        print("height: " + str(height))
+
         if overlay:
             fig = go.Figure()
             if width:
