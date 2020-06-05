@@ -2289,7 +2289,7 @@ class Table(collections.abc.MutableMapping):
             if len(labels) == 1:
                 fig.update_xaxes(title_text = labels[0])
         else:
-            fig = make_subplots(rows = len(labels), cols = 1, subplot_titles = labels)
+            fig = make_subplots(rows = len(labels), cols = 1, subplot_titles = labels, vertical_spacing = 0.04)
             if width:
                 fig.update_layout(width = width)
             if height:
