@@ -2314,7 +2314,7 @@ class Table(collections.abc.MutableMapping):
         """
         self.group(column_label).bar(column_label, **vargs)
 
-    def i_barh(self, column_for_categories=None, select=None, overlay=True, width=None, **vargs):
+    def ibarh(self, column_for_categories=None, select=None, overlay=True, width=None, **vargs):
         """Plot horizontal bar charts for the table.
 
         Args:
@@ -2356,6 +2356,10 @@ class Table(collections.abc.MutableMapping):
         >>> furniture_table.barh('Furniture', make_array(1, 2)) # doctest: +SKIP
         <bar graph with furniture as categories and bars for count and price>
         """
+        global _INTERACTIVE_PLOTS
+        if _INTERACTIVE_PLOTS:
+            return self.iplot(column_for_categories, select, overlay, width, **vargs)
+
         options = self.default_options.copy()
         options.update(vargs)
 
@@ -2461,19 +2465,23 @@ class Table(collections.abc.MutableMapping):
         # TODO consider changing the custom centering code and using matplotlib's default
         vargs['align'] = 'edge'
         options.update(vargs)
+
         yticks, labels = self._split_column_and_labels(column_for_categories)
         if select is not None:
             labels = self._as_labels(select)
         n = len(labels)
+
         index = np.arange(self.num_rows)
         margin = 0.1
         bwidth = 1 - 2 * margin
         if overlay:
             bwidth /= len(labels)
+
         if 'height' in options:
             height = options.pop('height')
         else:
             height = max(4, len(index)/2)
+
         def draw(axis, label, color):
             if overlay:
                 ypos = index + margin + (1-2*margin)*(n - 1 - labels.index(label))/n
@@ -2481,13 +2489,16 @@ class Table(collections.abc.MutableMapping):
                 ypos = index
             # barh plots entries in reverse order from bottom to top
             axis.barh(ypos, self[label][::-1], bwidth,  color=color, **options)
+
         ylabel = self._as_label(column_for_categories)
+
         def annotate(axis, ticks):
             axis.set_yticks(index+0.5) # Center labels on bars
             # barh plots entries in reverse order from bottom to top
             axis.set_yticklabels(ticks[::-1], stretch='ultra-condensed')
             axis.set_xlabel(axis.get_ylabel())
             axis.set_ylabel(ylabel)
+
         self._visualize('', labels, yticks, overlay, draw, annotate, width=width, height=height)
 
     def group_barh(self, column_label, **vargs):
