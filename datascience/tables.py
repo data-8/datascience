@@ -2064,11 +2064,18 @@ class Table(collections.abc.MutableMapping):
     }
 
     @staticmethod
-    def use_interactive_plots():
+    def interactive_plots():
         """Sets global var that redirects all plots with interactive equivalents to those equivalents
         """
         global _INTERACTIVE_PLOTS
         _INTERACTIVE_PLOTS = True
+        
+    @staticmethod
+    def static_plots():
+        """Turns off global var that redirects all plots with interactive equivalents to those equivalents
+        """
+        global _INTERACTIVE_PLOTS
+        _INTERACTIVE_PLOTS = False
 
     def plot(self, column_for_xticks=None, select=None, overlay=True, width=6, height=4, **vargs):
         """Plot line charts for the table.
