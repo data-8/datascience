@@ -2056,11 +2056,6 @@ class Table(collections.abc.MutableMapping):
         tuple(tuple(int(256 * val) for val in tup) for tup in chart_colors)
     )
 
-    plotly_chart_colors = tuple(
-        f"rgb({tup[0]},{tup[1]},{tup[2]})" for tup in
-        tuple(tuple(int(256 * val) for val in tup) for tup in chart_colors)
-    )
-
 
     default_alpha = 0.7
 
@@ -2118,7 +2113,7 @@ class Table(collections.abc.MutableMapping):
         """
         global _INTERACTIVE_PLOTS
         if _INTERACTIVE_PLOTS:
-            return self.iplot(column_for_xticks, select, overlay, width, height, **vargs)
+            return self.iplot(column_for_xticks, select, overlay, **vargs)
         
         options = self.default_options.copy()
         options.update(vargs)
@@ -2144,7 +2139,7 @@ class Table(collections.abc.MutableMapping):
 
         self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x, width=width, height=height)
     
-    def iplot(self, column_for_xticks=None, select=None, overlay=True, width=6, height=4, **vargs):
+    def iplot(self, column_for_xticks=None, select=None, overlay=True, width=None, height=None, **vargs):
         """Plot line charts for the table.
 
         Args:
@@ -2217,7 +2212,9 @@ class Table(collections.abc.MutableMapping):
                 )
             fig.update_layout(
                 xaxis_title=x_label,
-                yaxis_title=y_labels[0] if len(y_labels) == 1 else None
+                yaxis_title=y_labels[0] if len(y_labels) == 1 else None,
+                height=height,
+                width=width
             )
         else:
             fig = make_subplots(
@@ -2238,7 +2235,11 @@ class Table(collections.abc.MutableMapping):
                     col = 1,
                 )
                 fig.update_yaxes(title_text=label, row=i+1, col=1)
-            fig.update_layout(height=200 * n, showlegend=False)
+            fig.update_layout(
+                width=width,
+                height=height if height is not None else 200 * n, 
+                showlegend=False
+            )
 
         fig.show()
 
@@ -2356,10 +2357,6 @@ class Table(collections.abc.MutableMapping):
         >>> furniture_table.barh('Furniture', make_array(1, 2)) # doctest: +SKIP
         <bar graph with furniture as categories and bars for count and price>
         """
-        global _INTERACTIVE_PLOTS
-        if _INTERACTIVE_PLOTS:
-            return self.iplot(column_for_categories, select, overlay, width, **vargs)
-
         options = self.default_options.copy()
         options.update(vargs)
 
@@ -2382,6 +2379,9 @@ class Table(collections.abc.MutableMapping):
                 return updated_labels
             return labels
         yticks = make_unique_labels(yticks)
+        
+        # reverse yticks so they're in same order as barh
+        yticks.reverse()
 
         colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors), len(labels)))
 
@@ -2400,7 +2400,7 @@ class Table(collections.abc.MutableMapping):
                 fig.update_layout(height = height)
             for i in range(len(labels)):
                 fig.add_trace(go.Bar(
-                    x = self.column(labels[i]),
+                    x = np.flip(self.column(labels[i])), # flipping so this matches the order of yticks
                     y = yticks,
                     name = labels[i],
                     orientation = 'h',
@@ -2408,6 +2408,7 @@ class Table(collections.abc.MutableMapping):
             fig.update_yaxes(title_text = ylabel, type = 'category', dtick = 1, showticklabels = True)
             if len(labels) == 1:
                 fig.update_xaxes(title_text = labels[0])
+                
         else:
             fig = make_subplots(rows = len(labels), cols = 1, subplot_titles = labels, vertical_spacing = 0.04)
             if width:
@@ -2416,7 +2417,7 @@ class Table(collections.abc.MutableMapping):
                 fig.update_layout(height = height)
             for i in range(len(labels)):
                 fig.append_trace(go.Bar(
-                    x = self.column(labels[i]),
+                    x = np.flip(self.column(labels[i])), # flipping so this matches the order of yticks
                     y = yticks,
                     name = labels[i],
                     orientation = 'h',
@@ -2460,6 +2461,11 @@ class Table(collections.abc.MutableMapping):
         >>> furniture_table.barh('Furniture', make_array(1, 2)) # doctest: +SKIP
         <bar graph with furniture as categories and bars for count and price>
         """
+        global _INTERACTIVE_PLOTS
+        if _INTERACTIVE_PLOTS:
+            # multiple width by 96 assuming 96 dpi
+            return self.ibarh(column_for_categories, select, overlay, **vargs)
+        
         options = self.default_options.copy()
         # Matplotlib tries to center the labels, but we already handle that
         # TODO consider changing the custom centering code and using matplotlib's default
