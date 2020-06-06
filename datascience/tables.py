@@ -26,6 +26,8 @@ import datascience.util as _util
 from datascience.util import make_array
 import datascience.predicates as _predicates
 
+_INTERACTIVE_PLOTS = False
+
 class Table(collections.abc.MutableMapping):
     """A sequence of string-labeled columns."""
     plots = collections.deque(maxlen=10)
@@ -2048,7 +2050,7 @@ class Table(collections.abc.MutableMapping):
         (172/256, 60/256, 72/256),
     )
     chart_colors += tuple(tuple((x+0.7)/2 for x in c) for c in chart_colors)
-
+    
     plotly_chart_colors = tuple(
         f"rgb({tup[0]},{tup[1]},{tup[2]})" for tup in
         tuple(tuple(int(256 * val) for val in tup) for tup in chart_colors)
@@ -2061,7 +2063,90 @@ class Table(collections.abc.MutableMapping):
         'alpha': default_alpha,
     }
 
+    @staticmethod
+    def interactive_plots():
+        """Sets global var that redirects all plots with interactive equivalents to those equivalents
+        """
+        global _INTERACTIVE_PLOTS
+        _INTERACTIVE_PLOTS = True
+        
+    @staticmethod
+    def static_plots():
+        """Turns off global var that redirects all plots with interactive equivalents to those equivalents
+        """
+        global _INTERACTIVE_PLOTS
+        _INTERACTIVE_PLOTS = False
+
     def plot(self, column_for_xticks=None, select=None, overlay=True, width=6, height=4, **vargs):
+        """Plot line charts for the table.
+
+        Args:
+            column_for_xticks (``str/array``): A column containing x-axis labels
+
+        Kwargs:
+            overlay (bool): create a chart with one color per data column;
+                if False, each plot will be displayed separately.
+
+            vargs: Additional arguments that get passed into `plt.plot`.
+                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot
+                for additional arguments that can be passed into vargs.
+        Raises:
+            ValueError -- Every selected column must be numerical.
+
+        Returns:
+            Returns a line plot (connected scatter). Each plot is labeled using
+            the values in `column_for_xticks` and one plot is produced for all
+            other columns in self (or for the columns designated by `select`).
+
+        >>> table = Table().with_columns(
+        ...     'days',  make_array(0, 1, 2, 3, 4, 5),
+        ...     'price', make_array(90.5, 90.00, 83.00, 95.50, 82.00, 82.00),
+        ...     'projection', make_array(90.75, 82.00, 82.50, 82.50, 83.00, 82.50))
+        >>> table
+        days | price | projection
+        0    | 90.5  | 90.75
+        1    | 90    | 82
+        2    | 83    | 82.5
+        3    | 95.5  | 82.5
+        4    | 82    | 83
+        5    | 82    | 82.5
+        >>> table.plot('days') # doctest: +SKIP
+        <line graph with days as x-axis and lines for price and projection>
+        >>> table.plot('days', overlay=False) # doctest: +SKIP
+        <line graph with days as x-axis and line for price>
+        <line graph with days as x-axis and line for projection>
+        >>> table.plot('days', 'price') # doctest: +SKIP
+        <line graph with days as x-axis and line for price>
+        """
+        global _INTERACTIVE_PLOTS
+        if _INTERACTIVE_PLOTS:
+            return self.iplot(column_for_xticks, select, overlay, **vargs)
+        
+        options = self.default_options.copy()
+        options.update(vargs)
+
+        if column_for_xticks is not None:
+            x_data, y_labels = self._split_column_and_labels(column_for_xticks)
+            x_label = self._as_label(column_for_xticks)
+        else:
+            x_data, y_labels = None, self.labels
+            x_label = None
+        if select is not None:
+            y_labels = self._as_labels(select)
+
+        if x_data is not None:
+            self = self.sort(x_data)
+            x_data = np.sort(x_data)
+
+        def draw(axis, label, color):
+            if x_data is None:
+                axis.plot(self[label], color=color, **options)
+            else:
+                axis.plot(x_data, self[label], color=color, **options)
+
+        self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x, width=width, height=height)
+    
+    def iplot(self, column_for_xticks=None, select=None, overlay=True, width=None, height=None, **vargs):
         """Plot line charts for the table.
 
         Args:
@@ -2118,13 +2203,52 @@ class Table(collections.abc.MutableMapping):
             self = self.sort(x_data)
             x_data = np.sort(x_data)
 
-        def draw(axis, label, color):
-            if x_data is None:
-                axis.plot(self[label], color=color, **options)
-            else:
-                axis.plot(x_data, self[label], color=color, **options)
+        n = len(y_labels)
+        colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors), n))
+        if overlay:
+            fig = go.Figure()
+            for i, label in enumerate(y_labels):
+                fig.add_trace(
+                    go.Scatter(
+                        x=x_data,
+                        y=self[label],
+                        mode='lines',
+                        name=label,
+                        line=dict(color=colors[i])
+                    )
+                )
+            fig.update_layout(
+                xaxis_title=x_label,
+                yaxis_title=y_labels[0] if len(y_labels) == 1 else None,
+                height=height,
+                width=width
+            )
+        else:
+            fig = make_subplots(
+                rows=n, 
+                cols=1,
+                x_title=x_label,
+            )
+            for i, label in enumerate(y_labels):
+                fig.append_trace(
+                    go.Scatter(
+                        x=x_data,
+                        y=self[label],
+                        mode='lines',
+                        # name=label,
+                        line=dict(color=colors[i])
+                    ),
+                    row = i + 1,
+                    col = 1,
+                )
+                fig.update_yaxes(title_text=label, row=i+1, col=1)
+            fig.update_layout(
+                width=width,
+                height=height if height is not None else 200 * n, 
+                showlegend=False
+            )
 
-        self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x, width=width, height=height)
+        fig.show()
 
     def bar(self, column_for_categories=None, select=None, overlay=True, width=6, height=4, **vargs):
         """Plot bar charts for the table.
@@ -2198,7 +2322,7 @@ class Table(collections.abc.MutableMapping):
         """
         self.group(column_label).bar(column_label, **vargs)
 
-    def i_barh(self, column_for_categories=None, select=None, overlay=True, width=None, **vargs):
+    def ibarh(self, column_for_categories=None, select=None, overlay=True, width=None, **vargs):
         """Plot horizontal bar charts for the table.
 
         Args:
@@ -2262,6 +2386,9 @@ class Table(collections.abc.MutableMapping):
                 return updated_labels
             return labels
         yticks = make_unique_labels(yticks)
+        
+        # reverse yticks so they're in same order as barh
+        yticks.reverse()
 
         colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors), len(labels)))
 
@@ -2280,7 +2407,7 @@ class Table(collections.abc.MutableMapping):
                 fig.update_layout(height = height)
             for i in range(len(labels)):
                 fig.add_trace(go.Bar(
-                    x = self.column(labels[i]),
+                    x = np.flip(self.column(labels[i])), # flipping so this matches the order of yticks
                     y = yticks,
                     name = labels[i],
                     orientation = 'h',
@@ -2288,6 +2415,7 @@ class Table(collections.abc.MutableMapping):
             fig.update_yaxes(title_text = ylabel, type = 'category', dtick = 1, showticklabels = True)
             if len(labels) == 1:
                 fig.update_xaxes(title_text = labels[0])
+                
         else:
             fig = make_subplots(rows = len(labels), cols = 1, subplot_titles = labels, vertical_spacing = 0.04)
             if width:
@@ -2296,7 +2424,7 @@ class Table(collections.abc.MutableMapping):
                 fig.update_layout(height = height)
             for i in range(len(labels)):
                 fig.append_trace(go.Bar(
-                    x = self.column(labels[i]),
+                    x = np.flip(self.column(labels[i])), # flipping so this matches the order of yticks
                     y = yticks,
                     name = labels[i],
                     orientation = 'h',
@@ -2340,24 +2468,33 @@ class Table(collections.abc.MutableMapping):
         >>> furniture_table.barh('Furniture', make_array(1, 2)) # doctest: +SKIP
         <bar graph with furniture as categories and bars for count and price>
         """
+        global _INTERACTIVE_PLOTS
+        if _INTERACTIVE_PLOTS:
+            # multiple width by 96 assuming 96 dpi
+            return self.ibarh(column_for_categories, select, overlay, **vargs)
+        
         options = self.default_options.copy()
         # Matplotlib tries to center the labels, but we already handle that
         # TODO consider changing the custom centering code and using matplotlib's default
         vargs['align'] = 'edge'
         options.update(vargs)
+
         yticks, labels = self._split_column_and_labels(column_for_categories)
         if select is not None:
             labels = self._as_labels(select)
         n = len(labels)
+
         index = np.arange(self.num_rows)
         margin = 0.1
         bwidth = 1 - 2 * margin
         if overlay:
             bwidth /= len(labels)
+
         if 'height' in options:
             height = options.pop('height')
         else:
             height = max(4, len(index)/2)
+
         def draw(axis, label, color):
             if overlay:
                 ypos = index + margin + (1-2*margin)*(n - 1 - labels.index(label))/n
@@ -2365,13 +2502,16 @@ class Table(collections.abc.MutableMapping):
                 ypos = index
             # barh plots entries in reverse order from bottom to top
             axis.barh(ypos, self[label][::-1], bwidth,  color=color, **options)
+
         ylabel = self._as_label(column_for_categories)
+
         def annotate(axis, ticks):
             axis.set_yticks(index+0.5) # Center labels on bars
             # barh plots entries in reverse order from bottom to top
             axis.set_yticklabels(ticks[::-1], stretch='ultra-condensed')
             axis.set_xlabel(axis.get_ylabel())
             axis.set_ylabel(ylabel)
+
         self._visualize('', labels, yticks, overlay, draw, annotate, width=width, height=height)
 
     def group_barh(self, column_label, **vargs):
