@@ -2368,6 +2368,8 @@ class Table(collections.abc.MutableMapping):
         options.update(vargs)
 
         yticks, labels = self._split_column_and_labels(column_for_categories)
+        # reverse yticks so they're in same order as barh
+        yticks = yticks[::-1]
         if select is not None:
             labels = self._as_labels(select)
         ylabel = self._as_label(column_for_categories)
@@ -2381,21 +2383,18 @@ class Table(collections.abc.MutableMapping):
                 space_count = dict(zip(unique_labels, [0] * len(unique_labels)))
                 updated_labels = [''] * len(labels)
                 for i in range(len(labels)):
-                    updated_labels[i] = ''.join([labels[i], '\u200c' * space_count[labels[i]]])
+                    updated_labels[i] = ''.join(['\u200c' * space_count[labels[i]], labels[i], '  '])
                     space_count[labels[i]] += 1
                 return updated_labels
             return labels
-        yticks = make_unique_labels(yticks)
+        yticks_unique = make_unique_labels(yticks)
         
-        # reverse yticks so they're in same order as barh
-        yticks.reverse()
-
         colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors), len(labels)))
 
         if 'height' in options:
             height = options.pop('height')
         else:
-            bar_width = 15
+            bar_width = 20
             margin = 5
             height = max(len(yticks) * (margin + bar_width * len(labels)), 400)
 
@@ -2408,10 +2407,12 @@ class Table(collections.abc.MutableMapping):
             for i in range(len(labels)):
                 fig.add_trace(go.Bar(
                     x = np.flip(self.column(labels[i])), # flipping so this matches the order of yticks
-                    y = yticks,
+                    y = yticks_unique,
                     name = labels[i],
                     orientation = 'h',
-                    marker_color = colors[i]))
+                    marker_color = colors[i],
+                    customdata = yticks,
+                    hovertemplate = '(%{x}, %{customdata})'))
             fig.update_yaxes(title_text = ylabel, type = 'category', dtick = 1, showticklabels = True)
             if len(labels) == 1:
                 fig.update_xaxes(title_text = labels[0])
@@ -2425,12 +2426,13 @@ class Table(collections.abc.MutableMapping):
             for i in range(len(labels)):
                 fig.append_trace(go.Bar(
                     x = np.flip(self.column(labels[i])), # flipping so this matches the order of yticks
-                    y = yticks,
+                    y = yticks_unique,
                     name = labels[i],
                     orientation = 'h',
+                    customdata = yticks, 
+                    hovertemplate = '(%{x}, %{customdata})',
                     marker_color = colors[i]), row = i + 1, col = 1)
                 fig.update_yaxes(title_text = ylabel, type = 'category', dtick = 1, showticklabels = True)
-        fig.update_layout(margin = dict(pad = 20))
         fig.show()
 
     def barh(self, column_for_categories=None, select=None, overlay=True, width=None, **vargs):
@@ -2473,9 +2475,7 @@ class Table(collections.abc.MutableMapping):
         if _INTERACTIVE_PLOTS:
             # If width not specified, default width originally set to 6, 
             # Multiply by 96 assuming 96 dpi
-            if width == None:
-                width = 576
-            return self.ibarh(column_for_categories, select, overlay, width = width, **vargs)
+            return self.ibarh(column_for_categories, select, overlay, **vargs)
         
         options = self.default_options.copy()
         # Matplotlib tries to center the labels, but we already handle that
