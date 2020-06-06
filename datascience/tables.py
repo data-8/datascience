@@ -1520,7 +1520,7 @@ class Table(collections.abc.MutableMapping):
         >>> sizes.sample_from_distribution('count', 1000) # doctest: +SKIP
         size   | count | count sample
         small  | 50    | 239
-        medium | 100   | 496
+        medium | 100   | 46
         big    | 50    | 265
         >>> sizes.sample_from_distribution('count', 1000, True) # doctest: +SKIP
         size   | count | count sample
@@ -2430,9 +2430,10 @@ class Table(collections.abc.MutableMapping):
                     orientation = 'h',
                     marker_color = colors[i]), row = i + 1, col = 1)
                 fig.update_yaxes(title_text = ylabel, type = 'category', dtick = 1, showticklabels = True)
+        fig.update_layout(margin = dict(pad = 20))
         fig.show()
 
-    def barh(self, column_for_categories=None, select=None, overlay=True, width=6, **vargs):
+    def barh(self, column_for_categories=None, select=None, overlay=True, width=None, **vargs):
         """Plot horizontal bar charts for the table.
         Args:
             ``column_for_categories`` (``str``): A column containing y-axis categories
@@ -2470,8 +2471,11 @@ class Table(collections.abc.MutableMapping):
         """
         global _INTERACTIVE_PLOTS
         if _INTERACTIVE_PLOTS:
-            # multiple width by 96 assuming 96 dpi
-            return self.ibarh(column_for_categories, select, overlay, **vargs)
+            # If width not specified, default width originally set to 6, 
+            # Multiply by 96 assuming 96 dpi
+            if width == None:
+                width = 576
+            return self.ibarh(column_for_categories, select, overlay, width = width, **vargs)
         
         options = self.default_options.copy()
         # Matplotlib tries to center the labels, but we already handle that
@@ -2543,6 +2547,134 @@ class Table(collections.abc.MutableMapping):
         """
         self.group(column_label).barh(column_label, **vargs)
 
+    def iscatter(self, column_for_x, select=None, overlay=True, fit_line=False,
+        group=None, labels=None, sizes=None, width=5, height=5, s=20,
+        colors=None, **vargs):
+        """Creates scatterplots, optionally adding a line of best fit.
+
+        Args:
+            ``column_for_x`` (``str``): The column to use for the x-axis values
+                and label of the scatter plots.
+
+        Kwargs:
+            ``overlay`` (``bool``): If true, creates a chart with one color
+                per data column; if False, each plot will be displayed separately.
+
+            ``fit_line`` (``bool``): draw a line of best fit for each set of points.
+
+            ``vargs``: Additional arguments that get passed into `plt.scatter`.
+                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.scatter
+                for additional arguments that can be passed into vargs. These
+                include: `marker` and `norm`, to name a couple.
+
+            ``group``: A column of categories to be used for coloring dots per
+                each category grouping.
+
+            ``labels``: A column of text labels to annotate dots.
+
+            ``sizes``:  A column of values to set the relative areas of dots.
+
+            ``s``: Size of dots. If sizes is also provided, then dots will be
+                in the range 0 to 2 * s.
+
+            ``colors``: (deprecated) A synonym for ``group``. Retained
+                temporarily for backwards compatibility. This argument
+                will be removed in future releases.
+
+        Raises:
+            ValueError -- Every column, ``column_for_x`` or ``select``, must be numerical
+
+        Returns:
+            Scatter plot of values of ``column_for_x`` plotted against
+            values for all other columns in self. Each plot uses the values in
+            `column_for_x` for horizontal positions. One plot is produced for
+            all other columns in self as y (or for the columns designated by
+            `select`).
+
+
+        >>> table = Table().with_columns(
+        ...     'x', make_array(9, 3, 3, 1),
+        ...     'y', make_array(1, 2, 2, 10),
+        ...     'z', make_array(3, 4, 5, 6))
+        >>> table
+        x    | y    | z
+        9    | 1    | 3
+        3    | 2    | 4
+        3    | 2    | 5
+        1    | 10   | 6
+        >>> table.scatter('x') # doctest: +SKIP
+        <scatterplot of values in y and z on x>
+
+        >>> table.scatter('x', overlay=False) # doctest: +SKIP
+        <scatterplot of values in y on x>
+        <scatterplot of values in z on x>
+
+        >>> table.scatter('x', fit_line=True) # doctest: +SKIP
+        <scatterplot of values in y and z on x with lines of best fit>
+        """
+        options = self.default_options.copy()
+        options.update(vargs)
+
+        if column_for_xticks is not None:
+            x_data, y_labels = self._split_column_and_labels(column_for_xticks)
+            x_label = self._as_label(column_for_xticks)
+        else:
+            x_data, y_labels = None, self.labels
+            x_label = None
+        if select is not None:
+            y_labels = self._as_labels(select)
+
+        if x_data is not None:
+            self = self.sort(x_data)
+            x_data = np.sort(x_data)
+
+        n = len(y_labels)
+        colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors), n))
+        if overlay:
+            fig = go.Figure()
+            for i, label in enumerate(y_labels):
+                fig.add_trace(
+                    go.Scatter(
+                        x=x_data,
+                        y=self[label],
+                        mode='lines',
+                        name=label,
+                        line=dict(color=colors[i])
+                    )
+                )
+            fig.update_layout(
+                xaxis_title=x_label,
+                yaxis_title=y_labels[0] if len(y_labels) == 1 else None,
+                height=height,
+                width=width
+            )
+        else:
+            fig = make_subplots(
+                rows=n, 
+                cols=1,
+                x_title=x_label,
+            )
+            for i, label in enumerate(y_labels):
+                fig.append_trace(
+                    go.Scatter(
+                        x=x_data,
+                        y=self[label],
+                        mode='lines',
+                        # name=label,
+                        line=dict(color=colors[i])
+                    ),
+                    row = i + 1,
+                    col = 1,
+                )
+                fig.update_yaxes(title_text=label, row=i+1, col=1)
+            fig.update_layout(
+                width=width,
+                height=height if height is not None else 200 * n, 
+                showlegend=False
+            )
+
+        fig.show()
+
     def scatter(self, column_for_x, select=None, overlay=True, fit_line=False,
         group=None, labels=None, sizes=None, width=5, height=5, s=20,
         colors=None, **vargs):
@@ -2608,6 +2740,10 @@ class Table(collections.abc.MutableMapping):
         >>> table.scatter('x', fit_line=True) # doctest: +SKIP
         <scatterplot of values in y and z on x with lines of best fit>
         """
+        global _INTERACTIVE_PLOTS
+        if _INTERACTIVE_PLOTS:
+            return self.iscatter(column_for_x, select, overlay, fit_line, group, labels, sizes, width, height, s, colors, **vargs)
+
         options = self.default_options.copy()
         options.update(vargs)
 
