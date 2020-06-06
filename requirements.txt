@@ -6,3 +6,4 @@ pandas
 scipy
 numpy
 ipython
+plotly

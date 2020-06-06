@@ -48,7 +48,7 @@ class Table(collections.abc.MutableMapping):
         self._columns = collections.OrderedDict()
         self._formats = dict()
         self.formatter = formatter
-        
+
         labels = labels if labels is not None else []
         columns = [[] for _ in labels]
 
@@ -147,8 +147,8 @@ class Table(collections.abc.MutableMapping):
     def from_df(cls, df, keep_index=False):
         """Convert a Pandas DataFrame into a Table.
 
-        `keep_index` -- keeps the index of the DataFrame 
-            and turns it into a column called `index` in 
+        `keep_index` -- keeps the index of the DataFrame
+            and turns it into a column called `index` in
             the new Table
 
         """
@@ -444,7 +444,7 @@ class Table(collections.abc.MutableMapping):
 
                 If a list or array, the new column contains the values in
                 ``values``, which must be the same length as the table.
-            ``formatter`` (single formatter): Adds a formatter to the column being 
+            ``formatter`` (single formatter): Adds a formatter to the column being
                 appended. No formatter added by default.
 
         Returns:
@@ -571,7 +571,7 @@ class Table(collections.abc.MutableMapping):
             if label in self._formats:
                 formatter = self._formats.pop(label)
                 self._formats[old_to_new[label]] = formatter
-                
+
         return self
 
     def remove(self, row_or_row_indices):
@@ -1298,7 +1298,7 @@ class Table(collections.abc.MutableMapping):
         self_rows = self._multi_index(column_label)
         other_rows = other._multi_index(other_label)
         return self._join_helper(column_label, self_rows, other, other_label, other_rows)
-        
+
 
     def _join_helper(self, column_label, self_rows, other, other_label, other_rows):
         # Gather joined rows from self_rows that have join values in other_rows
@@ -1692,13 +1692,13 @@ class Table(collections.abc.MutableMapping):
 
 
         Args:
-            ``labels_and_values``: An alternating list of labels and values 
-                or a list of label-value pairs. If one of the labels is in 
+            ``labels_and_values``: An alternating list of labels and values
+                or a list of label-value pairs. If one of the labels is in
                 existing table, then every value in the corresponding column is
                 set to that value. If label has only a single value (``int``),
                 every row of corresponding column takes on that value.
-            ''formatter'' (single Formatter value): A single formatter value 
-                that will be applied to all columns being added using this 
+            ''formatter'' (single Formatter value): A single formatter value
+                that will be applied to all columns being added using this
                 function call.
 
         Raises:
@@ -1770,7 +1770,7 @@ class Table(collections.abc.MutableMapping):
             self = self.with_column(label, values, formatter)
         return self
 
-        
+
 
     def relabeled(self, label, new_label):
         """Return a new table with ``label`` specifying column label(s)
@@ -2056,6 +2056,12 @@ class Table(collections.abc.MutableMapping):
         tuple(tuple(int(256 * val) for val in tup) for tup in chart_colors)
     )
 
+    plotly_chart_colors = tuple(
+        f"rgb({tup[0]},{tup[1]},{tup[2]})" for tup in
+        tuple(tuple(int(256 * val) for val in tup) for tup in chart_colors)
+    )
+
+
     default_alpha = 0.7
 
     default_options = {
@@ -2308,7 +2314,7 @@ class Table(collections.abc.MutableMapping):
         """
         self.group(column_label).bar(column_label, **vargs)
 
-    def barh(self, column_for_categories=None, select=None, overlay=True, width=6, **vargs):
+    def i_barh(self, column_for_categories=None, select=None, overlay=True, width=None, **vargs):
         """Plot horizontal bar charts for the table.
 
         Args:
@@ -2351,27 +2357,123 @@ class Table(collections.abc.MutableMapping):
         <bar graph with furniture as categories and bars for count and price>
         """
         options = self.default_options.copy()
-        # Matplotlib tries to center the labels, but we already handle that
-        # TODO consider changing the custom centering code and using matplotlib's default
-        vargs['align'] = 'edge'
         options.update(vargs)
 
         yticks, labels = self._split_column_and_labels(column_for_categories)
         if select is not None:
             labels = self._as_labels(select)
-        n = len(labels)
+        ylabel = self._as_label(column_for_categories)
 
+        def make_unique_labels(labels):
+        # Since Plotly bar charts don't allow duplicate labels, this function
+        # takes in a list of labels and pads duplicates with a unique amount of
+        # zero width white space.
+            unique_labels = list(set(labels))
+            if len(unique_labels) != len(labels):
+                space_count = dict(zip(unique_labels, [0] * len(unique_labels)))
+                updated_labels = [''] * len(labels)
+                for i in range(len(labels)):
+                    updated_labels[i] = ''.join([labels[i], '\u200c' * space_count[labels[i]]])
+                    space_count[labels[i]] += 1
+                return updated_labels
+            return labels
+        yticks = make_unique_labels(yticks)
+
+        colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors), len(labels)))
+
+        if 'height' in options:
+            height = options.pop('height')
+        else:
+            bar_width = 15
+            margin = 5
+            height = max(len(yticks) * (margin + bar_width * len(labels)), 400)
+
+        if overlay:
+            fig = go.Figure()
+            if width:
+                fig.update_layout(width = width)
+            if height:
+                fig.update_layout(height = height)
+            for i in range(len(labels)):
+                fig.add_trace(go.Bar(
+                    x = self.column(labels[i]),
+                    y = yticks,
+                    name = labels[i],
+                    orientation = 'h',
+                    marker_color = colors[i]))
+            fig.update_yaxes(title_text = ylabel, type = 'category', dtick = 1, showticklabels = True)
+            if len(labels) == 1:
+                fig.update_xaxes(title_text = labels[0])
+        else:
+            fig = make_subplots(rows = len(labels), cols = 1, subplot_titles = labels, vertical_spacing = 0.04)
+            if width:
+                fig.update_layout(width = width)
+            if height:
+                fig.update_layout(height = height)
+            for i in range(len(labels)):
+                fig.append_trace(go.Bar(
+                    x = self.column(labels[i]),
+                    y = yticks,
+                    name = labels[i],
+                    orientation = 'h',
+                    marker_color = colors[i]), row = i + 1, col = 1)
+                fig.update_yaxes(title_text = ylabel, type = 'category', dtick = 1, showticklabels = True)
+        fig.show()
+
+    def barh(self, column_for_categories=None, select=None, overlay=True, width=6, **vargs):
+        """Plot horizontal bar charts for the table.
+        Args:
+            ``column_for_categories`` (``str``): A column containing y-axis categories
+                used to create buckets for bar chart.
+        Kwargs:
+            overlay (bool): create a chart with one color per data column;
+                if False, each will be displayed separately.
+            vargs: Additional arguments that get passed into `plt.barh`.
+                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.barh
+                for additional arguments that can be passed into vargs.
+        Raises:
+            ValueError -- Every selected except column for ``column_for_categories``
+                must be numerical.
+        Returns:
+            Horizontal bar graph with buckets specified by ``column_for_categories``.
+            Each plot is labeled using the values in ``column_for_categories``
+            and one plot is produced for every other column (or for the columns
+            designated by ``select``).
+        >>> t = Table().with_columns(
+        ...     'Furniture', make_array('chairs', 'tables', 'desks'),
+        ...     'Count', make_array(6, 1, 2),
+        ...     'Price', make_array(10, 20, 30)
+        ...     )
+        >>> t
+        Furniture | Count | Price
+        chairs    | 6     | 10
+        tables    | 1     | 20
+        desks     | 2     | 30
+        >>> furniture_table.barh('Furniture') # doctest: +SKIP
+        <bar graph with furniture as categories and bars for count and price>
+        >>> furniture_table.barh('Furniture', 'Price') # doctest: +SKIP
+        <bar graph with furniture as categories and bars for price>
+        >>> furniture_table.barh('Furniture', make_array(1, 2)) # doctest: +SKIP
+        <bar graph with furniture as categories and bars for count and price>
+        """
+        options = self.default_options.copy()
+        # Matplotlib tries to center the labels, but we already handle that
+        # TODO consider changing the custom centering code and using matplotlib's default
+        vargs['align'] = 'edge'
+        options.update(vargs)
+        yticks, labels = self._split_column_and_labels(column_for_categories)
+        if select is not None:
+            labels = self._as_labels(select)
+        n = len(labels)
         index = np.arange(self.num_rows)
         margin = 0.1
         bwidth = 1 - 2 * margin
         if overlay:
             bwidth /= len(labels)
-
         if 'height' in options:
             height = options.pop('height')
         else:
             height = max(4, len(index)/2)
-
         def draw(axis, label, color):
             if overlay:
                 ypos = index + margin + (1-2*margin)*(n - 1 - labels.index(label))/n
@@ -2379,18 +2481,14 @@ class Table(collections.abc.MutableMapping):
                 ypos = index
             # barh plots entries in reverse order from bottom to top
             axis.barh(ypos, self[label][::-1], bwidth,  color=color, **options)
-
         ylabel = self._as_label(column_for_categories)
-
         def annotate(axis, ticks):
             axis.set_yticks(index+0.5) # Center labels on bars
             # barh plots entries in reverse order from bottom to top
             axis.set_yticklabels(ticks[::-1], stretch='ultra-condensed')
             axis.set_xlabel(axis.get_ylabel())
             axis.set_ylabel(ylabel)
-
         self._visualize('', labels, yticks, overlay, draw, annotate, width=width, height=height)
-
 
     def group_barh(self, column_label, **vargs):
         """Plot a horizontal bar chart for the table.
@@ -2441,7 +2539,7 @@ class Table(collections.abc.MutableMapping):
                 for additional arguments that can be passed into vargs. These
                 include: `marker` and `norm`, to name a couple.
 
-            ``group``: A column of categories to be used for coloring dots per 
+            ``group``: A column of categories to be used for coloring dots per
                 each category grouping.
 
             ``labels``: A column of text labels to annotate dots.
@@ -2660,10 +2758,10 @@ class Table(collections.abc.MutableMapping):
                 plotting multiple histograms, either by passing several columns
                 or by using the group option.
 
-            left_end (int or float) and right_end (int or float): (Not supported 
-                for overlayed histograms) The left and right edges of the shading of 
-                the histogram. If only one of these is None, then that property 
-                will be treated as the extreme edge of the histogram. If both are 
+            left_end (int or float) and right_end (int or float): (Not supported
+                for overlayed histograms) The left and right edges of the shading of
+                the histogram. If only one of these is None, then that property
+                will be treated as the extreme edge of the histogram. If both are
                 left None, then no shading will occur.
 
 
@@ -2817,7 +2915,7 @@ class Table(collections.abc.MutableMapping):
                         #There's a grouping in place but we're only plotting one column's values
                         label_not_grouped = [l for l in self.labels if l != group][0]
                         axis.set_xlabel(label_not_grouped + x_unit, fontsize=16)
-                    else:    
+                    else:
                         axis.set_xlabel(x_unit, fontsize=16)
                     plt.legend(hist_names, loc=2, bbox_to_anchor=(1.05, 1))
                     type(self).plots.append(axis)
