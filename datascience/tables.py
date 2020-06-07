@@ -2926,8 +2926,8 @@ class Table(collections.abc.MutableMapping):
 
             fig.update_layout(
                 width=width,
-                height=height if height is not None else 200 * max(len(y_labels), len(group_vals)), 
-                showlegend=False
+                height=height if height is not None else 400 * max(len(y_labels), len(group_vals)), 
+                showlegend=group
             )
 
         fig.show()
