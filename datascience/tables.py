@@ -2883,7 +2883,10 @@ class Table(collections.abc.MutableMapping):
         _table = None  # Set by subclasses in Rows
 
         def __getattr__(self, column_label):
-            return self[self._table.column_index(column_label)]
+            try:
+                return self[self._table.column_index(column_label)]
+            except ValueError:
+                raise AttributeError("Attribute ({0}) not found in row.")
 
         def item(self, index_or_label):
             """Return the item at an index or label."""

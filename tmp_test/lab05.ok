@@ -1,0 +1,15 @@
+{
+  "name": "Song Classification with k-Nearest Neighbors, part 2",
+  "endpoint": "cal/data8/x19/lab05",
+  "src": [
+    "lab05.ipynb"
+  ],
+  "tests": {
+      "tests/q*.py": "ok_test"
+  },
+  "protocols": [
+      "file_contents",
+      "grading",
+      "backup"
+  ]
+}
