@@ -2886,7 +2886,7 @@ class Table(collections.abc.MutableMapping):
             try:
                 return self[self._table.column_index(column_label)]
             except ValueError: #adding support for NumPy v1.18.0 as per changes in https://github.com/numpy/numpy/pull/14745
-                raise AttributeError("Attribute ({0}) not found in row.")
+                raise AttributeError("Attribute ({0}) not found in row.".format(column_label))
 
         def item(self, index_or_label):
             """Return the item at an index or label."""
