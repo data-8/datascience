@@ -2396,7 +2396,11 @@ class Table(collections.abc.MutableMapping):
         else:
             bar_width = 20
             margin = 5
-            height = max(len(yticks) * (margin + bar_width * len(labels)), 400)
+            if overlay:
+                height = max(len(yticks) * (margin + bar_width * len(labels)), 400)
+            else:
+                subplot_heights = [max(len(yticks) * (margin + bar_width), 400)] * len(labels)
+                height = subplot_heights[0] * len(labels)
 
         if overlay:
             fig = go.Figure()
@@ -2418,7 +2422,7 @@ class Table(collections.abc.MutableMapping):
                 fig.update_xaxes(title_text = labels[0])
                 
         else:
-            fig = make_subplots(rows = len(labels), cols = 1, subplot_titles = labels, vertical_spacing = 0.04)
+            fig = make_subplots(rows = len(labels), cols = 1, vertical_spacing = 0.06, row_heights = subplot_heights)
             if width:
                 fig.update_layout(width = width)
             if height:
@@ -2433,6 +2437,7 @@ class Table(collections.abc.MutableMapping):
                     hovertemplate = '(%{x}, %{customdata})',
                     marker_color = colors[i]), row = i + 1, col = 1)
                 fig.update_yaxes(title_text = ylabel, type = 'category', dtick = 1, showticklabels = True)
+                fig.update_xaxes(title_text = labels[i], row = i + 1, col = 1)
         fig.show()
 
     def barh(self, column_for_categories=None, select=None, overlay=True, width=None, **vargs):
@@ -2548,7 +2553,7 @@ class Table(collections.abc.MutableMapping):
         self.group(column_label).barh(column_label, **vargs)
 
     def iscatter(self, column_for_x, select=None, overlay=True, fit_line=False,
-        group=None, labels=None, sizes=None, width=5, height=5, s=20,
+        group=None, labels=None, sizes=None, width=None, height=None, s=20,
         colors=None, **vargs):
         """Creates scatterplots, optionally adding a line of best fit.
 
@@ -2612,67 +2617,81 @@ class Table(collections.abc.MutableMapping):
         >>> table.scatter('x', fit_line=True) # doctest: +SKIP
         <scatterplot of values in y and z on x with lines of best fit>
         """
+        print("width: " + str(width) + ", height: " + str(height))
         options = self.default_options.copy()
         options.update(vargs)
 
-        if column_for_xticks is not None:
-            x_data, y_labels = self._split_column_and_labels(column_for_xticks)
-            x_label = self._as_label(column_for_xticks)
-        else:
-            x_data, y_labels = None, self.labels
-            x_label = None
+        x_data, y_labels =  self._split_column_and_labels(column_for_x)
+        if group is not None and colors is not None and group != colors:
+            warnings.warn("Do not pass both colors and group to scatter().")
+        if group is None and colors is not None:
+            # Backward compatibility
+            group = colors
+            # TODO: In a future release, warn that this is deprecated.
+            # Deprecated
+            # warnings.warn("scatter(colors=x) is deprecated. Use scatter(group=x)", FutureWarning)
+        if group is not None:
+            y_labels.remove(self._as_label(group))
+        if sizes is not None:
+            y_labels.remove(self._as_label(sizes))
         if select is not None:
             y_labels = self._as_labels(select)
+        if len(y_labels) > 1 and group is not None and overlay:
+            warnings.warn("Group and overlay are incompatible in a scatter")
+            overlay = False
 
-        if x_data is not None:
-            self = self.sort(x_data)
-            x_data = np.sort(x_data)
+        colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors), len(y_labels)))
 
-        n = len(y_labels)
-        colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors), n))
         if overlay:
             fig = go.Figure()
+            if width:
+                fig.update_layout(width = width)
+            if height:
+                fig.update_layout(height = height)
             for i, label in enumerate(y_labels):
-                fig.add_trace(
-                    go.Scatter(
-                        x=x_data,
-                        y=self[label],
-                        mode='lines',
-                        name=label,
-                        line=dict(color=colors[i])
-                    )
-                )
+                fig.add_trace(go.Scatter(
+                    x = x_data,
+                    y = self[label],
+                    name = label, 
+                    marker_color = colors[i], 
+                    mode = "markers"
+                ))
+                if fit_line:
+                    m, b = np.polyfit(x_data, self[label], 1)
+                    fig.add_trace(go.Scatter(
+                        x = x_data, 
+                        y = m * x_data + b, 
+                        name = " ".join([label, "best fit line"]), 
+                        marker_color = colors[i], 
+                        hovertemplate = "".join([str(m), " * x + ", str(b)]), 
+                        mode = "lines"
+                    ))
             fig.update_layout(
-                xaxis_title=x_label,
-                yaxis_title=y_labels[0] if len(y_labels) == 1 else None,
-                height=height,
-                width=width
+                xaxis_title = column_for_x,
+                yaxis_title = y_labels[0] if len(y_labels) == 1 else None,
             )
         else:
-            fig = make_subplots(
-                rows=n, 
-                cols=1,
-                x_title=x_label,
-            )
+            fig = make_subplots(rows = len(y_labels), cols = 1)
             for i, label in enumerate(y_labels):
-                fig.append_trace(
-                    go.Scatter(
-                        x=x_data,
-                        y=self[label],
-                        mode='lines',
-                        # name=label,
-                        line=dict(color=colors[i])
-                    ),
-                    row = i + 1,
-                    col = 1,
-                )
-                fig.update_yaxes(title_text=label, row=i+1, col=1)
-            fig.update_layout(
-                width=width,
-                height=height if height is not None else 200 * n, 
-                showlegend=False
-            )
-
+                fig.append_trace(go.Scatter(
+                    x = x_data,
+                    y = self[label],
+                    name = label, 
+                    marker_color = colors[i], 
+                    mode = "markers",
+                ), row = i + 1, col = 1)
+                if fit_line:
+                    m, b = np.polyfit(x_data, self[label], 1)
+                    fig.add_trace(go.Scatter(
+                        x = x_data, 
+                        y = m * x_data + b, 
+                        name = " ".join([label, "best fit line"]), 
+                        marker_color = colors[i], 
+                        hovertemplate = "".join([str(m), " * x + ", str(b)]), 
+                        mode = "lines"
+                    ), row = i + 1, col = 1)
+                fig.update_xaxes(title_text = column_for_x, row = i + 1, col = 1)
+                fig.update_yaxes(title_text = label, row = i + 1, col = 1)
         fig.show()
 
     def scatter(self, column_for_x, select=None, overlay=True, fit_line=False,
@@ -2742,7 +2761,16 @@ class Table(collections.abc.MutableMapping):
         """
         global _INTERACTIVE_PLOTS
         if _INTERACTIVE_PLOTS:
-            return self.iscatter(column_for_x, select, overlay, fit_line, group, labels, sizes, width, height, s, colors, **vargs)
+            return self.iscatter(column_for_x = column_for_x, 
+                select = select, 
+                overlay = overlay, 
+                fit_line = fit_line,
+                group = group,
+                labels = labels,
+                sizes = sizes,
+                s = s,
+                colors = colors,
+                **vargs)
 
         options = self.default_options.copy()
         options.update(vargs)
