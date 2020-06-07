@@ -2862,7 +2862,7 @@ class Table(collections.abc.MutableMapping):
             )
 
         else:
-            fig = make_subplots(rows = len(y_labels), cols = 1)
+            fig = make_subplots(rows = len(y_labels), cols = 1, xaxis_title=column_for_x)
             for i, label in enumerate(y_labels):
                 if not group:
                     fig.append_trace(go.Scatter(
@@ -2907,7 +2907,7 @@ class Table(collections.abc.MutableMapping):
                                 textposition = "bottom center",
                                 textfont = dict(color = colors[i])
                             ), row = i + 1, col = 1)
-                            
+
                         else:
                             fig.add_trace(go.Scatter(
                                 x = grouped_x_data[group_index],
@@ -2922,8 +2922,13 @@ class Table(collections.abc.MutableMapping):
                                 textfont = dict(color = colors[i])
                             ), row = i + 1, col = 1)
                     
-                fig.update_xaxes(title_text = column_for_x, row = i + 1, col = 1)
                 fig.update_yaxes(title_text = label, row = i + 1, col = 1)
+
+            fig.update_layout(
+                width=width,
+                height=height if height is not None else 200 * max(len(y_labels), len(group_vals)), 
+                showlegend=False
+            )
 
         fig.show()
 
