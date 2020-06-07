@@ -2553,7 +2553,7 @@ class Table(collections.abc.MutableMapping):
         self.group(column_label).barh(column_label, **vargs)
 
     def iscatter(self, column_for_x, select=None, overlay=True, fit_line=False,
-        group=None, labels=None, sizes=None, width=None, height=None, s=20,
+        group=None, labels=None, sizes=None, width=None, height=None, s=5,
         colors=None, **vargs):
         """Creates scatterplots, optionally adding a line of best fit.
 
@@ -2653,6 +2653,13 @@ class Table(collections.abc.MutableMapping):
             overlay = False
         colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors), max(len(y_labels), len(group_vals))))
 
+        size = None
+        if sizes is not None:
+            max_size = max(self[sizes]) ** 0.5
+            size = 2 * s * self[sizes] ** 0.5 / max_size
+        else:
+            size = s
+        
         if overlay:
             fig = go.Figure()
             if width:
@@ -2665,7 +2672,11 @@ class Table(collections.abc.MutableMapping):
                     y = self[label],
                     name = label, 
                     marker_color = colors[i], 
-                    mode = "markers"
+                    marker = dict(size = size),
+                    mode = "markers+text" if labels else "markers",
+                    text = self[labels] if labels else None,
+                    textposition = "bottom center",
+                    textfont = dict(color = colors[i])
                 ))
                 if fit_line:
                     m, b = np.polyfit(x_data, self[label], 1)
@@ -2690,7 +2701,11 @@ class Table(collections.abc.MutableMapping):
                         y = self[label],
                         name = label, 
                         marker_color = colors[i], 
-                        mode = "markers",
+                        marker = dict(size = size),
+                        mode = "markers+text" if labels else "markers",
+                        text = self[labels] if labels else None, 
+                        textposition = "bottom center",
+                        textfont = dict(color = colors[i])
                     ), row = i + 1, col = 1)
                     if fit_line:
                         m, b = np.polyfit(x_data, self[label], 1)
@@ -2713,8 +2728,12 @@ class Table(collections.abc.MutableMapping):
                                 y = grouped_y_data[group_index], 
                                 name = "=".join([group, str(group_vals[group_index])]),
                                 marker_color = colors[group_index], 
-                                mode = "markers",
-                                showlegend = i == 0
+                                marker = dict(size = size),
+                                mode = "markers+text" if labels else "markers",
+                                showlegend = i == 0,
+                                text = self[labels] if labels else None, 
+                                textposition = "bottom center",
+                                textfont = dict(color = colors[i])
                             ), row = i + 1, col = 1)
                         else:
                             fig.add_trace(go.Scatter(
@@ -2722,8 +2741,12 @@ class Table(collections.abc.MutableMapping):
                                 y = grouped_y_data[group_index],
                                 name = "=".join([group, str(group_vals[group_index])]),
                                 marker_color = colors[group_index],
-                                mode = "markers",
-                                showlegend = i == 0
+                                marker = dict(size = size),
+                                mode = "markers+text" if labels else "markers",
+                                showlegend = i == 0,
+                                text = self[labels] if labels else None,
+                                textposition = "bottom center",
+                                textfont = dict(color = colors[i])
                             ), row = i + 1, col = 1)
                     
                 fig.update_xaxes(title_text = column_for_x, row = i + 1, col = 1)
@@ -2805,7 +2828,7 @@ class Table(collections.abc.MutableMapping):
                 group = group,
                 labels = labels,
                 sizes = sizes,
-                s = s,
+                s = s / 4, # Plotly dot sizes are much smaller, so divide s by 4
                 colors = colors,
                 **vargs)
 
