@@ -2927,7 +2927,7 @@ class Table(collections.abc.MutableMapping):
             if height is not None:
                 plot_height = height
             elif bool(group):
-                plot_height = 400
+                plot_height = None
             else:
                 plot_height = 400 * max(len(y_labels), len(group_vals))
 
