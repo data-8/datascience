@@ -2924,9 +2924,16 @@ class Table(collections.abc.MutableMapping):
                     
                 fig.update_yaxes(title_text = label, row = i + 1, col = 1)
 
+            if height is not None:
+                plot_height = height
+            elif bool(group):
+                plot_height = 400
+            else:
+                plot_height = 400 * max(len(y_labels), len(group_vals))
+
             fig.update_layout(
                 width=width,
-                height=height if height is not None else 400 * max(len(y_labels), len(group_vals)), 
+                height=plot_height, 
                 showlegend=bool(group)
             )
 
