@@ -2862,7 +2862,7 @@ class Table(collections.abc.MutableMapping):
             )
 
         else:
-            fig = make_subplots(rows = len(y_labels), cols = 1, xaxis_title=column_for_x)
+            fig = make_subplots(rows = len(y_labels), cols = 1, x_title=column_for_x)
             for i, label in enumerate(y_labels):
                 if not group:
                     fig.append_trace(go.Scatter(
