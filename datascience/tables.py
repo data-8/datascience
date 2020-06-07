@@ -2440,7 +2440,7 @@ class Table(collections.abc.MutableMapping):
                 fig.update_xaxes(title_text = labels[i], row = i + 1, col = 1)
         fig.show()
 
-    def barh(self, column_for_categories=None, select=None, overlay=True, width=None, **vargs):
+    def barh(self, column_for_categories=None, select=None, overlay=True, width=6, **vargs):
         """Plot horizontal bar charts for the table.
         Args:
             ``column_for_categories`` (``str``): A column containing y-axis categories
@@ -2617,7 +2617,6 @@ class Table(collections.abc.MutableMapping):
         >>> table.scatter('x', fit_line=True) # doctest: +SKIP
         <scatterplot of values in y and z on x with lines of best fit>
         """
-        print("width: " + str(width) + ", height: " + str(height))
         options = self.default_options.copy()
         options.update(vargs)
 
@@ -2629,7 +2628,7 @@ class Table(collections.abc.MutableMapping):
             group = colors
             # TODO: In a future release, warn that this is deprecated.
             # Deprecated
-            # warnings.warn("scatter(colors=x) is deprecated. Use scatter(group=x)", FutureWarning)
+            warnings.warn("scatter(colors=x) is deprecated. Use scatter(group=x)", FutureWarning)
         if group is not None:
             y_labels.remove(self._as_label(group))
         if sizes is not None:
@@ -2639,8 +2638,20 @@ class Table(collections.abc.MutableMapping):
         if len(y_labels) > 1 and group is not None and overlay:
             warnings.warn("Group and overlay are incompatible in a scatter")
             overlay = False
+        if group is not None and fit_line:
+            # The current implementation of scatter will error if group is specified and fit_line 
+            # are both specified, so this condition just does not draw a fit line
+            warnings.warn("Group and fit line are incompatible in a scatter")
+            fit_line = False 
 
-        colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors), len(y_labels)))
+        group_vals = []
+        if group:
+            group_vals = list(set(self[group])) 
+            grouped_x_data = []
+            for val in group_vals:
+                grouped_x_data.append(x_data[self.column(group) == val])
+            overlay = False
+        colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors), max(len(y_labels), len(group_vals))))
 
         if overlay:
             fig = go.Figure()
@@ -2673,55 +2684,81 @@ class Table(collections.abc.MutableMapping):
         else:
             fig = make_subplots(rows = len(y_labels), cols = 1)
             for i, label in enumerate(y_labels):
-                fig.append_trace(go.Scatter(
-                    x = x_data,
-                    y = self[label],
-                    name = label, 
-                    marker_color = colors[i], 
-                    mode = "markers",
-                ), row = i + 1, col = 1)
-                if fit_line:
-                    m, b = np.polyfit(x_data, self[label], 1)
-                    fig.add_trace(go.Scatter(
-                        x = x_data, 
-                        y = m * x_data + b, 
-                        name = " ".join([label, "best fit line"]), 
+                if not group:
+                    fig.append_trace(go.Scatter(
+                        x = x_data,
+                        y = self[label],
+                        name = label, 
                         marker_color = colors[i], 
-                        hovertemplate = "".join([str(m), " * x + ", str(b)]), 
-                        mode = "lines"
+                        mode = "markers",
                     ), row = i + 1, col = 1)
+                    if fit_line:
+                        m, b = np.polyfit(x_data, self[label], 1)
+                        fig.add_trace(go.Scatter(
+                            x = x_data, 
+                            y = m * x_data + b, 
+                            name = " ".join([label, "best fit line"]), 
+                            marker_color = colors[i], 
+                            hovertemplate = "".join([str(m), " * x + ", str(b)]), 
+                            mode = "lines"
+                        ), row = i + 1, col = 1)
+                else:
+                    grouped_y_data = []
+                    for val in group_vals:
+                        grouped_y_data.append(self[label][self.column(group) == val])
+                    for group_index in range(len(group_vals)):
+                        if group_index == 0:
+                            fig.append_trace(go.Scatter(
+                                x = grouped_x_data[group_index],
+                                y = grouped_y_data[group_index], 
+                                name = "=".join([group, str(group_vals[group_index])]),
+                                marker_color = colors[group_index], 
+                                mode = "markers",
+                                showlegend = i == 0
+                            ), row = i + 1, col = 1)
+                        else:
+                            fig.add_trace(go.Scatter(
+                                x = grouped_x_data[group_index],
+                                y = grouped_y_data[group_index],
+                                name = "=".join([group, str(group_vals[group_index])]),
+                                marker_color = colors[group_index],
+                                mode = "markers",
+                                showlegend = i == 0
+                            ), row = i + 1, col = 1)
+                    
                 fig.update_xaxes(title_text = column_for_x, row = i + 1, col = 1)
                 fig.update_yaxes(title_text = label, row = i + 1, col = 1)
+
         fig.show()
 
     def scatter(self, column_for_x, select=None, overlay=True, fit_line=False,
         group=None, labels=None, sizes=None, width=5, height=5, s=20,
         colors=None, **vargs):
-        """Creates scatterplots, optionally adding a line of best fit.
+        """creates scatterplots, optionally adding a line of best fit.
 
-        Args:
-            ``column_for_x`` (``str``): The column to use for the x-axis values
+        args:
+            ``column_for_x`` (``str``): the column to use for the x-axis values
                 and label of the scatter plots.
 
-        Kwargs:
-            ``overlay`` (``bool``): If true, creates a chart with one color
-                per data column; if False, each plot will be displayed separately.
+        kwargs:
+            ``overlay`` (``bool``): if true, creates a chart with one color
+                per data column; if false, each plot will be displayed separately.
 
             ``fit_line`` (``bool``): draw a line of best fit for each set of points.
 
-            ``vargs``: Additional arguments that get passed into `plt.scatter`.
-                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.scatter
-                for additional arguments that can be passed into vargs. These
+            ``vargs``: additional arguments that get passed into `plt.scatter`.
+                see http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.scatter
+                for additional arguments that can be passed into vargs. these
                 include: `marker` and `norm`, to name a couple.
 
-            ``group``: A column of categories to be used for coloring dots per
+            ``group``: a column of categories to be used for coloring dots per
                 each category grouping.
 
-            ``labels``: A column of text labels to annotate dots.
+            ``labels``: a column of text labels to annotate dots.
 
-            ``sizes``:  A column of values to set the relative areas of dots.
+            ``sizes``:  a column of values to set the relative areas of dots.
 
-            ``s``: Size of dots. If sizes is also provided, then dots will be
+            ``s``: size of dots. if sizes is also provided, then dots will be
                 in the range 0 to 2 * s.
 
             ``colors``: (deprecated) A synonym for ``group``. Retained
