@@ -2322,124 +2322,6 @@ class Table(collections.abc.MutableMapping):
         """
         self.group(column_label).bar(column_label, **vargs)
 
-    def ibarh(self, column_for_categories=None, select=None, overlay=True, width=None, **vargs):
-        """Plot horizontal bar charts for the table.
-
-        Args:
-            ``column_for_categories`` (``str``): A column containing y-axis categories
-                used to create buckets for bar chart.
-
-        Kwargs:
-            overlay (bool): create a chart with one color per data column;
-                if False, each will be displayed separately.
-
-            vargs: Additional arguments that get passed into `plt.barh`.
-                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.barh
-                for additional arguments that can be passed into vargs.
-
-        Raises:
-            ValueError -- Every selected except column for ``column_for_categories``
-                must be numerical.
-
-        Returns:
-            Horizontal bar graph with buckets specified by ``column_for_categories``.
-            Each plot is labeled using the values in ``column_for_categories``
-            and one plot is produced for every other column (or for the columns
-            designated by ``select``).
-
-        >>> t = Table().with_columns(
-        ...     'Furniture', make_array('chairs', 'tables', 'desks'),
-        ...     'Count', make_array(6, 1, 2),
-        ...     'Price', make_array(10, 20, 30)
-        ...     )
-        >>> t
-        Furniture | Count | Price
-        chairs    | 6     | 10
-        tables    | 1     | 20
-        desks     | 2     | 30
-        >>> furniture_table.barh('Furniture') # doctest: +SKIP
-        <bar graph with furniture as categories and bars for count and price>
-        >>> furniture_table.barh('Furniture', 'Price') # doctest: +SKIP
-        <bar graph with furniture as categories and bars for price>
-        >>> furniture_table.barh('Furniture', make_array(1, 2)) # doctest: +SKIP
-        <bar graph with furniture as categories and bars for count and price>
-        """
-        options = self.default_options.copy()
-        options.update(vargs)
-
-        yticks, labels = self._split_column_and_labels(column_for_categories)
-        # reverse yticks so they're in same order as barh
-        yticks = yticks[::-1]
-        if select is not None:
-            labels = self._as_labels(select)
-        ylabel = self._as_label(column_for_categories)
-
-        def make_unique_labels(labels):
-        # Since Plotly bar charts don't allow duplicate labels, this function
-        # takes in a list of labels and pads duplicates with a unique amount of
-        # zero width white space.
-            unique_labels = list(set(labels))
-            if len(unique_labels) != len(labels):
-                space_count = dict(zip(unique_labels, [0] * len(unique_labels)))
-                updated_labels = [''] * len(labels)
-                for i in range(len(labels)):
-                    updated_labels[i] = ''.join(['\u200c' * space_count[labels[i]], labels[i], '  '])
-                    space_count[labels[i]] += 1
-                return updated_labels
-            return labels
-        yticks_unique = make_unique_labels(yticks)
-        
-        colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors), len(labels)))
-
-        if 'height' in options:
-            height = options.pop('height')
-        else:
-            bar_width = 20
-            margin = 5
-            if overlay:
-                height = max(len(yticks) * (margin + bar_width * len(labels)), 400)
-            else:
-                subplot_heights = [max(len(yticks) * (margin + bar_width), 400)] * len(labels)
-                height = subplot_heights[0] * len(labels)
-
-        if overlay:
-            fig = go.Figure()
-            if width:
-                fig.update_layout(width = width)
-            if height:
-                fig.update_layout(height = height)
-            for i in range(len(labels)):
-                fig.add_trace(go.Bar(
-                    x = np.flip(self.column(labels[i])), # flipping so this matches the order of yticks
-                    y = yticks_unique,
-                    name = labels[i],
-                    orientation = 'h',
-                    marker_color = colors[i],
-                    customdata = yticks,
-                    hovertemplate = '(%{x}, %{customdata})'))
-            fig.update_yaxes(title_text = ylabel, type = 'category', dtick = 1, showticklabels = True)
-            if len(labels) == 1:
-                fig.update_xaxes(title_text = labels[0])
-                
-        else:
-            fig = make_subplots(rows = len(labels), cols = 1, vertical_spacing = 0.06, row_heights = subplot_heights)
-            if width:
-                fig.update_layout(width = width)
-            if height:
-                fig.update_layout(height = height)
-            for i in range(len(labels)):
-                fig.append_trace(go.Bar(
-                    x = np.flip(self.column(labels[i])), # flipping so this matches the order of yticks
-                    y = yticks_unique,
-                    name = labels[i],
-                    orientation = 'h',
-                    customdata = yticks, 
-                    hovertemplate = '(%{x}, %{customdata})',
-                    marker_color = colors[i]), row = i + 1, col = 1)
-                fig.update_yaxes(title_text = ylabel, type = 'category', dtick = 1, showticklabels = True)
-                fig.update_xaxes(title_text = labels[i], row = i + 1, col = 1)
-        fig.show()
-
     def barh(self, column_for_categories=None, select=None, overlay=True, width=6, **vargs):
         """Plot horizontal bar charts for the table.
         Args:
@@ -2523,6 +2405,141 @@ class Table(collections.abc.MutableMapping):
 
         self._visualize('', labels, yticks, overlay, draw, annotate, width=width, height=height)
 
+    def ibarh(self, column_for_categories=None, select=None, overlay=True, width=None, **vargs):
+        """Plot horizontal bar charts for the table.
+
+        Args:
+            ``column_for_categories`` (``str``): A column containing y-axis categories
+                used to create buckets for bar chart.
+
+        Kwargs:
+            overlay (bool): create a chart with one color per data column;
+                if False, each will be displayed separately.
+
+            vargs: Additional arguments that get passed into `plt.barh`.
+                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.barh
+                for additional arguments that can be passed into vargs.
+
+        Raises:
+            ValueError -- Every selected except column for ``column_for_categories``
+                must be numerical.
+
+        Returns:
+            Horizontal bar graph with buckets specified by ``column_for_categories``.
+            Each plot is labeled using the values in ``column_for_categories``
+            and one plot is produced for every other column (or for the columns
+            designated by ``select``).
+
+        >>> t = Table().with_columns(
+        ...     'Furniture', make_array('chairs', 'tables', 'desks'),
+        ...     'Count', make_array(6, 1, 2),
+        ...     'Price', make_array(10, 20, 30)
+        ...     )
+        >>> t
+        Furniture | Count | Price
+        chairs    | 6     | 10
+        tables    | 1     | 20
+        desks     | 2     | 30
+        >>> furniture_table.barh('Furniture') # doctest: +SKIP
+        <bar graph with furniture as categories and bars for count and price>
+        >>> furniture_table.barh('Furniture', 'Price') # doctest: +SKIP
+        <bar graph with furniture as categories and bars for price>
+        >>> furniture_table.barh('Furniture', make_array(1, 2)) # doctest: +SKIP
+        <bar graph with furniture as categories and bars for count and price>
+        """
+        options = self.default_options.copy()
+        options.update(vargs)
+
+        yticks, labels = self._split_column_and_labels(column_for_categories)
+
+        # reverse yticks so they're in same order as barh
+        yticks = yticks[::-1]
+
+        if select is not None:
+            labels = self._as_labels(select)
+
+        ylabel = self._as_label(column_for_categories)
+
+        def make_unique_labels(labels):
+        # Since Plotly bar charts don't allow duplicate labels, this function
+        # takes in a list of labels and pads duplicates with a unique amount of
+        # zero width white space.
+            unique_labels = list(set(labels))
+            if len(unique_labels) != len(labels):
+                space_count = dict(zip(unique_labels, [0] * len(unique_labels)))
+                updated_labels = [''] * len(labels)
+                for i in range(len(labels)):
+                    updated_labels[i] = ''.join(['\u200c' * space_count[labels[i]], labels[i], '  '])
+                    space_count[labels[i]] += 1
+                return updated_labels
+            return labels
+
+        yticks_unique = make_unique_labels(yticks)
+        
+        colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors), len(labels)))
+
+        if 'height' in options:
+            height = options.pop('height')
+
+        else:
+            bar_width = 20
+            margin = 5
+
+            if overlay:
+                height = max(len(yticks) * (margin + bar_width * len(labels)), 400)
+
+            else:
+                subplot_heights = [max(len(yticks) * (margin + bar_width), 400)] * len(labels)
+                height = subplot_heights[0] * len(labels)
+
+        if overlay:
+            fig = go.Figure()
+
+            if width:
+                fig.update_layout(width = width)
+
+            if height:
+                fig.update_layout(height = height)
+
+            for i in range(len(labels)):
+                fig.add_trace(go.Bar(
+                    x = np.flip(self.column(labels[i])), # flipping so this matches the order of yticks
+                    y = yticks_unique,
+                    name = labels[i],
+                    orientation = 'h',
+                    marker_color = colors[i],
+                    customdata = yticks,
+                    hovertemplate = '(%{x}, %{customdata})'))
+
+            fig.update_yaxes(title_text = ylabel, type = 'category', dtick = 1, showticklabels = True)
+
+            if len(labels) == 1:
+                fig.update_xaxes(title_text = labels[0])
+                
+        else:
+            fig = make_subplots(rows = len(labels), cols = 1, vertical_spacing = 0.06, row_heights = subplot_heights)
+
+            if width:
+                fig.update_layout(width = width)
+
+            if height:
+                fig.update_layout(height = height)
+
+            for i in range(len(labels)):
+                fig.append_trace(go.Bar(
+                    x = np.flip(self.column(labels[i])), # flipping so this matches the order of yticks
+                    y = yticks_unique,
+                    name = labels[i],
+                    orientation = 'h',
+                    customdata = yticks, 
+                    hovertemplate = '(%{x}, %{customdata})',
+                    marker_color = colors[i]), row = i + 1, col = 1)
+
+                fig.update_yaxes(title_text = ylabel, type = 'category', dtick = 1, showticklabels = True)
+                fig.update_xaxes(title_text = labels[i], row = i + 1, col = 1)
+        
+        fig.show()
+
     def group_barh(self, column_label, **vargs):
         """Plot a horizontal bar chart for the table.
 
@@ -2551,6 +2568,144 @@ class Table(collections.abc.MutableMapping):
                 for additional arguments that can be passed into vargs.
         """
         self.group(column_label).barh(column_label, **vargs)
+
+    def scatter(self, column_for_x, select=None, overlay=True, fit_line=False,
+        group=None, labels=None, sizes=None, width=5, height=5, s=20,
+        colors=None, **vargs):
+        """creates scatterplots, optionally adding a line of best fit.
+
+        args:
+            ``column_for_x`` (``str``): the column to use for the x-axis values
+                and label of the scatter plots.
+
+        kwargs:
+            ``overlay`` (``bool``): if true, creates a chart with one color
+                per data column; if false, each plot will be displayed separately.
+
+            ``fit_line`` (``bool``): draw a line of best fit for each set of points.
+
+            ``vargs``: additional arguments that get passed into `plt.scatter`.
+                see http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.scatter
+                for additional arguments that can be passed into vargs. these
+                include: `marker` and `norm`, to name a couple.
+
+            ``group``: a column of categories to be used for coloring dots per
+                each category grouping.
+
+            ``labels``: a column of text labels to annotate dots.
+
+            ``sizes``:  a column of values to set the relative areas of dots.
+
+            ``s``: size of dots. if sizes is also provided, then dots will be
+                in the range 0 to 2 * s.
+
+            ``colors``: (deprecated) A synonym for ``group``. Retained
+                temporarily for backwards compatibility. This argument
+                will be removed in future releases.
+
+        Raises:
+            ValueError -- Every column, ``column_for_x`` or ``select``, must be numerical
+
+        Returns:
+            Scatter plot of values of ``column_for_x`` plotted against
+            values for all other columns in self. Each plot uses the values in
+            `column_for_x` for horizontal positions. One plot is produced for
+            all other columns in self as y (or for the columns designated by
+            `select`).
+
+
+        >>> table = Table().with_columns(
+        ...     'x', make_array(9, 3, 3, 1),
+        ...     'y', make_array(1, 2, 2, 10),
+        ...     'z', make_array(3, 4, 5, 6))
+        >>> table
+        x    | y    | z
+        9    | 1    | 3
+        3    | 2    | 4
+        3    | 2    | 5
+        1    | 10   | 6
+        >>> table.scatter('x') # doctest: +SKIP
+        <scatterplot of values in y and z on x>
+
+        >>> table.scatter('x', overlay=False) # doctest: +SKIP
+        <scatterplot of values in y on x>
+        <scatterplot of values in z on x>
+
+        >>> table.scatter('x', fit_line=True) # doctest: +SKIP
+        <scatterplot of values in y and z on x with lines of best fit>
+        """
+        global _INTERACTIVE_PLOTS
+        if _INTERACTIVE_PLOTS:
+            return self.iscatter(
+                column_for_x = column_for_x, 
+                select = select, 
+                overlay = overlay, 
+                fit_line = fit_line,
+                group = group,
+                labels = labels,
+                sizes = sizes,
+                s = s / 4, # Plotly dot sizes are much smaller, so divide s by 4
+                colors = colors,
+                **vargs
+            )
+
+        options = self.default_options.copy()
+        options.update(vargs)
+
+        x_data, y_labels =  self._split_column_and_labels(column_for_x)
+        if group is not None and colors is not None and group != colors:
+            warnings.warn("Do not pass both colors and group to scatter().")
+        if group is None and colors is not None:
+            # Backward compatibility
+            group = colors
+            # TODO: In a future release, warn that this is deprecated.
+            # Deprecated
+            # warnings.warn("scatter(colors=x) is deprecated. Use scatter(group=x)", FutureWarning)
+        if group is not None:
+            y_labels.remove(self._as_label(group))
+        if sizes is not None:
+            y_labels.remove(self._as_label(sizes))
+        if select is not None:
+            y_labels = self._as_labels(select)
+        if len(y_labels) > 1 and group is not None and overlay:
+            warnings.warn("Group and overlay are incompatible in a scatter")
+            overlay = False
+
+        def draw(axis, label, color):
+            if group is not None:
+                colored = sorted(np.unique(self.column(group)))
+                color_list = list(itertools.islice(itertools.cycle(self.chart_colors), len(colored)))
+                color_map = collections.OrderedDict(zip(colored, color_list))
+                color = [color_map[x] for x in self.column(group)]
+            elif 'color' in options:
+                color = options.pop('color')
+            y_data = self[label]
+            if sizes is not None:
+                max_size = max(self[sizes]) ** 0.5
+                size = 2 * s * self[sizes] ** 0.5 / max_size
+            else:
+                size = s
+            axis.scatter(x_data, y_data, color=color, s=size, **options)
+            if fit_line:
+                m, b = np.polyfit(x_data, self[label], 1)
+                minx, maxx = np.min(x_data),np.max(x_data)
+                axis.plot([minx,maxx],[m*minx+b,m*maxx+b], color=color)
+            if labels is not None:
+                for x, y, label in zip(x_data, y_data, self[labels]):
+                    axis.annotate(label, (x, y),
+                        xytext=(-20, 20),
+                        textcoords='offset points', ha='right', va='bottom',
+                        bbox=dict(boxstyle='round,pad=0.5', fc='white', alpha=0.7),
+                        arrowprops = dict(arrowstyle = '->', connectionstyle = 'arc3,rad=0', color='black'))
+            if group is not None:
+                import matplotlib.patches as mpatches
+                group_col_name = self._as_label(group)
+                patches = [mpatches.Patch(color=c, label="{0}={1}".format(group_col_name, v)) \
+                    for (v, c) in color_map.items()]
+                axis.legend(loc=2, bbox_to_anchor=(1.05, 1), handles=patches)
+
+        x_label = self._as_label(column_for_x)
+        self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x, width=width, height=height)
 
     def iscatter(self, column_for_x, select=None, overlay=True, fit_line=False,
         group=None, labels=None, sizes=None, width=None, height=None, s=5,
@@ -2621,23 +2776,30 @@ class Table(collections.abc.MutableMapping):
         options.update(vargs)
 
         x_data, y_labels =  self._split_column_and_labels(column_for_x)
+
         if group is not None and colors is not None and group != colors:
             warnings.warn("Do not pass both colors and group to scatter().")
+
         if group is None and colors is not None:
             # Backward compatibility
             group = colors
             # TODO: In a future release, warn that this is deprecated.
             # Deprecated
             warnings.warn("scatter(colors=x) is deprecated. Use scatter(group=x)", FutureWarning)
+
         if group is not None:
             y_labels.remove(self._as_label(group))
+
         if sizes is not None:
             y_labels.remove(self._as_label(sizes))
+
         if select is not None:
             y_labels = self._as_labels(select)
+
         if len(y_labels) > 1 and group is not None and overlay:
             warnings.warn("Group and overlay are incompatible in a scatter")
             overlay = False
+
         if group is not None and fit_line:
             # The current implementation of scatter will error if group is specified and fit_line 
             # are both specified, so this condition just does not draw a fit line
@@ -2651,6 +2813,7 @@ class Table(collections.abc.MutableMapping):
             for val in group_vals:
                 grouped_x_data.append(x_data[self.column(group) == val])
             overlay = False
+
         colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors), max(len(y_labels), len(group_vals))))
 
         size = None
@@ -2662,10 +2825,13 @@ class Table(collections.abc.MutableMapping):
         
         if overlay:
             fig = go.Figure()
+
             if width:
                 fig.update_layout(width = width)
+
             if height:
                 fig.update_layout(height = height)
+
             for i, label in enumerate(y_labels):
                 fig.add_trace(go.Scatter(
                     x = x_data,
@@ -2678,6 +2844,7 @@ class Table(collections.abc.MutableMapping):
                     textposition = "bottom center",
                     textfont = dict(color = colors[i])
                 ))
+
                 if fit_line:
                     m, b = np.polyfit(x_data, self[label], 1)
                     fig.add_trace(go.Scatter(
@@ -2688,10 +2855,12 @@ class Table(collections.abc.MutableMapping):
                         hovertemplate = "".join([str(m), " * x + ", str(b)]), 
                         mode = "lines"
                     ))
+
             fig.update_layout(
                 xaxis_title = column_for_x,
                 yaxis_title = y_labels[0] if len(y_labels) == 1 else None,
             )
+
         else:
             fig = make_subplots(rows = len(y_labels), cols = 1)
             for i, label in enumerate(y_labels):
@@ -2707,6 +2876,7 @@ class Table(collections.abc.MutableMapping):
                         textposition = "bottom center",
                         textfont = dict(color = colors[i])
                     ), row = i + 1, col = 1)
+
                     if fit_line:
                         m, b = np.polyfit(x_data, self[label], 1)
                         fig.add_trace(go.Scatter(
@@ -2717,10 +2887,12 @@ class Table(collections.abc.MutableMapping):
                             hovertemplate = "".join([str(m), " * x + ", str(b)]), 
                             mode = "lines"
                         ), row = i + 1, col = 1)
+                        
                 else:
                     grouped_y_data = []
                     for val in group_vals:
                         grouped_y_data.append(self[label][self.column(group) == val])
+
                     for group_index in range(len(group_vals)):
                         if group_index == 0:
                             fig.append_trace(go.Scatter(
@@ -2735,6 +2907,7 @@ class Table(collections.abc.MutableMapping):
                                 textposition = "bottom center",
                                 textfont = dict(color = colors[i])
                             ), row = i + 1, col = 1)
+                            
                         else:
                             fig.add_trace(go.Scatter(
                                 x = grouped_x_data[group_index],
@@ -2753,142 +2926,6 @@ class Table(collections.abc.MutableMapping):
                 fig.update_yaxes(title_text = label, row = i + 1, col = 1)
 
         fig.show()
-
-    def scatter(self, column_for_x, select=None, overlay=True, fit_line=False,
-        group=None, labels=None, sizes=None, width=5, height=5, s=20,
-        colors=None, **vargs):
-        """creates scatterplots, optionally adding a line of best fit.
-
-        args:
-            ``column_for_x`` (``str``): the column to use for the x-axis values
-                and label of the scatter plots.
-
-        kwargs:
-            ``overlay`` (``bool``): if true, creates a chart with one color
-                per data column; if false, each plot will be displayed separately.
-
-            ``fit_line`` (``bool``): draw a line of best fit for each set of points.
-
-            ``vargs``: additional arguments that get passed into `plt.scatter`.
-                see http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.scatter
-                for additional arguments that can be passed into vargs. these
-                include: `marker` and `norm`, to name a couple.
-
-            ``group``: a column of categories to be used for coloring dots per
-                each category grouping.
-
-            ``labels``: a column of text labels to annotate dots.
-
-            ``sizes``:  a column of values to set the relative areas of dots.
-
-            ``s``: size of dots. if sizes is also provided, then dots will be
-                in the range 0 to 2 * s.
-
-            ``colors``: (deprecated) A synonym for ``group``. Retained
-                temporarily for backwards compatibility. This argument
-                will be removed in future releases.
-
-        Raises:
-            ValueError -- Every column, ``column_for_x`` or ``select``, must be numerical
-
-        Returns:
-            Scatter plot of values of ``column_for_x`` plotted against
-            values for all other columns in self. Each plot uses the values in
-            `column_for_x` for horizontal positions. One plot is produced for
-            all other columns in self as y (or for the columns designated by
-            `select`).
-
-
-        >>> table = Table().with_columns(
-        ...     'x', make_array(9, 3, 3, 1),
-        ...     'y', make_array(1, 2, 2, 10),
-        ...     'z', make_array(3, 4, 5, 6))
-        >>> table
-        x    | y    | z
-        9    | 1    | 3
-        3    | 2    | 4
-        3    | 2    | 5
-        1    | 10   | 6
-        >>> table.scatter('x') # doctest: +SKIP
-        <scatterplot of values in y and z on x>
-
-        >>> table.scatter('x', overlay=False) # doctest: +SKIP
-        <scatterplot of values in y on x>
-        <scatterplot of values in z on x>
-
-        >>> table.scatter('x', fit_line=True) # doctest: +SKIP
-        <scatterplot of values in y and z on x with lines of best fit>
-        """
-        global _INTERACTIVE_PLOTS
-        if _INTERACTIVE_PLOTS:
-            return self.iscatter(column_for_x = column_for_x, 
-                select = select, 
-                overlay = overlay, 
-                fit_line = fit_line,
-                group = group,
-                labels = labels,
-                sizes = sizes,
-                s = s / 4, # Plotly dot sizes are much smaller, so divide s by 4
-                colors = colors,
-                **vargs)
-
-        options = self.default_options.copy()
-        options.update(vargs)
-
-        x_data, y_labels =  self._split_column_and_labels(column_for_x)
-        if group is not None and colors is not None and group != colors:
-            warnings.warn("Do not pass both colors and group to scatter().")
-        if group is None and colors is not None:
-            # Backward compatibility
-            group = colors
-            # TODO: In a future release, warn that this is deprecated.
-            # Deprecated
-            # warnings.warn("scatter(colors=x) is deprecated. Use scatter(group=x)", FutureWarning)
-        if group is not None:
-            y_labels.remove(self._as_label(group))
-        if sizes is not None:
-            y_labels.remove(self._as_label(sizes))
-        if select is not None:
-            y_labels = self._as_labels(select)
-        if len(y_labels) > 1 and group is not None and overlay:
-            warnings.warn("Group and overlay are incompatible in a scatter")
-            overlay = False
-
-        def draw(axis, label, color):
-            if group is not None:
-                colored = sorted(np.unique(self.column(group)))
-                color_list = list(itertools.islice(itertools.cycle(self.chart_colors), len(colored)))
-                color_map = collections.OrderedDict(zip(colored, color_list))
-                color = [color_map[x] for x in self.column(group)]
-            elif 'color' in options:
-                color = options.pop('color')
-            y_data = self[label]
-            if sizes is not None:
-                max_size = max(self[sizes]) ** 0.5
-                size = 2 * s * self[sizes] ** 0.5 / max_size
-            else:
-                size = s
-            axis.scatter(x_data, y_data, color=color, s=size, **options)
-            if fit_line:
-                m, b = np.polyfit(x_data, self[label], 1)
-                minx, maxx = np.min(x_data),np.max(x_data)
-                axis.plot([minx,maxx],[m*minx+b,m*maxx+b], color=color)
-            if labels is not None:
-                for x, y, label in zip(x_data, y_data, self[labels]):
-                    axis.annotate(label, (x, y),
-                        xytext=(-20, 20),
-                        textcoords='offset points', ha='right', va='bottom',
-                        bbox=dict(boxstyle='round,pad=0.5', fc='white', alpha=0.7),
-                        arrowprops = dict(arrowstyle = '->', connectionstyle = 'arc3,rad=0', color='black'))
-            if group is not None:
-                import matplotlib.patches as mpatches
-                group_col_name = self._as_label(group)
-                patches = [mpatches.Patch(color=c, label="{0}={1}".format(group_col_name, v)) \
-                    for (v, c) in color_map.items()]
-                axis.legend(loc=2, bbox_to_anchor=(1.05, 1), handles=patches)
-
-        x_label = self._as_label(column_for_x)
-        self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x, width=width, height=height)
 
     def _visualize(self, x_label, y_labels, ticks, overlay, draw, annotate, width=6, height=4):
         """Generic visualization that overlays or separates the draw function.
