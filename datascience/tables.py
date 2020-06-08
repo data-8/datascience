@@ -2146,8 +2146,8 @@ class Table(collections.abc.MutableMapping):
 
         self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x, width=width, height=height)
     
-    def iplot(self, column_for_xticks=None, select=None, overlay=True, width=None, height=None, **vargs):
-        """Plot line charts for the table.
+    def iplot(self, column_for_xticks=None, select=None, overlay=True, width=None, height=None):
+        """Plot interactive line charts for the table using plotly.
 
         Args:
             column_for_xticks (``str/array``): A column containing x-axis labels
@@ -2156,9 +2156,10 @@ class Table(collections.abc.MutableMapping):
             overlay (bool): create a chart with one color per data column;
                 if False, each plot will be displayed separately.
 
-            vargs: Additional arguments that get passed into `plt.plot`.
-                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot
-                for additional arguments that can be passed into vargs.
+            width (int): the width (in pixels) of the plot area
+
+            height (int): the height (in pixels) of the plot area
+        
         Raises:
             ValueError -- Every selected column must be numerical.
 
@@ -2179,17 +2180,7 @@ class Table(collections.abc.MutableMapping):
         3    | 95.5  | 82.5
         4    | 82    | 83
         5    | 82    | 82.5
-        >>> table.plot('days') # doctest: +SKIP
-        <line graph with days as x-axis and lines for price and projection>
-        >>> table.plot('days', overlay=False) # doctest: +SKIP
-        <line graph with days as x-axis and line for price>
-        <line graph with days as x-axis and line for projection>
-        >>> table.plot('days', 'price') # doctest: +SKIP
-        <line graph with days as x-axis and line for price>
         """
-        options = self.default_options.copy()
-        options.update(vargs)
-
         if column_for_xticks is not None:
             x_data, y_labels = self._split_column_and_labels(column_for_xticks)
             x_label = self._as_label(column_for_xticks)
@@ -2405,7 +2396,7 @@ class Table(collections.abc.MutableMapping):
 
         self._visualize('', labels, yticks, overlay, draw, annotate, width=width, height=height)
 
-    def ibarh(self, column_for_categories=None, select=None, overlay=True, width=None, **vargs):
+    def ibarh(self, column_for_categories=None, select=None, overlay=True, width=None):
         """Plot horizontal bar charts for the table.
 
         Args:
@@ -2416,9 +2407,9 @@ class Table(collections.abc.MutableMapping):
             overlay (bool): create a chart with one color per data column;
                 if False, each will be displayed separately.
 
-            vargs: Additional arguments that get passed into `plt.barh`.
-                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.barh
-                for additional arguments that can be passed into vargs.
+            width (int): the width (in pixels) of the plot area
+
+            height (int): the height (in pixels) of the plot area
 
         Raises:
             ValueError -- Every selected except column for ``column_for_categories``
@@ -2440,16 +2431,7 @@ class Table(collections.abc.MutableMapping):
         chairs    | 6     | 10
         tables    | 1     | 20
         desks     | 2     | 30
-        >>> furniture_table.barh('Furniture') # doctest: +SKIP
-        <bar graph with furniture as categories and bars for count and price>
-        >>> furniture_table.barh('Furniture', 'Price') # doctest: +SKIP
-        <bar graph with furniture as categories and bars for price>
-        >>> furniture_table.barh('Furniture', make_array(1, 2)) # doctest: +SKIP
-        <bar graph with furniture as categories and bars for count and price>
         """
-        options = self.default_options.copy()
-        options.update(vargs)
-
         yticks, labels = self._split_column_and_labels(column_for_categories)
 
         # reverse yticks so they're in same order as barh
@@ -2478,19 +2460,15 @@ class Table(collections.abc.MutableMapping):
         
         colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors), len(labels)))
 
-        if 'height' in options:
-            height = options.pop('height')
+        bar_width = 20
+        margin = 5
+
+        if overlay:
+            height = max(len(yticks) * (margin + bar_width * len(labels)), 400)
 
         else:
-            bar_width = 20
-            margin = 5
-
-            if overlay:
-                height = max(len(yticks) * (margin + bar_width * len(labels)), 400)
-
-            else:
-                subplot_heights = [max(len(yticks) * (margin + bar_width), 400)] * len(labels)
-                height = subplot_heights[0] * len(labels)
+            subplot_heights = [max(len(yticks) * (margin + bar_width), 400)] * len(labels)
+            height = subplot_heights[0] * len(labels)
 
         if overlay:
             fig = go.Figure()
@@ -2709,7 +2687,7 @@ class Table(collections.abc.MutableMapping):
 
     def iscatter(self, column_for_x, select=None, overlay=True, fit_line=False,
         group=None, labels=None, sizes=None, width=None, height=None, s=5,
-        colors=None, **vargs):
+        colors=None):
         """Creates scatterplots, optionally adding a line of best fit.
 
         Args:
@@ -2722,17 +2700,16 @@ class Table(collections.abc.MutableMapping):
 
             ``fit_line`` (``bool``): draw a line of best fit for each set of points.
 
-            ``vargs``: Additional arguments that get passed into `plt.scatter`.
-                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.scatter
-                for additional arguments that can be passed into vargs. These
-                include: `marker` and `norm`, to name a couple.
-
             ``group``: A column of categories to be used for coloring dots per
                 each category grouping.
 
             ``labels``: A column of text labels to annotate dots.
 
             ``sizes``:  A column of values to set the relative areas of dots.
+
+            ``width`` (``int``): the width (in pixels) of the plot area
+
+            ``height`` (``int``): the height (in pixels) of the plot area
 
             ``s``: Size of dots. If sizes is also provided, then dots will be
                 in the range 0 to 2 * s.
@@ -2762,19 +2739,7 @@ class Table(collections.abc.MutableMapping):
         3    | 2    | 4
         3    | 2    | 5
         1    | 10   | 6
-        >>> table.scatter('x') # doctest: +SKIP
-        <scatterplot of values in y and z on x>
-
-        >>> table.scatter('x', overlay=False) # doctest: +SKIP
-        <scatterplot of values in y on x>
-        <scatterplot of values in z on x>
-
-        >>> table.scatter('x', fit_line=True) # doctest: +SKIP
-        <scatterplot of values in y and z on x with lines of best fit>
         """
-        options = self.default_options.copy()
-        options.update(vargs)
-
         x_data, y_labels =  self._split_column_and_labels(column_for_x)
 
         if group is not None and colors is not None and group != colors:
