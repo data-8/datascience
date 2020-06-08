@@ -2180,6 +2180,9 @@ class Table(collections.abc.MutableMapping):
         3    | 95.5  | 82.5
         4    | 82    | 83
         5    | 82    | 82.5
+        >>> table.iplot("price", "projection") # doctest: +SKIP
+        >>> table.iplot("days", make_array("price", "projection")) # doctest: +SKIP
+        >>> table.iplot("days", make_array("price", "projection"), overlay=False) # doctest: +SKIP
         """
         if column_for_xticks is not None:
             x_data, y_labels = self._split_column_and_labels(column_for_xticks)
@@ -2431,6 +2434,9 @@ class Table(collections.abc.MutableMapping):
         chairs    | 6     | 10
         tables    | 1     | 20
         desks     | 2     | 30
+        >>> furniture_table.barh('Furniture') # doctest: +SKIP
+        >>> furniture_table.barh('Furniture', 'Price') # doctest: +SKIP
+        >>> furniture_table.barh('Furniture', make_array(1, 2)) # doctest: +SKIP
         """
         yticks, labels = self._split_column_and_labels(column_for_categories)
 
@@ -2739,6 +2745,9 @@ class Table(collections.abc.MutableMapping):
         3    | 2    | 4
         3    | 2    | 5
         1    | 10   | 6
+        >>> table.scatter('x') # doctest: +SKIP
+        >>> table.scatter('x', overlay=False) # doctest: +SKIP
+        >>> table.scatter('x', fit_line=True) # doctest: +SKIP
         """
         x_data, y_labels =  self._split_column_and_labels(column_for_x)
 
