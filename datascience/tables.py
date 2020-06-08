@@ -2460,6 +2460,7 @@ class Table(collections.abc.MutableMapping):
                     updated_labels[i] = ''.join(['\u200c' * space_count[labels[i]], labels[i], '  '])
                     space_count[labels[i]] += 1
                 return updated_labels
+            labels = ["".join([label, '  ']) for label in labels]
             return labels
 
         yticks_unique = make_unique_labels(yticks)
@@ -2501,7 +2502,7 @@ class Table(collections.abc.MutableMapping):
                 fig.update_xaxes(title_text = labels[0])
                 
         else:
-            fig = make_subplots(rows = len(labels), cols = 1, vertical_spacing = 0.06, row_heights = subplot_heights)
+            fig = make_subplots(rows = len(labels), cols = 1, vertical_spacing = 0.1, row_heights = subplot_heights)
 
             if width:
                 fig.update_layout(width = width)
