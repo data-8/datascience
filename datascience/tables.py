@@ -2077,7 +2077,7 @@ class Table(collections.abc.MutableMapping):
         global _INTERACTIVE_PLOTS
         _INTERACTIVE_PLOTS = False
 
-    def plot(self, column_for_xticks=None, select=None, overlay=True, width=6, height=4, **vargs):
+    def plot(self, column_for_xticks=None, select=None, overlay=True, width=None, height=None, **vargs):
         """Plot line charts for the table.
 
         Args:
@@ -2120,7 +2120,13 @@ class Table(collections.abc.MutableMapping):
         """
         global _INTERACTIVE_PLOTS
         if _INTERACTIVE_PLOTS:
-            return self.iplot(column_for_xticks, select, overlay, **vargs)
+            return self.iplot(column_for_xticks, select, overlay, width, height)
+
+        if width is None:
+            width = 6
+
+        if height is None:
+            height = 4
         
         options = self.default_options.copy()
         options.update(vargs)
@@ -2190,6 +2196,7 @@ class Table(collections.abc.MutableMapping):
         else:
             x_data, y_labels = None, self.labels
             x_label = None
+
         if select is not None:
             y_labels = self._as_labels(select)
 
@@ -2199,6 +2206,7 @@ class Table(collections.abc.MutableMapping):
 
         n = len(y_labels)
         colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors), n))
+
         if overlay:
             fig = go.Figure()
             for i, label in enumerate(y_labels):
@@ -2217,6 +2225,7 @@ class Table(collections.abc.MutableMapping):
                 height=height,
                 width=width
             )
+
         else:
             fig = make_subplots(
                 rows=n, 
@@ -2316,7 +2325,7 @@ class Table(collections.abc.MutableMapping):
         """
         self.group(column_label).bar(column_label, **vargs)
 
-    def barh(self, column_for_categories=None, select=None, overlay=True, width=6, **vargs):
+    def barh(self, column_for_categories=None, select=None, overlay=True, width=None, **vargs):
         """Plot horizontal bar charts for the table.
         Args:
             ``column_for_categories`` (``str``): A column containing y-axis categories
@@ -2356,7 +2365,10 @@ class Table(collections.abc.MutableMapping):
         if _INTERACTIVE_PLOTS:
             # If width not specified, default width originally set to 6, 
             # Multiply by 96 assuming 96 dpi
-            return self.ibarh(column_for_categories, select, overlay, **vargs)
+            return self.ibarh(column_for_categories, select, overlay, width)
+
+        if width is None:
+            width = 6
         
         options = self.default_options.copy()
         # Matplotlib tries to center the labels, but we already handle that
@@ -2555,7 +2567,7 @@ class Table(collections.abc.MutableMapping):
         self.group(column_label).barh(column_label, **vargs)
 
     def scatter(self, column_for_x, select=None, overlay=True, fit_line=False,
-        group=None, labels=None, sizes=None, width=5, height=5, s=20,
+        group=None, labels=None, sizes=None, width=None, height=None, s=20,
         colors=None, **vargs):
         """creates scatterplots, optionally adding a line of best fit.
 
@@ -2630,9 +2642,17 @@ class Table(collections.abc.MutableMapping):
                 labels = labels,
                 sizes = sizes,
                 s = s / 4, # Plotly dot sizes are much smaller, so divide s by 4
+                width =  width,
+                height = height,
                 colors = colors,
                 **vargs
             )
+
+        if width is None:
+            width = 5
+
+        if height is None:
+            height = 5
 
         options = self.default_options.copy()
         options.update(vargs)
