@@ -2434,9 +2434,9 @@ class Table(collections.abc.MutableMapping):
         chairs    | 6     | 10
         tables    | 1     | 20
         desks     | 2     | 30
-        >>> furniture_table.barh('Furniture') # doctest: +SKIP
-        >>> furniture_table.barh('Furniture', 'Price') # doctest: +SKIP
-        >>> furniture_table.barh('Furniture', make_array(1, 2)) # doctest: +SKIP
+        >>> furniture_table.ibarh('Furniture') # doctest: +SKIP
+        >>> furniture_table.ibarh('Furniture', 'Price') # doctest: +SKIP
+        >>> furniture_table.ibarh('Furniture', make_array(1, 2)) # doctest: +SKIP
         """
         yticks, labels = self._split_column_and_labels(column_for_categories)
 
@@ -2746,9 +2746,9 @@ class Table(collections.abc.MutableMapping):
         3    | 2    | 4
         3    | 2    | 5
         1    | 10   | 6
-        >>> table.scatter('x') # doctest: +SKIP
-        >>> table.scatter('x', overlay=False) # doctest: +SKIP
-        >>> table.scatter('x', fit_line=True) # doctest: +SKIP
+        >>> table.iscatter('x') # doctest: +SKIP
+        >>> table.iscatter('x', overlay=False) # doctest: +SKIP
+        >>> table.iscatter('x', fit_line=True) # doctest: +SKIP
         """
         x_data, y_labels =  self._split_column_and_labels(column_for_x)
 
