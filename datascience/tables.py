@@ -2483,10 +2483,10 @@ class Table(collections.abc.MutableMapping):
         margin = 5
 
         if overlay:
-            height = max(len(yticks) * (margin + bar_width * len(labels)), 400)
+            height = max(len(yticks) * (margin + bar_width * len(labels)), 500)
 
         else:
-            subplot_heights = [max(len(yticks) * (margin + bar_width), 400)] * len(labels)
+            subplot_heights = [max(len(yticks) * (margin + bar_width), 500)] * len(labels)
             height = subplot_heights[0] * len(labels)
 
         if overlay:
