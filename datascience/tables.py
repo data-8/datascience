@@ -2934,6 +2934,21 @@ class Table(collections.abc.MutableMapping):
 
         fig.show()
 
+    def scatter3d(self, column_for_x, column_for_y, select=None, overlay=True, fit_line=False,
+        group=None, labels=None, sizes=None, width=None, height=None, s=5,
+        colors=None):
+        global _INTERACTIVE_PLOTS
+        if _INTERACTIVE_PLOTS:
+            self.iscatter3d(
+                column_for_x, column_for_y, select, overlay, fit_line,
+                group, labels, sizes, width, height, s, colors
+            )
+        
+        raise RuntimeError(
+            "scatter3d is a wrapper for iscatter3d and can only be called when interactive "
+            "plots are enabled"
+        )
+
     def iscatter3d(self, column_for_x, column_for_y, select=None, overlay=True, fit_line=False,
         group=None, labels=None, sizes=None, width=None, height=None, s=5,
         colors=None):
@@ -2999,6 +3014,7 @@ class Table(collections.abc.MutableMapping):
         
         if fit_line:
             warnings.warn("fit_line is currently unsupported by iscatter3d", UserWarning)
+            fit_line = False
 
         if group is not None and colors is not None and group != colors:
             warnings.warn("Do not pass both colors and group to scatter3d")
