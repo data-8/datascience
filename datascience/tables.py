@@ -3294,7 +3294,8 @@ class Table(collections.abc.MutableMapping):
         for label, column in zip(pvt_labels,vals):
             t[label] = column
 
-    def hist(self, *columns, overlay=True, bins=None, bin_column=None, unit=None, counts=None, group=None, side_by_side=False, left_end=None, right_end=None, width=6, height=4, **vargs):
+    def hist(self, *columns, overlay=True, bins=None, bin_column=None, unit=None, counts=None, group=None, 
+        side_by_side=False, left_end=None, right_end=None, width=6, height=4, **vargs):
         """Plots one histogram for each column in columns. If no column is
         specified, plot all columns.
 
