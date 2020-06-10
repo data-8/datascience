@@ -3295,7 +3295,7 @@ class Table(collections.abc.MutableMapping):
             t[label] = column
 
     def hist(self, *columns, overlay=True, bins=None, bin_column=None, unit=None, counts=None, group=None, 
-        side_by_side=False, left_end=None, right_end=None, width=6, height=4, **vargs):
+        rug=False, side_by_side=False, left_end=None, right_end=None, width=6, height=4, **vargs):
         """Plots one histogram for each column in columns. If no column is
         specified, plot all columns.
 
@@ -3325,6 +3325,11 @@ class Table(collections.abc.MutableMapping):
                 generated for each group.  The histograms are overlaid or plotted
                 separately depending on the overlay argument.  If None, no such
                 grouping is done.
+                
+            rug (bool): Whether to include a rug plot along the horizontal axis
+                with tick marks at each data point. Makes sense only when plotting
+                one histogram per set of axes, so ``overlay`` must be ``False`` of
+                ``len(columns)`` must be 1. Ignored if these conditions are not met.
 
             side_by_side (bool): Whether histogram bins should be plotted side by
                 side (instead of directly overlaid).  Makes sense only when
@@ -3460,7 +3465,9 @@ class Table(collections.abc.MutableMapping):
                 weights = [v[1] for v in values_dict.values() if len(v) > 1]
                 if n > len(weights) > 0:
                     raise ValueError("Weights were provided for some columns, but not "
-                                     " all, and that's not supported.")
+                                     " all, and that's not supported.")  
+                if rug and overlay and n > 1:
+                    warnings.warn("Cannot plot overlaid rug plots; rug=True ignored", UserWarning)
                 if vargs['density']:
                     y_label = 'Percent per ' + (unit if unit else 'unit')
                     percentage = plt.FuncFormatter(lambda x, _: "{:g}".format(100*x))
@@ -3478,6 +3485,8 @@ class Table(collections.abc.MutableMapping):
                         vargs.setdefault('histtype', 'stepfilled')
                     figure = plt.figure(figsize=(width, height))
                     plt.hist(values, color=colors, **vargs)
+                    # if rug:
+                    #     plt.scatter(values, np.zeros_like(values), marker="|", color=colors)
                     axis = figure.get_axes()[0]
                     _vertical_x(axis)
                     axis.set_ylabel(y_label)
@@ -3515,6 +3524,9 @@ class Table(collections.abc.MutableMapping):
                             axis.bar(x_shade, height_shade, width=width_shade,
                                      color=self.chart_colors[1], align="edge")
                         _vertical_x(axis)
+                        if rug:
+                            axis.scatter(values_for_hist, np.zeros_like(values_for_hist), marker="|", 
+                                         color="black", s=100, zorder=10)
                         type(self).plots.append(axis)
 
         draw_hist(values_dict)
