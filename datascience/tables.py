@@ -2996,6 +2996,9 @@ class Table(collections.abc.MutableMapping):
         >>> table.iscatter('x', fit_line=True) # doctest: +SKIP
         """
         x_data, y_data, z_labels = self._split_column_and_labels([column_for_x, column_for_y])
+        
+        if fit_line:
+            warnings.warn("fit_line is currently unsupported by iscatter3d", UserWarning)
 
         if group is not None and colors is not None and group != colors:
             warnings.warn("Do not pass both colors and group to scatter3d")
@@ -3080,17 +3083,21 @@ class Table(collections.abc.MutableMapping):
                 #         mode = "lines"
                 #     ))
 
-            fig.update_layout(
+            fig.update_layout(scene=dict(
                 xaxis_title = column_for_x,
                 yaxis_title = column_for_y,
                 zaxis_title = z_labels[0] if len(z_labels) == 1 else None,
-            )
+            ))
 
         else:
-            fig = make_subplots(rows = len(z_labels), cols = 1)#, x_title=column_for_x, y_title=column_for_y)
+            fig = make_subplots(
+                rows = len(z_labels),
+                cols = 1,
+                specs=[[{"type": "scene"}] for _ in range(len(z_labels))]
+            )#, x_title=column_for_x, y_title=column_for_y)
             for i, label in enumerate(z_labels):
                 if not group:
-                    fig.append_trace(go.Scatter(
+                    fig.append_trace(go.Scatter3d(
                         x = x_data,
                         y = y_data,
                         z = self[label],
@@ -3121,10 +3128,10 @@ class Table(collections.abc.MutableMapping):
 
                     for group_index in range(len(group_vals)):
                         if group_index == 0:
-                            fig.append_trace(go.Scatter(
+                            fig.append_trace(go.Scatter3d(
                                 x = grouped_x_data[group_index],
                                 y = grouped_y_data[group_index], 
-                                y = grouped_z_data[group_index], 
+                                z = grouped_z_data[group_index], 
                                 name = "=".join([group, str(group_vals[group_index])]),
                                 marker_color = colors[group_index], 
                                 marker = dict(size = size),
@@ -3136,10 +3143,10 @@ class Table(collections.abc.MutableMapping):
                             ), row = i + 1, col = 1)
 
                         else:
-                            fig.add_trace(go.Scatter(
+                            fig.add_trace(go.Scatter3d(
                                 x = grouped_x_data[group_index],
                                 y = grouped_y_data[group_index],
-                                y = grouped_z_data[group_index],
+                                z = grouped_z_data[group_index],
                                 name = "=".join([group, str(group_vals[group_index])]),
                                 marker_color = colors[group_index],
                                 marker = dict(size = size),
@@ -3149,8 +3156,8 @@ class Table(collections.abc.MutableMapping):
                                 textposition = "bottom center",
                                 textfont = dict(color = colors[i])
                             ), row = i + 1, col = 1)
-                    
-                fig.update_zaxes(title_text = label, row = i + 1, col = 1)
+
+                    # TODO: update zaxis label
 
             if height is not None:
                 plot_height = height
@@ -3162,7 +3169,7 @@ class Table(collections.abc.MutableMapping):
             fig.update_layout(
                 width=width,
                 height=plot_height, 
-                showlegend=bool(group)
+                showlegend=True#bool(group)
             )
 
         fig.show()
@@ -3207,7 +3214,7 @@ class Table(collections.abc.MutableMapping):
 
     def _split_column_and_labels(self, column_or_label):
         """Return the specified column and labels of other columns."""
-        if isinstance(column_or_label, collections.Iterable):
+        if isinstance(column_or_label, list):
             columns = tuple(None if col is None else self._get_column(col) for col in column_or_label)
             labels = [label for i, label in enumerate(self.labels) if i not in column_or_label and label not in column_or_label]
             return columns + (labels,)
