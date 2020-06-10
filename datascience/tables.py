@@ -2152,7 +2152,7 @@ class Table(collections.abc.MutableMapping):
 
         self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x, width=width, height=height)
     
-    def iplot(self, column_for_xticks=None, select=None, overlay=True, width=None, height=None):
+    def iplot(self, column_for_xticks=None, select=None, overlay=True, width=None, height=None, **vargs):
         """Plot interactive line charts for the table using plotly.
 
         Args:
@@ -2165,6 +2165,8 @@ class Table(collections.abc.MutableMapping):
             width (int): the width (in pixels) of the plot area
 
             height (int): the height (in pixels) of the plot area
+
+            vargs (dict): additional kwargs passed to ``plotly.graph_objects.Figure.update_layout``
         
         Raises:
             ValueError -- Every selected column must be numerical.
@@ -2232,24 +2234,29 @@ class Table(collections.abc.MutableMapping):
                 cols=1,
                 x_title=x_label,
             )
+
             for i, label in enumerate(y_labels):
                 fig.append_trace(
                     go.Scatter(
                         x=x_data,
                         y=self[label],
                         mode='lines',
-                        # name=label,
+                        name=label,
                         line=dict(color=colors[i])
                     ),
                     row = i + 1,
                     col = 1,
                 )
+                fig.update_xaxes(title_text=column_for_xticks, row=i+1, col=1)
                 fig.update_yaxes(title_text=label, row=i+1, col=1)
+
             fig.update_layout(
                 width=width,
-                height=height if height is not None else 200 * n, 
+                height=height if height is not None else 400 * n, 
                 showlegend=False
             )
+
+        fig.update_layout(**vargs)
 
         fig.show()
 
@@ -2411,7 +2418,7 @@ class Table(collections.abc.MutableMapping):
 
         self._visualize('', labels, yticks, overlay, draw, annotate, width=width, height=height)
 
-    def ibarh(self, column_for_categories=None, select=None, overlay=True, width=None):
+    def ibarh(self, column_for_categories=None, select=None, overlay=True, width=None, **vargs):
         """Plot horizontal bar charts for the table.
 
         Args:
@@ -2425,6 +2432,8 @@ class Table(collections.abc.MutableMapping):
             width (int): the width (in pixels) of the plot area
 
             height (int): the height (in pixels) of the plot area
+
+            vargs (dict): additional kwargs passed to ``plotly.graph_objects.Figure.update_layout``
 
         Raises:
             ValueError -- Every selected except column for ``column_for_categories``
@@ -2508,6 +2517,7 @@ class Table(collections.abc.MutableMapping):
                     customdata = yticks,
                     hovertemplate = '(%{x}, %{customdata})'))
 
+            fig.update_xaxes(title_text = labels[0] if len(labels) == 1 else None)
             fig.update_yaxes(title_text = ylabel, type = 'category', dtick = 1, showticklabels = True)
 
             if len(labels) == 1:
@@ -2534,6 +2544,10 @@ class Table(collections.abc.MutableMapping):
 
                 fig.update_yaxes(title_text = ylabel, type = 'category', dtick = 1, showticklabels = True)
                 fig.update_xaxes(title_text = labels[i], row = i + 1, col = 1)
+
+            fig.update_layout(showlegend=False)
+
+        fig.update_layout(**vargs)
         
         fig.show()
 
@@ -2714,7 +2728,7 @@ class Table(collections.abc.MutableMapping):
 
     def iscatter(self, column_for_x, select=None, overlay=True, fit_line=False,
         group=None, labels=None, sizes=None, width=None, height=None, s=5,
-        colors=None):
+        colors=None, **vargs):
         """Creates scatterplots, optionally adding a line of best fit.
 
         Args:
@@ -2744,6 +2758,9 @@ class Table(collections.abc.MutableMapping):
             ``colors``: (deprecated) A synonym for ``group``. Retained
                 temporarily for backwards compatibility. This argument
                 will be removed in future releases.
+
+            ``vargs`` (``dict``): additional kwargs passed to 
+                ``plotly.graph_objects.Figure.update_layout``
 
         Raises:
             ValueError -- Every column, ``column_for_x`` or ``select``, must be numerical
@@ -2932,6 +2949,8 @@ class Table(collections.abc.MutableMapping):
                 showlegend=bool(group)
             )
 
+        fig.update_layout(**vargs)
+
         fig.show()
 
     def scatter3d(self, column_for_x, column_for_y, select=None, overlay=True, fit_line=False,
@@ -2951,7 +2970,7 @@ class Table(collections.abc.MutableMapping):
 
     def iscatter3d(self, column_for_x, column_for_y, select=None, overlay=True, fit_line=False,
         group=None, labels=None, sizes=None, width=None, height=None, s=5,
-        colors=None):
+        colors=None, **vargs):
         """Creates scatterplots, optionally adding a line of best fit.
 
         Args:
@@ -2984,6 +3003,9 @@ class Table(collections.abc.MutableMapping):
             ``colors``: (deprecated) A synonym for ``group``. Retained
                 temporarily for backwards compatibility. This argument
                 will be removed in future releases.
+
+            ``vargs`` (``dict``): additional kwargs passed to 
+                ``plotly.graph_objects.Figure.update_layout``
 
         Raises:
             ValueError -- Every column, ``column_for_x`` or ``select``, must be numerical
@@ -3187,6 +3209,8 @@ class Table(collections.abc.MutableMapping):
                 height=plot_height, 
                 showlegend=True#bool(group)
             )
+
+        fig.update_layout(**vargs)
 
         fig.show()
 
