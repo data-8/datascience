@@ -2934,6 +2934,239 @@ class Table(collections.abc.MutableMapping):
 
         fig.show()
 
+    def iscatter3d(self, column_for_x, column_for_y, select=None, overlay=True, fit_line=False,
+        group=None, labels=None, sizes=None, width=None, height=None, s=5,
+        colors=None):
+        """Creates scatterplots, optionally adding a line of best fit.
+
+        Args:
+            ``column_for_x`` (``str``): The column to use for the x-axis values
+                and label of the scatter plots.
+
+            ``column_for_y`` (``str``): The column to use for the y-axis values
+                and label of the scatter plots.
+
+        Kwargs:
+            ``overlay`` (``bool``): If true, creates a chart with one color
+                per data column; if False, each plot will be displayed separately.
+
+            ``fit_line`` (``bool``): draw a line of best fit for each set of points.
+
+            ``group``: A column of categories to be used for coloring dots per
+                each category grouping.
+
+            ``labels``: A column of text labels to annotate dots.
+
+            ``sizes``:  A column of values to set the relative areas of dots.
+
+            ``width`` (``int``): the width (in pixels) of the plot area
+
+            ``height`` (``int``): the height (in pixels) of the plot area
+
+            ``s``: Size of dots. If sizes is also provided, then dots will be
+                in the range 0 to 2 * s.
+
+            ``colors``: (deprecated) A synonym for ``group``. Retained
+                temporarily for backwards compatibility. This argument
+                will be removed in future releases.
+
+        Raises:
+            ValueError -- Every column, ``column_for_x`` or ``select``, must be numerical
+
+        Returns:
+            Scatter plot of values of ``column_for_x`` plotted against
+            values for all other columns in self. Each plot uses the values in
+            `column_for_x` for horizontal positions. One plot is produced for
+            all other columns in self as y (or for the columns designated by
+            `select`).
+
+
+        >>> table = Table().with_columns(
+        ...     'x', make_array(9, 3, 3, 1),
+        ...     'y', make_array(1, 2, 2, 10),
+        ...     'z', make_array(3, 4, 5, 6))
+        >>> table
+        x    | y    | z
+        9    | 1    | 3
+        3    | 2    | 4
+        3    | 2    | 5
+        1    | 10   | 6
+        >>> table.iscatter('x') # doctest: +SKIP
+        >>> table.iscatter('x', overlay=False) # doctest: +SKIP
+        >>> table.iscatter('x', fit_line=True) # doctest: +SKIP
+        """
+        x_data, y_data, z_labels = self._split_column_and_labels([column_for_x, column_for_y])
+
+        if group is not None and colors is not None and group != colors:
+            warnings.warn("Do not pass both colors and group to scatter3d")
+
+        if group is None and colors is not None:
+            # Backward compatibility
+            group = colors
+            # TODO: In a future release, warn that this is deprecated.
+            # Deprecated
+            warnings.warn("scatter(colors=x) is deprecated. Use scatter(group=x)", FutureWarning)
+
+        if group is not None:
+            z_labels.remove(self._as_label(group))
+
+        if sizes is not None:
+            z_labels.remove(self._as_label(sizes))
+
+        if select is not None:
+            z_labels = self._as_labels(select)
+
+        if len(z_labels) > 1 and group is not None and overlay:
+            warnings.warn("Group and overlay are incompatible in a scatter")
+            overlay = False
+
+        if group is not None and fit_line:
+            # The current implementation of scatter will error if group is specified and fit_line 
+            # are both specified, so this condition just does not draw a fit line
+            warnings.warn("Group and fit line are incompatible in a scatter")
+            fit_line = False 
+
+        group_vals = []
+        if group:
+            group_vals = list(set(self[group])) 
+            grouped_x_data = []
+            for val in group_vals:
+                grouped_x_data.append(x_data[self.column(group) == val])
+            grouped_y_data = []
+            for val in group_vals:
+                grouped_y_data.append(y_data[self.column(group) == val])
+            overlay = False
+
+        colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors), max(len(z_labels), len(group_vals))))
+
+        size = None
+        if sizes is not None:
+            max_size = max(self[sizes]) ** 0.5
+            size = 2 * s * self[sizes] ** 0.5 / max_size
+        else:
+            size = s
+        
+        if overlay:
+            fig = go.Figure()
+
+            if width:
+                fig.update_layout(width = width)
+
+            if height:
+                fig.update_layout(height = height)
+
+            for i, label in enumerate(z_labels):
+                fig.add_trace(go.Scatter3d(
+                    x = x_data,
+                    y = y_data,
+                    z = self[label],
+                    name = label, 
+                    marker_color = colors[i], 
+                    marker = dict(size = size),
+                    mode = "markers+text" if labels else "markers",
+                    text = self[labels] if labels else None,
+                    textposition = "bottom center",
+                    textfont = dict(color = colors[i])
+                ))
+
+                # if fit_line:
+                #     m, b = np.polyfit(x_data, self[label], 1)
+                #     fig.add_trace(go.Scatter(
+                #         x = x_data, 
+                #         y = m * x_data + b, 
+                #         name = " ".join([label, "best fit line"]), 
+                #         marker_color = colors[i], 
+                #         hovertemplate = "".join([str(m), " * x + ", str(b)]), 
+                #         mode = "lines"
+                #     ))
+
+            fig.update_layout(
+                xaxis_title = column_for_x,
+                yaxis_title = column_for_y,
+                zaxis_title = z_labels[0] if len(z_labels) == 1 else None,
+            )
+
+        else:
+            fig = make_subplots(rows = len(z_labels), cols = 1)#, x_title=column_for_x, y_title=column_for_y)
+            for i, label in enumerate(z_labels):
+                if not group:
+                    fig.append_trace(go.Scatter(
+                        x = x_data,
+                        y = y_data,
+                        z = self[label],
+                        name = label, 
+                        marker_color = colors[i], 
+                        marker = dict(size = size),
+                        mode = "markers+text" if labels else "markers",
+                        text = self[labels] if labels else None, 
+                        textposition = "bottom center",
+                        textfont = dict(color = colors[i])
+                    ), row = i + 1, col = 1)
+
+                    # if fit_line:
+                    #     m, b = np.polyfit(x_data, self[label], 1)
+                    #     fig.add_trace(go.Scatter(
+                    #         x = x_data, 
+                    #         y = m * x_data + b, 
+                    #         name = " ".join([label, "best fit line"]), 
+                    #         marker_color = colors[i], 
+                    #         hovertemplate = "".join([str(m), " * x + ", str(b)]), 
+                    #         mode = "lines"
+                    #     ), row = i + 1, col = 1)
+                        
+                else:
+                    grouped_z_data = []
+                    for val in group_vals:
+                        grouped_z_data.append(self[label][self.column(group) == val])
+
+                    for group_index in range(len(group_vals)):
+                        if group_index == 0:
+                            fig.append_trace(go.Scatter(
+                                x = grouped_x_data[group_index],
+                                y = grouped_y_data[group_index], 
+                                y = grouped_z_data[group_index], 
+                                name = "=".join([group, str(group_vals[group_index])]),
+                                marker_color = colors[group_index], 
+                                marker = dict(size = size),
+                                mode = "markers+text" if labels else "markers",
+                                showlegend = i == 0,
+                                text = self[labels] if labels else None, 
+                                textposition = "bottom center",
+                                textfont = dict(color = colors[i])
+                            ), row = i + 1, col = 1)
+
+                        else:
+                            fig.add_trace(go.Scatter(
+                                x = grouped_x_data[group_index],
+                                y = grouped_y_data[group_index],
+                                y = grouped_z_data[group_index],
+                                name = "=".join([group, str(group_vals[group_index])]),
+                                marker_color = colors[group_index],
+                                marker = dict(size = size),
+                                mode = "markers+text" if labels else "markers",
+                                showlegend = i == 0,
+                                text = self[labels] if labels else None,
+                                textposition = "bottom center",
+                                textfont = dict(color = colors[i])
+                            ), row = i + 1, col = 1)
+                    
+                fig.update_zaxes(title_text = label, row = i + 1, col = 1)
+
+            if height is not None:
+                plot_height = height
+            elif bool(group):
+                plot_height = None
+            else:
+                plot_height = 400 * max(len(z_labels), len(group_vals))
+
+            fig.update_layout(
+                width=width,
+                height=plot_height, 
+                showlegend=bool(group)
+            )
+
+        fig.show()
+
     def _visualize(self, x_label, y_labels, ticks, overlay, draw, annotate, width=6, height=4):
         """Generic visualization that overlays or separates the draw function.
 
@@ -2974,6 +3207,11 @@ class Table(collections.abc.MutableMapping):
 
     def _split_column_and_labels(self, column_or_label):
         """Return the specified column and labels of other columns."""
+        if isinstance(column_or_label, collections.Iterable):
+            columns = tuple(None if col is None else self._get_column(col) for col in column_or_label)
+            labels = [label for i, label in enumerate(self.labels) if i not in column_or_label and label not in column_or_label]
+            return columns + (labels,)
+
         column = None if column_or_label is None else self._get_column(column_or_label)
         labels = [label for i, label in enumerate(self.labels) if column_or_label not in (i, label)]
         return column, labels
