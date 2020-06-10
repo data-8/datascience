@@ -2229,12 +2229,7 @@ class Table(collections.abc.MutableMapping):
             )
 
         else:
-            fig = make_subplots(
-                rows=n, 
-                cols=1,
-                x_title=x_label,
-            )
-
+            fig = make_subplots(rows=n, cols=1)
             for i, label in enumerate(y_labels):
                 fig.append_trace(
                     go.Scatter(
