@@ -2952,16 +2952,16 @@ class Table(collections.abc.MutableMapping):
         group=None, labels=None, sizes=None, width=None, height=None, s=5,
         colors=None):
         global _INTERACTIVE_PLOTS
+        
+        # can't use scatter3d if not interactive mode; just a wrapper for iscatter3d
+        assert _INTERACTIVE_PLOTS, "scatter3d is a wrapper for iscatter3d and can only be "\
+            "called when interactive plots are enabled"
+        
         if _INTERACTIVE_PLOTS:
             self.iscatter3d(
                 column_for_x, column_for_y, select, overlay, fit_line,
                 group, labels, sizes, width, height, s, colors
             )
-        
-        raise RuntimeError(
-            "scatter3d is a wrapper for iscatter3d and can only be called when interactive "
-            "plots are enabled"
-        )
 
     def iscatter3d(self, column_for_x, column_for_y, select=None, overlay=True, fit_line=False,
         group=None, labels=None, sizes=None, width=None, height=None, s=5,
