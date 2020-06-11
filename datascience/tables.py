@@ -2152,7 +2152,7 @@ class Table(collections.abc.MutableMapping):
 
         self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x, width=width, height=height)
 
-    def iplot(self, column_for_xticks=None, select=None, overlay=True, width=None, height=None):
+    def iplot(self, column_for_xticks=None, select=None, overlay=True, width=None, height=None, **vargs):
         """Plot interactive line charts for the table using plotly.
 
         Args:
@@ -2165,6 +2165,8 @@ class Table(collections.abc.MutableMapping):
             width (int): the width (in pixels) of the plot area
 
             height (int): the height (in pixels) of the plot area
+
+            vargs (dict): additional kwargs passed to ``plotly.graph_objects.Figure.update_layout``
 
         Raises:
             ValueError -- Every selected column must be numerical.
@@ -2227,29 +2229,29 @@ class Table(collections.abc.MutableMapping):
             )
 
         else:
-            fig = make_subplots(
-                rows=n,
-                cols=1,
-                x_title=x_label,
-            )
+            fig = make_subplots(rows=n, cols=1)
             for i, label in enumerate(y_labels):
                 fig.append_trace(
                     go.Scatter(
                         x=x_data,
                         y=self[label],
                         mode='lines',
-                        # name=label,
+                        name=label,
                         line=dict(color=colors[i])
                     ),
                     row = i + 1,
                     col = 1,
                 )
+                fig.update_xaxes(title_text=column_for_xticks, row=i+1, col=1)
                 fig.update_yaxes(title_text=label, row=i+1, col=1)
+
             fig.update_layout(
                 width=width,
-                height=height if height is not None else 200 * n,
+                height=height if height is not None else 400 * n,
                 showlegend=False
             )
+
+        fig.update_layout(**vargs)
 
         fig.show()
 
@@ -2411,7 +2413,7 @@ class Table(collections.abc.MutableMapping):
 
         self._visualize('', labels, yticks, overlay, draw, annotate, width=width, height=height)
 
-    def ibarh(self, column_for_categories=None, select=None, overlay=True, width=None):
+    def ibarh(self, column_for_categories=None, select=None, overlay=True, width=None, **vargs):
         """Plot horizontal bar charts for the table.
 
         Args:
@@ -2425,6 +2427,8 @@ class Table(collections.abc.MutableMapping):
             width (int): the width (in pixels) of the plot area
 
             height (int): the height (in pixels) of the plot area
+
+            vargs (dict): additional kwargs passed to ``plotly.graph_objects.Figure.update_layout``
 
         Raises:
             ValueError -- Every selected except column for ``column_for_categories``
@@ -2508,6 +2512,7 @@ class Table(collections.abc.MutableMapping):
                     customdata = yticks,
                     hovertemplate = '(%{x}, %{customdata})'))
 
+            fig.update_xaxes(title_text = labels[0] if len(labels) == 1 else None)
             fig.update_yaxes(title_text = ylabel, type = 'category', dtick = 1, showticklabels = True)
 
             if len(labels) == 1:
@@ -2534,6 +2539,10 @@ class Table(collections.abc.MutableMapping):
 
                 fig.update_yaxes(title_text = ylabel, type = 'category', dtick = 1, showticklabels = True)
                 fig.update_xaxes(title_text = labels[i], row = i + 1, col = 1)
+
+            fig.update_layout(showlegend=False)
+
+        fig.update_layout(**vargs)
 
         fig.show()
 
@@ -2713,7 +2722,7 @@ class Table(collections.abc.MutableMapping):
 
     def iscatter(self, column_for_x, select=None, overlay=True, fit_line=False,
         group=None, labels=None, sizes=None, width=None, height=None, s=5,
-        colors=None):
+        colors=None, **vargs):
         """Creates scatterplots, optionally adding a line of best fit.
 
         Args:
@@ -2743,6 +2752,9 @@ class Table(collections.abc.MutableMapping):
             ``colors``: (deprecated) A synonym for ``group``. Retained
                 temporarily for backwards compatibility. This argument
                 will be removed in future releases.
+
+            ``vargs`` (``dict``): additional kwargs passed to
+                ``plotly.graph_objects.Figure.update_layout``
 
         Raises:
             ValueError -- Every column, ``column_for_x`` or ``select``, must be numerical
@@ -2931,26 +2943,28 @@ class Table(collections.abc.MutableMapping):
                 showlegend=bool(group)
             )
 
+        fig.update_layout(**vargs)
+
         fig.show()
 
     def scatter3d(self, column_for_x, column_for_y, select=None, overlay=True, fit_line=False,
         group=None, labels=None, sizes=None, width=None, height=None, s=5,
         colors=None):
         global _INTERACTIVE_PLOTS
+
+        # can't use scatter3d if not interactive mode; just a wrapper for iscatter3d
+        assert _INTERACTIVE_PLOTS, "scatter3d is a wrapper for iscatter3d and can only be "\
+            "called when interactive plots are enabled"
+
         if _INTERACTIVE_PLOTS:
             self.iscatter3d(
                 column_for_x, column_for_y, select, overlay, fit_line,
                 group, labels, sizes, width, height, s, colors
             )
 
-        raise RuntimeError(
-            "scatter3d is a wrapper for iscatter3d and can only be called when interactive "
-            "plots are enabled"
-        )
-
     def iscatter3d(self, column_for_x, column_for_y, select=None, overlay=True, fit_line=False,
         group=None, labels=None, sizes=None, width=None, height=None, s=5,
-        colors=None):
+        colors=None, **vargs):
         """Creates scatterplots, optionally adding a line of best fit.
 
         Args:
@@ -2983,6 +2997,9 @@ class Table(collections.abc.MutableMapping):
             ``colors``: (deprecated) A synonym for ``group``. Retained
                 temporarily for backwards compatibility. This argument
                 will be removed in future releases.
+
+            ``vargs`` (``dict``): additional kwargs passed to
+                ``plotly.graph_objects.Figure.update_layout``
 
         Raises:
             ValueError -- Every column, ``column_for_x`` or ``select``, must be numerical
@@ -3187,6 +3204,8 @@ class Table(collections.abc.MutableMapping):
                 showlegend=True#bool(group)
             )
 
+        fig.update_layout(**vargs)
+
         fig.show()
 
     def _visualize(self, x_label, y_labels, ticks, overlay, draw, annotate, width=6, height=4):
@@ -3275,7 +3294,8 @@ class Table(collections.abc.MutableMapping):
             t[label] = column
 
 
-    def ihist(self, *columns, overlay=True, bins=None, bin_column=None, unit=None, counts=False, group=None, side_by_side=False, left_end=None, right_end=None, width=None, height=None, density=True):
+    def ihist(self, *columns, overlay=True, bins=None, bin_column=None, unit=None, counts=False, group=None,
+        side_by_side=False, left_end=None, right_end=None, width=None, height=None, density=True, **vargs):
         """Plots one histogram for each column in columns. If no column is
         specified, plot all columns.
 
@@ -3306,6 +3326,11 @@ class Table(collections.abc.MutableMapping):
                 separately depending on the overlay argument.  If None, no such
                 grouping is done.
 
+            rug (bool): Whether to include a rug plot along the horizontal axis
+                with tick marks at each data point. Makes sense only when plotting
+                one histogram per set of axes, so ``overlay`` must be ``False`` of
+                ``len(columns)`` must be 1. Ignored if these conditions are not met.
+
             side_by_side (bool): Whether histogram bins should be plotted side by
                 side (instead of directly overlaid).  Makes sense only when
                 plotting multiple histograms, either by passing several columns
@@ -3319,6 +3344,9 @@ class Table(collections.abc.MutableMapping):
 
             density (boolean): If True, will plot a density distribution of the data.
                 Otherwise plots the counts.
+
+            vargs (dict): additional kwargs passed to
+                plotly.graph_objects.Figure.update_layout
 
 
         >>> t = Table().with_columns(
@@ -3435,7 +3463,7 @@ class Table(collections.abc.MutableMapping):
                     with np.errstate(divide = "ignore", invalid = "ignore"):
                         # With custom bins that have edges on the max value in dataset,
                         # could produce a truedivide warning. This line just temporarily
-                        # ignores that warning. 
+                        # ignores that warning.
                         heights /= (widths * len(data))
                         heights = np.nan_to_num(heights)
                 return heights
@@ -3469,7 +3497,7 @@ class Table(collections.abc.MutableMapping):
                     marker_color = colors[i],
                     text = ["Density"] * len(bin_mids) if density else ["Count"] * len(bin_mids),
                     customdata = bin_ranges,
-                    width = widths,
+                    width = None if side_by_side else widths,
                     name = k,
                     opacity = 0.7,
                     hovertemplate = "Bin Endpoints: (%{customdata})<br>%{text}: %{y}",
@@ -3479,7 +3507,7 @@ class Table(collections.abc.MutableMapping):
                 title_text = "".join([
                     "Percent Per " if density else "Count",
                     (unit if unit else "Unit") if density else ""
-                ]), 
+                ]),
                 automargin = True
             )
 
@@ -3491,10 +3519,10 @@ class Table(collections.abc.MutableMapping):
             )
 
             if side_by_side:
-                # Default behavior for side by side with the Matplotlib hist function is to use 
-                # plot the counts; however, since this function has to be passed the density param 
-                # from the hist function and density = True by default, default behavior for side 
-                # by side is to plot density unless density = False. 
+                # Default behavior for side by side with the Matplotlib hist function is to use
+                # plot the counts; however, since this function has to be passed the density param
+                # from the hist function and density = True by default, default behavior for side
+                # by side is to plot density unless density = False.
                 fig.update_layout(barmode = "group")
 
         else:
@@ -3502,11 +3530,11 @@ class Table(collections.abc.MutableMapping):
                 rows = n,
                 cols = 1,
             )
-                
+
             if width:
                 fig.update_layout(width = width)
 
-            fig.update_layout(height = height if height is not None else 300 * n)
+            fig.update_layout(height = height if height is not None else 400 * n)
 
             for i, k in enumerate(values_dict.keys()):
                 fig.append_trace(go.Bar(
@@ -3524,23 +3552,26 @@ class Table(collections.abc.MutableMapping):
                     title_text = "".join([
                         "Percent Per " if density else "Count",
                         (unit if unit else "Unit") if density else ""
-                    ]), 
-                    automargin = True, 
-                    row = i + 1, 
+                    ]),
+                    automargin = True,
+                    row = i + 1,
                     col = 1
                 )
                 fig.update_xaxes(
                     title_text = " ".join([
-                        k, 
+                        k,
                         "".join(["(", unit, ")"]) if unit else ""
-                    ]), 
-                    row = i + 1, 
+                    ]),
+                    row = i + 1,
                     col = 1
                 )
 
+        fig.update_layout(**vargs)
+
         fig.show()
 
-    def hist(self, *columns, overlay=True, bins=None, bin_column=None, unit=None, counts=None, group=None, side_by_side=False, left_end=None, right_end=None, width=None, height=None, **vargs):
+    def hist(self, *columns, overlay=True, bins=None, bin_column=None, unit=None, counts=None, group=None,
+        rug=False, side_by_side=False, left_end=None, right_end=None, width=None, height=None, **vargs):
         """Plots one histogram for each column in columns. If no column is
         specified, plot all columns.
 
@@ -3708,12 +3739,12 @@ class Table(collections.abc.MutableMapping):
         values_dict = collections.OrderedDict(values_dict)
         if left_end is not None or right_end is not None:
             if left_end is None:
-                if bins[0]:
+                if bins is not None and bins[0]:
                     left_end = bins[0]
                 else:
                     left_end = min([min(self.column(k)) for k in self.labels if np.issubdtype(self.column(k).dtype, np.number)])
             elif right_end is None:
-                if bins[-1]:
+                if bins is not None and bins[-1]:
                     right_end = bins[-1]
                 else:
                     right_end = max([max(self.column(k)) for k in self.labels if np.issubdtype(self.column(k).dtype, np.number)])
@@ -3730,6 +3761,8 @@ class Table(collections.abc.MutableMapping):
                 if n > len(weights) > 0:
                     raise ValueError("Weights were provided for some columns, but not "
                                      " all, and that's not supported.")
+                if rug and overlay and n > 1:
+                    warnings.warn("Cannot plot overlaid rug plots; rug=True ignored", UserWarning)
                 if vargs['density']:
                     y_label = 'Percent per ' + (unit if unit else 'unit')
                     percentage = plt.FuncFormatter(lambda x, _: "{:g}".format(100*x))
@@ -3747,6 +3780,8 @@ class Table(collections.abc.MutableMapping):
                         vargs.setdefault('histtype', 'stepfilled')
                     figure = plt.figure(figsize=(width, height))
                     plt.hist(values, color=colors, **vargs)
+                    # if rug:
+                    #     plt.scatter(values, np.zeros_like(values), marker="|", color=colors)
                     axis = figure.get_axes()[0]
                     _vertical_x(axis)
                     axis.set_ylabel(y_label)
@@ -3784,6 +3819,9 @@ class Table(collections.abc.MutableMapping):
                             axis.bar(x_shade, height_shade, width=width_shade,
                                      color=self.chart_colors[1], align="edge")
                         _vertical_x(axis)
+                        if rug:
+                            axis.scatter(values_for_hist, np.zeros_like(values_for_hist), marker="|",
+                                         color="black", s=100, zorder=10)
                         type(self).plots.append(axis)
 
         draw_hist(values_dict)
