@@ -3194,10 +3194,12 @@ class Table(collections.abc.MutableMapping):
 
             if height is not None:
                 plot_height = height
-            elif bool(group):
-                plot_height = None
+#             elif bool(group):
+#                 plot_height = None
+            elif len(z_labels) > 1:
+                plot_height = 600 * len(z_labels)
             else:
-                plot_height = 400 * max(len(z_labels), len(group_vals))
+                plot_height = None
 
             fig.update_layout(
                 width=width,
