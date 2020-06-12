@@ -3736,6 +3736,9 @@ class Table(collections.abc.MutableMapping):
             raise ValueError("You can't specify both normed and density. "
                              "Use one or the other.")
 
+        if "shade_split" not in vargs:
+            vargs["shade_split"] = "split"
+
         global _INTERACTIVE_PLOTS
         if _INTERACTIVE_PLOTS:
             return self.ihist(
@@ -3751,7 +3754,7 @@ class Table(collections.abc.MutableMapping):
                 right_end = right_end,
                 width = width,
                 height = height,
-                density = vargs['density']
+                **vargs
             )
 
         if width == None:
