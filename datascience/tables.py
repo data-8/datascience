@@ -3301,7 +3301,7 @@ class Table(collections.abc.MutableMapping):
 
 
     def ihist(self, *columns, overlay=True, bins=None, bin_column=None, unit=None, counts=None, group=None,
-        side_by_side=False, left_end=None, right_end=None, width=None, height=None, density=True, shade_split="new", **vargs):
+        side_by_side=False, left_end=None, right_end=None, width=None, height=None, density=True, shade_split="split", **vargs):
         """Plots one histogram for each column in columns. If no column is
         specified, plot all columns.
 
@@ -3463,15 +3463,15 @@ class Table(collections.abc.MutableMapping):
         def insert_ordered(arr, n):
             for i in range(len(arr)):
                 if arr[i] > n:
-                    return np.insert(arr, i, n)
-            return np.insert(arr, len(arr), n)
+                    return i, np.insert(arr, i, n)
+            return len(arr), np.insert(arr, len(arr), n)
 
         # Adding bins if shade_split = "new"
         if shade_split == "new":
             if right_end and right_end not in bins:
-                bins = insert_ordered(bins, right_end)
+                _, bins = insert_ordered(bins, right_end)
             if left_end and left_end not in bins:
-                bins = insert_ordered(bins, left_end)
+                _, bins = insert_ordered(bins, left_end)
 
         # Getting bin widths and midpoints
         widths = np.zeros(len(bins))
@@ -3506,6 +3506,25 @@ class Table(collections.abc.MutableMapping):
         for k in values_dict.keys():
             values_dict[k] = get_bar_heights(values_dict[k], bins)
 
+        # Dealing with shaded_split = "split" case where two bins of same height
+        # are produced at left_end or right_end
+        if shade_split == "split":
+            if right_end and right_end not in bins:
+                i, bins = insert_ordered(bins, right_end)
+                for k in values_dict.keys():
+                    values_dict[k] = np.insert(values_dict[k], i, values_dict[k][i - 1])
+            if left_end and left_end not in bins:
+                i, bins = insert_ordered(bins, left_end)
+                for k in values_dict.keys():
+                    values_dict[k] = np.insert(values_dict[k], i, values_dict[k][i - 1])
+            # Recalculating bin widths and midpoints
+            # TODO: optimize this later 
+            widths = np.zeros(len(bins))
+            for i in range(len(bins) - 1):
+                widths[i] = bins[i + 1] - bins[i]
+            widths[-1] = max(data_max - bins[-1], 0)
+            bin_mids = bins + widths / 2
+
         # Getting range of bins
         bin_ranges = list(zip(bins, np.insert(bins, len(bins), data_max)[1:]))
 
@@ -3514,7 +3533,7 @@ class Table(collections.abc.MutableMapping):
 
         def get_shaded_colors(bins, left_end, right_end, i):
             # Handles colors for shading
-            bins_with_max = insert_ordered(bins, data_max)
+            _, bins_with_max = insert_ordered(bins, data_max)
             left_end_ind = np.digitize(left_end, bins_with_max) - 1 if left_end else -1
             right_end_ind = np.digitize(right_end, bins_with_max) - 1 if right_end else len(bins)
             if left_end_ind != -1 or right_end_ind != len(bins):
