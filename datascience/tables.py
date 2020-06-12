@@ -2510,7 +2510,9 @@ class Table(collections.abc.MutableMapping):
                     orientation = 'h',
                     marker_color = colors[i],
                     customdata = yticks,
-                    hovertemplate = '(%{x}, %{customdata})'))
+                    hovertemplate = '(%{x}, %{customdata})',
+                    opacity = 0.7
+                ))
 
             fig.update_xaxes(title_text = labels[0] if len(labels) == 1 else None)
             fig.update_yaxes(title_text = ylabel, type = 'category', dtick = 1, showticklabels = True)
@@ -2535,7 +2537,9 @@ class Table(collections.abc.MutableMapping):
                     orientation = 'h',
                     customdata = yticks,
                     hovertemplate = '(%{x}, %{customdata})',
-                    marker_color = colors[i]), row = i + 1, col = 1)
+                    marker_color = colors[i],
+                    opacity = 0.7
+                ), row = i + 1, col = 1)
 
                 fig.update_yaxes(title_text = ylabel, type = 'category', dtick = 1, showticklabels = True)
                 fig.update_xaxes(title_text = labels[i], row = i + 1, col = 1)
@@ -3294,8 +3298,8 @@ class Table(collections.abc.MutableMapping):
             t[label] = column
 
 
-    def ihist(self, *columns, overlay=True, bins=None, bin_column=None, unit=None, counts=False, group=None,
-        side_by_side=False, left_end=None, right_end=None, width=None, height=None, density=True, **vargs):
+    def ihist(self, *columns, overlay=True, bins=None, bin_column=None, unit=None, counts=None, group=None,
+        side_by_side=False, left_end=None, right_end=None, width=None, height=None, density=True, shade_split="new", **vargs):
         """Plots one histogram for each column in columns. If no column is
         specified, plot all columns.
 
@@ -3344,6 +3348,14 @@ class Table(collections.abc.MutableMapping):
 
             density (boolean): If True, will plot a density distribution of the data.
                 Otherwise plots the counts.
+
+            shade_split (string, {"whole", "new", "split"}): If left_end or
+                right_end are specified, shade_split determines how a bin is split
+                that the end falls between two bin endpoints. If shade_split = "whole",
+                the entire bin will be shaded. If shade_split = "new", then a new bin
+                will be created and data split appropriately. If shade_split = "split",
+                the data will first be placed into the original bins, and then separated
+                into two bins with equal height.
 
             vargs (dict): additional kwargs passed to
                 plotly.graph_objects.Figure.update_layout
@@ -3434,7 +3446,7 @@ class Table(collections.abc.MutableMapping):
         data_max = max([max(arr[0]) for arr in values_dict.values()])
         data_min = min([min(arr[0]) for arr in values_dict.values()])
 
-        # Creating bins and getting bin widths and midpoints
+        # Creating bins
         if type(bins) == np.integer or type(bins) == int:
             bins = np.linspace(data_min, data_max, bins + 1)
             bins = bins[:-1]
@@ -3445,6 +3457,21 @@ class Table(collections.abc.MutableMapping):
             bins = bins[:-1]
         else:
             bins = np.array(bins)
+
+        def insert_ordered(arr, n):
+            for i in range(len(arr)):
+                if arr[i] > n:
+                    return np.insert(arr, i, n)
+            return np.insert(arr, len(arr), n)
+
+        # Adding bins if shade_split = "new"
+        if shade_split == "new":
+            if right_end and right_end not in bins:
+                bins = insert_ordered(bins, right_end)
+            if left_end and left_end not in bins:
+                bins = insert_ordered(bins, left_end)
+
+        # Getting bin widths and midpoints
         widths = np.zeros(len(bins))
         for i in range(len(bins) - 1):
             widths[i] = bins[i + 1] - bins[i]
@@ -3465,7 +3492,7 @@ class Table(collections.abc.MutableMapping):
                         # could produce a truedivide warning. This line just temporarily
                         # ignores that warning.
                         heights /= (widths * len(data))
-                        heights = np.nan_to_num(heights)
+                        heights = 100 * np.nan_to_num(heights)
                 return heights
             with np.errstate(divide = "ignore", invalid = "ignore"):
                 heights = np.zeros(len(bins))
@@ -3473,16 +3500,49 @@ class Table(collections.abc.MutableMapping):
                     ind = np.digitize(left_endpoint, bins) - 1
                     heights[ind] = vals[1][i]
                 return heights / (widths * sum(heights))
+
         for k in values_dict.keys():
             values_dict[k] = get_bar_heights(values_dict[k], bins)
+
         # Getting range of bins
         bin_ranges = list(zip(bins, np.insert(bins, len(bins), data_max)[1:]))
 
+        colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors),
+            n + int((left_end >= data_min if left_end else False) or (right_end <= data_max if right_end else False))))
 
-        colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors), n))
+        def get_shaded_colors(bins, left_end, right_end, i):
+            # Handles colors for shading
+            bins_with_max = insert_ordered(bins, data_max)
+            left_end_ind = np.digitize(left_end, bins_with_max) - 1 if left_end else -1
+            right_end_ind = np.digitize(right_end, bins_with_max) - 1 if right_end else len(bins)
+            if left_end_ind != -1 or right_end_ind != len(bins):
+                if i >= 1:
+                    i += 1
+                bin_colors = [colors[i]] * len(bins)
+                left_end = left_end if left_end else data_min
+                right_end = right_end if right_end else data_max
+                if left_end < right_end:
+                    for shade_ind in range(left_end_ind, right_end_ind + int(shade_split == "whole")):
+                        shade_ind = min(shade_ind, len(bin_colors) - 1)
+                        shade_ind = max(shade_ind, 0)
+                        bin_colors[shade_ind] = colors[1] # Gold is always second color
+                elif left_end > right_end:
+                    for shade_ind in range(right_end_ind):
+                        shade_ind = min(shade_ind, len(bin_colors) - 1)
+                        shade_ind = max(shade_ind, 0)
+                        bin_colors[shade_ind] = colors[1]
+                    for shade_ind in range(left_end_ind, len(bin_colors)):
+                        shade_ind = min(shade_ind, len(bin_colors) - 1)
+                        shade_ind = max(shade_ind, 0)
+                        bin_colors[shade_ind] = colors[1]
+                return bin_colors
+            else:
+                return colors[i]
 
         if n == 1 or overlay:
             fig = go.Figure()
+
+            fig.update_layout(barmode = "overlay")
 
             if width:
                 fig.update_layout(width = width)
@@ -3494,7 +3554,7 @@ class Table(collections.abc.MutableMapping):
                 fig.add_trace(go.Bar(
                     x = bin_mids,
                     y = values_dict[k],
-                    marker_color = colors[i],
+                    marker_color = get_shaded_colors(bins, left_end, right_end, i),
                     text = ["Density"] * len(bin_mids) if density else ["Count"] * len(bin_mids),
                     customdata = bin_ranges,
                     width = None if side_by_side else widths,
@@ -3540,7 +3600,7 @@ class Table(collections.abc.MutableMapping):
                 fig.append_trace(go.Bar(
                     x = bin_mids,
                     y = values_dict[k],
-                    marker_color = colors[i],
+                    marker_color = get_shaded_colors(bins, left_end, right_end, i),
                     text = ["Density"] * len(bin_mids) if density else ["Count"] * len(bin_mids),
                     customdata = bin_ranges,
                     width = widths,
