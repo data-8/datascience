@@ -3493,27 +3493,27 @@ class Table(collections.abc.MutableMapping):
                     if left_end and data_min < left_end < data_max and left_end not in bins[k]:
                         _, bins[k] = insert_ordered(bins[k], left_end)
             else:
-                if right_end and right_end not in bins:
+                if right_end and data_min < right_end < data_max and right_end not in bins:
                     _, bins = insert_ordered(bins, right_end)
-                if left_end and left_end not in bins:
+                if left_end and data_min < left_end < data_max and left_end not in bins:
                     _, bins = insert_ordered(bins, left_end)
 
         # Getting bin widths and midpoints
+        def get_widths_and_midpoints(bins, data_max): 
+            widths = np.zeros(len(bins))
+            for i in range(len(bins) - 1):
+                widths[i] = max(bins[i + 1] - bins[i], 0)
+            widths[-1] = max(max(data_max - bins[-1], 0), 0)
+            bin_mids = bins + widths / 2
+            return widths, bin_mids
+            
         if multiple_bins: 
             widths = dict()
             bin_mids = dict()
             for k in bins.keys():
-                widths[k] = np.zeros(len(bins[k]))
-                for i in range(len(bins[k]) - 1):
-                    widths[k][i] = bins[k][i + 1] - bins[k][i]
-                widths[k][-1] = max(max(values_dict[k][0]) - bins[k][-1], 0)
-                bin_mids[k] = bins[k] + widths[k] / 2
+                widths[k], bin_mids[k] = get_widths_and_midpoints(bins[k], max(values_dict[k][0]))
         else:
-            widths = np.zeros(len(bins))
-            for i in range(len(bins) - 1):
-                widths[i] = bins[i + 1] - bins[i]
-            widths[-1] = max(data_max - bins[-1], 0)
-            bin_mids = bins + widths / 2
+            widths, bin_mids = get_widths_and_midpoints(bins, data_max)
 
         # Get heights of each bar
         def get_bar_heights(vals, bins, widths):
@@ -3538,46 +3538,41 @@ class Table(collections.abc.MutableMapping):
                     heights[ind] = vals[1][i]
                 return heights / (widths * sum(heights))
 
+        heights = dict()
         for k in values_dict.keys():
             if multiple_bins:
-                values_dict[k] = get_bar_heights(values_dict[k], bins[k], widths[k])
+                heights[k] = get_bar_heights(values_dict[k], bins[k], widths[k])
             else:
-                values_dict[k] = get_bar_heights(values_dict[k], bins, widths)
+                heights[k] = get_bar_heights(values_dict[k], bins, widths)
 
         # Dealing with shaded_split = "split" case where two bins of same height
         # are produced at left_end or right_end
         if shade_split == "split":
             if multiple_bins: 
-                for k in values_dict.keys():
+                for k in heights.keys():
                     bin_min = min(bins[k])
                     bin_max = max(bins[k])
+                    i = -1
                     if right_end is not None and bin_min < right_end < bin_max and right_end not in bins[k]:
                         i, bins[k] = insert_ordered(bins[k], right_end)
-                        values_dict[k] = np.insert(values_dict[k], i, values_dict[k][i - 1])
+                        heights[k] = np.insert(heights[k], i, heights[k][i - 1])
                     if left_end is not None and bin_min < left_end < bin_max and left_end not in bins[k]:
                         i, bins[k] = insert_ordered(bins[k], left_end)
-                        values_dict[k] = np.insert(values_dict[k], i, values_dict[k][i - 1])
-                    widths[k] = np.zeros(len(bins[k]))
-                    for i in range(len(bins[k]) - 1):
-                        widths[k][i] = bins[k][i + 1] - bins[k][i]
-                    widths[k][-1] = max(max(values_dict[k]) - bins[k][-1], 0)
-                    bin_mids[k] = bins[k] + widths[k] / 2
+                        heights[k] = np.insert(heights[k], i, heights[k][i - 1])
+                    if i != -1:
+                        widths[k], bin_mids[k] = get_widths_and_midpoints(bins[k], max(values_dict[k][0]))
             else:
+                i = -1
                 if right_end is not None and data_min < right_end < data_max and right_end not in bins:
                     i, bins = insert_ordered(bins, right_end)
-                    for k in values_dict.keys():
-                        values_dict[k] = np.insert(values_dict[k], i, values_dict[k][i - 1])
+                    for k in heights.keys():
+                        heights[k] = np.insert(heights[k], i, heights[k][i - 1])
                 if left_end is not None and data_min < left_end < data_max and left_end not in bins:
                     i, bins = insert_ordered(bins, left_end)
-                    for k in values_dict.keys():
-                        values_dict[k] = np.insert(values_dict[k], i, values_dict[k][i - 1])
-                # Recalculating bin widths and midpoints
-                # TODO: optimize this later 
-                widths = np.zeros(len(bins))
-                for i in range(len(bins) - 1):
-                    widths[i] = bins[i + 1] - bins[i]
-                widths[-1] = max(data_max - bins[-1], 0)
-                bin_mids = bins + widths / 2
+                    for k in heights.keys():
+                        heights[k] = np.insert(heights[k], i, heights[k][i - 1])
+                if i != -1:
+                    widths, bin_mids = get_widths_and_midpoints(bins, max(values_dict[k][0]))
 
         # Getting range of bins
         # bin_ranges = list(zip(bins, np.insert(bins, len(bins), data_max)[1:]))
@@ -3590,20 +3585,22 @@ class Table(collections.abc.MutableMapping):
             _, bins_with_max = insert_ordered(bins, data_max)
             left_end_ind = np.digitize(left_end, bins_with_max) - 1 if left_end is not None else -1
             right_end_ind = np.digitize(right_end, bins_with_max) - 1 if right_end is not None else len(bins)
-            if left_end_ind != -1 or right_end_ind != len(bins):
+            if left_end is not None or right_end is not None:
                 if i >= 1:
                     i += 1
                 bin_colors = [colors[i]] * len(bins)
-                left_end_ind = max(min(left_end_ind, len(bin_colors) - 1), 0)
-                right_end_ind = max(min(right_end_ind, len(bin_colors) - 1), 0)
-                if left_end is not None and right_end is None:
+                #left_end_ind = max(min(left_end_ind, len(bin_colors) - 1), 0)
+                #right_end_ind = max(min(right_end_ind, len(bin_colors) - 1), 0)
+                #print(left_end_ind)
+                #print(right_end_ind)
+                if left_end == right_end:
+                    return bin_colors
+                elif left_end is not None and right_end is None:
                     for shade_ind in range(left_end_ind, len(bin_colors)):
                         bin_colors[shade_ind] = colors[1]
                 elif left_end is None and right_end is not None:
                     for shade_ind in range(right_end_ind + int(shade_split == "whole")):
                         bin_colors[shade_ind] = colors[1]
-                elif (left_end is None and right_end is None) or left_end == right_end:
-                    return bin_colors
                 elif left_end < right_end:
                     for shade_ind in range(left_end_ind, right_end_ind + int(shade_split == "whole")):
                         bin_colors[shade_ind] = colors[1] # Gold is always second color
@@ -3627,10 +3624,10 @@ class Table(collections.abc.MutableMapping):
             if height:
                 fig.update_layout(height = height)
 
-            for i, k in enumerate(values_dict.keys()):
+            for i, k in enumerate(heights.keys()):
                 fig.add_trace(go.Bar(
                     x = bin_mids,
-                    y = values_dict[k],
+                    y = heights[k],
                     marker_color = get_shaded_colors(bins, left_end, right_end, i, data_min, data_max),
                     text = ["Density"] * len(bin_mids) if density else ["Count"] * len(bin_mids),
                     customdata = None, # bin_ranges,
@@ -3650,9 +3647,9 @@ class Table(collections.abc.MutableMapping):
 
             fig.update_xaxes(
                 title_text = " ".join([
-                    list(values_dict.keys())[0],
+                    list(heights.keys())[0],
                     "".join(["(", unit, ")"]) if unit else ""
-                ])
+                ]) if len(heights.keys()) == 1 else None
             )
 
             if side_by_side:
@@ -3673,10 +3670,10 @@ class Table(collections.abc.MutableMapping):
 
             fig.update_layout(height = height if height is not None else 400 * n, showlegend = False)
 
-            for i, k in enumerate(values_dict.keys()):
+            for i, k in enumerate(heights.keys()):
                 fig.append_trace(go.Bar(
                     x = bin_mids[k] if multiple_bins else bin_mids,
-                    y = values_dict[k],
+                    y = heights[k],
                     marker_color = get_shaded_colors(
                         bins[k] if multiple_bins else bin_mids,
                         left_end,
