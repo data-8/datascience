@@ -3574,40 +3574,88 @@ class Table(collections.abc.MutableMapping):
                 if i != -1:
                     widths, bin_mids = get_widths_and_midpoints(bins, max(values_dict[k][0]))
         
+        # Formatter function for bin_ranges, 6 significant figures
+        bin_range_formatter = lambda tup: "".join(["(", str(float("%.6g" % tup[0])), ", ", str(float("%.6g" % tup[1])), ")"])
+
         # Getting range of bins
-        # bin_ranges = list(zip(bins, np.insert(bins, len(bins), data_max)[1:]))
+        if multiple_bins:
+            bin_ranges = dict()
+            for k in bins.keys():
+                bin_ranges[k] = list(zip(bins[k], np.insert(bins[k], len(bins[k]), max(values_dict[k][0]))[1:]))
+                bin_ranges[k] = list(map(bin_range_formatter, bin_ranges[k]))
+        else:
+            bin_ranges = list(zip(bins, np.insert(bins, len(bins), data_max)[1:]))
+            bin_ranges = list(map(bin_range_formatter, bin_ranges))
 
         colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors),
             n + int(left_end is not None or right_end is not None)))
 
         def get_shaded_colors(bins, left_end, right_end, i, data_min, data_max):
-            # Handles colors for shading
+            # Handles colors for shading, returns colors and boolean indicating if anything was shaded 
             _, bins_with_max = insert_ordered(bins, data_max)
             left_end_ind = np.digitize(left_end, bins_with_max) - 1 if left_end is not None else -1
             right_end_ind = np.digitize(right_end, bins_with_max) - 1 if right_end is not None else len(bins)
+            shaded = False
             if left_end is not None or right_end is not None:
                 if i >= 1:
                     i += 1
                 bin_colors = [colors[i]] * len(bins)
                 if left_end == right_end:
-                    return bin_colors
+                    return False, bin_colors
                 elif left_end is not None and right_end is None:
                     for shade_ind in range(left_end_ind, len(bin_colors)):
+                        shaded = True
                         bin_colors[shade_ind] = colors[1] # Gold is always second color
                 elif left_end is None and right_end is not None:
                     for shade_ind in range(right_end_ind + int(shade_split == "whole")):
+                        shaded = True
                         bin_colors[shade_ind] = colors[1]
                 elif left_end < right_end:
                     for shade_ind in range(max(left_end_ind, 0), min(right_end_ind + int(shade_split == "whole"), len(bin_colors))):
+                        shaded = True
                         bin_colors[shade_ind] = colors[1] 
                 elif left_end > right_end:
                     for shade_ind in range(right_end_ind):
+                        shaded = True
                         bin_colors[shade_ind] = colors[1]
                     for shade_ind in range(left_end_ind, len(bin_colors)):
+                        shaded = True
                         bin_colors[shade_ind] = colors[1]
-                return bin_colors
+                return shaded, bin_colors
             else:
-                return colors[i]
+                return False, colors[i]
+
+        def get_text_and_template(shaded, marker_colors, heights, widths):
+            # Returns text and hovertemplate
+            text = []
+            if density:
+                hovertemplate = "Bin Endpoints: %{customdata}<br>Bar Height: %{y}"
+                if shaded and not side_by_side:
+                    shaded_mask = np.array(marker_colors) == colors[1]
+                    shaded_percentage = np.dot(shaded_mask * heights[k], widths) 
+                    text = [""] * len(marker_colors)
+                    for i, color in enumerate(marker_colors):
+                        if color == colors[1]:
+                            text[i] = "".join(["<br>Shaded Area Percentage: ", str(float("%.6g" % shaded_percentage))])
+                        else:
+                            text[i] = "".join(["<br>Unshaded Area Percentage: ", str(float("%.6g" % (100 - shaded_percentage)))])
+            else:
+                hovertemplate = "Bin Endpoints: %{customdata}<br>Bar Height: %{y}"
+                if shaded and not side_by_side:
+                    shaded_mask = np.array(marker_colors) == colors[1]
+                    count_sum = sum(shaded_mask * heights[k])
+                    unshaded_count_sum = sum(heights[k]) - count_sum
+                    text = [""] * len(marker_colors)
+                    for i, color in enumerate(marker_colors):
+                        if color == colors[1]:
+                            text[i] = "".join(["<br>Shaded Count Sum: ", str(float("%.6g" % count_sum))])
+                        else:
+                            text[i] = "".join(["<br>Unshaded Count Sum: ", str(float("%.6g" % unshaded_count_sum))])
+            if len(text) > 0:
+                hovertemplate = "".join([hovertemplate, "%{text}"])
+            else:
+                text = None
+            return text, hovertemplate
 
         if n == 1 or overlay:
             fig = go.Figure()
@@ -3621,16 +3669,18 @@ class Table(collections.abc.MutableMapping):
                 fig.update_layout(height = height)
 
             for i, k in enumerate(heights.keys()):
+                shaded, marker_colors = get_shaded_colors(bins, left_end, right_end, i, data_min, data_max)
+                text, hovertemplate = get_text_and_template(shaded, marker_colors, heights, widths)
                 fig.add_trace(go.Bar(
                     x = bin_mids,
                     y = heights[k],
-                    marker_color = get_shaded_colors(bins, left_end, right_end, i, data_min, data_max),
-                    text = ["Density"] * len(bin_mids) if density else ["Count"] * len(bin_mids),
-                    customdata = None, # bin_ranges,
+                    marker_color = marker_colors,
+                    text = text, 
+                    customdata = bin_ranges[k] if multiple_bins else bin_ranges,
                     width = None if side_by_side else widths,
                     name = k,
                     opacity = 0.7,
-                    hovertemplate = "Bin Endpoints: (%{customdata})<br>%{text}: %{y}",
+                    hovertemplate = hovertemplate
                 ))
 
             fig.update_yaxes(
@@ -3667,23 +3717,20 @@ class Table(collections.abc.MutableMapping):
             fig.update_layout(height = height if height is not None else 400 * n, showlegend = False)
 
             for i, k in enumerate(heights.keys()):
+                trace_bins = bins[k] if multiple_bins else bins
+                trace_widths = widths[k] if multiple_bins else widths
+                shaded, marker_colors = get_shaded_colors(bins[k], left_end, right_end, i, min(trace_bins), max(trace_bins))
+                text, hovertemplate = get_text_and_template(shaded, marker_colors, heights, trace_widths)
                 fig.append_trace(go.Bar(
                     x = bin_mids[k] if multiple_bins else bin_mids,
                     y = heights[k],
-                    marker_color = get_shaded_colors(
-                        bins[k] if multiple_bins else bin_mids,
-                        left_end,
-                        right_end,
-                        i,
-                        min(bins[k] if multiple_bins else bins),
-                        max(bins[k] if multiple_bins else bins)
-                    ),
-                    text = ["Density"] * len(bin_mids) if density else ["Count"] * len(bin_mids),
-                    customdata = None, # bin_mids[k] if multiple_bins else bin_ranges,
-                    width = widths[k] if multiple_bins else widths,
+                    marker_color = marker_colors, 
+                    text = text,
+                    customdata = bin_ranges[k] if multiple_bins else bin_ranges,
+                    width = trace_widths,
                     name = k,
                     opacity = 0.7,
-                    hovertemplate = "Bin Endpoints: (%{customdata})<br>%{text}: %{y}",
+                    hovertemplate = hovertemplate
                 ), row = i + 1, col = 1)
                 fig.update_yaxes(
                     title_text = "".join([
