@@ -3488,14 +3488,14 @@ class Table(collections.abc.MutableMapping):
                 for k in bins.keys():
                     data_min = min(values_dict[k][0])
                     data_max = max(values_dict[k][0])
-                    if right_end and data_min < right_end < data_max and right_end not in bins[k]:
+                    if right_end is not None and data_min < right_end < data_max:
                         _, bins[k] = insert_ordered(bins[k], right_end)
-                    if left_end and data_min < left_end < data_max and left_end not in bins[k]:
+                    if left_end is not None and data_min < left_end < data_max:
                         _, bins[k] = insert_ordered(bins[k], left_end)
             else:
-                if right_end and data_min < right_end < data_max and right_end not in bins:
+                if right_end is not None and data_min < right_end < data_max:
                     _, bins = insert_ordered(bins, right_end)
-                if left_end and data_min < left_end < data_max and left_end not in bins:
+                if left_end is not None and data_min < left_end < data_max:
                     _, bins = insert_ordered(bins, left_end)
 
         # Getting bin widths and midpoints
@@ -3553,27 +3553,27 @@ class Table(collections.abc.MutableMapping):
                     bin_min = min(bins[k])
                     bin_max = max(bins[k])
                     i = -1
-                    if right_end is not None and bin_min < right_end < bin_max and right_end not in bins[k]:
+                    if right_end is not None and bin_min < right_end < bin_max:
                         i, bins[k] = insert_ordered(bins[k], right_end)
                         heights[k] = np.insert(heights[k], i, heights[k][i - 1])
-                    if left_end is not None and bin_min < left_end < bin_max and left_end not in bins[k]:
+                    if left_end is not None and bin_min < left_end < bin_max:
                         i, bins[k] = insert_ordered(bins[k], left_end)
                         heights[k] = np.insert(heights[k], i, heights[k][i - 1])
                     if i != -1:
                         widths[k], bin_mids[k] = get_widths_and_midpoints(bins[k], max(values_dict[k][0]))
             else:
                 i = -1
-                if right_end is not None and data_min < right_end < data_max and right_end not in bins:
+                if right_end is not None and data_min < right_end < data_max: 
                     i, bins = insert_ordered(bins, right_end)
                     for k in heights.keys():
                         heights[k] = np.insert(heights[k], i, heights[k][i - 1])
-                if left_end is not None and data_min < left_end < data_max and left_end not in bins:
+                if left_end is not None and data_min < left_end < data_max:
                     i, bins = insert_ordered(bins, left_end)
                     for k in heights.keys():
                         heights[k] = np.insert(heights[k], i, heights[k][i - 1])
                 if i != -1:
                     widths, bin_mids = get_widths_and_midpoints(bins, max(values_dict[k][0]))
-
+        
         # Getting range of bins
         # bin_ranges = list(zip(bins, np.insert(bins, len(bins), data_max)[1:]))
 
@@ -3589,21 +3589,17 @@ class Table(collections.abc.MutableMapping):
                 if i >= 1:
                     i += 1
                 bin_colors = [colors[i]] * len(bins)
-                #left_end_ind = max(min(left_end_ind, len(bin_colors) - 1), 0)
-                #right_end_ind = max(min(right_end_ind, len(bin_colors) - 1), 0)
-                #print(left_end_ind)
-                #print(right_end_ind)
                 if left_end == right_end:
                     return bin_colors
                 elif left_end is not None and right_end is None:
                     for shade_ind in range(left_end_ind, len(bin_colors)):
-                        bin_colors[shade_ind] = colors[1]
+                        bin_colors[shade_ind] = colors[1] # Gold is always second color
                 elif left_end is None and right_end is not None:
                     for shade_ind in range(right_end_ind + int(shade_split == "whole")):
                         bin_colors[shade_ind] = colors[1]
                 elif left_end < right_end:
-                    for shade_ind in range(left_end_ind, right_end_ind + int(shade_split == "whole")):
-                        bin_colors[shade_ind] = colors[1] # Gold is always second color
+                    for shade_ind in range(max(left_end_ind, 0), min(right_end_ind + int(shade_split == "whole"), len(bin_colors))):
+                        bin_colors[shade_ind] = colors[1] 
                 elif left_end > right_end:
                     for shade_ind in range(right_end_ind):
                         bin_colors[shade_ind] = colors[1]
