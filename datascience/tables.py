@@ -3473,7 +3473,6 @@ class Table(collections.abc.MutableMapping):
                 bins = bins[:-1]
             else:
                 bins = np.array(bins)
-        print(bins)
 
         def insert_ordered(arr, n):
             # Utility function, orderly inserts n into arr given arr is sorted
@@ -3487,9 +3486,11 @@ class Table(collections.abc.MutableMapping):
         if shade_split == "new":
             if multiple_bins:
                 for k in bins.keys():
-                    if right_end and right_end not in bins[k]:
+                    data_min = min(values_dict[k][0])
+                    data_max = max(values_dict[k][0])
+                    if right_end and data_min < right_end < data_max and right_end not in bins[k]:
                         _, bins[k] = insert_ordered(bins[k], right_end)
-                    if left_end and left_end not in bins[k]:
+                    if left_end and data_min < left_end < data_max and left_end not in bins[k]:
                         _, bins[k] = insert_ordered(bins[k], left_end)
             else:
                 if right_end and right_end not in bins:
@@ -3548,10 +3549,12 @@ class Table(collections.abc.MutableMapping):
         if shade_split == "split":
             if multiple_bins: 
                 for k in values_dict.keys():
-                    if right_end is not None and right_end not in bins[k]:
+                    bin_min = min(bins[k])
+                    bin_max = max(bins[k])
+                    if right_end is not None and bin_min < right_end < bin_max and right_end not in bins[k]:
                         i, bins[k] = insert_ordered(bins[k], right_end)
                         values_dict[k] = np.insert(values_dict[k], i, values_dict[k][i - 1])
-                    if left_end is not None and left_end not in bins[k]:
+                    if left_end is not None and bin_min < left_end < bin_max and left_end not in bins[k]:
                         i, bins[k] = insert_ordered(bins[k], left_end)
                         values_dict[k] = np.insert(values_dict[k], i, values_dict[k][i - 1])
                     widths[k] = np.zeros(len(bins[k]))
@@ -3560,11 +3563,11 @@ class Table(collections.abc.MutableMapping):
                     widths[k][-1] = max(max(values_dict[k]) - bins[k][-1], 0)
                     bin_mids[k] = bins[k] + widths[k] / 2
             else:
-                if right_end is not None and right_end not in bins:
+                if right_end is not None and data_min < right_end < data_max and right_end not in bins:
                     i, bins = insert_ordered(bins, right_end)
                     for k in values_dict.keys():
                         values_dict[k] = np.insert(values_dict[k], i, values_dict[k][i - 1])
-                if left_end is not None and left_end not in bins:
+                if left_end is not None and data_min < left_end < data_max and left_end not in bins:
                     i, bins = insert_ordered(bins, left_end)
                     for k in values_dict.keys():
                         values_dict[k] = np.insert(values_dict[k], i, values_dict[k][i - 1])
@@ -3580,32 +3583,34 @@ class Table(collections.abc.MutableMapping):
         # bin_ranges = list(zip(bins, np.insert(bins, len(bins), data_max)[1:]))
 
         colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors),
-            n + int((left_end >= data_min if left_end else False) or (right_end <= data_max if right_end else False))))
+            n + int(left_end is not None or right_end is not None)))
 
-        def get_shaded_colors(bins, left_end, right_end, i):
+        def get_shaded_colors(bins, left_end, right_end, i, data_min, data_max):
             # Handles colors for shading
             _, bins_with_max = insert_ordered(bins, data_max)
-            left_end_ind = np.digitize(left_end, bins_with_max) - 1 if left_end else -1
-            right_end_ind = np.digitize(right_end, bins_with_max) - 1 if right_end else len(bins)
+            left_end_ind = np.digitize(left_end, bins_with_max) - 1 if left_end is not None else -1
+            right_end_ind = np.digitize(right_end, bins_with_max) - 1 if right_end is not None else len(bins)
             if left_end_ind != -1 or right_end_ind != len(bins):
                 if i >= 1:
                     i += 1
                 bin_colors = [colors[i]] * len(bins)
-                left_end = left_end if left_end else data_min
-                right_end = right_end if right_end else data_max
-                if left_end < right_end:
+                left_end_ind = max(min(left_end_ind, len(bin_colors) - 1), 0)
+                right_end_ind = max(min(right_end_ind, len(bin_colors) - 1), 0)
+                if left_end is not None and right_end is None:
+                    for shade_ind in range(left_end_ind, len(bin_colors)):
+                        bin_colors[shade_ind] = colors[1]
+                elif left_end is None and right_end is not None:
+                    for shade_ind in range(right_end_ind + int(shade_split == "whole")):
+                        bin_colors[shade_ind] = colors[1]
+                elif (left_end is None and right_end is None) or left_end == right_end:
+                    return bin_colors
+                elif left_end < right_end:
                     for shade_ind in range(left_end_ind, right_end_ind + int(shade_split == "whole")):
-                        shade_ind = min(shade_ind, len(bin_colors) - 1)
-                        shade_ind = max(shade_ind, 0)
                         bin_colors[shade_ind] = colors[1] # Gold is always second color
                 elif left_end > right_end:
                     for shade_ind in range(right_end_ind):
-                        shade_ind = min(shade_ind, len(bin_colors) - 1)
-                        shade_ind = max(shade_ind, 0)
                         bin_colors[shade_ind] = colors[1]
                     for shade_ind in range(left_end_ind, len(bin_colors)):
-                        shade_ind = min(shade_ind, len(bin_colors) - 1)
-                        shade_ind = max(shade_ind, 0)
                         bin_colors[shade_ind] = colors[1]
                 return bin_colors
             else:
@@ -3626,7 +3631,7 @@ class Table(collections.abc.MutableMapping):
                 fig.add_trace(go.Bar(
                     x = bin_mids,
                     y = values_dict[k],
-                    marker_color = get_shaded_colors(bins, left_end, right_end, i),
+                    marker_color = get_shaded_colors(bins, left_end, right_end, i, data_min, data_max),
                     text = ["Density"] * len(bin_mids) if density else ["Count"] * len(bin_mids),
                     customdata = None, # bin_ranges,
                     width = None if side_by_side else widths,
@@ -3666,13 +3671,20 @@ class Table(collections.abc.MutableMapping):
             if width:
                 fig.update_layout(width = width)
 
-            fig.update_layout(height = height if height is not None else 400 * n)
+            fig.update_layout(height = height if height is not None else 400 * n, showlegend = False)
 
             for i, k in enumerate(values_dict.keys()):
                 fig.append_trace(go.Bar(
                     x = bin_mids[k] if multiple_bins else bin_mids,
                     y = values_dict[k],
-                    marker_color = get_shaded_colors(bins[k] if multiple_bins else bin_mids, left_end, right_end, i),
+                    marker_color = get_shaded_colors(
+                        bins[k] if multiple_bins else bin_mids,
+                        left_end,
+                        right_end,
+                        i,
+                        min(bins[k] if multiple_bins else bins),
+                        max(bins[k] if multiple_bins else bins)
+                    ),
                     text = ["Density"] * len(bin_mids) if density else ["Count"] * len(bin_mids),
                     customdata = None, # bin_mids[k] if multiple_bins else bin_ranges,
                     width = widths[k] if multiple_bins else widths,
