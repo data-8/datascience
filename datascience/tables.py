@@ -2650,12 +2650,12 @@ class Table(collections.abc.MutableMapping):
         values_dict = collections.OrderedDict(values_dict)
         if left_end is not None or right_end is not None:
             if left_end is None:
-                if bins[0]:
+                if bins is not None and bins[0]:
                     left_end = bins[0]
                 else:
                     left_end = min([min(self.column(k)) for k in self.labels if np.issubdtype(self.column(k).dtype, np.number)])
             elif right_end is None:
-                if bins[-1]:
+                if bins is not None and bins[-1]:
                     right_end = bins[-1]
                 else:
                     right_end = max([max(self.column(k)) for k in self.labels if np.issubdtype(self.column(k).dtype, np.number)])
