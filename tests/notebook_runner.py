@@ -1,4 +1,5 @@
 import nbformat
+import sys
 from nbconvert.preprocessors import ExecutePreprocessor
 
 with open(sys.argv[1]) as f:
