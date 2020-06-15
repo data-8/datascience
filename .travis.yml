@@ -24,6 +24,7 @@ before_install:
   - ./miniconda.sh -b -f -p $HOME/miniconda
   - export PATH=/home/travis/miniconda/bin:$PATH
   - conda update --yes conda
+  - jupyter kernelspec list
 
 install:
   - conda env update -f linux_environment.yml
