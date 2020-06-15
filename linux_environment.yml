@@ -46,6 +46,8 @@ dependencies:
   - ipython-genutils
   - jinja2
   - markupsafe
+  - nbconvert
+  - nbformat
   - pygments
   - snowballstemmer
   - sphinx
