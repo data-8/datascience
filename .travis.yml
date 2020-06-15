@@ -32,6 +32,8 @@ install:
 
 script:
   - coverage run setup.py test
+  - coverage run --append tests/notebook_runner.py tests/Charts.ipynb
+  - coverage run --append tests/notebook_runner.py tests/Maps.ipynb
 
 after_success:
   - coveralls
