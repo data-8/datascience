@@ -45,6 +45,7 @@ dependencies:
   - folium==0.2.1
   - ipython-genutils
   - jinja2
+  - jupyter
   - jupyter_client
   - markupsafe
   - nbconvert
