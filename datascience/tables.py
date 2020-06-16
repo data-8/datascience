@@ -95,7 +95,7 @@ class Table(collections.abc.MutableMapping):
            Returns:
 
                If the list is empty, it will return an empty table.
-               Otherwise, it will return a table with the labels as the column name, and the corresponding data.
+               Otherwise, it will return a table with the dictionary's keys as the column name, and the corresponding data.
                If the dictionaries do not have identical keys, the keys of the first dictionary in the list is used.
 
            """
@@ -138,16 +138,7 @@ class Table(collections.abc.MutableMapping):
         return cls.from_df(df)
 
     def _with_columns(self, columns):
-        """Create a table from a sequence of columns, copying column labels.
-
-           Args:
-
-               columns: A sequence of coloumns with labels
-
-           Returns:
-
-               It returns a table with the input columns containing labels. 
-        """
+        """Create a table from a sequence of columns, copying column labels."""
         table = type(self)()
         for label, column in zip(self.labels, columns):
             self._add_column_and_format(table, label, column)
