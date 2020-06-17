@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Start Here: datascience Tutorial &#8212; datascience 0.15.6 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start Here: datascience Tutorial &#8212; datascience 0.15.7 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -34,7 +35,8 @@
         <li class="right" >
           <a href="index.html" title="Welcome to datascience’s documentation!"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.15.6 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.15.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Start Here: <code class="docutils literal notranslate"><span class="pre">datascience</span></code> Tutorial</a></li> 
       </ul>
     </div>  
 
@@ -443,17 +445,17 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 
 <span class="gp">In [47]: </span><span class="n">normal_data</span>
 <span class="gh">Out[47]: </span><span class="go"></span>
-<span class="go">data1     | data2</span>
-<span class="go">3.29082   | 0.856434</span>
-<span class="go">2.23421   | -3.64286</span>
-<span class="go">6.13354   | -0.387574</span>
-<span class="go">-0.278235 | 4.91097</span>
-<span class="go">3.08536   | 3.79793</span>
-<span class="go">-0.836966 | 3.21177</span>
-<span class="go">1.07725   | 2.44705</span>
-<span class="go">1.94191   | 2.89875</span>
-<span class="go">-5.3932   | 3.20092</span>
-<span class="go">-0.690184 | 2.87401</span>
+<span class="go">data1    | data2</span>
+<span class="go">1.76754  | 7.91955</span>
+<span class="go">2.40015  | 6.4626</span>
+<span class="go">0.583853 | -0.247318</span>
+<span class="go">0.611783 | 3.04424</span>
+<span class="go">-2.67348 | 2.03958</span>
+<span class="go">2.54193  | 5.24796</span>
+<span class="go">0.254451 | 3.60566</span>
+<span class="go">1.24918  | 1.19839</span>
+<span class="go">1.27529  | 2.35018</span>
+<span class="go">2.38832  | 3.04007</span>
 <span class="go">... (90 rows omitted)</span>
 </pre></div>
 </div>
@@ -505,17 +507,17 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 converting to a pandas dataframe with <a class="reference internal" href="_autosummary/datascience.tables.Table.to_df.html#datascience.tables.Table.to_df" title="datascience.tables.Table.to_df"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_df()</span></code></a>:</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [56]: </span><span class="n">normal_data</span>
 <span class="gh">Out[56]: </span><span class="go"></span>
-<span class="go">data1     | data2</span>
-<span class="go">3.29082   | 0.856434</span>
-<span class="go">2.23421   | -3.64286</span>
-<span class="go">6.13354   | -0.387574</span>
-<span class="go">-0.278235 | 4.91097</span>
-<span class="go">3.08536   | 3.79793</span>
-<span class="go">-0.836966 | 3.21177</span>
-<span class="go">1.07725   | 2.44705</span>
-<span class="go">1.94191   | 2.89875</span>
-<span class="go">-5.3932   | 3.20092</span>
-<span class="go">-0.690184 | 2.87401</span>
+<span class="go">data1    | data2</span>
+<span class="go">1.76754  | 7.91955</span>
+<span class="go">2.40015  | 6.4626</span>
+<span class="go">0.583853 | -0.247318</span>
+<span class="go">0.611783 | 3.04424</span>
+<span class="go">-2.67348 | 2.03958</span>
+<span class="go">2.54193  | 5.24796</span>
+<span class="go">0.254451 | 3.60566</span>
+<span class="go">1.24918  | 1.19839</span>
+<span class="go">1.27529  | 2.35018</span>
+<span class="go">2.38832  | 3.04007</span>
 <span class="go">... (90 rows omitted)</span>
 
 <span class="go"># index = False prevents row numbers from appearing in the resulting CSV</span>
@@ -629,8 +631,8 @@ non-smokers.</p>
 
 <span class="gp">In [73]: </span><span class="n">bootstrapped_diff_means</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
 <span class="gh">Out[73]: </span><span class="go"></span>
-<span class="go">array([ 0.69201517,  0.1234639 , -0.58940232, -0.35898045,  0.4678215 ,</span>
-<span class="go">        0.52989015,  1.45833295,  1.80527751, -0.7802459 ,  1.53077075])</span>
+<span class="go">array([ 1.11220501,  1.19892134,  0.00646587,  1.50813413,  1.89137529,</span>
+<span class="go">        0.32418605, -1.48653351, -1.68487896,  2.09455033,  0.52430184])</span>
 
 <span class="gp">In [74]: </span><span class="n">num_diffs_greater</span> <span class="o">=</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">bootstrapped_diff_means</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">observed_diff</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
@@ -648,6 +650,7 @@ non-smokers.</p>
 </div>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -710,12 +713,13 @@ non-smokers.</p>
         <li class="right" >
           <a href="index.html" title="Welcome to datascience’s documentation!"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.15.6 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.15.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Start Here: <code class="docutils literal notranslate"><span class="pre">datascience</span></code> Tutorial</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.1.
     </div>
   </body>
 </html>

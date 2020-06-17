@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Maps (datascience.maps) &#8212; datascience 0.15.6 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maps (datascience.maps) &#8212; datascience 0.15.7 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -34,7 +35,8 @@
         <li class="right" >
           <a href="_autosummary/datascience.tables.Table.boxplot.html" title="datascience.tables.Table.boxplot"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.15.6 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.15.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Maps (<code class="docutils literal notranslate"><span class="pre">datascience.maps</span></code>)</a></li> 
       </ul>
     </div>  
 
@@ -46,6 +48,39 @@
   <div class="section" id="module-datascience.maps">
 <span id="maps-datascience-maps"></span><h1>Maps (<code class="docutils literal notranslate"><span class="pre">datascience.maps</span></code>)<a class="headerlink" href="#module-datascience.maps" title="Permalink to this headline">¶</a></h1>
 <p>Draw maps using folium.</p>
+<dl class="py class">
+<dt id="datascience.maps.Circle">
+<em class="property">class </em><code class="sig-prename descclassname">datascience.maps.</code><code class="sig-name descname">Circle</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lat</span></em>, <em class="sig-param"><span class="n">lon</span></em>, <em class="sig-param"><span class="n">popup</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">color</span><span class="o">=</span><span class="default_value">'blue'</span></em>, <em class="sig-param"><span class="n">radius</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Circle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Circle" title="Permalink to this definition">¶</a></dt>
+<dd><p>A marker displayed with Folium’s circle_marker method.</p>
+<p>popup – text that pops up when marker is clicked
+color – fill color
+radius – pixel radius of the circle</p>
+<p>Defaults from Folium:</p>
+<dl class="simple">
+<dt>fill_opacity: float, default 0.6</dt><dd><p>Circle fill opacity</p>
+</dd>
+</dl>
+<p>More options can be passed into kwargs by following the attributes
+listed in <cite>https://leafletjs.com/reference-1.4.0.html#circlemarker</cite>.</p>
+<p>For example, to draw three circles:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">([</span>
+        <span class="s1">&#39;lat&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mf">37.8</span><span class="p">,</span> <span class="mi">38</span><span class="p">,</span> <span class="mf">37.9</span><span class="p">],</span>
+        <span class="s1">&#39;lon&#39;</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">122</span><span class="p">,</span> <span class="o">-</span><span class="mf">122.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">121.9</span><span class="p">],</span>
+        <span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;one&#39;</span><span class="p">,</span> <span class="s1">&#39;two&#39;</span><span class="p">,</span> <span class="s1">&#39;three&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;radius&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">3000</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> <span class="mi">5000</span><span class="p">],</span>
+    <span class="p">])</span>
+<span class="n">Circle</span><span class="o">.</span><span class="n">map_table</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt id="datascience.maps.Circle.draw_on">
+<code class="sig-name descname">draw_on</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">folium_map</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Circle.draw_on"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Circle.draw_on" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add feature to Folium map object.</p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="py class">
 <dt id="datascience.maps.Map">
 <em class="property">class </em><code class="sig-prename descclassname">datascience.maps.</code><code class="sig-name descname">Map</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">features</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">ids</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">width</span><span class="o">=</span><span class="default_value">960</span></em>, <em class="sig-param"><span class="n">height</span><span class="o">=</span><span class="default_value">500</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Map" title="Permalink to this definition">¶</a></dt>
@@ -214,39 +249,6 @@ in any order with columns explicitly stating what property they are representing
 </dd></dl>
 
 <dl class="py class">
-<dt id="datascience.maps.Circle">
-<em class="property">class </em><code class="sig-prename descclassname">datascience.maps.</code><code class="sig-name descname">Circle</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lat</span></em>, <em class="sig-param"><span class="n">lon</span></em>, <em class="sig-param"><span class="n">popup</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">color</span><span class="o">=</span><span class="default_value">'blue'</span></em>, <em class="sig-param"><span class="n">radius</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Circle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Circle" title="Permalink to this definition">¶</a></dt>
-<dd><p>A marker displayed with Folium’s circle_marker method.</p>
-<p>popup – text that pops up when marker is clicked
-color – fill color
-radius – pixel radius of the circle</p>
-<p>Defaults from Folium:</p>
-<dl class="simple">
-<dt>fill_opacity: float, default 0.6</dt><dd><p>Circle fill opacity</p>
-</dd>
-</dl>
-<p>More options can be passed into kwargs by following the attributes
-listed in <cite>https://leafletjs.com/reference-1.4.0.html#circlemarker</cite>.</p>
-<p>For example, to draw three circles:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">([</span>
-        <span class="s1">&#39;lat&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mf">37.8</span><span class="p">,</span> <span class="mi">38</span><span class="p">,</span> <span class="mf">37.9</span><span class="p">],</span>
-        <span class="s1">&#39;lon&#39;</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">122</span><span class="p">,</span> <span class="o">-</span><span class="mf">122.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">121.9</span><span class="p">],</span>
-        <span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;one&#39;</span><span class="p">,</span> <span class="s1">&#39;two&#39;</span><span class="p">,</span> <span class="s1">&#39;three&#39;</span><span class="p">],</span>
-        <span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">],</span>
-        <span class="s1">&#39;radius&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">3000</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> <span class="mi">5000</span><span class="p">],</span>
-    <span class="p">])</span>
-<span class="n">Circle</span><span class="o">.</span><span class="n">map_table</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-</pre></div>
-</div>
-<dl class="py method">
-<dt id="datascience.maps.Circle.draw_on">
-<code class="sig-name descname">draw_on</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">folium_map</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Circle.draw_on"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Circle.draw_on" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add feature to Folium map object.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
 <dt id="datascience.maps.Region">
 <em class="property">class </em><code class="sig-prename descclassname">datascience.maps.</code><code class="sig-name descname">Region</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">geojson</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Region"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.maps.Region" title="Permalink to this definition">¶</a></dt>
 <dd><p>A GeoJSON feature displayed with Folium’s geo_json method.</p>
@@ -309,6 +311,7 @@ the first.</p></li>
 </div>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -356,12 +359,13 @@ the first.</p></li>
         <li class="right" >
           <a href="_autosummary/datascience.tables.Table.boxplot.html" title="datascience.tables.Table.boxplot"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.15.6 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.15.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Maps (<code class="docutils literal notranslate"><span class="pre">datascience.maps</span></code>)</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.1.
     </div>
   </body>
 </html>

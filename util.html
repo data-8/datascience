@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Utility Functions (datascience.util) &#8212; datascience 0.15.6 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Utility Functions (datascience.util) &#8212; datascience 0.15.7 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -30,7 +31,8 @@
         <li class="right" >
           <a href="formats.html" title="Formats (datascience.formats)"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.15.6 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.15.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Utility Functions (<code class="docutils literal notranslate"><span class="pre">datascience.util</span></code>)</a></li> 
       </ul>
     </div>  
 
@@ -59,6 +61,25 @@ A simple way to make an array with a few elements.</p>
 <span class="go">array([], dtype=float64)</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="datascience.util.minimize">
+<code class="sig-prename descclassname">datascience.util.</code><code class="sig-name descname">minimize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">start</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">smooth</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">log</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">array</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">vargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#minimize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.util.minimize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Minimize a function f of one or more arguments.</p>
+<dl>
+<dt>Args:</dt><dd><p>f: A function that takes numbers and returns a number</p>
+<p>start: A starting value or list of starting values</p>
+<p>smooth: Whether to assume that f is smooth and use first-order info</p>
+<p>log: Logging function called on the result of optimization (e.g. print)</p>
+<p>vargs: Other named arguments passed to scipy.optimize.minimize</p>
+</dd>
+<dt>Returns either:</dt><dd><ol class="loweralpha simple">
+<li><p>the minimizing argument of a one-argument function</p></li>
+<li><p>an array of minimizing arguments of a multi-argument function</p></li>
+</ol>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -104,24 +125,6 @@ between <code class="docutils literal notranslate"><span class="pre">lbound</spa
 <p><code class="docutils literal notranslate"><span class="pre">lbound</span></code> (numeric): left boundary of shaded region; by default is negative infinity</p>
 <p><code class="docutils literal notranslate"><span class="pre">mean</span></code> (numeric): mean/expectation of normal distribution</p>
 <p><code class="docutils literal notranslate"><span class="pre">sd</span></code> (numeric): standard deviation of normal distribution</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="datascience.util.table_apply">
-<code class="sig-prename descclassname">datascience.util.</code><code class="sig-name descname">table_apply</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">table</span></em>, <em class="sig-param"><span class="n">func</span></em>, <em class="sig-param"><span class="n">subset</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#table_apply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.util.table_apply" title="Permalink to this definition">¶</a></dt>
-<dd><p>Applies a function to each column and returns a Table.</p>
-<dl>
-<dt>Args:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">table</span></code>: The table to apply your function to.</p>
-<p><code class="docutils literal notranslate"><span class="pre">func</span></code>: The function to apply to each column.</p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">subset</span></code>: A list of columns to apply the function to; if None,</dt><dd><p>the function will be applied to all columns in table.</p>
-</dd>
-</dl>
-</dd>
-<dt>Returns:</dt><dd><p>A table with the given function applied. It will either be the
-shape == shape(table), or shape (1, table.shape[1])</p>
 </dd>
 </dl>
 </dd></dl>
@@ -173,20 +176,19 @@ instead of counts.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="datascience.util.minimize">
-<code class="sig-prename descclassname">datascience.util.</code><code class="sig-name descname">minimize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">start</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">smooth</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">log</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">array</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">vargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#minimize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.util.minimize" title="Permalink to this definition">¶</a></dt>
-<dd><p>Minimize a function f of one or more arguments.</p>
+<dt id="datascience.util.table_apply">
+<code class="sig-prename descclassname">datascience.util.</code><code class="sig-name descname">table_apply</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">table</span></em>, <em class="sig-param"><span class="n">func</span></em>, <em class="sig-param"><span class="n">subset</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#table_apply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.util.table_apply" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies a function to each column and returns a Table.</p>
 <dl>
-<dt>Args:</dt><dd><p>f: A function that takes numbers and returns a number</p>
-<p>start: A starting value or list of starting values</p>
-<p>smooth: Whether to assume that f is smooth and use first-order info</p>
-<p>log: Logging function called on the result of optimization (e.g. print)</p>
-<p>vargs: Other named arguments passed to scipy.optimize.minimize</p>
+<dt>Args:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">table</span></code>: The table to apply your function to.</p>
+<p><code class="docutils literal notranslate"><span class="pre">func</span></code>: The function to apply to each column.</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">subset</span></code>: A list of columns to apply the function to; if None,</dt><dd><p>the function will be applied to all columns in table.</p>
 </dd>
-<dt>Returns either:</dt><dd><ol class="loweralpha simple">
-<li><p>the minimizing argument of a one-argument function</p></li>
-<li><p>an array of minimizing arguments of a multi-argument function</p></li>
-</ol>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>A table with the given function applied. It will either be the
+shape == shape(table), or shape (1, table.shape[1])</p>
 </dd>
 </dl>
 </dd></dl>
@@ -194,6 +196,7 @@ instead of counts.</p>
 </div>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -235,12 +238,13 @@ instead of counts.</p>
         <li class="right" >
           <a href="formats.html" title="Formats (datascience.formats)"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.15.6 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.15.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Utility Functions (<code class="docutils literal notranslate"><span class="pre">datascience.util</span></code>)</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.1.
     </div>
   </body>
 </html>
