@@ -86,7 +86,19 @@ class Table(collections.abc.MutableMapping):
 
     @classmethod
     def from_records(cls, records):
-        """Create a table from a sequence of records (dicts with fixed keys)."""
+        """Create a table from a sequence of records (dicts with fixed keys).
+
+           Args:
+
+               records: A list of dictionaries with same keys.
+
+           Returns:
+
+               If the list is empty, it will return an empty table.
+               Otherwise, it will return a table with the dictionary's keys as the column name, and the corresponding data.
+               If the dictionaries do not have identical keys, the keys of the first dictionary in the list is used.
+
+           """
         if not records:
             return cls()
         labels = sorted(list(records[0].keys()))
@@ -158,7 +170,16 @@ class Table(collections.abc.MutableMapping):
 
     @classmethod
     def from_array(cls, arr):
-        """Convert a structured NumPy array into a Table."""
+        """Convert a structured NumPy array into a Table.
+
+           Args:
+ 
+               arr: A structured numpy array
+
+           Returns:
+
+               A table with the field names as the column names and the corresponding data. 
+        """
         return cls().with_columns([(f, arr[f]) for f in arr.dtype.names])
 
     #################
