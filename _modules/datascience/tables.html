@@ -127,7 +127,19 @@
 
 <div class="viewcode-block" id="Table.from_records"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.from_records.html#datascience.tables.Table.from_records">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_records</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">records</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create a table from a sequence of records (dicts with fixed keys).&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Create a table from a sequence of records (dicts with fixed keys).</span>
+
+<span class="sd">           Args:</span>
+
+<span class="sd">               records: A list of dictionaries with same keys.</span>
+
+<span class="sd">           Returns:</span>
+
+<span class="sd">               If the list is empty, it will return an empty table.</span>
+<span class="sd">               Otherwise, it will return a table with the dictionary&#39;s keys as the column name, and the corresponding data.</span>
+<span class="sd">               If the dictionaries do not have identical keys, the keys of the first dictionary in the list is used.</span>
+
+<span class="sd">           &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">records</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">cls</span><span class="p">()</span>
         <span class="n">labels</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">records</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
@@ -199,7 +211,16 @@
 
 <div class="viewcode-block" id="Table.from_array"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.from_array.html#datascience.tables.Table.from_array">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_array</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">arr</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Convert a structured NumPy array into a Table.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Convert a structured NumPy array into a Table.</span>
+
+<span class="sd">           Args:</span>
+<span class="sd"> </span>
+<span class="sd">               arr: A structured numpy array</span>
+
+<span class="sd">           Returns:</span>
+
+<span class="sd">               A table with the field names as the column names and the corresponding data. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">([(</span><span class="n">f</span><span class="p">,</span> <span class="n">arr</span><span class="p">[</span><span class="n">f</span><span class="p">])</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">arr</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">names</span><span class="p">])</span></div>
 
     <span class="c1">#################</span>

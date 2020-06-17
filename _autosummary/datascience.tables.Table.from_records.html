@@ -52,6 +52,16 @@
 <dt id="datascience.tables.Table.from_records">
 <em class="property">classmethod </em><code class="sig-prename descclassname">Table.</code><code class="sig-name descname">from_records</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">records</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.from_records"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.from_records" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a table from a sequence of records (dicts with fixed keys).</p>
+<p>Args:</p>
+<blockquote>
+<div><p>records: A list of dictionaries with same keys.</p>
+</div></blockquote>
+<p>Returns:</p>
+<blockquote>
+<div><p>If the list is empty, it will return an empty table.
+Otherwise, it will return a table with the dictionary’s keys as the column name, and the corresponding data.
+If the dictionaries do not have identical keys, the keys of the first dictionary in the list is used.</p>
+</div></blockquote>
 </dd></dl>
 
 </div>
