@@ -7,7 +7,7 @@ __all__ = ['make_array', 'percentile', 'plot_cdf_area', 'plot_normal_cdf',
 import numpy as np
 import pandas as pd
 import matplotlib
-matplotlib.use('agg', warn=False)
+matplotlib.use('agg')
 import matplotlib.pyplot as plt
 from scipy import stats
 from scipy import optimize
