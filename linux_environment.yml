@@ -12,6 +12,7 @@ dependencies:
 - libxml2
 - matplotlib
 - mkl
+- nbval
 - numpy
 - openssl
 - pandas
@@ -22,6 +23,7 @@ dependencies:
 - pyparsing
 - pyqt
 - pytest
+- pytest-cov
 - python
 - python-dateutil
 - pytz
