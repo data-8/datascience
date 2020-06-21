@@ -3881,11 +3881,11 @@ class Table(collections.abc.MutableMapping):
             raise ValueError("You can't specify both normed and density. "
                              "Use one or the other.")
 
-        if "shade_split" not in vargs:
-            vargs["shade_split"] = "split"
-
         global _INTERACTIVE_PLOTS
         if _INTERACTIVE_PLOTS:
+            if "shade_split" not in vargs:
+                vargs["shade_split"] = "split"
+
             return self.ihist(
                 *columns,
                 overlay = overlay,
