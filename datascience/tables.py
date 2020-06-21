@@ -3693,8 +3693,12 @@ class Table(collections.abc.MutableMapping):
                         x = values_dict[k][0], 
                         y = np.zeros_like(values_dict[k][0]), 
                         mode = "markers",
-                        marker_symbol="line-ns",
-                        marker_color="black"
+                        marker = dict(
+                            symbol = "line-ns-open",
+                            color = "black",
+                            size = 10,
+                            opacity = 1,
+                        )
                     ))
 
             fig.update_yaxes(
@@ -3755,6 +3759,20 @@ class Table(collections.abc.MutableMapping):
                         marker_symbol="line-ns",
                         marker_color="black"
                     ), row = i + 1, col = 1)
+                if rug:
+                    fig.append_trace(go.Scatter(
+                        x = values_dict[k][0], 
+                        y = np.zeros_like(values_dict[k][0]), 
+                        mode = "markers",
+                        marker = dict(
+                            symbol = "line-ns-open",
+                            color = "black",
+                            size = 10,
+                            opacity = 1,
+                        )),
+                        row = i + 1, col = 1
+                    )
+
 
                 fig.update_yaxes(
                     title_text = "".join([
