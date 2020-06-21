@@ -9,7 +9,6 @@ dependencies:
 - ipython_genutils
 - libpng
 - matplotlib
-- nbval
 - numpy
 - openssl
 - pandas
@@ -46,6 +45,7 @@ dependencies:
   - ipython-genutils
   - jinja2
   - markupsafe
+  - nbval
   - pygments
   - snowballstemmer
   - sphinx
