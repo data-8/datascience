@@ -1,7 +1,6 @@
 name: datascience
 dependencies:
 - appnope
-- coverage
 - coveralls
 - cycler
 - decorator
@@ -10,6 +9,7 @@ dependencies:
 - ipython_genutils
 - libpng
 - matplotlib
+- nbval
 - numpy
 - openssl
 - pandas
@@ -20,6 +20,7 @@ dependencies:
 - pyparsing
 - pyqt
 - pytest
+- pytest-cov
 - python
 - python-dateutil
 - python.app
