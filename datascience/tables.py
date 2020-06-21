@@ -3301,7 +3301,8 @@ class Table(collections.abc.MutableMapping):
 
 
     def ihist(self, *columns, overlay=True, bins=None, bin_column=None, unit=None, counts=None, group=None,
-        side_by_side=False, left_end=None, right_end=None, width=None, height=None, density=True, shade_split="split", **vargs):
+        side_by_side=False, left_end=None, right_end=None, width=None, height=None, density=True, 
+        shade_split="split", rug=False, **vargs):
         """Plots one histogram for each column in columns. If no column is
         specified, plot all columns.
 
@@ -3657,6 +3658,10 @@ class Table(collections.abc.MutableMapping):
                 text = None
             return text, hovertemplate
 
+        if rug and overlay and n > 1:
+            warnings.warn("Cannot plot overlaid rug plots; rug=True ignored")
+            rug = False
+
         if n == 1 or overlay:
             fig = go.Figure()
 
@@ -3682,6 +3687,15 @@ class Table(collections.abc.MutableMapping):
                     opacity = 0.7,
                     hovertemplate = hovertemplate
                 ))
+
+                if rug:
+                    fig.add_trace(go.Scatter(
+                        x = values_dict[k][0], 
+                        y = np.zeros_like(values_dict[k][0]), 
+                        mode = "markers",
+                        marker_symbol="line-ns",
+                        marker_color="black"
+                    ))
 
             fig.update_yaxes(
                 title_text = "".join([
@@ -3732,6 +3746,16 @@ class Table(collections.abc.MutableMapping):
                     opacity = 0.7,
                     hovertemplate = hovertemplate
                 ), row = i + 1, col = 1)
+
+                if rug:
+                    fig.append_trace(go.Scatter(
+                        x = values_dict[k][0], 
+                        y = np.zeros_like(values_dict[k][0]), 
+                        mode = "markers",
+                        marker_symbol="line-ns",
+                        marker_color="black"
+                    ), row = i + 1, col = 1)
+
                 fig.update_yaxes(
                     title_text = "".join([
                         "Percent Per " if density else "Count",
@@ -3857,6 +3881,7 @@ class Table(collections.abc.MutableMapping):
                 right_end = right_end,
                 width = width,
                 height = height,
+                rug = rug,
                 **vargs
             )
 
