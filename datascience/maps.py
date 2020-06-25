@@ -408,7 +408,10 @@ class Marker(_MapFeature):
     color -- The color of the marker. You can use:
     [‘red’, ‘blue’, ‘green’, ‘purple’, ‘orange’, ‘darkred’,
     ’lightred’, ‘beige’, ‘darkblue’, ‘darkgreen’, ‘cadetblue’, ‘darkpurple’, 
-    ‘white’, ‘pink’, ‘lightblue’, ‘lightgreen’, ‘gray’, ‘black’, ‘lightgray’]
+    ‘white’, ‘pink’, ‘lightblue’, ‘lightgreen’, ‘gray’, ‘black’, ‘lightgray’] 
+    to use standard folium icons. If a hex color code is provided, 
+    (color must start with '#'), a folium.plugin.BeautifyIcon will
+    be used instead. 
     
     Defaults from Folium:
 
@@ -454,13 +457,17 @@ class Marker(_MapFeature):
         icon_args = {k: attrs.pop(k) for k in attrs.keys() & {'color', 'marker_icon', 'clustered_marker', 'icon_angle', 'popup_width'}}
         if 'marker_icon' in icon_args:
             icon_args['icon'] = icon_args.pop('marker_icon')
-        else:
-            icon_args['icon'] = 'circle'
-        if 'color' in icon_args:
+        if 'color' in icon_args and icon_args['color'][0] == '#':
+            # Checks if color provided is a hex code instead; if it is, uses BeautifyIcon to create markers. 
+            # If statement does not check to see if color is an empty string.
             icon_args['background_color'] = icon_args['border_color'] = icon_args.pop('color')
             icon_args['text_color'] = 'white'
-        icon_args['icon_shape'] = 'marker'
-        attrs['icon'] = BeautifyIcon(**icon_args)
+            icon_args['icon_shape'] = 'marker'
+            if 'icon' not in icon_args:
+                icon_args['icon'] = 'info-circle'
+            attrs['icon'] = BeautifyIcon(**icon_args)
+        else:
+            attrs['icon'] = folium.Icon(**icon_args)
         return attrs
 
     def geojson(self, feature_id):
