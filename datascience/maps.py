@@ -5,7 +5,7 @@ __all__ = ['Map', 'Marker', 'Circle', 'Region']
 
 import IPython.display
 import folium
-from folium.plugins import MarkerCluster
+from folium.plugins import MarkerCluster, BeautifyIcon
 import pandas
 import numpy as np
 
@@ -454,7 +454,13 @@ class Marker(_MapFeature):
         icon_args = {k: attrs.pop(k) for k in attrs.keys() & {'color', 'marker_icon', 'clustered_marker', 'icon_angle', 'popup_width'}}
         if 'marker_icon' in icon_args:
             icon_args['icon'] = icon_args.pop('marker_icon')
-        attrs['icon'] = folium.Icon(**icon_args)
+        else:
+            icon_args['icon'] = 'circle'
+        if 'color' in icon_args:
+            icon_args['background_color'] = icon_args['border_color'] = icon_args.pop('color')
+            icon_args['text_color'] = 'white'
+        icon_args['icon_shape'] = 'marker'
+        attrs['icon'] = BeautifyIcon(**icon_args)
         return attrs
 
     def geojson(self, feature_id):
