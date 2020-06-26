@@ -554,7 +554,7 @@ class Marker(_MapFeature):
         """Return markers from the colums of a table.
         
         The first two columns of the table must be the latitudes and longitudes
-        (in that order), followed by 'labels', 'colors', and/or 'areas' (if applicable)
+        (in that order), followed by 'labels', 'colors', 'color scale', and/or 'areas' (if applicable)
         in any order with columns explicitly stating what property they are representing.
         """
         lat, lon, lab, color, areas, other_attrs = None, None, None, None, None, {}
@@ -574,15 +574,20 @@ class Marker(_MapFeature):
             elif col != "color scale":
                 other_attrs[col] = this_col
         if 'color scale' in table.labels:
-            HIGH_COLOR_ENDPOINT = np.array(mpl.colors.to_rgb('blue'))
-            LOW_COLOR_ENDPOINT = np.array(mpl.colors.to_rgb('red')) 
-            scale_min = min(table.column('color scale'))
-            scale_max = max(table.column('color scale'))
-            # Linearly interpolates between HIGH_COLOR_ENDPOINT and LOW_COLOR_ENDPOINT, does not account for outliers
+            HIGH_COLOR_ENDPOINT = np.array(mpl.colors.to_rgb('red'))
+            LOW_COLOR_ENDPOINT = np.array(mpl.colors.to_rgb('blue')) 
+            q1 = np.percentile(table.column('color scale'), 25)
+            q3 = np.percentile(table.column('color scale'), 75) 
+            IQR = q3 - q1
+            scale_min = max(q1 - 1.5 * IQR, min(table.column('color scale')))
+            scale_max = min(q3 + 1.5 * IQR, max(table.column('color scale')))
+            # Linearly interpolates between HIGH_COLOR_ENDPOINT and LOW_COLOR_ENDPOINT
             interpolate_color = lambda mix: mpl.colors.to_hex((1 - mix) * LOW_COLOR_ENDPOINT + mix * HIGH_COLOR_ENDPOINT)
             color = [""] * table.num_rows
             for i, datapoint in enumerate(table.column('color scale')): 
-                color[i] = interpolate_color((datapoint - scale_min) / (scale_max - scale_min))
+                mix = (datapoint - scale_min) / (scale_max - scale_min)
+                mix = max(min(mix, 1), 0)
+                color[i] = interpolate_color(mix)
         if not other_attrs:
             other_attrs = None
         return cls.map(latitudes=lat, longitudes=lon, labels=lab,
