@@ -462,7 +462,10 @@ class Marker(_MapFeature):
             # Checks if color provided is a hex code instead; if it is, uses BeautifyIcon to create markers. 
             # If statement does not check to see if color is an empty string.
             icon_args['background_color'] = icon_args['border_color'] = icon_args.pop('color')
-            icon_args['text_color'] = 'white'
+            if icon_args['background_color'][1] == icon_args['background_color'][3] == icon_args['background_color'][5] == 'f':
+                icon_args['text_color'] = 'gray'
+            else:
+                icon_args['text_color'] = 'white'
             icon_args['icon_shape'] = 'marker'
             if 'icon' not in icon_args:
                 icon_args['icon'] = 'info-circle'
@@ -574,8 +577,8 @@ class Marker(_MapFeature):
             elif col != "color scale":
                 other_attrs[col] = this_col
         if 'color scale' in table.labels:
-            HIGH_COLOR_ENDPOINT = np.array(mpl.colors.to_rgb('red'))
-            LOW_COLOR_ENDPOINT = np.array(mpl.colors.to_rgb('blue')) 
+            HIGH_COLOR_ENDPOINT = np.array(mpl.colors.to_rgb('#003262'))
+            LOW_COLOR_ENDPOINT = np.array(mpl.colors.to_rgb('white')) 
             q1 = np.percentile(table.column('color scale'), 25)
             q3 = np.percentile(table.column('color scale'), 75) 
             IQR = q3 - q1
