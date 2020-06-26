@@ -8,6 +8,7 @@ import folium
 from folium.plugins import MarkerCluster, BeautifyIcon
 import pandas
 import numpy as np
+import matplotlib as mpl
 
 import abc
 import collections
@@ -570,8 +571,18 @@ class Marker(_MapFeature):
                 color = this_col
             elif col == "areas":
                 areas = this_col
-            else:
+            elif col != "color scale":
                 other_attrs[col] = this_col
+        if 'color scale' in table.labels:
+            HIGH_COLOR_ENDPOINT = np.array(mpl.colors.to_rgb('blue'))
+            LOW_COLOR_ENDPOINT = np.array(mpl.colors.to_rgb('red')) 
+            scale_min = min(table.column('color scale'))
+            scale_max = max(table.column('color scale'))
+            # Linearly interpolates between HIGH_COLOR_ENDPOINT and LOW_COLOR_ENDPOINT, does not account for outliers
+            interpolate_color = lambda mix: mpl.colors.to_hex((1 - mix) * LOW_COLOR_ENDPOINT + mix * HIGH_COLOR_ENDPOINT)
+            color = [""] * table.num_rows
+            for i, datapoint in enumerate(table.column('color scale')): 
+                color[i] = interpolate_color((datapoint - scale_min) / (scale_max - scale_min))
         if not other_attrs:
             other_attrs = None
         return cls.map(latitudes=lat, longitudes=lon, labels=lab,
