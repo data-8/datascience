@@ -3122,7 +3122,7 @@ class Table(collections.abc.MutableMapping):
             fig.update_layout(scene=dict(
                 xaxis_title = column_for_x,
                 yaxis_title = column_for_y,
-                zaxis_title = z_labels[0] if len(z_labels) == 1 else None,
+                zaxis_title = z_labels[0] if len(z_labels) == 1 else "",
             ))
 
         else:
@@ -3143,7 +3143,7 @@ class Table(collections.abc.MutableMapping):
                         mode = "markers+text" if labels else "markers",
                         text = self[labels] if labels else None,
                         textposition = "bottom center",
-                        textfont = dict(color = colors[i])
+                        textfont = dict(color = colors[i]),
                     ), row = i + 1, col = 1)
 
                     # if fit_line:
@@ -3193,7 +3193,10 @@ class Table(collections.abc.MutableMapping):
                                 textfont = dict(color = colors[i])
                             ), row = i + 1, col = 1)
 
-                    # TODO: update zaxis label
+            for scene, label in zip(fig.select_scenes(), z_labels):
+                scene["xaxis_title_text"] = column_for_x
+                scene["yaxis_title_text"] = column_for_y
+                scene["zaxis_title_text"] = label
 
             if height is not None:
                 plot_height = height
