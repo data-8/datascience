@@ -4,10 +4,12 @@ __all__ = ['Map', 'Marker', 'Circle', 'Region']
 
 
 import IPython.display
+import itertools
 import folium
-from folium.plugins import MarkerCluster
+from folium.plugins import MarkerCluster, BeautifyIcon
 import pandas
 import numpy as np
+import matplotlib as mpl
 
 import abc
 import collections
@@ -80,6 +82,10 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         tile_style = None
         if "tiles" in kwargs:
             tile_style = kwargs.pop("tiles")
+        self._index_map = None
+        if "index_map" in kwargs:
+            self._index_map = kwargs.pop("index_map")
+            self._cluster_labels = kwargs.pop("cluster_labels")
         self._features = features
         self._attrs = {
             'tiles': tile_style if tile_style else 'OpenStreetMap',
@@ -112,13 +118,35 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
     def _set_folium_map(self):
         self._folium_map = self._create_map()
         if 'clustered_marker' in self._attrs and self._attrs['clustered_marker']:
-            marker_cluster = MarkerCluster().add_to(self._folium_map)
+            def customize_marker_cluster(color, label):
+                # Returns string for icon_create_function
+                return "function(cluster) { return L.divIcon({ html: \"<div style= 'color: white; background-color: "\
+                    + mpl.colors.to_hex(color)\
+                    + "; border-radius: 50%;'>"\
+                    + label\
+                    + "</div>\", iconSize: [40, 40] });}"
+            if self._index_map is not None:
+                chart_colors = (
+                    (0.0, 30/256, 66/256),
+                    (1.0, 200/256, 44/256),
+                    (0.0, 150/256, 207/256),
+                    (30/256, 100/256, 0.0),
+                    (172/256, 60/256, 72/256),
+                )
+                chart_colors += tuple(tuple((x+0.7)/2 for x in c) for c in chart_colors)
+                colors = list(itertools.islice(itertools.cycle(chart_colors), len(self._cluster_labels)))
+                marker_cluster = [MarkerCluster(icon_create_function = customize_marker_cluster(colors[i], label)).add_to(self._folium_map) for i, label in enumerate(self._cluster_labels)]
+            else:
+                marker_cluster = MarkerCluster().add_to(self._folium_map)
             clustered = True
         else:
             clustered = False
-        for feature in self._features.values():
+        for i, feature in enumerate(self._features.values()):
             if clustered and isinstance(feature, Marker):
-                feature.draw_on(marker_cluster)
+                if isinstance(marker_cluster, list):
+                    feature.draw_on(marker_cluster[self._index_map[i]])
+                else:
+                    feature.draw_on(marker_cluster)
             else:
                 feature.draw_on(self._folium_map)
 
@@ -408,7 +436,10 @@ class Marker(_MapFeature):
     color -- The color of the marker. You can use:
     [‘red’, ‘blue’, ‘green’, ‘purple’, ‘orange’, ‘darkred’,
     ’lightred’, ‘beige’, ‘darkblue’, ‘darkgreen’, ‘cadetblue’, ‘darkpurple’, 
-    ‘white’, ‘pink’, ‘lightblue’, ‘lightgreen’, ‘gray’, ‘black’, ‘lightgray’]
+    ‘white’, ‘pink’, ‘lightblue’, ‘lightgreen’, ‘gray’, ‘black’, ‘lightgray’] 
+    to use standard folium icons. If a hex color code is provided, 
+    (color must start with '#'), a folium.plugin.BeautifyIcon will
+    be used instead. 
     
     Defaults from Folium:
 
@@ -454,7 +485,20 @@ class Marker(_MapFeature):
         icon_args = {k: attrs.pop(k) for k in attrs.keys() & {'color', 'marker_icon', 'clustered_marker', 'icon_angle', 'popup_width'}}
         if 'marker_icon' in icon_args:
             icon_args['icon'] = icon_args.pop('marker_icon')
-        attrs['icon'] = folium.Icon(**icon_args)
+        if 'color' in icon_args and icon_args['color'][0] == '#':
+            # Checks if color provided is a hex code instead; if it is, uses BeautifyIcon to create markers. 
+            # If statement does not check to see if color is an empty string.
+            icon_args['background_color'] = icon_args['border_color'] = icon_args.pop('color')
+            if icon_args['background_color'][1] == icon_args['background_color'][3] == icon_args['background_color'][5] == 'f':
+                icon_args['text_color'] = 'gray'
+            else:
+                icon_args['text_color'] = 'white'
+            icon_args['icon_shape'] = 'marker'
+            if 'icon' not in icon_args:
+                icon_args['icon'] = 'info-circle'
+            attrs['icon'] = BeautifyIcon(**icon_args)
+        else:
+            attrs['icon'] = folium.Icon(**icon_args)
         return attrs
 
     def geojson(self, feature_id):
@@ -487,7 +531,7 @@ class Marker(_MapFeature):
         return cls(lat, lon)
 
     @classmethod
-    def map(cls, latitudes, longitudes, labels=None, colors=None, areas=None, other_attrs = None, clustered_marker=False, **kwargs):
+    def map(cls, latitudes, longitudes, labels=None, colors=None, areas=None, other_attrs=None, clustered_marker=False, index_map=None, cluster_labels=None, **kwargs):
         """Return markers from columns of coordinates, labels, & colors.
 
         The areas column is not applicable to markers, but sets circle areas.
@@ -533,17 +577,26 @@ class Marker(_MapFeature):
             ms = [cls(*args, **other_attrs_processed[row_num]) for row_num, args in enumerate(zip(*inputs))]
         else:
             ms = [cls(*args, **kwargs) for row_num, args in enumerate(zip(*inputs))]
-        return Map(ms, clustered_marker=clustered_marker)
+        return Map(ms, clustered_marker=clustered_marker, index_map=index_map, cluster_labels=cluster_labels)
 
     @classmethod
-    def map_table(cls, table, clustered_marker=False, **kwargs):
+    def map_table(cls, table, clustered_marker=False, cluster_by=None, **kwargs):
         """Return markers from the colums of a table.
         
         The first two columns of the table must be the latitudes and longitudes
-        (in that order), followed by 'labels', 'colors', and/or 'areas' (if applicable)
+        (in that order), followed by 'labels', 'colors', 'color scale', and/or 'areas' (if applicable)
         in any order with columns explicitly stating what property they are representing.
         """
-        lat, lon, lab, color, areas, other_attrs = None, None, None, None, None, {}
+        lat, lon, lab, color, areas, index_map, cluster_labels, other_attrs = None, None, None, None, None, None, None, {}
+
+        if cluster_by is not None:
+            clustered_marker = True
+            cluster_index = table.labels.index(cluster_by)
+            cluster_labels = list(set(table.column(cluster_by)))
+            label_map = dict(zip(cluster_labels, np.arange(len(cluster_labels))))
+            index_map = [-1] * table.num_rows
+            for i, row in enumerate(table.rows):
+                index_map[i] = label_map[row[cluster_index]]
 
         for index, col in enumerate(table.labels):
             this_col = table.column(col)
@@ -557,13 +610,29 @@ class Marker(_MapFeature):
                 color = this_col
             elif col == "areas":
                 areas = this_col
-            else:
+            elif col != "color scale" and col != cluster_by:
                 other_attrs[col] = this_col
+        if 'color scale' in table.labels:
+            HIGH_COLOR_ENDPOINT = np.array(mpl.colors.to_rgb('#003262'))
+            LOW_COLOR_ENDPOINT = np.array(mpl.colors.to_rgb('white')) 
+            q1 = np.percentile(table.column('color scale'), 25)
+            q3 = np.percentile(table.column('color scale'), 75) 
+            IQR = q3 - q1
+            scale_min = max(q1 - 1.5 * IQR, min(table.column('color scale')))
+            scale_max = min(q3 + 1.5 * IQR, max(table.column('color scale')))
+            # Linearly interpolates between HIGH_COLOR_ENDPOINT and LOW_COLOR_ENDPOINT
+            interpolate_color = lambda mix: mpl.colors.to_hex((1 - mix) * LOW_COLOR_ENDPOINT + mix * HIGH_COLOR_ENDPOINT)
+            color = [""] * table.num_rows
+            for i, datapoint in enumerate(table.column('color scale')): 
+                mix = (datapoint - scale_min) / (scale_max - scale_min)
+                mix = max(min(mix, 1), 0)
+                color[i] = interpolate_color(mix)
         if not other_attrs:
             other_attrs = None
         return cls.map(latitudes=lat, longitudes=lon, labels=lab,
             colors=color, areas=areas, other_attrs=other_attrs, 
-            clustered_marker=clustered_marker, **kwargs)
+            clustered_marker=clustered_marker, 
+            index_map=index_map, cluster_labels=cluster_labels, **kwargs)
 
 class Circle(Marker):
     """A marker displayed with Folium's circle_marker method.
@@ -595,7 +664,7 @@ class Circle(Marker):
     _has_radius = True
 
     def __init__(self, lat, lon, popup='', color='blue', radius=10, **kwargs):
-        super().__init__(lat, lon, popup, color, radius=radius, **kwargs)
+        super().__init__(lat, lon, popup, color, radius=float(radius), **kwargs)
 
     @property
     def _folium_kwargs(self):
@@ -608,6 +677,7 @@ class Circle(Marker):
         return attrs
 
     def draw_on(self, folium_map):
+        # Unsure if this is meant to be folium.Circle since radius is fixed with zoom 
         folium.CircleMarker(**self._folium_kwargs).add_to(folium_map)
 
 
