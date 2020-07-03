@@ -54,5 +54,6 @@ setup(
     url = 'https://github.com/data-8/datascience',
     download_url = 'https://github.com/data-8/datascience/archive/%s.zip' % version,
     keywords = ['data', 'tools', 'berkeley'],
-    classifiers = []
+    classifiers = [],
+    package_data={"datascience": ["geodata/*.csv"]}
 )

@@ -10,6 +10,7 @@ from folium.plugins import MarkerCluster, BeautifyIcon
 import pandas
 import numpy as np
 import matplotlib as mpl
+import pkg_resources
 
 import abc
 import collections
@@ -791,7 +792,7 @@ def get_coordinates(table, replace=True):
         Table with latitude and longitude coordinates according to counties
     """
     assert "zip code" in table.labels or (("city" in table.labels or "county" in table.labels) and "state" in table.labels)
-    ref = Table().read_table("geocode_datasets/geocode_states.csv")
+    ref = Table().read_table(pkg_resources.resource_filename(__name__, "geodata/geocode_states.csv"))
     lats = [np.nan] * table.num_rows
     lons = [np.nan] * table.num_rows 
     zip_index = city_index = county_index = state_index = -1 
@@ -804,6 +805,7 @@ def get_coordinates(table, replace=True):
     if "state" in table.labels:
         state_index = table.labels.index("state")
     for i, row in enumerate(table.rows):
+        selected = ref
         if zip_index != -1:
             selected = selected.where("zip", row[zip_index])
         if city_index != -1:
@@ -814,9 +816,9 @@ def get_coordinates(table, replace=True):
             selected = selected.where("state", row[state_index])
         if selected.num_rows != 0:
             # Unsure if this should be an average instead of first entry
-            lat[i] = selected.column("lat")[0]
-            lon[i] = selected.column("lon")[0]
-    new_table = table.with_columns("lat", lat, "lon", lon)
+            lats[i] = selected.column("lat")[0]
+            lons[i] = selected.column("lon")[0]
+    new_table = table.with_columns("lat", lats, "lon", lons)
     if replace:
         if zip_index != -1:
             new_table = new_table.drop("zip code")
