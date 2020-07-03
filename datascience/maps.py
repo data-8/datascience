@@ -120,11 +120,14 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         if 'clustered_marker' in self._attrs and self._attrs['clustered_marker']:
             def customize_marker_cluster(color, label):
                 # Returns string for icon_create_function
-                return "function(cluster) { return L.divIcon({ html: \"<div style= 'color: white; background-color: "\
-                    + mpl.colors.to_hex(color)\
-                    + "; border-radius: 50%;'>"\
-                    + label\
-                    + "</div>\", iconSize: [40, 40] });}"
+                return f"""
+                    function(cluster) {{ 
+                        return L.divIcon({{ 
+                            html: "<div style= 'color: white; background-color: {mpl.colors.to_hex(color)}; border-radius: 50%;'></div>", 
+                            iconSize: [40, 40] 
+                        }});
+                    }}
+                """
             if self._index_map is not None:
                 chart_colors = (
                     (0.0, 30/256, 66/256),
