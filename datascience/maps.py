@@ -1,6 +1,6 @@
 """Draw maps using folium."""
 
-__all__ = ['Map', 'Marker', 'Circle', 'Region']
+__all__ = ['Map', 'Marker', 'Circle', 'Region', 'get_coordinates']
 
 
 import IPython.display
@@ -585,7 +585,8 @@ class Marker(_MapFeature):
         
         The first two columns of the table must be the latitudes and longitudes
         (in that order), followed by 'labels', 'colors', 'color scale', and/or 'areas' (if applicable)
-        in any order with columns explicitly stating what property they are representing.
+        in any order with columns explicitly stating what property they are representing. If a column is specified 
+        for cluster_by, that column is allowed in the table as well.
         """
         lat, lon, lab, color, areas, index_map, cluster_labels, other_attrs = None, None, None, None, None, None, None, {}
 
@@ -771,3 +772,58 @@ def _lat_lons_from_geojson(s):
         return [(lat, lon)]
     else:
         return [lat_lon for sub in s for lat_lon in _lat_lons_from_geojson(sub)]
+
+
+def get_coordinates(table, replace=True):
+    """Takes table with columns "county" and "state" / "zip code" in column names and 
+    adds the columns "lat" and "lon". If a county is not found inside the dataset,
+    that row's latitude and longitude coordinates are replaced with np.nans. The 'replace' flag
+    indicates if the "county", "state", and "zip code" columns should be removed afterwards.
+
+    Dataset was acquired on July 2, 2020 from https://docs.gaslamp.media/download-zip-code-latitude-longitude-city-state-county-csv. 
+    Found in geocode_datasets/geocode_states.csv. 
+    Args:
+        table: A table with counties that need to mapped to coordinates
+
+        replace: A boolean that indicates if "county", "state", and "zip code" columns should be removed 
+
+    Returns:
+        Table with latitude and longitude coordinates according to counties
+    """
+    assert "zip code" in table.labels or (("city" in table.labels or "county" in table.labels) and "state" in table.labels)
+    ref = Table().read_table("geocode_datasets/geocode_states.csv")
+    lats = [np.nan] * table.num_rows
+    lons = [np.nan] * table.num_rows 
+    zip_index = city_index = county_index = state_index = -1 
+    if "zip code" in table.labels:
+        zip_index = table.labels.index("zip code") 
+    if "city" in table.labels:
+        city_index = table.labels.index("city") 
+    if "county" in table.labels:
+        county_index = table.labels.index("county") 
+    if "state" in table.labels:
+        state_index = table.labels.index("state")
+    for i, row in enumerate(table.rows):
+        if zip_index != -1:
+            selected = selected.where("zip", row[zip_index])
+        if city_index != -1:
+            selected = selected.where("city", row[city_index])
+        if county_index != -1:
+            selected = selected.where("county", row[county_index])
+        if state_index != -1:
+            selected = selected.where("state", row[state_index])
+        if selected.num_rows != 0:
+            # Unsure if this should be an average instead of first entry
+            lat[i] = selected.column("lat")[0]
+            lon[i] = selected.column("lon")[0]
+    new_table = table.with_columns("lat", lat, "lon", lon)
+    if replace:
+        if zip_index != -1:
+            new_table = new_table.drop("zip code")
+        if city_index != -1:
+            new_table = new_table.drop("city")
+        if county_index != -1:
+            new_table = new_table.drop("county")
+        if state_index != -1:
+            new_table = new_table.drop("state")
+    return new_table
