@@ -778,7 +778,7 @@ def _lat_lons_from_geojson(s):
         return [lat_lon for sub in s for lat_lon in _lat_lons_from_geojson(sub)]
 
 
-def get_coordinates(table, replace=True):
+def get_coordinates(table, remove_original=False):
     """Takes table with columns "county" and "state" / "zip code" in column names and 
     adds the columns "lat" and "lon". If a county is not found inside the dataset,
     that row's latitude and longitude coordinates are replaced with np.nans. The 'replace' flag
@@ -789,46 +789,50 @@ def get_coordinates(table, replace=True):
     Args:
         table: A table with counties that need to mapped to coordinates
 
-        replace: A boolean that indicates if "county", "state", and "zip code" columns should be removed 
+        remove_original: A boolean that indicates if "county", "city", "state", and "zip code" columns should be removed 
 
     Returns:
-        Table with latitude and longitude coordinates according to counties
+        Table with latitude and longitude coordinates 
     """
     assert "zip code" in table.labels or (("city" in table.labels or "county" in table.labels) and "state" in table.labels)
-    ref = Table().read_table(pkg_resources.resource_filename(__name__, "geodata/geocode_states.csv"))
-    lats = [np.nan] * table.num_rows
-    lons = [np.nan] * table.num_rows 
-    zip_index = city_index = county_index = state_index = -1 
-    if "zip code" in table.labels:
-        zip_index = table.labels.index("zip code") 
-    if "city" in table.labels:
-        city_index = table.labels.index("city") 
-    if "county" in table.labels:
-        county_index = table.labels.index("county") 
-    if "state" in table.labels:
-        state_index = table.labels.index("state")
-    for i, row in enumerate(table.rows):
-        selected = ref
-        if zip_index != -1:
-            selected = selected.where("zip", row[zip_index])
-        if city_index != -1:
-            selected = selected.where("city", row[city_index])
-        if county_index != -1:
-            selected = selected.where("county", row[county_index])
-        if state_index != -1:
-            selected = selected.where("state", row[state_index])
-        if selected.num_rows != 0:
-            # Unsure if this should be an average instead of first entry
-            lats[i] = selected.column("lat")[0]
-            lons[i] = selected.column("lon")[0]
-    new_table = table.with_columns("lat", lats, "lon", lons)
-    if replace:
-        if zip_index != -1:
-            new_table = new_table.drop("zip code")
-        if city_index != -1:
-            new_table = new_table.drop("city")
-        if county_index != -1:
-            new_table = new_table.drop("county")
-        if state_index != -1:
-            new_table = new_table.drop("state")
-    return new_table
+    ref = pandas.read_csv(pkg_resources.resource_filename(__name__, "geodata/geocode_states.csv"))
+    table_df = table.to_df()
+    table_df["lat"] = [np.nan] * table.num_rows
+    table_df["lon"] = [np.nan] * table.num_rows
+    unassigned = set(range(table.num_rows)) # Indices where latitudes and longitudes have not been assigned yet
+    while len(unassigned) > 0:
+        index = unassigned.pop()
+        df_row = table_df.iloc[index]
+        if "zip code" in table_df.columns:
+            select = table_df["zip code"] == df_row["zip code"]
+            unassigned -= set(table_df.index[select])
+            try:
+                table_df.loc[select, "lat"] = float(ref.loc[ref["zip"] == df_row["zip code"], "lat"][0])
+                table_df.loc[select, "lon"] = float(ref.loc[ref["zip"] == df_row["zip code"], "lon"][0])
+            except IndexError:
+                pass
+        else:
+            state_select = table_df["state"] == df_row["state"]
+            county_select = table_df["county"] == df_row["county"] if "county" in table_df.columns else np.array([True] * table.num_rows)
+            city_select = table_df["city"] == df_row["city"] if "city" in table_df.columns else np.array([True] * table.num_rows)
+            select = state_select & county_select & city_select
+            unassigned -= set(table_df.index[select])
+            try: 
+                if "county" in table_df.columns and "city" not in table_df.columns: 
+                    table_df.loc[select, "lat"] = ref.loc[(ref["state"] == df_row["state"]) & (ref["county"] == df_row["county"]), "lat"].tolist()[0]
+                    table_df.loc[select, "lon"] = ref.loc[(ref["state"] == df_row["state"]) & (ref["county"] == df_row["county"]), "lon"].tolist()[0]
+                elif "county" not in table_df.columns and "city" in table_df.columns:
+                    table_df.loc[select, "lat"] = ref.loc[(ref["state"] == df_row["state"]) & (ref["city"] == df_row["city"]), "lat"].tolist()[0]
+                    table_df.loc[select, "lon"] = ref.loc[(ref["state"] == df_row["state"]) & (ref["city"] == df_row["city"]), "lon"].tolist()[0]
+                else:
+                    table_df.loc[select, "lat"] = ref.loc[(ref["state"] == df_row["state"]) & (ref["county"] == df_row["county"]) & (ref["city"] == df_row["city"]), "lat"].tolist()[0]
+                    table_df.loc[select, "lon"] = ref.loc[(ref["state"] == df_row["state"]) & (ref["county"] == df_row["county"]) & (ref["city"] == df_row["city"]), "lon"].tolist()[0]
+            except IndexError:
+                pass
+    if remove_original:
+        for label in ["county", "city", "zip code", "state"]:
+            try:
+                table_df.drop(label, axis = 1, inplace = True)
+            except KeyError:
+                pass
+    return Table.from_df(table_df)
