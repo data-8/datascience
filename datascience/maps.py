@@ -124,8 +124,14 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
                 return f"""
                     function(cluster) {{ 
                         return L.divIcon({{ 
-                            html: "<div style= 'color: white; background-color: {mpl.colors.to_hex(color)}; border-radius: 50%;'></div>", 
-                            iconSize: [40, 40] 
+                            html: `<div style='
+                            color: white; 
+                            background-color: {mpl.colors.to_hex(color)}; 
+                            border-radius: 50%;
+                            height: 40px;
+                            '></div>`, 
+                            iconSize: [40, 40],
+                            className: 'dummy'
                         }});
                     }}
                 """
