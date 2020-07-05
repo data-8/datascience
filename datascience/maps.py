@@ -126,7 +126,9 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
                         return L.divIcon({{ 
                             html: `<div style='
                             color: white; 
+                            opacity: 0.85; 
                             background-color: {mpl.colors.to_hex(color)}; 
+                            border: solid 2px rgba(66,135,245,1);
                             border-radius: 50%;
                             height: 40px;
                             '></div>`, 
@@ -600,15 +602,6 @@ class Marker(_MapFeature):
         """
         lat, lon, lab, color, areas, index_map, cluster_labels, other_attrs = None, None, None, None, None, None, None, {}
 
-        if cluster_by is not None:
-            clustered_marker = True
-            cluster_index = table.labels.index(cluster_by)
-            cluster_labels = list(set(table.column(cluster_by)))
-            label_map = dict(zip(cluster_labels, np.arange(len(cluster_labels))))
-            index_map = [-1] * table.num_rows
-            for i, row in enumerate(table.rows):
-                index_map[i] = label_map[row[cluster_index]]
-
         for index, col in enumerate(table.labels):
             this_col = table.column(col)
             if index == 0:
@@ -623,6 +616,22 @@ class Marker(_MapFeature):
                 areas = this_col
             elif col != "color scale" and col != cluster_by:
                 other_attrs[col] = this_col
+
+        if cluster_by is not None:
+            clustered_marker = True
+            cluster_column = table.column(cluster_by)
+            cluster_labels = list(set(cluster_column))
+            table_df = table.to_df()
+            table_df['indices'] = [0] * table.num_rows
+            for i, label in enumerate(cluster_labels):
+                table_df.loc[table_df[cluster_by] == label, 'indices'] = i
+            index_map = table_df['indices']
+            del table_df
+            if lab is not None:
+                lab = ["".join([label, "\n", cluster_by, ": ", cluster_column[i]]) for i, label in enumerate(lab)]
+            else:
+                lab = ["".join([cluster_by, ": ", cluster_column[i]]) for i in range(table.num_rows)]
+
         if 'color scale' in table.labels:
             HIGH_COLOR_ENDPOINT = np.array(mpl.colors.to_rgb('#003262'))
             LOW_COLOR_ENDPOINT = np.array(mpl.colors.to_rgb('white')) 
