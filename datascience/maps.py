@@ -87,6 +87,7 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         if "index_map" in kwargs:
             self._index_map = kwargs.pop("index_map")
             self._cluster_labels = kwargs.pop("cluster_labels")
+            self._cluster_by = kwargs.pop("cluster_by")
         self._features = features
         self._attrs = {
             'tiles': tile_style if tile_style else 'OpenStreetMap',
@@ -121,17 +122,34 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         if 'clustered_marker' in self._attrs and self._attrs['clustered_marker']:
             def customize_marker_cluster(color, label):
                 # Returns string for icon_create_function
+                hexcolor = mpl.colors.to_hex(color)
                 return f"""
                     function(cluster) {{ 
                         return L.divIcon({{ 
-                            html: `<div style='
-                            color: white; 
-                            opacity: 0.85; 
-                            background-color: {mpl.colors.to_hex(color)}; 
-                            border: solid 2px rgba(66,135,245,1);
-                            border-radius: 50%;
-                            height: 40px;
-                            '></div>`, 
+                            html: `<div
+                              style='
+                                opacity: 0.85; 
+                                background-color: {hexcolor}; 
+                                border: solid 2px rgba(66,135,245,1);
+                                border-radius: 50%;
+                                height: 40px;'
+                              onmouseover="document.getElementById('{hexcolor}').style.visibility='visible'"
+                              onmouseout="document.getElementById('{hexcolor}').style.visibility='hidden'">
+                              <div id="{hexcolor}" 
+                                style='
+                                  visibility: hidden;
+                                  font-size: 12px; 
+                                  background-color: white; 
+                                  color: {hexcolor};
+                                  text-align: center; 
+                                  padding: 6% 6%;
+                                  position: absolute; 
+                                  z-index: 1;
+                                  top: 120%; 
+                                  left: 50%; 
+                                  margin-left: -20px;
+                                  '>{self._cluster_by}: {label}</div>
+                            </div>`, 
                             iconSize: [40, 40],
                             className: 'dummy'
                         }});
@@ -543,7 +561,7 @@ class Marker(_MapFeature):
         return cls(lat, lon)
 
     @classmethod
-    def map(cls, latitudes, longitudes, labels=None, colors=None, areas=None, other_attrs=None, clustered_marker=False, index_map=None, cluster_labels=None, **kwargs):
+    def map(cls, latitudes, longitudes, labels=None, colors=None, areas=None, other_attrs=None, clustered_marker=False, index_map=None, cluster_by=None, cluster_labels=None, **kwargs):
         """Return markers from columns of coordinates, labels, & colors.
 
         The areas column is not applicable to markers, but sets circle areas.
@@ -589,7 +607,7 @@ class Marker(_MapFeature):
             ms = [cls(*args, **other_attrs_processed[row_num]) for row_num, args in enumerate(zip(*inputs))]
         else:
             ms = [cls(*args, **kwargs) for row_num, args in enumerate(zip(*inputs))]
-        return Map(ms, clustered_marker=clustered_marker, index_map=index_map, cluster_labels=cluster_labels)
+        return Map(ms, clustered_marker=clustered_marker, index_map=index_map, cluster_by=cluster_by, cluster_labels=cluster_labels)
 
     @classmethod
     def map_table(cls, table, clustered_marker=False, cluster_by=None, **kwargs):
@@ -652,7 +670,7 @@ class Marker(_MapFeature):
         return cls.map(latitudes=lat, longitudes=lon, labels=lab,
             colors=color, areas=areas, other_attrs=other_attrs, 
             clustered_marker=clustered_marker, 
-            index_map=index_map, cluster_labels=cluster_labels, **kwargs)
+            index_map=index_map, cluster_by=cluster_by, cluster_labels=cluster_labels, **kwargs)
 
 class Circle(Marker):
     """A marker displayed with Folium's circle_marker method.
