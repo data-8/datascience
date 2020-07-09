@@ -84,11 +84,15 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         tile_style = None
         if "tiles" in kwargs:
             tile_style = kwargs.pop("tiles")
-        self._index_map = None
-        self._index_map = kwargs.pop("index_map")
-        self._cluster_labels = kwargs.pop("cluster_labels")
-        self._cluster_by = kwargs.pop("cluster_by")
-        self._colorbar_scale = kwargs.pop("colorbar_scale")
+        self._index_map = self._cluster_labels = self._colorbar_scale = None
+        if "index_map" in kwargs:
+            self._index_map = kwargs.pop("index_map")
+        if "cluster_labels" in kwargs:
+            self._cluster_labels = kwargs.pop("cluster_labels")
+        if "colorbar_scale" in kwargs:
+            self._colorbar_scale = kwargs.pop("colorbar_scale")
+        if "ignore_colorscale_outliers" in kwargs:
+            self._ignore_colorscale_outliers = kwargs.pop("ignore_colorscale_outliers")
         self._features = features
         self._attrs = {
             'tiles': tile_style if tile_style else 'OpenStreetMap',
@@ -149,7 +153,7 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
                                   top: 120%; 
                                   left: 50%; 
                                   margin-left: -20px;
-                                  '>{self._cluster_by}: {label}</div>
+                                  '>{label}</div>
                             </div>`, 
                             iconSize: [40, 40],
                             className: 'dummy'
@@ -181,10 +185,10 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
             else:
                 feature.draw_on(self._folium_map)
         if self._colorbar_scale is not None: 
-            scale_colors = ["#340597", "#7008a5", "#a32494", "#cf5073", "#ee7c4c", "#f69344", "#fcc22d", "#f4e82d"] 
+            scale_colors = ["#340597", "#7008a5", "#a32494", "#cf5073", "#ee7c4c", "#f69344", "#fcc22d", "#f4e82d", "#f4e82d"]
             vmin = self._colorbar_scale.pop(0)
             vmax = self._colorbar_scale.pop(-1)
-            colormap = cm.LinearColormap(colors = scale_colors, index = self._colorbar_scale, caption = "*Legend above excludes outliers.", vmin = self._colorbar_scale[0], vmax = self._colorbar_scale[-1])
+            colormap = cm.LinearColormap(colors = scale_colors, index = self._colorbar_scale, caption = "*Legend above excludes outliers." if not self._ignore_colorscale_outliers else "", vmin = self._colorbar_scale[0], vmax = self._colorbar_scale[-1])
             self._folium_map.add_child(colormap)
 
     def _create_map(self):
@@ -569,7 +573,7 @@ class Marker(_MapFeature):
         return cls(lat, lon)
 
     @classmethod
-    def map(cls, latitudes, longitudes, labels=None, colors=None, areas=None, other_attrs=None, clustered_marker=False, colorbar_scale=None, index_map=None, cluster_by=None, cluster_labels=None, **kwargs):
+    def map(cls, latitudes, longitudes, labels=None, colors=None, areas=None, other_attrs=None, clustered_marker=False, **kwargs):
         """Return markers from columns of coordinates, labels, & colors.
 
         The areas column is not applicable to markers, but sets circle areas.
@@ -588,6 +592,15 @@ class Marker(_MapFeature):
         assert len(latitudes) == len(longitudes)
         assert areas is None or hasattr(cls, '_has_radius'), "A " + cls.__name__ + " has no radius"
         inputs = [latitudes, longitudes]
+        index_map = ignore_colorscale_outliers = cluster_labels = colorbar_scale = None
+        if "index_map" in kwargs:
+            index_map = kwargs.pop("index_map")
+        if "cluster_labels" in kwargs:
+            cluster_labels = kwargs.pop("cluster_labels")
+        if "colorbar_scale" in kwargs:
+            colorbar_scale = kwargs.pop("colorbar_scale")
+        if "ignore_colorscale_outliers" in kwargs:
+            ignore_colorscale_outliers = kwargs.pop("ignore_colorscale_outliers")
         if labels is not None:
             assert len(labels) == len(latitudes)
             inputs.append(labels)
@@ -615,10 +628,10 @@ class Marker(_MapFeature):
             ms = [cls(*args, **other_attrs_processed[row_num]) for row_num, args in enumerate(zip(*inputs))]
         else:
             ms = [cls(*args, **kwargs) for row_num, args in enumerate(zip(*inputs))]
-        return Map(ms, clustered_marker=clustered_marker, index_map=index_map, cluster_by=cluster_by, cluster_labels=cluster_labels, colorbar_scale=colorbar_scale)
+        return Map(ms, clustered_marker=clustered_marker, index_map=index_map, cluster_labels=cluster_labels, colorbar_scale=colorbar_scale, ignore_colorscale_outliers=ignore_colorscale_outliers)
 
     @classmethod
-    def map_table(cls, table, clustered_marker=False, cluster_by=None, **kwargs):
+    def map_table(cls, table, clustered_marker=False, ignore_colorscale_outliers=False, **kwargs):
         """Return markers from the colums of a table.
         
         The first two columns of the table must be the latitudes and longitudes
@@ -627,6 +640,7 @@ class Marker(_MapFeature):
         for cluster_by, that column is allowed in the table as well.
         """
         lat, lon, lab, color, areas, colorbar_scale, index_map, cluster_labels, other_attrs = None, None, None, None, None, None, None, None, {}
+        excluded = ["color scale", "cluster by"]
 
         for index, col in enumerate(table.labels):
             this_col = table.column(col)
@@ -640,34 +654,34 @@ class Marker(_MapFeature):
                 color = this_col
             elif col == "areas":
                 areas = this_col
-            elif col != "color scale" and col != cluster_by:
+            elif col not in excluded:
                 other_attrs[col] = this_col
 
-        if cluster_by is not None:
+        if "cluster by" in table.labels:
             clustered_marker = True
-            cluster_column = table.column(cluster_by)
+            cluster_column = table.column("cluster by")
             cluster_labels = list(set(cluster_column))
             table_df = table.to_df()
-            table_df['indices'] = [0] * table.num_rows
+            table_df["indices"] = [0] * table.num_rows
             for i, label in enumerate(cluster_labels):
-                table_df.loc[table_df[cluster_by] == label, 'indices'] = i
-            index_map = table_df['indices']
+                table_df.loc[table_df["cluster by"] == label, "indices"] = i
+            index_map = table_df["indices"]
             del table_df
-            if lab is not None:
-                lab = ["".join([label, "\n", cluster_by, ": ", cluster_column[i]]) for i, label in enumerate(lab)]
-            else:
-                lab = ["".join([cluster_by, ": ", cluster_column[i]]) for i in range(table.num_rows)]
 
         if 'color scale' in table.labels:
-            q1 = np.percentile(table.column("color scale"), 25)
-            q3 = np.percentile(table.column("color scale"), 75)
-            IQR = q3 - q1
             vmin = min(table.column("color scale"))
             vmax = max(table.column("color scale"))
-            outlier_min_bound = max(vmin, q1 - 1.5 * IQR)
-            outlier_max_bound = min(vmax, q3 + 1.5 * IQR)
-            scale_colors = ["#340597", "#7008a5", "#a32494", "#cf5073", "#ee7c4c", "#f69344", "#fcc22d", "#f4e82d"]
-            colorbar_scale = list(np.linspace(outlier_min_bound, outlier_max_bound, 9))[:-1]
+            if ignore_colorscale_outliers:
+                outlier_min_bound = vmin
+                outlier_max_bound = vmax
+            else:
+                q1 = np.percentile(table.column("color scale"), 25)
+                q3 = np.percentile(table.column("color scale"), 75)
+                IQR = q3 - q1
+                outlier_min_bound = max(vmin, q1 - 1.5 * IQR)
+                outlier_max_bound = min(vmax, q3 + 1.5 * IQR)
+            colorbar_scale = list(np.linspace(outlier_min_bound, outlier_max_bound, 9))
+            scale_colors = ["#340597", "#7008a5", "#a32494", "#cf5073", "#ee7c4c", "#f69344", "#fcc22d", "#f4e82d", "#f4e82d"]
             def interpolate_color(colors, cutoffs, datapoint):
                 for i, cutoff in enumerate(cutoffs):
                     if cutoff >= datapoint:
@@ -682,7 +696,7 @@ class Marker(_MapFeature):
         return cls.map(latitudes=lat, longitudes=lon, labels=lab,
             colors=color, areas=areas, colorbar_scale=colorbar_scale, other_attrs=other_attrs, 
             clustered_marker=clustered_marker, 
-            index_map=index_map, cluster_by=cluster_by, cluster_labels=cluster_labels, **kwargs)
+            index_map=index_map, ignore_colorscale_outliers=ignore_colorscale_outliers, cluster_labels=cluster_labels, **kwargs)
 
 class Circle(Marker):
     """A marker displayed with Folium's circle_marker method.
