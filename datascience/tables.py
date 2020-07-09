@@ -3638,11 +3638,13 @@ class Table(collections.abc.MutableMapping):
                     shaded_mask = np.array(marker_colors) == colors[1]
                     shaded_percentage = np.dot(shaded_mask * heights[k], widths) 
                     text = [""] * len(marker_colors)
+                    shaded_template = "<br>Shaded Area Percentage: " if shade_split == "new" else "<br>Shaded Area Percentage (Approx.): "
+                    unshaded_template = "<br>Unshaded Area Percentage: " if shade_split == "new" else "<br>Shaded Area Percentage (Approx.): "
                     for i, color in enumerate(marker_colors):
                         if color == colors[1]:
-                            text[i] = "".join(["<br>Shaded Area Percentage: ", str(float("%.6g" % shaded_percentage))])
+                            text[i] = "".join([shaded_template, str(float("%.6g" % shaded_percentage))])
                         else:
-                            text[i] = "".join(["<br>Unshaded Area Percentage: ", str(float("%.6g" % (100 - shaded_percentage)))])
+                            text[i] = "".join([unshaded_template, str(float("%.6g" % (100 - shaded_percentage)))])
             else:
                 hovertemplate = "Bin Endpoints: %{customdata}<br>Bar Height: %{y}"
                 if shaded and not side_by_side:
@@ -3650,11 +3652,13 @@ class Table(collections.abc.MutableMapping):
                     count_sum = sum(shaded_mask * heights[k])
                     unshaded_count_sum = sum(heights[k]) - count_sum
                     text = [""] * len(marker_colors)
+                    shaded_template = "<br>Shaded Count Sum: " if shade_split == "new" else "<br>Shaded Count Sum (Approx.): "
+                    unshaded_template = "<br>Unshaded Count Sum: " if shade_split == "new" else "<br>Shaded Count Sum (Approx.): "
                     for i, color in enumerate(marker_colors):
                         if color == colors[1]:
-                            text[i] = "".join(["<br>Shaded Count Sum: ", str(float("%.6g" % count_sum))])
+                            text[i] = "".join([shaded_template, str(float("%.6g" % count_sum))])
                         else:
-                            text[i] = "".join(["<br>Unshaded Count Sum: ", str(float("%.6g" % unshaded_count_sum))])
+                            text[i] = "".join([unshaded_template, str(float("%.6g" % unshaded_count_sum))])
             if len(text) > 0:
                 hovertemplate = "".join([hovertemplate, "%{text}"])
             else:

@@ -11,6 +11,7 @@ import pandas
 import numpy as np
 import matplotlib as mpl
 import pkg_resources
+import branca.colormap as cm
 
 import abc
 import collections
@@ -84,10 +85,10 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         if "tiles" in kwargs:
             tile_style = kwargs.pop("tiles")
         self._index_map = None
-        if "index_map" in kwargs:
-            self._index_map = kwargs.pop("index_map")
-            self._cluster_labels = kwargs.pop("cluster_labels")
-            self._cluster_by = kwargs.pop("cluster_by")
+        self._index_map = kwargs.pop("index_map")
+        self._cluster_labels = kwargs.pop("cluster_labels")
+        self._cluster_by = kwargs.pop("cluster_by")
+        self._colorbar_scale = kwargs.pop("colorbar_scale")
         self._features = features
         self._attrs = {
             'tiles': tile_style if tile_style else 'OpenStreetMap',
@@ -179,6 +180,12 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
                     feature.draw_on(marker_cluster)
             else:
                 feature.draw_on(self._folium_map)
+        if self._colorbar_scale is not None: 
+            scale_colors = ["#340597", "#7008a5", "#a32494", "#cf5073", "#ee7c4c", "#f69344", "#fcc22d", "#f4e82d"] 
+            vmin = self._colorbar_scale.pop(0)
+            vmax = self._colorbar_scale.pop(-1)
+            colormap = cm.LinearColormap(colors = scale_colors, index = self._colorbar_scale, caption = "*Legend above excludes outliers.", vmin = self._colorbar_scale[0], vmax = self._colorbar_scale[-1])
+            self._folium_map.add_child(colormap)
 
     def _create_map(self):
         attrs = {'width': self._width, 'height': self._height}
@@ -524,8 +531,9 @@ class Marker(_MapFeature):
             else:
                 icon_args['text_color'] = 'white'
             icon_args['icon_shape'] = 'marker'
+            # icon_args['icon_size'] = [10, 10]
             if 'icon' not in icon_args:
-                icon_args['icon'] = 'info-circle'
+                icon_args['icon'] = 'circle'
             attrs['icon'] = BeautifyIcon(**icon_args)
         else:
             attrs['icon'] = folium.Icon(**icon_args)
@@ -561,7 +569,7 @@ class Marker(_MapFeature):
         return cls(lat, lon)
 
     @classmethod
-    def map(cls, latitudes, longitudes, labels=None, colors=None, areas=None, other_attrs=None, clustered_marker=False, index_map=None, cluster_by=None, cluster_labels=None, **kwargs):
+    def map(cls, latitudes, longitudes, labels=None, colors=None, areas=None, other_attrs=None, clustered_marker=False, colorbar_scale=None, index_map=None, cluster_by=None, cluster_labels=None, **kwargs):
         """Return markers from columns of coordinates, labels, & colors.
 
         The areas column is not applicable to markers, but sets circle areas.
@@ -607,7 +615,7 @@ class Marker(_MapFeature):
             ms = [cls(*args, **other_attrs_processed[row_num]) for row_num, args in enumerate(zip(*inputs))]
         else:
             ms = [cls(*args, **kwargs) for row_num, args in enumerate(zip(*inputs))]
-        return Map(ms, clustered_marker=clustered_marker, index_map=index_map, cluster_by=cluster_by, cluster_labels=cluster_labels)
+        return Map(ms, clustered_marker=clustered_marker, index_map=index_map, cluster_by=cluster_by, cluster_labels=cluster_labels, colorbar_scale=colorbar_scale)
 
     @classmethod
     def map_table(cls, table, clustered_marker=False, cluster_by=None, **kwargs):
@@ -618,7 +626,7 @@ class Marker(_MapFeature):
         in any order with columns explicitly stating what property they are representing. If a column is specified 
         for cluster_by, that column is allowed in the table as well.
         """
-        lat, lon, lab, color, areas, index_map, cluster_labels, other_attrs = None, None, None, None, None, None, None, {}
+        lat, lon, lab, color, areas, colorbar_scale, index_map, cluster_labels, other_attrs = None, None, None, None, None, None, None, None, {}
 
         for index, col in enumerate(table.labels):
             this_col = table.column(col)
@@ -651,24 +659,28 @@ class Marker(_MapFeature):
                 lab = ["".join([cluster_by, ": ", cluster_column[i]]) for i in range(table.num_rows)]
 
         if 'color scale' in table.labels:
-            HIGH_COLOR_ENDPOINT = np.array(mpl.colors.to_rgb('#003262'))
-            LOW_COLOR_ENDPOINT = np.array(mpl.colors.to_rgb('white')) 
-            q1 = np.percentile(table.column('color scale'), 25)
-            q3 = np.percentile(table.column('color scale'), 75) 
+            q1 = np.percentile(table.column("color scale"), 25)
+            q3 = np.percentile(table.column("color scale"), 75)
             IQR = q3 - q1
-            scale_min = max(q1 - 1.5 * IQR, min(table.column('color scale')))
-            scale_max = min(q3 + 1.5 * IQR, max(table.column('color scale')))
-            # Linearly interpolates between HIGH_COLOR_ENDPOINT and LOW_COLOR_ENDPOINT
-            interpolate_color = lambda mix: mpl.colors.to_hex((1 - mix) * LOW_COLOR_ENDPOINT + mix * HIGH_COLOR_ENDPOINT)
+            vmin = min(table.column("color scale"))
+            vmax = max(table.column("color scale"))
+            outlier_min_bound = max(vmin, q1 - 1.5 * IQR)
+            outlier_max_bound = min(vmax, q3 + 1.5 * IQR)
+            scale_colors = ["#340597", "#7008a5", "#a32494", "#cf5073", "#ee7c4c", "#f69344", "#fcc22d", "#f4e82d"]
+            colorbar_scale = list(np.linspace(outlier_min_bound, outlier_max_bound, 9))[:-1]
+            def interpolate_color(colors, cutoffs, datapoint):
+                for i, cutoff in enumerate(cutoffs):
+                    if cutoff >= datapoint:
+                        return colors[i - 1] if i > 0 else colors[0]
+                return colors[-1]
             color = [""] * table.num_rows
             for i, datapoint in enumerate(table.column('color scale')): 
-                mix = (datapoint - scale_min) / (scale_max - scale_min)
-                mix = max(min(mix, 1), 0)
-                color[i] = interpolate_color(mix)
+                color[i] = interpolate_color(scale_colors, colorbar_scale, datapoint)
+            colorbar_scale = [vmin] + colorbar_scale + [vmax]
         if not other_attrs:
             other_attrs = None
         return cls.map(latitudes=lat, longitudes=lon, labels=lab,
-            colors=color, areas=areas, other_attrs=other_attrs, 
+            colors=color, areas=areas, colorbar_scale=colorbar_scale, other_attrs=other_attrs, 
             clustered_marker=clustered_marker, 
             index_map=index_map, cluster_by=cluster_by, cluster_labels=cluster_labels, **kwargs)
 
