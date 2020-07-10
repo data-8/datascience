@@ -639,12 +639,12 @@ class Marker(_MapFeature):
         """Return markers from the colums of a table.
         
         The first two columns of the table must be the latitudes and longitudes
-        (in that order), followed by 'labels', 'colors', 'color_scale', and/or 'areas' (if applicable)
+        (in that order), followed by 'labels', 'colors', 'color_scale', 'radius_scale', and/or 'areas' (if applicable)
         in any order with columns explicitly stating what property they are representing. If a column is specified 
         for cluster_by, that column is allowed in the table as well.
         """
         lat, lon, lab, color, areas, colorbar_scale, index_map, cluster_labels, other_attrs = None, None, None, None, None, None, None, None, {}
-        excluded = ["color_scale", "cluster_by", "radius_by"]
+        excluded = ["color_scale", "cluster_by", "radius_scale"]
 
         for index, col in enumerate(table.labels):
             this_col = table.column(col)
@@ -672,8 +672,8 @@ class Marker(_MapFeature):
             index_map = table_df["indices"]
             del table_df
         
-        if "radius_by" in table.labels:
-            radius_column = table.column("radius_by").astype(float)
+        if "radius_scale" in table.labels:
+            radius_column = table.column("radius_scale").astype(float)
             rmin, rmax = kwargs.get("radius_min", 5), kwargs.get("radius_max", 50)
             vmin, vmax = radius_column.min(), radius_column.max()
             scale_fn = lambda v: (v - vmin) / (vmax - vmin) * (rmax - rmin) + rmin
