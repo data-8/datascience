@@ -509,6 +509,10 @@ class Marker(_MapFeature):
             'color': color,
             **kwargs
         }
+        
+        # setting default icon to be empty; this is overwritten by .update()
+        # on the next line if 'marker_icon' is present in kwargs
+        self._attrs["marker_icon"] = "sign-blank"
         self._attrs.update(kwargs)
 
     @property
@@ -623,7 +627,7 @@ class Marker(_MapFeature):
                 dic.update(kwargs)
         else:
             other_attrs_processed = []
-
+        
         if other_attrs_processed:
             ms = [cls(*args, **other_attrs_processed[row_num]) for row_num, args in enumerate(zip(*inputs))]
         else:
