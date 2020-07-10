@@ -639,12 +639,12 @@ class Marker(_MapFeature):
         """Return markers from the colums of a table.
         
         The first two columns of the table must be the latitudes and longitudes
-        (in that order), followed by 'labels', 'colors', 'color scale', and/or 'areas' (if applicable)
+        (in that order), followed by 'labels', 'colors', 'color_scale', and/or 'areas' (if applicable)
         in any order with columns explicitly stating what property they are representing. If a column is specified 
         for cluster_by, that column is allowed in the table as well.
         """
         lat, lon, lab, color, areas, colorbar_scale, index_map, cluster_labels, other_attrs = None, None, None, None, None, None, None, None, {}
-        excluded = ["color scale", "cluster by"]
+        excluded = ["color_scale", "cluster_by"]
 
         for index, col in enumerate(table.labels):
             this_col = table.column(col)
@@ -661,26 +661,33 @@ class Marker(_MapFeature):
             elif col not in excluded:
                 other_attrs[col] = this_col
 
-        if "cluster by" in table.labels:
+        if "cluster_by" in table.labels:
             clustered_marker = True
-            cluster_column = table.column("cluster by")
+            cluster_column = table.column("cluster_by")
             cluster_labels = list(set(cluster_column))
             table_df = table.to_df()
             table_df["indices"] = [0] * table.num_rows
             for i, label in enumerate(cluster_labels):
-                table_df.loc[table_df["cluster by"] == label, "indices"] = i
+                table_df.loc[table_df["cluster_by"] == label, "indices"] = i
             index_map = table_df["indices"]
             del table_df
+        
+        if "radius_by" in table.labels:
+            radius_column = table.column("radius_by")
+            rmin, rmax = kwargs.get("radius_min", 5), kwargs.get("radius_max", 25)
+            scale_fn = lambda v: v * (rmax - rmin) + rmin
+            radii = scale_fn(radius_column)
+            kwargs["radius"] = radii
 
-        if 'color scale' in table.labels:
-            vmin = min(table.column("color scale"))
-            vmax = max(table.column("color scale"))
+        if 'color_scale' in table.labels:
+            vmin = min(table.column("color_scale"))
+            vmax = max(table.column("color_scale"))
             if ignore_colorscale_outliers:
                 outlier_min_bound = vmin
                 outlier_max_bound = vmax
             else:
-                q1 = np.percentile(table.column("color scale"), 25)
-                q3 = np.percentile(table.column("color scale"), 75)
+                q1 = np.percentile(table.column("color_scale"), 25)
+                q3 = np.percentile(table.column("color_scale"), 75)
                 IQR = q3 - q1
                 outlier_min_bound = max(vmin, q1 - 1.5 * IQR)
                 outlier_max_bound = min(vmax, q3 + 1.5 * IQR)
@@ -692,15 +699,17 @@ class Marker(_MapFeature):
                         return colors[i - 1] if i > 0 else colors[0]
                 return colors[-1]
             color = [""] * table.num_rows
-            for i, datapoint in enumerate(table.column('color scale')): 
+            for i, datapoint in enumerate(table.column('color_scale')): 
                 color[i] = interpolate_color(scale_colors, colorbar_scale, datapoint)
             colorbar_scale = [vmin] + colorbar_scale + [vmax]
         if not other_attrs:
             other_attrs = None
-        return cls.map(latitudes=lat, longitudes=lon, labels=lab,
-            colors=color, areas=areas, colorbar_scale=colorbar_scale, other_attrs=other_attrs, 
-            clustered_marker=clustered_marker, 
-            index_map=index_map, ignore_colorscale_outliers=ignore_colorscale_outliers, cluster_labels=cluster_labels, **kwargs)
+        return cls.map(
+            latitudes=lat, longitudes=lon, labels=lab, colors=color, areas=areas, 
+            colorbar_scale=colorbar_scale, other_attrs=other_attrs, clustered_marker=clustered_marker, 
+            index_map=index_map, ignore_colorscale_outliers=ignore_colorscale_outliers, 
+            cluster_labels=cluster_labels, **kwargs
+        )
 
 class Circle(Marker):
     """A marker displayed with Folium's circle_marker method.
