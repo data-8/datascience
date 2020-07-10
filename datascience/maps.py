@@ -1,6 +1,6 @@
 """Draw maps using folium."""
 
-__all__ = ['Map', 'Marker', 'Circle', 'Region']
+__all__ = ['Map', 'Marker', 'Circle', 'Region', 'get_coordinates']
 
 
 import IPython.display
@@ -10,6 +10,8 @@ from folium.plugins import MarkerCluster, BeautifyIcon
 import pandas
 import numpy as np
 import matplotlib as mpl
+import pkg_resources
+import branca.colormap as cm
 
 import abc
 import collections
@@ -82,10 +84,15 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         tile_style = None
         if "tiles" in kwargs:
             tile_style = kwargs.pop("tiles")
-        self._index_map = None
+        self._index_map = self._cluster_labels = self._colorbar_scale = None
         if "index_map" in kwargs:
             self._index_map = kwargs.pop("index_map")
+        if "cluster_labels" in kwargs:
             self._cluster_labels = kwargs.pop("cluster_labels")
+        if "colorbar_scale" in kwargs:
+            self._colorbar_scale = kwargs.pop("colorbar_scale")
+        if "ignore_colorscale_outliers" in kwargs:
+            self._ignore_colorscale_outliers = kwargs.pop("ignore_colorscale_outliers")
         self._features = features
         self._attrs = {
             'tiles': tile_style if tile_style else 'OpenStreetMap',
@@ -120,15 +127,34 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         if 'clustered_marker' in self._attrs and self._attrs['clustered_marker']:
             def customize_marker_cluster(color, label):
                 # Returns string for icon_create_function
+                hexcolor = mpl.colors.to_hex(color)
                 return f"""
                     function(cluster) {{ 
                         return L.divIcon({{ 
-                            html: `<div style='
-                            color: white; 
-                            background-color: {mpl.colors.to_hex(color)}; 
-                            border-radius: 50%;
-                            height: 40px;
-                            '></div>`, 
+                            html: `<div
+                              style='
+                                opacity: 0.85; 
+                                background-color: {hexcolor}; 
+                                border: solid 2px rgba(66,135,245,1);
+                                border-radius: 50%;
+                                height: 40px;'
+                              onmouseover="document.getElementById('{hexcolor}').style.visibility='visible'"
+                              onmouseout="document.getElementById('{hexcolor}').style.visibility='hidden'">
+                              <div id="{hexcolor}" 
+                                style='
+                                  visibility: hidden;
+                                  font-size: 12px; 
+                                  background-color: white; 
+                                  color: {hexcolor};
+                                  text-align: center; 
+                                  padding: 6% 6%;
+                                  position: absolute; 
+                                  z-index: 1;
+                                  top: 120%; 
+                                  left: 50%; 
+                                  margin-left: -20px;
+                                  '>{label}</div>
+                            </div>`, 
                             iconSize: [40, 40],
                             className: 'dummy'
                         }});
@@ -158,6 +184,12 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
                     feature.draw_on(marker_cluster)
             else:
                 feature.draw_on(self._folium_map)
+        if self._colorbar_scale is not None: 
+            scale_colors = ["#340597", "#7008a5", "#a32494", "#cf5073", "#ee7c4c", "#f69344", "#fcc22d", "#f4e82d", "#f4e82d"]
+            vmin = self._colorbar_scale.pop(0)
+            vmax = self._colorbar_scale.pop(-1)
+            colormap = cm.LinearColormap(colors = scale_colors, index = self._colorbar_scale, caption = "*Legend above excludes outliers." if not self._ignore_colorscale_outliers else "", vmin = self._colorbar_scale[0], vmax = self._colorbar_scale[-1])
+            self._folium_map.add_child(colormap)
 
     def _create_map(self):
         attrs = {'width': self._width, 'height': self._height}
@@ -503,8 +535,9 @@ class Marker(_MapFeature):
             else:
                 icon_args['text_color'] = 'white'
             icon_args['icon_shape'] = 'marker'
+            # icon_args['icon_size'] = [10, 10]
             if 'icon' not in icon_args:
-                icon_args['icon'] = 'info-circle'
+                icon_args['icon'] = 'circle'
             attrs['icon'] = BeautifyIcon(**icon_args)
         else:
             attrs['icon'] = folium.Icon(**icon_args)
@@ -540,7 +573,7 @@ class Marker(_MapFeature):
         return cls(lat, lon)
 
     @classmethod
-    def map(cls, latitudes, longitudes, labels=None, colors=None, areas=None, other_attrs=None, clustered_marker=False, index_map=None, cluster_labels=None, **kwargs):
+    def map(cls, latitudes, longitudes, labels=None, colors=None, areas=None, other_attrs=None, clustered_marker=False, **kwargs):
         """Return markers from columns of coordinates, labels, & colors.
 
         The areas column is not applicable to markers, but sets circle areas.
@@ -559,6 +592,15 @@ class Marker(_MapFeature):
         assert len(latitudes) == len(longitudes)
         assert areas is None or hasattr(cls, '_has_radius'), "A " + cls.__name__ + " has no radius"
         inputs = [latitudes, longitudes]
+        index_map = ignore_colorscale_outliers = cluster_labels = colorbar_scale = None
+        if "index_map" in kwargs:
+            index_map = kwargs.pop("index_map")
+        if "cluster_labels" in kwargs:
+            cluster_labels = kwargs.pop("cluster_labels")
+        if "colorbar_scale" in kwargs:
+            colorbar_scale = kwargs.pop("colorbar_scale")
+        if "ignore_colorscale_outliers" in kwargs:
+            ignore_colorscale_outliers = kwargs.pop("ignore_colorscale_outliers")
         if labels is not None:
             assert len(labels) == len(latitudes)
             inputs.append(labels)
@@ -586,26 +628,19 @@ class Marker(_MapFeature):
             ms = [cls(*args, **other_attrs_processed[row_num]) for row_num, args in enumerate(zip(*inputs))]
         else:
             ms = [cls(*args, **kwargs) for row_num, args in enumerate(zip(*inputs))]
-        return Map(ms, clustered_marker=clustered_marker, index_map=index_map, cluster_labels=cluster_labels)
+        return Map(ms, clustered_marker=clustered_marker, index_map=index_map, cluster_labels=cluster_labels, colorbar_scale=colorbar_scale, ignore_colorscale_outliers=ignore_colorscale_outliers)
 
     @classmethod
-    def map_table(cls, table, clustered_marker=False, cluster_by=None, **kwargs):
+    def map_table(cls, table, clustered_marker=False, ignore_colorscale_outliers=False, **kwargs):
         """Return markers from the colums of a table.
         
         The first two columns of the table must be the latitudes and longitudes
         (in that order), followed by 'labels', 'colors', 'color scale', and/or 'areas' (if applicable)
-        in any order with columns explicitly stating what property they are representing.
+        in any order with columns explicitly stating what property they are representing. If a column is specified 
+        for cluster_by, that column is allowed in the table as well.
         """
-        lat, lon, lab, color, areas, index_map, cluster_labels, other_attrs = None, None, None, None, None, None, None, {}
-
-        if cluster_by is not None:
-            clustered_marker = True
-            cluster_index = table.labels.index(cluster_by)
-            cluster_labels = list(set(table.column(cluster_by)))
-            label_map = dict(zip(cluster_labels, np.arange(len(cluster_labels))))
-            index_map = [-1] * table.num_rows
-            for i, row in enumerate(table.rows):
-                index_map[i] = label_map[row[cluster_index]]
+        lat, lon, lab, color, areas, colorbar_scale, index_map, cluster_labels, other_attrs = None, None, None, None, None, None, None, None, {}
+        excluded = ["color scale", "cluster by"]
 
         for index, col in enumerate(table.labels):
             this_col = table.column(col)
@@ -619,29 +654,49 @@ class Marker(_MapFeature):
                 color = this_col
             elif col == "areas":
                 areas = this_col
-            elif col != "color scale" and col != cluster_by:
+            elif col not in excluded:
                 other_attrs[col] = this_col
+
+        if "cluster by" in table.labels:
+            clustered_marker = True
+            cluster_column = table.column("cluster by")
+            cluster_labels = list(set(cluster_column))
+            table_df = table.to_df()
+            table_df["indices"] = [0] * table.num_rows
+            for i, label in enumerate(cluster_labels):
+                table_df.loc[table_df["cluster by"] == label, "indices"] = i
+            index_map = table_df["indices"]
+            del table_df
+
         if 'color scale' in table.labels:
-            HIGH_COLOR_ENDPOINT = np.array(mpl.colors.to_rgb('#003262'))
-            LOW_COLOR_ENDPOINT = np.array(mpl.colors.to_rgb('white')) 
-            q1 = np.percentile(table.column('color scale'), 25)
-            q3 = np.percentile(table.column('color scale'), 75) 
-            IQR = q3 - q1
-            scale_min = max(q1 - 1.5 * IQR, min(table.column('color scale')))
-            scale_max = min(q3 + 1.5 * IQR, max(table.column('color scale')))
-            # Linearly interpolates between HIGH_COLOR_ENDPOINT and LOW_COLOR_ENDPOINT
-            interpolate_color = lambda mix: mpl.colors.to_hex((1 - mix) * LOW_COLOR_ENDPOINT + mix * HIGH_COLOR_ENDPOINT)
+            vmin = min(table.column("color scale"))
+            vmax = max(table.column("color scale"))
+            if ignore_colorscale_outliers:
+                outlier_min_bound = vmin
+                outlier_max_bound = vmax
+            else:
+                q1 = np.percentile(table.column("color scale"), 25)
+                q3 = np.percentile(table.column("color scale"), 75)
+                IQR = q3 - q1
+                outlier_min_bound = max(vmin, q1 - 1.5 * IQR)
+                outlier_max_bound = min(vmax, q3 + 1.5 * IQR)
+            colorbar_scale = list(np.linspace(outlier_min_bound, outlier_max_bound, 9))
+            scale_colors = ["#340597", "#7008a5", "#a32494", "#cf5073", "#ee7c4c", "#f69344", "#fcc22d", "#f4e82d", "#f4e82d"]
+            def interpolate_color(colors, cutoffs, datapoint):
+                for i, cutoff in enumerate(cutoffs):
+                    if cutoff >= datapoint:
+                        return colors[i - 1] if i > 0 else colors[0]
+                return colors[-1]
             color = [""] * table.num_rows
             for i, datapoint in enumerate(table.column('color scale')): 
-                mix = (datapoint - scale_min) / (scale_max - scale_min)
-                mix = max(min(mix, 1), 0)
-                color[i] = interpolate_color(mix)
+                color[i] = interpolate_color(scale_colors, colorbar_scale, datapoint)
+            colorbar_scale = [vmin] + colorbar_scale + [vmax]
         if not other_attrs:
             other_attrs = None
         return cls.map(latitudes=lat, longitudes=lon, labels=lab,
-            colors=color, areas=areas, other_attrs=other_attrs, 
+            colors=color, areas=areas, colorbar_scale=colorbar_scale, other_attrs=other_attrs, 
             clustered_marker=clustered_marker, 
-            index_map=index_map, cluster_labels=cluster_labels, **kwargs)
+            index_map=index_map, ignore_colorscale_outliers=ignore_colorscale_outliers, cluster_labels=cluster_labels, **kwargs)
 
 class Circle(Marker):
     """A marker displayed with Folium's circle_marker method.
@@ -780,3 +835,71 @@ def _lat_lons_from_geojson(s):
         return [(lat, lon)]
     else:
         return [lat_lon for sub in s for lat_lon in _lat_lons_from_geojson(sub)]
+
+
+def get_coordinates(table, replace_columns=False, remove_nans=False):
+    """Takes table with columns "zip code" or "city" and/or "county" and "state" in column names and 
+    adds the columns "lat" and "lon". If a county is not found inside the dataset,
+    that row's latitude and longitude coordinates are replaced with np.nans. The 'replace_columns' flag
+    indicates if the "city", "county", "state", and "zip code" columns should be removed afterwards.
+    The 'remove_nans' flag indicates if rows with nan latitudes and longitudes should be removed. 
+
+    Dataset was acquired on July 2, 2020 from https://docs.gaslamp.media/download-zip-code-latitude-longitude-city-state-county-csv. 
+    Found in geocode_datasets/geocode_states.csv. 
+    Args:
+        table: A table with counties that need to mapped to coordinates
+
+        replace_columns: A boolean that indicates if "county", "city", "state", and "zip code" columns should be removed 
+
+        remove_nans: A boolean that indicates if columns with invalid longitudes and latitudes should be removed
+    Returns:
+        Table with latitude and longitude coordinates 
+    """
+    assert "zip code" in table.labels or (("city" in table.labels or "county" in table.labels) and "state" in table.labels)
+    ref = pandas.read_csv(pkg_resources.resource_filename(__name__, "geodata/geocode_states.csv"))
+    table_df = table.to_df()
+    table_df["lat"] = [np.nan] * table.num_rows
+    table_df["lon"] = [np.nan] * table.num_rows
+    unassigned = set(range(table.num_rows)) # Indices where latitudes and longitudes have not been assigned yet
+    while len(unassigned) > 0:
+        index = unassigned.pop()
+        df_row = table_df.iloc[index]
+        if "zip code" in table_df.columns:
+            select = table_df["zip code"] == df_row["zip code"]
+            unassigned -= set(table_df.index[select])
+            try:
+                compared = ref["zip"] == int(df_row["zip code"])
+                table_df.loc[select, "lat"] = ref.loc[compared, "lat"].tolist()[0]
+                table_df.loc[select, "lon"] = ref.loc[compared, "lon"].tolist()[0]
+            except (IndexError, ValueError):
+                pass
+        else:
+            state_select = table_df["state"] == df_row["state"]
+            county_select = table_df["county"] == df_row["county"] if "county" in table_df.columns else np.array([True] * table.num_rows)
+            city_select = table_df["city"] == df_row["city"] if "city" in table_df.columns else np.array([True] * table.num_rows)
+            select = state_select & county_select & city_select
+            unassigned -= set(table_df.index[select])
+            try: 
+                if "county" in table_df.columns and "city" not in table_df.columns: 
+                    compared = (ref["state"] == df_row["state"]) & (ref["county"] == df_row["county"])
+                    table_df.loc[select, "lat"] = ref.loc[compared, "lat"].tolist()[0]
+                    table_df.loc[select, "lon"] = ref.loc[compared, "lon"].tolist()[0]
+                elif "county" not in table_df.columns and "city" in table_df.columns:
+                    compared = (ref["state"] == df_row["state"]) & (ref["city"] == df_row["city"])
+                    table_df.loc[select, "lat"] = ref.loc[compared, "lat"].tolist()[0]
+                    table_df.loc[select, "lon"] = ref.loc[compared, "lon"].tolist()[0]
+                else:
+                    compared = (ref["state"] == df_row["state"]) & (ref["county"] == df_row["county"]) & (ref["city"] == df_row["city"])
+                    table_df.loc[select, "lat"] = ref.loc[compared, "lat"].tolist()[0]
+                    table_df.loc[select, "lon"] = ref.loc[compared, "lon"].tolist()[0]
+            except IndexError:
+                pass
+    if replace_columns:
+        for label in ["county", "city", "zip code", "state"]:
+            try:
+                table_df.drop(label, axis = 1, inplace = True)
+            except KeyError:
+                pass
+    if remove_nans: 
+        table_df.dropna(subset=["lat", "lon"], inplace = True)
+    return Table.from_df(table_df)

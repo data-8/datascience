@@ -7,3 +7,4 @@ scipy
 numpy
 ipython
 plotly
+branca
