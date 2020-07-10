@@ -644,7 +644,7 @@ class Marker(_MapFeature):
         for cluster_by, that column is allowed in the table as well.
         """
         lat, lon, lab, color, areas, colorbar_scale, index_map, cluster_labels, other_attrs = None, None, None, None, None, None, None, None, {}
-        excluded = ["color_scale", "cluster_by"]
+        excluded = ["color_scale", "cluster_by", "radius_by"]
 
         for index, col in enumerate(table.labels):
             this_col = table.column(col)
@@ -673,11 +673,12 @@ class Marker(_MapFeature):
             del table_df
         
         if "radius_by" in table.labels:
-            radius_column = table.column("radius_by")
-            rmin, rmax = kwargs.get("radius_min", 5), kwargs.get("radius_max", 25)
-            scale_fn = lambda v: v * (rmax - rmin) + rmin
+            radius_column = table.column("radius_by").astype(float)
+            rmin, rmax = kwargs.get("radius_min", 5), kwargs.get("radius_max", 50)
+            vmin, vmax = radius_column.min(), radius_column.max()
+            scale_fn = lambda v: (v - vmin) / (vmax - vmin) * (rmax - rmin) + rmin
             radii = scale_fn(radius_column)
-            kwargs["radius"] = radii
+            other_attrs["radius"] = [float(r) for r in radii]
 
         if 'color_scale' in table.labels:
             vmin = min(table.column("color_scale"))
