@@ -85,6 +85,7 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         if "tiles" in kwargs:
             tile_style = kwargs.pop("tiles")
         self._index_map = self._cluster_labels = self._colorbar_scale = None
+        self._radius_in_meters = False
         if "index_map" in kwargs:
             self._index_map = kwargs.pop("index_map")
         if "cluster_labels" in kwargs:
@@ -179,13 +180,13 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         else:
             clustered = False
         for i, feature in enumerate(self._features.values()):
-            if clustered and isinstance(feature, Marker):
+            if isinstance(feature, Circle):
+                feature.draw_on(self._folium_map, self._radius_in_meters)
+            elif clustered and isinstance(feature, Marker):
                 if isinstance(marker_cluster, list):
                     feature.draw_on(marker_cluster[self._index_map[i]])
                 else:
                     feature.draw_on(marker_cluster)
-            elif isinstance(feature, Circle):
-                feature.draw_on(self._folium_map, self._radius_in_meters)
             else:
                 feature.draw_on(self._folium_map)
         if self._colorbar_scale is not None: 
