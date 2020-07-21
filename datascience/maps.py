@@ -91,8 +91,10 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
             self._cluster_labels = kwargs.pop("cluster_labels")
         if "colorbar_scale" in kwargs:
             self._colorbar_scale = kwargs.pop("colorbar_scale")
-        if "ignore_color_scale_outliers" in kwargs:
-            self._ignore_color_scale_outliers = kwargs.pop("ignore_color_scale_outliers")
+        if "include_color_scale_outliers" in kwargs:
+            self._include_color_scale_outliers = kwargs.pop("include_color_scale_outliers")
+        if "radius_in_meters" in kwargs and kwargs["radius_in_meters"] is not None:
+            self._radius_in_meters = kwargs.pop("radius_in_meters")
         self._features = features
         self._attrs = {
             'tiles': tile_style if tile_style else 'OpenStreetMap',
@@ -182,13 +184,15 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
                     feature.draw_on(marker_cluster[self._index_map[i]])
                 else:
                     feature.draw_on(marker_cluster)
+            elif isinstance(feature, Circle):
+                feature.draw_on(self._folium_map, self._radius_in_meters)
             else:
                 feature.draw_on(self._folium_map)
         if self._colorbar_scale is not None: 
             scale_colors = ["#340597", "#7008a5", "#a32494", "#cf5073", "#ee7c4c", "#f69344", "#fcc22d", "#f4e82d", "#f4e82d"]
             vmin = self._colorbar_scale.pop(0)
             vmax = self._colorbar_scale.pop(-1)
-            colormap = cm.LinearColormap(colors = scale_colors, index = self._colorbar_scale, caption = "*Legend above excludes outliers." if not self._ignore_color_scale_outliers else "", vmin = self._colorbar_scale[0], vmax = self._colorbar_scale[-1])
+            colormap = cm.LinearColormap(colors = scale_colors, index = self._colorbar_scale, caption = "*Legend above excludes outliers." if not self._include_color_scale_outliers else "", vmin = self._colorbar_scale[0], vmax = self._colorbar_scale[-1])
             self._folium_map.add_child(colormap)
 
     def _create_map(self):
@@ -539,7 +543,6 @@ class Marker(_MapFeature):
             else:
                 icon_args['text_color'] = 'white'
             icon_args['icon_shape'] = 'marker'
-            # icon_args['icon_size'] = [10, 10]
             if 'icon' not in icon_args:
                 icon_args['icon'] = 'circle'
             attrs['icon'] = BeautifyIcon(**icon_args)
@@ -596,15 +599,18 @@ class Marker(_MapFeature):
         assert len(latitudes) == len(longitudes)
         assert areas is None or hasattr(cls, '_has_radius'), "A " + cls.__name__ + " has no radius"
         inputs = [latitudes, longitudes]
-        index_map = ignore_color_scale_outliers = cluster_labels = colorbar_scale = None
+        index_map = include_color_scale_outliers = cluster_labels = colorbar_scale = None
+        radius_in_meters = False
         if "index_map" in kwargs:
             index_map = kwargs.pop("index_map")
         if "cluster_labels" in kwargs:
             cluster_labels = kwargs.pop("cluster_labels")
         if "colorbar_scale" in kwargs:
             colorbar_scale = kwargs.pop("colorbar_scale")
-        if "ignore_color_scale_outliers" in kwargs:
-            ignore_color_scale_outliers = kwargs.pop("ignore_color_scale_outliers")
+        if "include_color_scale_outliers" in kwargs:
+            include_color_scale_outliers = kwargs.pop("include_color_scale_outliers")
+        if "radius_in_meters" in kwargs:
+            radius_in_meters = kwargs.pop("radius_in_meters")
         if labels is not None:
             assert len(labels) == len(latitudes)
             inputs.append(labels)
@@ -632,10 +638,10 @@ class Marker(_MapFeature):
             ms = [cls(*args, **other_attrs_processed[row_num]) for row_num, args in enumerate(zip(*inputs))]
         else:
             ms = [cls(*args, **kwargs) for row_num, args in enumerate(zip(*inputs))]
-        return Map(ms, clustered_marker=clustered_marker, index_map=index_map, cluster_labels=cluster_labels, colorbar_scale=colorbar_scale, ignore_color_scale_outliers=ignore_color_scale_outliers)
+        return Map(ms, clustered_marker=clustered_marker, index_map=index_map, cluster_labels=cluster_labels, colorbar_scale=colorbar_scale, include_color_scale_outliers=include_color_scale_outliers, radius_in_meters=radius_in_meters)
 
     @classmethod
-    def map_table(cls, table, clustered_marker=False, ignore_color_scale_outliers=True, **kwargs):
+    def map_table(cls, table, clustered_marker=False, include_color_scale_outliers=True, radius_in_meters=False, **kwargs):
         """Return markers from the colums of a table.
         
         The first two columns of the table must be the latitudes and longitudes
@@ -692,7 +698,7 @@ class Marker(_MapFeature):
         if 'color_scale' in table.labels:
             vmin = min(table.column("color_scale"))
             vmax = max(table.column("color_scale"))
-            if ignore_color_scale_outliers:
+            if include_color_scale_outliers:
                 outlier_min_bound = vmin
                 outlier_max_bound = vmax
             else:
@@ -717,8 +723,8 @@ class Marker(_MapFeature):
         return cls.map(
             latitudes=lat, longitudes=lon, labels=lab, colors=color, areas=areas, 
             colorbar_scale=colorbar_scale, other_attrs=other_attrs, clustered_marker=clustered_marker, 
-            index_map=index_map, ignore_color_scale_outliers=ignore_color_scale_outliers, 
-            cluster_labels=cluster_labels, **kwargs
+            index_map=index_map, include_color_scale_outliers=include_color_scale_outliers, 
+            radius_in_meters=radius_in_meters, cluster_labels=cluster_labels, **kwargs
         )
 
 class Circle(Marker):
@@ -763,9 +769,11 @@ class Circle(Marker):
             attrs['color'] = attrs.pop('line_color')
         return attrs
 
-    def draw_on(self, folium_map):
-        # Unsure if this is meant to be folium.Circle since radius is fixed with zoom 
-        folium.CircleMarker(**self._folium_kwargs).add_to(folium_map)
+    def draw_on(self, folium_map, radius_in_meters):
+        if radius_in_meters:
+            folium.Circle(**self._folium_kwargs).add_to(folium_map)
+        else:
+            folium.CircleMarker(**self._folium_kwargs).add_to(folium_map)
 
 
 class Region(_MapFeature):
