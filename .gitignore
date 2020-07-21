@@ -5,6 +5,11 @@ __pycache__/
 # C extensions
 *.so
 
+# vim temporary files
+*.swp
+*.swo
+*~
+
 # Distribution / packaging
 .Python
 env/
