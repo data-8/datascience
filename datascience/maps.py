@@ -682,7 +682,7 @@ class Marker(_MapFeature):
         
         if "area_scale" in table.labels: # takes precedence over radius_scale
             area_column = table.column("area_scale").astype(float)
-            amin, amax = kwargs.get("area_min", 5), kwargs.get("area_max", 50)
+            amin, amax = kwargs.get("area_min", 80), kwargs.get("area_max", 8000)
             vmin, vmax = area_column.min(), area_column.max()
             scale_fn = lambda v: (v - vmin) / (vmax - vmin) * (amax - amin) + amin
             areas = scale_fn(area_column)
