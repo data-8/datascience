@@ -870,7 +870,8 @@ def _lat_lons_from_geojson(s):
 
 
 def get_coordinates(table, replace_columns=False, remove_nans=False):
-    """Takes table with columns "zip code" or "city" and/or "county" and "state" in column names and 
+    """
+    Takes table with columns "zip code" or "city" and/or "county" and "state" in column names and 
     adds the columns "lat" and "lon". If a county is not found inside the dataset,
     that row's latitude and longitude coordinates are replaced with np.nans. The 'replace_columns' flag
     indicates if the "city", "county", "state", and "zip code" columns should be removed afterwards.
@@ -878,12 +879,12 @@ def get_coordinates(table, replace_columns=False, remove_nans=False):
 
     Dataset was acquired on July 2, 2020 from https://docs.gaslamp.media/download-zip-code-latitude-longitude-city-state-county-csv. 
     Found in geocode_datasets/geocode_states.csv. 
+
     Args:
         table: A table with counties that need to mapped to coordinates
-
         replace_columns: A boolean that indicates if "county", "city", "state", and "zip code" columns should be removed 
-
         remove_nans: A boolean that indicates if columns with invalid longitudes and latitudes should be removed
+        
     Returns:
         Table with latitude and longitude coordinates 
     """

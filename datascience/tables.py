@@ -2329,23 +2329,28 @@ class Table(collections.abc.MutableMapping):
 
     def barh(self, column_for_categories=None, select=None, overlay=True, width=None, **vargs):
         """Plot horizontal bar charts for the table.
+        
         Args:
             ``column_for_categories`` (``str``): A column containing y-axis categories
                 used to create buckets for bar chart.
+        
         Kwargs:
             overlay (bool): create a chart with one color per data column;
                 if False, each will be displayed separately.
             vargs: Additional arguments that get passed into `plt.barh`.
                 See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.barh
                 for additional arguments that can be passed into vargs.
+        
         Raises:
             ValueError -- Every selected except column for ``column_for_categories``
                 must be numerical.
+        
         Returns:
             Horizontal bar graph with buckets specified by ``column_for_categories``.
             Each plot is labeled using the values in ``column_for_categories``
             and one plot is produced for every other column (or for the columns
             designated by ``select``).
+        
         >>> t = Table().with_columns(
         ...     'Furniture', make_array('chairs', 'tables', 'desks'),
         ...     'Count', make_array(6, 1, 2),

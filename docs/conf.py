@@ -38,7 +38,8 @@ extensions = [
     # These IPython extensions allow for embedded IPython code that gets rerun
     # at build time.
     'IPython.sphinxext.ipython_console_highlighting',
-    'IPython.sphinxext.ipython_directive'
+    'IPython.sphinxext.ipython_directive',
+    'nbsphinx'
 ]
 
 # The following lines silence the matplotlib.use warnings since we import

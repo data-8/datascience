@@ -8,3 +8,4 @@ numpy
 ipython
 plotly
 branca
+nbsphinx
