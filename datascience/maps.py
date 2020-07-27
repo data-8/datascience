@@ -729,7 +729,11 @@ class Marker(_MapFeature):
         )
 
 class Circle(Marker):
-    """A marker displayed with Folium's circle_marker method.
+    """A marker displayed with either Folium's circle_marker or circle methods.
+
+    The circle_marker method draws circles that stay the same size regardless of map zoom, 
+    whereas the circle method draws circles that have a fixed radius in meters. To toggle 
+    between them, use the `radius_in_meters` flag in the draw_on function. 
 
     popup -- text that pops up when marker is clicked
     color -- fill color
@@ -741,9 +745,10 @@ class Circle(Marker):
         Circle fill opacity
 
     More options can be passed into kwargs by following the attributes
-    listed in `https://leafletjs.com/reference-1.4.0.html#circlemarker`.
+    listed in `https://leafletjs.com/reference-1.4.0.html#circlemarker` or 
+    `https://leafletjs.com/reference-1.4.0.html#circle`.
 
-    For example, to draw three circles::
+    For example, to draw three circles with circle_marker:
 
         t = Table().with_columns([
                 'lat', [37.8, 38, 37.9],
@@ -753,6 +758,10 @@ class Circle(Marker):
                 'radius', [3000, 4000, 5000],
             ])
         Circle.map_table(t)
+
+    To draw three circles with the circle methods, replace the last line with:
+
+        Circle.map_table(t, radius_in_meters=True)
     """
 
     _has_radius = True
@@ -770,7 +779,7 @@ class Circle(Marker):
             attrs['color'] = attrs.pop('line_color')
         return attrs
 
-    def draw_on(self, folium_map, radius_in_meters):
+    def draw_on(self, folium_map, radius_in_meters=False):
         if radius_in_meters:
             folium.Circle(**self._folium_kwargs).add_to(folium_map)
         else:
@@ -871,6 +880,8 @@ def _lat_lons_from_geojson(s):
 
 def get_coordinates(table, replace_columns=False, remove_nans=False):
     """
+    Adds latitude and longitude coordinates to table based on other location identifiers. Must be in the United States.
+
     Takes table with columns "zip code" or "city" and/or "county" and "state" in column names and 
     adds the columns "lat" and "lon". If a county is not found inside the dataset,
     that row's latitude and longitude coordinates are replaced with np.nans. The 'replace_columns' flag
