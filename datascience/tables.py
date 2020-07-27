@@ -2065,14 +2065,61 @@ class Table(collections.abc.MutableMapping):
 
     @staticmethod
     def interactive_plots():
-        """Sets global var that redirects all plots with interactive equivalents to those equivalents
+        """
+        Redirects ``plot``, ``barh``, ``hist``, and ``scatter`` to their plotly equivalents
+
+        Sets a global variable that redirects ``Table.plot`` to ``Table.iplot``, ``Table.barh`` to
+        ``Table.ibarh``, etc. This can be turned off by calling ``Table.static_plots``.
+
+        >>> table = Table().with_columns(
+        ...     'days',  make_array(0, 1, 2, 3, 4, 5),
+        ...     'price', make_array(90.5, 90.00, 83.00, 95.50, 82.00, 82.00),
+        ...     'projection', make_array(90.75, 82.00, 82.50, 82.50, 83.00, 82.50))
+        >>> table
+        days | price | projection
+        0    | 90.5  | 90.75
+        1    | 90    | 82
+        2    | 83    | 82.5
+        3    | 95.5  | 82.5
+        4    | 82    | 83
+        5    | 82    | 82.5
+        >>> table.plot('days') # doctest: +SKIP
+        <matplotlib line graph with days as x-axis and lines for price and projection>
+        >>> Table.interactive_plots()
+        >>> table.plot('days') # doctest: +SKIP
+        <plotly interactive line graph with days as x-axis and lines for price and projection>
         """
         global _INTERACTIVE_PLOTS
         _INTERACTIVE_PLOTS = True
 
     @staticmethod
     def static_plots():
-        """Turns off global var that redirects all plots with interactive equivalents to those equivalents
+        """
+        Turns off redirection of ``plot``, ``barh``, ``hist``, and ``scatter`` to their plotly equivalents
+
+        Unsets a global variable that redirects ``Table.plot`` to ``Table.iplot``, ``Table.barh`` to
+        ``Table.ibarh``, etc. This can be turned on by calling ``Table.interactive_plots``.
+
+        >>> table = Table().with_columns(
+        ...     'days',  make_array(0, 1, 2, 3, 4, 5),
+        ...     'price', make_array(90.5, 90.00, 83.00, 95.50, 82.00, 82.00),
+        ...     'projection', make_array(90.75, 82.00, 82.50, 82.50, 83.00, 82.50))
+        >>> table
+        days | price | projection
+        0    | 90.5  | 90.75
+        1    | 90    | 82
+        2    | 83    | 82.5
+        3    | 95.5  | 82.5
+        4    | 82    | 83
+        5    | 82    | 82.5
+        >>> table.plot('days') # doctest: +SKIP
+        <matplotlib line graph with days as x-axis and lines for price and projection>
+        >>> Table.interactive_plots()
+        >>> table.plot('days') # doctest: +SKIP
+        <plotly interactive line graph with days as x-axis and lines for price and projection>
+        >>> Table.static_plots()
+        >>> table.plot('days') # doctest: +SKIP
+        <matplotlib line graph with days as x-axis and lines for price and projection>
         """
         global _INTERACTIVE_PLOTS
         _INTERACTIVE_PLOTS = False
@@ -2189,8 +2236,12 @@ class Table(collections.abc.MutableMapping):
         4    | 82    | 83
         5    | 82    | 82.5
         >>> table.iplot("price", "projection") # doctest: +SKIP
+        <plotly line graph with days as x-axis and lines for price and projection>
         >>> table.iplot("days", make_array("price", "projection")) # doctest: +SKIP
+        <plotly line graph with days as x-axis and line for price>
+        <plotly line graph with days as x-axis and line for projection>
         >>> table.iplot("days", make_array("price", "projection"), overlay=False) # doctest: +SKIP
+        <plotly line graph with days as x-axis and line for price>
         """
         if column_for_xticks is not None:
             x_data, y_labels = self._split_column_and_labels(column_for_xticks)
@@ -2456,8 +2507,11 @@ class Table(collections.abc.MutableMapping):
         tables    | 1     | 20
         desks     | 2     | 30
         >>> furniture_table.ibarh('Furniture') # doctest: +SKIP
+        <plotly bar graph with furniture as categories and bars for count and price>
         >>> furniture_table.ibarh('Furniture', 'Price') # doctest: +SKIP
+        <plotly bar graph with furniture as categories and bars for price>
         >>> furniture_table.ibarh('Furniture', make_array(1, 2)) # doctest: +SKIP
+        <plotly bar graph with furniture as categories and bars for count and price>
         """
         yticks, labels = self._split_column_and_labels(column_for_categories)
 
@@ -2787,8 +2841,12 @@ class Table(collections.abc.MutableMapping):
         3    | 2    | 5
         1    | 10   | 6
         >>> table.iscatter('x') # doctest: +SKIP
+        <plotly scatterplot of values in y and z on x>
         >>> table.iscatter('x', overlay=False) # doctest: +SKIP
+        <plotly scatterplot of values in y on x>
+        <plotly scatterplot of values in z on x>
         >>> table.iscatter('x', fit_line=True) # doctest: +SKIP
+        <plotly scatterplot of values in y and z on x with lines of best fit>
         """
         x_data, y_labels =  self._split_column_and_labels(column_for_x)
 
@@ -2959,22 +3017,10 @@ class Table(collections.abc.MutableMapping):
     def scatter3d(self, column_for_x, column_for_y, select=None, overlay=True, fit_line=False,
         group=None, labels=None, sizes=None, width=None, height=None, s=5,
         colors=None):
-        global _INTERACTIVE_PLOTS
-
-        # can't use scatter3d if not interactive mode; just a wrapper for iscatter3d
-        assert _INTERACTIVE_PLOTS, "scatter3d is a wrapper for iscatter3d and can only be "\
-            "called when interactive plots are enabled"
-
-        if _INTERACTIVE_PLOTS:
-            self.iscatter3d(
-                column_for_x, column_for_y, select, overlay, fit_line,
-                group, labels, sizes, width, height, s, colors
-            )
-
-    def iscatter3d(self, column_for_x, column_for_y, select=None, overlay=True, fit_line=False,
-        group=None, labels=None, sizes=None, width=None, height=None, s=5,
-        colors=None, **vargs):
-        """Creates scatterplots, optionally adding a line of best fit.
+        """Convenience wrapper for ``Table#iscatter3d``
+        
+        Creates 3D scatterplots by calling ``Table#iscatter3d`` with the same arguments. Cannot be 
+        used if interactive plots are not enabled (by calling ``Table#interactive_plots``).
 
         Args:
             ``column_for_x`` (``str``): The column to use for the x-axis values
@@ -2986,8 +3032,6 @@ class Table(collections.abc.MutableMapping):
         Kwargs:
             ``overlay`` (``bool``): If true, creates a chart with one color
                 per data column; if False, each plot will be displayed separately.
-
-            ``fit_line`` (``bool``): draw a line of best fit for each set of points.
 
             ``group``: A column of categories to be used for coloring dots per
                 each category grouping.
@@ -3011,29 +3055,105 @@ class Table(collections.abc.MutableMapping):
                 ``plotly.graph_objects.Figure.update_layout``
 
         Raises:
-            ValueError -- Every column, ``column_for_x`` or ``select``, must be numerical
+            AssertionError -- Interactive plots must be enabled by calling ``Table#interactive_plots``
+                first
+            ValueError -- Every column, ``column_for_x``, ``column_for_x``, or ``select``, must be 
+                numerical
 
         Returns:
-            Scatter plot of values of ``column_for_x`` plotted against
-            values for all other columns in self. Each plot uses the values in
-            `column_for_x` for horizontal positions. One plot is produced for
-            all other columns in self as y (or for the columns designated by
-            `select`).
-
+            Scatter plot of values of ``column_for_x`` and ``column_for_y`` plotted against
+                values for all other columns in self.
 
         >>> table = Table().with_columns(
         ...     'x', make_array(9, 3, 3, 1),
         ...     'y', make_array(1, 2, 2, 10),
-        ...     'z', make_array(3, 4, 5, 6))
+        ...     'z1', make_array(3, 4, 5, 6)
+        ...     'z2', make_array(0, 2, 1, 0))
         >>> table
-        x    | y    | z
-        9    | 1    | 3
-        3    | 2    | 4
-        3    | 2    | 5
-        1    | 10   | 6
-        >>> table.iscatter('x') # doctest: +SKIP
-        >>> table.iscatter('x', overlay=False) # doctest: +SKIP
-        >>> table.iscatter('x', fit_line=True) # doctest: +SKIP
+        x    | y    | z1   | z2
+        9    | 1    | 3    | 0
+        3    | 2    | 4    | 2
+        3    | 2    | 5    | 1
+        1    | 10   | 6    | 0
+        >>> table.iscatter3d('x', 'y') # doctest: +SKIP
+        <plotly 3D scatterplot of values in z1 and z2 on x and y>
+        >>> table.iscatter3d('x', 'y', overlay=False) # doctest: +SKIP
+        <plotly 3D scatterplot of values in z1 on x and y>
+        <plotly 3D scatterplot of values in z2 on x and y
+        """
+        global _INTERACTIVE_PLOTS
+
+        # can't use scatter3d if not interactive mode; just a wrapper for iscatter3d
+        assert _INTERACTIVE_PLOTS, "scatter3d is a wrapper for iscatter3d and can only be "\
+            "called when interactive plots are enabled"
+
+        if _INTERACTIVE_PLOTS:
+            self.iscatter3d(
+                column_for_x, column_for_y, select, overlay, fit_line,
+                group, labels, sizes, width, height, s, colors
+            )
+
+    def iscatter3d(self, column_for_x, column_for_y, select=None, overlay=True, fit_line=False,
+        group=None, labels=None, sizes=None, width=None, height=None, s=5,
+        colors=None, **vargs):
+        """Creates 3D scatterplots.
+
+        Args:
+            ``column_for_x`` (``str``): The column to use for the x-axis values
+                and label of the scatter plots.
+
+            ``column_for_y`` (``str``): The column to use for the y-axis values
+                and label of the scatter plots.
+
+        Kwargs:
+            ``overlay`` (``bool``): If true, creates a chart with one color
+                per data column; if False, each plot will be displayed separately.
+
+            ``group``: A column of categories to be used for coloring dots per
+                each category grouping.
+
+            ``labels``: A column of text labels to annotate dots.
+
+            ``sizes``:  A column of values to set the relative areas of dots.
+
+            ``width`` (``int``): the width (in pixels) of the plot area
+
+            ``height`` (``int``): the height (in pixels) of the plot area
+
+            ``s``: Size of dots. If sizes is also provided, then dots will be
+                in the range 0 to 2 * s.
+
+            ``colors``: (deprecated) A synonym for ``group``. Retained
+                temporarily for backwards compatibility. This argument
+                will be removed in future releases.
+
+            ``vargs`` (``dict``): additional kwargs passed to
+                ``plotly.graph_objects.Figure.update_layout``
+
+        Raises:
+            ValueError -- Every column, ``column_for_x``, ``column_for_x``, or ``select``, must be 
+                numerical
+
+        Returns:
+            Scatter plot of values of ``column_for_x`` and ``column_for_y`` plotted against
+                values for all other columns in self.
+
+        >>> table = Table().with_columns(
+        ...     'x', make_array(9, 3, 3, 1),
+        ...     'y', make_array(1, 2, 2, 10),
+        ...     'z1', make_array(3, 4, 5, 6)
+        ...     'z2', make_array(0, 2, 1, 0))
+        >>> table
+        x    | y    | z1   | z2
+        9    | 1    | 3    | 0
+        3    | 2    | 4    | 2
+        3    | 2    | 5    | 1
+        1    | 10   | 6    | 0
+        >>> table.iscatter3d('x', 'y') # doctest: +SKIP
+        <plotly 3D scatterplot of values in z1 and z2 on x and y>
+        >>> table.iscatter3d('x', 'y', overlay=False) # doctest: +SKIP
+        <plotly 3D scatterplot of values in z1 on x and y>
+        <plotly 3D scatterplot of values in z2 on x and y
         """
         x_data, y_data, z_labels = self._split_column_and_labels([column_for_x, column_for_y])
 
@@ -3113,17 +3233,6 @@ class Table(collections.abc.MutableMapping):
                     textfont = dict(color = colors[i])
                 ))
 
-                # if fit_line:
-                #     m, b = np.polyfit(x_data, self[label], 1)
-                #     fig.add_trace(go.Scatter(
-                #         x = x_data,
-                #         y = m * x_data + b,
-                #         name = " ".join([label, "best fit line"]),
-                #         marker_color = colors[i],
-                #         hovertemplate = "".join([str(m), " * x + ", str(b)]),
-                #         mode = "lines"
-                #     ))
-
             fig.update_layout(scene=dict(
                 xaxis_title = column_for_x,
                 yaxis_title = column_for_y,
@@ -3135,7 +3244,7 @@ class Table(collections.abc.MutableMapping):
                 rows = len(z_labels),
                 cols = 1,
                 specs=[[{"type": "scene"}] for _ in range(len(z_labels))]
-            )#, x_title=column_for_x, y_title=column_for_y)
+            )
             for i, label in enumerate(z_labels):
                 if not group:
                     fig.append_trace(go.Scatter3d(
@@ -3150,17 +3259,6 @@ class Table(collections.abc.MutableMapping):
                         textposition = "bottom center",
                         textfont = dict(color = colors[i]),
                     ), row = i + 1, col = 1)
-
-                    # if fit_line:
-                    #     m, b = np.polyfit(x_data, self[label], 1)
-                    #     fig.add_trace(go.Scatter(
-                    #         x = x_data,
-                    #         y = m * x_data + b,
-                    #         name = " ".join([label, "best fit line"]),
-                    #         marker_color = colors[i],
-                    #         hovertemplate = "".join([str(m), " * x + ", str(b)]),
-                    #         mode = "lines"
-                    #     ), row = i + 1, col = 1)
 
                 else:
                     grouped_z_data = []
@@ -3205,8 +3303,6 @@ class Table(collections.abc.MutableMapping):
 
             if height is not None:
                 plot_height = height
-#             elif bool(group):
-#                 plot_height = None
             elif len(z_labels) > 1:
                 plot_height = 600 * len(z_labels)
             else:
@@ -3215,7 +3311,7 @@ class Table(collections.abc.MutableMapping):
             fig.update_layout(
                 width=width,
                 height=plot_height,
-                showlegend=True#bool(group)
+                showlegend=True
             )
 
         fig.update_layout(**vargs)
@@ -3381,21 +3477,19 @@ class Table(collections.abc.MutableMapping):
         3     | 2
         3     | 2
         1     | 10
-        >>> t.hist() # doctest: +SKIP
-        <histogram of values in count>
-        <histogram of values in points>
-
+        >>> t.ihist() # doctest: +SKIP
+        <plotly histogram of values in count>
+        <plotly histogram of values in points>
         >>> t = Table().with_columns(
         ...     'value',      make_array(101, 102, 103),
         ...     'proportion', make_array(0.25, 0.5, 0.25))
-        >>> t.hist(bin_column='value') # doctest: +SKIP
-        <histogram of values weighted by corresponding proportions>
-
+        >>> t.ihist(bin_column='value') # doctest: +SKIP
+        <plotly histogram of values weighted by corresponding proportions>
         >>> t = Table().with_columns(
         ...     'value',    make_array(1,   2,   3,   2,   5  ),
         ...     'category', make_array('a', 'a', 'a', 'b', 'b'))
-        >>> t.hist('value', group='category') # doctest: +SKIP
-        <two overlaid histograms of the data [1, 2, 3] and [2, 5]>
+        >>> t.ihist('value', group='category') # doctest: +SKIP
+        <two overlaid plotly histograms of the data [1, 2, 3] and [2, 5]>
         """
         if counts is not None and bin_column is None:
             warnings.warn("counts arg of hist is deprecated; use bin_column")
