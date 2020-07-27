@@ -731,9 +731,9 @@ class Marker(_MapFeature):
 class Circle(Marker):
     """A marker displayed with either Folium's circle_marker or circle methods.
 
-    The circle_marker method draws circles that stay the same size regardless of map zoom, 
+    The ``circle_marker`` method draws circles that stay the same size regardless of map zoom, 
     whereas the circle method draws circles that have a fixed radius in meters. To toggle 
-    between them, use the `radius_in_meters` flag in the draw_on function. 
+    between them, use the ``radius_in_meters`` flag in the draw_on function. 
 
     popup -- text that pops up when marker is clicked
     color -- fill color
@@ -750,6 +750,8 @@ class Circle(Marker):
 
     For example, to draw three circles with circle_marker:
 
+    ..code-block:: python
+
         t = Table().with_columns([
                 'lat', [37.8, 38, 37.9],
                 'lon', [-122, -122.1, -121.9],
@@ -761,6 +763,8 @@ class Circle(Marker):
 
     To draw three circles with the circle methods, replace the last line with:
 
+    ..code-block:: python
+    
         Circle.map_table(t, radius_in_meters=True)
     """
 
