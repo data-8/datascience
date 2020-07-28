@@ -3067,7 +3067,7 @@ class Table(collections.abc.MutableMapping):
         >>> table = Table().with_columns(
         ...     'x', make_array(9, 3, 3, 1),
         ...     'y', make_array(1, 2, 2, 10),
-        ...     'z1', make_array(3, 4, 5, 6)
+        ...     'z1', make_array(3, 4, 5, 6),
         ...     'z2', make_array(0, 2, 1, 0))
         >>> table
         x    | y    | z1   | z2
@@ -3141,7 +3141,7 @@ class Table(collections.abc.MutableMapping):
         >>> table = Table().with_columns(
         ...     'x', make_array(9, 3, 3, 1),
         ...     'y', make_array(1, 2, 2, 10),
-        ...     'z1', make_array(3, 4, 5, 6)
+        ...     'z1', make_array(3, 4, 5, 6),
         ...     'z2', make_array(0, 2, 1, 0))
         >>> table
         x    | y    | z1   | z2
