@@ -646,9 +646,19 @@ class Marker(_MapFeature):
         """Return markers from the colums of a table.
         
         The first two columns of the table must be the latitudes and longitudes
-        (in that order), followed by 'labels', 'colors', 'color_scale', 'radius_scale', and/or 'areas' (if applicable)
-        in any order with columns explicitly stating what property they are representing. If a column is specified 
-        for cluster_by, that column is allowed in the table as well.
+        (in that order), followed by 'labels', 'colors', 'color_scale', 'radius_scale', 'cluster_by', 'area_scale', and/or 'areas' (if applicable)
+        in any order with columns explicitly stating what property they are representing.
+
+        Args:
+            ``cls``: Type of marker being drawn on the map {Marker, Circle}.
+            
+            ``table``: Table of data to be made into markers. The first two columns of the table must be the latitudes and longitudes (in that order), followed by 'labels', 'colors', 'cluster_by', 'color_scale', 'radius_scale', 'area_scale', and/or 'areas' (if applicable) in any order with columns explicitly stating what property they are representing. Additional columns for marker-specific attributes such as 'marker_icon' for the Marker class can be included as well.
+
+            ``clustered_marker``: Boolean indicating if markers should be clustered with folium.plugins.MarkerCluster.
+
+            ``include_color_scale_outliers``: Boolean indicating if outliers should be included in the color scale gradient or not. 
+
+            ``radius_in_meters``: Boolean indicating if circle markers should be drawn to map scale or zoom scale.
         """
         lat, lon, lab, color, areas, colorbar_scale, index_map, cluster_labels, other_attrs = None, None, None, None, None, None, None, None, {}
         excluded = ["color_scale", "cluster_by", "radius_scale", "area_scale"]
