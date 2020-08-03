@@ -900,10 +900,11 @@ def get_coordinates(table, replace_columns=False, remove_nans=False):
     adds the columns "lat" and "lon". If a county is not found inside the dataset,
     that row's latitude and longitude coordinates are replaced with np.nans. The 'replace_columns' flag
     indicates if the "city", "county", "state", and "zip code" columns should be removed afterwards.
-    The 'remove_nans' flag indicates if rows with nan latitudes and longitudes should be removed. 
+    The 'remove_nans' flag indicates if rows with nan latitudes and longitudes should be removed. Robust to 
+    capitalization.
 
     Dataset was acquired on July 2, 2020 from https://docs.gaslamp.media/download-zip-code-latitude-longitude-city-state-county-csv. 
-    Found in geocode_datasets/geocode_states.csv. 
+    Found in geocode_datasets/geocode_states.csv. Modified column names and made city/county columns all in lowercase. 
 
     Args:
         table: A table with counties that need to mapped to coordinates
@@ -938,16 +939,18 @@ def get_coordinates(table, replace_columns=False, remove_nans=False):
             select = state_select & county_select & city_select
             unassigned -= set(table_df.index[select])
             try: 
+                lowered_county = None if "county" not in table_df.columns else df_row["county"].lower()
+                lowered_city = None if "city" not in table_df.columns else df_row["city"].lower()
                 if "county" in table_df.columns and "city" not in table_df.columns: 
-                    compared = (ref["state"] == df_row["state"]) & (ref["county"] == df_row["county"])
+                    compared = (ref["state"] == df_row["state"]) & (ref["county"] == lowered_county)
                     table_df.loc[select, "lat"] = ref.loc[compared, "lat"].tolist()[0]
                     table_df.loc[select, "lon"] = ref.loc[compared, "lon"].tolist()[0]
                 elif "county" not in table_df.columns and "city" in table_df.columns:
-                    compared = (ref["state"] == df_row["state"]) & (ref["city"] == df_row["city"])
+                    compared = (ref["state"] == df_row["state"]) & (ref["city"] == lowered_city)
                     table_df.loc[select, "lat"] = ref.loc[compared, "lat"].tolist()[0]
                     table_df.loc[select, "lon"] = ref.loc[compared, "lon"].tolist()[0]
                 else:
-                    compared = (ref["state"] == df_row["state"]) & (ref["county"] == df_row["county"]) & (ref["city"] == df_row["city"])
+                    compared = (ref["state"] == df_row["state"]) & (ref["county"] == lowered_county) & (ref["city"] == lowered_city)
                     table_df.loc[select, "lat"] = ref.loc[compared, "lat"].tolist()[0]
                     table_df.loc[select, "lon"] = ref.loc[compared, "lon"].tolist()[0]
             except IndexError:
