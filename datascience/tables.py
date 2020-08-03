@@ -240,10 +240,10 @@ class Table(collections.abc.MutableMapping):
 
         Example:
         >>> t = Table().with_columns({
-                'letter': ['a', 'b', 'c', 'z'],
-                'count':  [  9,   3,   3,   1],
-                'points': [  1,   2,   2,  10],
-            })
+        ...     'letter': ['a', 'b', 'c', 'z'],
+        ...     'count':  [  9,   3,   3,   1],
+        ...     'points': [  1,   2,   2,  10],
+        ... })
         >>> t.num_rows
         >>> 4
         """
@@ -259,17 +259,17 @@ class Table(collections.abc.MutableMapping):
 
         Example:
         >>> t = Table().with_columns({
-                'letter': ['a', 'b', 'c', 'z'],
-                'count':  [  9,   3,   3,   1],
-                'points': [  1,   2,   2,  10],
-            })
+        ...     'letter': ['a', 'b', 'c', 'z'],
+        ...     'count':  [  9,   3,   3,   1],
+        ...     'points': [  1,   2,   2,  10],
+        ... })
         >>> t.rows
         >>>
         Rows(letter | count | points
-                a      | 9     | 1
-                b      | 3     | 2
-                c      | 3     | 2
-                z      | 1     | 10)
+        ...     a      | 9     | 1
+        ...     b      | 3     | 2
+        ...     c      | 3     | 2
+        ...     z      | 1     | 10)
         """
         return self.Rows(self)
 
@@ -287,10 +287,10 @@ class Table(collections.abc.MutableMapping):
 
         Example:
         >>> t = Table().with_columns({
-                'letter': ['a', 'b', 'c', 'z'],
-                'count':  [  9,   3,   3,   1],
-                'points': [  1,   2,   2,  10],
-            })
+        ...     'letter': ['a', 'b', 'c', 'z'],
+        ...     'count':  [  9,   3,   3,   1],
+        ...     'points': [  1,   2,   2,  10],
+        ... })
         >>> t.labels
         >>> ('letter', 'count', 'points')
         """
@@ -318,14 +318,14 @@ class Table(collections.abc.MutableMapping):
 
         Example:
         >>> t = Table().with_columns({
-                'letter': ['a', 'b', 'c', 'z'],
-                'count':  [  9,   3,   3,   1],
-                'points': [  1,   2,   2,  10],
-            })
+        ...     'letter': ['a', 'b', 'c', 'z'],
+        ...     'count':  [  9,   3,   3,   1],
+        ...     'points': [  1,   2,   2,  10],
+        ... })
         >>> t.columns
         >>> (array(['a', 'b', 'c', 'z'], dtype='<U1'),
-             array([9, 3, 3, 1]),
-             array([ 1,  2,  2, 10]))
+        ...  array([9, 3, 3, 1]),
+        ...  array([ 1,  2,  2, 10]))
         """
         return tuple(self._columns.values())
 
@@ -397,10 +397,10 @@ class Table(collections.abc.MutableMapping):
 
         Example:
         >>> t = Table().with_columns({
-                'letter': ['a', 'b', 'c', 'z'],
-                'count':  [  9,   3,   3,   1],
-                'points': [  1,   2,   2,  10],
-            })
+        ...     'letter': ['a', 'b', 'c', 'z'],
+        ...     'count':  [  9,   3,   3,   1],
+        ...     'points': [  1,   2,   2,  10],
+        ... })
         >>> t.column_index('letter')
         >>> 0
         """
@@ -479,10 +479,10 @@ class Table(collections.abc.MutableMapping):
 
         Example:
         >>> t = Table().with_columns({
-                'letter': ['a', 'b', 'c', 'z'],
-                'count':  [  9,   3,   3,   1],
-                'points': [  1,   2,   2,  10],
-            })
+        ...     'letter': ['a', 'b', 'c', 'z'],
+        ...     'count':  [  9,   3,   3,   1],
+        ...     'points': [  1,   2,   2,  10],
+        ... })
         >>> t.first('letter')
         >>> 'a'
         """
@@ -500,10 +500,10 @@ class Table(collections.abc.MutableMapping):
 
         Example:
         >>> t = Table().with_columns({
-                'letter': ['a', 'b', 'c', 'z'],
-                'count':  [  9,   3,   3,   1],
-                'points': [  1,   2,   2,  10],
-            })
+        ...     'letter': ['a', 'b', 'c', 'z'],
+        ...     'count':  [  9,   3,   3,   1],
+        ...     'points': [  1,   2,   2,  10],
+        ... })
         >>> t.last('letter')
         >>> 'z'
         """
