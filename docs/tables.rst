@@ -137,12 +137,20 @@ Visualizations
     :toctree: _autosummary
 
     Table.plot
+    Table.iplot
     Table.bar
     Table.group_bar
     Table.barh
+    Table.ibarh
     Table.group_barh
     Table.pivot_hist
     Table.hist
+    Table.ihist
     Table.hist_of_counts
     Table.scatter
+    Table.iscatter
+    Table.scatter3d
+    Table.iscatter3d
     Table.boxplot
+    Table.interactive_plots
+    Table.static_plots

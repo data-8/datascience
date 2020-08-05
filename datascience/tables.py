@@ -2470,7 +2470,7 @@ class Table(collections.abc.MutableMapping):
         self._visualize('', labels, yticks, overlay, draw, annotate, width=width, height=height)
 
     def ibarh(self, column_for_categories=None, select=None, overlay=True, width=None, **vargs):
-        """Plot horizontal bar charts for the table.
+        """Plot interactive horizontal bar charts for the table using plotly.
 
         Args:
             ``column_for_categories`` (``str``): A column containing y-axis categories
@@ -2786,7 +2786,7 @@ class Table(collections.abc.MutableMapping):
     def iscatter(self, column_for_x, select=None, overlay=True, fit_line=False,
         group=None, labels=None, sizes=None, width=None, height=None, s=5,
         colors=None, **vargs):
-        """Creates scatterplots, optionally adding a line of best fit.
+        """Creates interactive scatterplots, optionally adding a line of best fit, using plotly.
 
         Args:
             ``column_for_x`` (``str``): The column to use for the x-axis values
@@ -3096,7 +3096,7 @@ class Table(collections.abc.MutableMapping):
     def iscatter3d(self, column_for_x, column_for_y, select=None, overlay=True, fit_line=False,
         group=None, labels=None, sizes=None, width=None, height=None, s=5,
         colors=None, **vargs):
-        """Creates 3D scatterplots.
+        """Creates interactive 3D scatterplots using plotly.
 
         Args:
             ``column_for_x`` (``str``): The column to use for the x-axis values
@@ -3407,7 +3407,7 @@ class Table(collections.abc.MutableMapping):
     def ihist(self, *columns, overlay=True, bins=None, bin_column=None, unit=None, counts=None, group=None,
         side_by_side=False, left_end=None, right_end=None, width=None, height=None, density=True, 
         shade_split="split", rug=False, **vargs):
-        """Plots one histogram for each column in columns. If no column is
+        """Plots interactive histograms for each column in columns using plotly. If no column is
         specified, plot all columns.
 
         Kwargs:
