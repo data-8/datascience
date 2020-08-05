@@ -2167,7 +2167,7 @@ class Table(collections.abc.MutableMapping):
         """
         global _INTERACTIVE_PLOTS
         if _INTERACTIVE_PLOTS:
-            return self.iplot(column_for_xticks, select, overlay, width, height)
+            return self.iplot(column_for_xticks, select, overlay, width, height, **vargs)
 
         if width is None:
             width = 6
@@ -2199,7 +2199,7 @@ class Table(collections.abc.MutableMapping):
 
         self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x, width=width, height=height)
 
-    def iplot(self, column_for_xticks=None, select=None, overlay=True, width=None, height=None, **vargs):
+    def iplot(self, column_for_xticks=None, select=None, overlay=True, width=None, height=None, show=True, **vargs):
         """Plot interactive line charts for the table using plotly.
 
         Args:
@@ -2212,6 +2212,8 @@ class Table(collections.abc.MutableMapping):
             width (int): the width (in pixels) of the plot area
 
             height (int): the height (in pixels) of the plot area
+
+            show (bool): whether to show the figure; if false, the figure is returned instead
 
             vargs (dict): additional kwargs passed to ``plotly.graph_objects.Figure.update_layout``
 
@@ -2304,7 +2306,10 @@ class Table(collections.abc.MutableMapping):
 
         fig.update_layout(**vargs)
 
-        fig.show()
+        if show:
+            fig.show()
+        else:
+            return fig
 
     def bar(self, column_for_categories=None, select=None, overlay=True, width=6, height=4, **vargs):
         """Plot bar charts for the table.
@@ -2423,7 +2428,7 @@ class Table(collections.abc.MutableMapping):
         if _INTERACTIVE_PLOTS:
             # If width not specified, default width originally set to 6,
             # Multiply by 96 assuming 96 dpi
-            return self.ibarh(column_for_categories, select, overlay, width)
+            return self.ibarh(column_for_categories, select, overlay, width, **vargs)
 
         if width is None:
             width = 6
@@ -2469,7 +2474,7 @@ class Table(collections.abc.MutableMapping):
 
         self._visualize('', labels, yticks, overlay, draw, annotate, width=width, height=height)
 
-    def ibarh(self, column_for_categories=None, select=None, overlay=True, width=None, **vargs):
+    def ibarh(self, column_for_categories=None, select=None, overlay=True, width=None, show=True, **vargs):
         """Plot interactive horizontal bar charts for the table using plotly.
 
         Args:
@@ -2483,6 +2488,8 @@ class Table(collections.abc.MutableMapping):
             width (int): the width (in pixels) of the plot area
 
             height (int): the height (in pixels) of the plot area
+
+            show (bool): whether to show the figure; if false, the figure is returned instead
 
             vargs (dict): additional kwargs passed to ``plotly.graph_objects.Figure.update_layout``
 
@@ -2607,7 +2614,10 @@ class Table(collections.abc.MutableMapping):
 
         fig.update_layout(**vargs)
 
-        fig.show()
+        if show:
+            fig.show()
+        else:
+            return fig
 
     def group_barh(self, column_label, **vargs):
         """Plot a horizontal bar chart for the table.
@@ -2716,7 +2726,8 @@ class Table(collections.abc.MutableMapping):
                 s = s / 4, # Plotly dot sizes are much smaller, so divide s by 4
                 width =  width,
                 height = height,
-                colors = colors
+                colors = colors,
+                **vargs
             )
 
         if width is None:
@@ -2785,7 +2796,7 @@ class Table(collections.abc.MutableMapping):
 
     def iscatter(self, column_for_x, select=None, overlay=True, fit_line=False,
         group=None, labels=None, sizes=None, width=None, height=None, s=5,
-        colors=None, **vargs):
+        colors=None, show=True, **vargs):
         """Creates interactive scatterplots, optionally adding a line of best fit, using plotly.
 
         Args:
@@ -2815,6 +2826,8 @@ class Table(collections.abc.MutableMapping):
             ``colors``: (deprecated) A synonym for ``group``. Retained
                 temporarily for backwards compatibility. This argument
                 will be removed in future releases.
+
+            ``show`` (``bool``): whether to show the figure; if false, the figure is returned instead
 
             ``vargs`` (``dict``): additional kwargs passed to
                 ``plotly.graph_objects.Figure.update_layout``
@@ -3012,11 +3025,14 @@ class Table(collections.abc.MutableMapping):
 
         fig.update_layout(**vargs)
 
-        fig.show()
+        if show:
+            fig.show()
+        else:
+            return fig
 
     def scatter3d(self, column_for_x, column_for_y, select=None, overlay=True, fit_line=False,
         group=None, labels=None, sizes=None, width=None, height=None, s=5,
-        colors=None):
+        colors=None, **vargs):
         """Convenience wrapper for ``Table#iscatter3d``
         
         Creates 3D scatterplots by calling ``Table#iscatter3d`` with the same arguments. Cannot be 
@@ -3090,12 +3106,12 @@ class Table(collections.abc.MutableMapping):
         if _INTERACTIVE_PLOTS:
             self.iscatter3d(
                 column_for_x, column_for_y, select, overlay, fit_line,
-                group, labels, sizes, width, height, s, colors
+                group, labels, sizes, width, height, s, colors, **vargs
             )
 
     def iscatter3d(self, column_for_x, column_for_y, select=None, overlay=True, fit_line=False,
         group=None, labels=None, sizes=None, width=None, height=None, s=5,
-        colors=None, **vargs):
+        colors=None, show=True, **vargs):
         """Creates interactive 3D scatterplots using plotly.
 
         Args:
@@ -3126,6 +3142,8 @@ class Table(collections.abc.MutableMapping):
             ``colors``: (deprecated) A synonym for ``group``. Retained
                 temporarily for backwards compatibility. This argument
                 will be removed in future releases.
+            
+            ``show`` (``bool``): whether to show the figure; if false, the figure is returned instead
 
             ``vargs`` (``dict``): additional kwargs passed to
                 ``plotly.graph_objects.Figure.update_layout``
@@ -3316,7 +3334,10 @@ class Table(collections.abc.MutableMapping):
 
         fig.update_layout(**vargs)
 
-        fig.show()
+        if show:
+            fig.show()
+        else:
+            return fig
 
     def _visualize(self, x_label, y_labels, ticks, overlay, draw, annotate, width=6, height=4):
         """Generic visualization that overlays or separates the draw function.
@@ -3406,7 +3427,7 @@ class Table(collections.abc.MutableMapping):
 
     def ihist(self, *columns, overlay=True, bins=None, bin_column=None, unit=None, counts=None, group=None,
         side_by_side=False, left_end=None, right_end=None, width=None, height=None, density=True, 
-        shade_split="split", rug=False, **vargs):
+        shade_split="split", rug=False, show=True, **vargs):
         """Plots interactive histograms for each column in columns using plotly. If no column is
         specified, plot all columns.
 
@@ -3463,6 +3484,8 @@ class Table(collections.abc.MutableMapping):
                 will be created and data split appropriately. If shade_split = "split",
                 the data will first be placed into the original bins, and then separated
                 into two bins with equal height.
+
+            show (bool): whether to show the figure; if false, the figure is returned instead
 
             vargs (dict): additional kwargs passed to
                 plotly.graph_objects.Figure.update_layout
@@ -3900,7 +3923,10 @@ class Table(collections.abc.MutableMapping):
 
         fig.update_layout(**vargs)
 
-        fig.show()
+        if show:
+            fig.show()
+        else:
+            return fig
 
     def hist(self, *columns, overlay=True, bins=None, bin_column=None, unit=None, counts=None, group=None,
         rug=False, side_by_side=False, left_end=None, right_end=None, width=None, height=None, **vargs):
