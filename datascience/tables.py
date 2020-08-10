@@ -2539,7 +2539,7 @@ class Table(collections.abc.MutableMapping):
                 space_count = dict(zip(unique_labels, [0] * len(unique_labels)))
                 updated_labels = [''] * len(labels)
                 for i in range(len(labels)):
-                    updated_labels[i] = ''.join(['\u200c' * space_count[labels[i]], labels[i], '  '])
+                    updated_labels[i] = ''.join(['\u200c' * space_count[labels[i]], str(labels[i]), '  '])
                     space_count[labels[i]] += 1
                 return updated_labels
             labels = ["".join([str(label), '  ']) for label in labels]
@@ -3100,8 +3100,11 @@ class Table(collections.abc.MutableMapping):
         global _INTERACTIVE_PLOTS
 
         # can't use scatter3d if not interactive mode; just a wrapper for iscatter3d
-        assert _INTERACTIVE_PLOTS, "scatter3d is a wrapper for iscatter3d and can only be "\
-            "called when interactive plots are enabled"
+        if not _INTERACTIVE_PLOTS:
+            raise RuntimeError(
+                "scatter3d is a wrapper for iscatter3d and can only be called when "
+                "interactive plots are enabled"
+            )
 
         if _INTERACTIVE_PLOTS:
             self.iscatter3d(
