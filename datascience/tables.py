@@ -3100,8 +3100,11 @@ class Table(collections.abc.MutableMapping):
         global _INTERACTIVE_PLOTS
 
         # can't use scatter3d if not interactive mode; just a wrapper for iscatter3d
-        assert _INTERACTIVE_PLOTS, "scatter3d is a wrapper for iscatter3d and can only be "\
-            "called when interactive plots are enabled"
+        if not _INTERACTIVE_PLOTS:
+            raise RuntimeError(
+                "scatter3d is a wrapper for iscatter3d and can only be called when "
+                "interactive plots are enabled"
+            )
 
         if _INTERACTIVE_PLOTS:
             self.iscatter3d(

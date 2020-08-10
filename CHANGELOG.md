@@ -5,7 +5,9 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### v0.16.0
-* Includes additional plotly-based plotting methods in `Table`
+* Includes additional plotly-based plotting methods `Table#iplot`, `Table#ibarh`, `Table#iscatter`, `Table#ihist`, and `Table#iscatter3d`
+* New static methods `Table#interactive_plots` and `Table#static_plots` that redirect `Table#plot` to `Table#iplot`, `Table#barh` to `Table#ibarh`, etc. with same arguments
+* New method `Table#scatter3d` that is a wrapper for `Table#iscatter3d` but _does not_ implement a matplotlib plot and raises a `RuntimeError` if called when interactive plots are not enabled
 * Additional mapping options in `Marker#map_table`, including clustering, color scales, and area scales
 * Data 8-friendly `datascience` reference notebook added to documentation using nbsphinx
 
