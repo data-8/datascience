@@ -2539,7 +2539,7 @@ class Table(collections.abc.MutableMapping):
                 space_count = dict(zip(unique_labels, [0] * len(unique_labels)))
                 updated_labels = [''] * len(labels)
                 for i in range(len(labels)):
-                    updated_labels[i] = ''.join(['\u200c' * space_count[labels[i]], labels[i], '  '])
+                    updated_labels[i] = ''.join(['\u200c' * space_count[labels[i]], str(labels[i]), '  '])
                     space_count[labels[i]] += 1
                 return updated_labels
             labels = ["".join([str(label), '  ']) for label in labels]
