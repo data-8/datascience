@@ -2004,7 +2004,39 @@ class Table(collections.abc.MutableMapping):
         return binned
 
     def move_column(self, label, index):
-        """Returns a new table with specified column moved to the specified column index."""
+        """Returns a new table with specified column moved to the specified column index.
+
+        Args:
+            ``label`` (str) A single label of column to be moved.
+
+            ``index`` (int) A single index of column to move to.
+
+        >>> titanic = Table().with_columns('age', make_array(21, 44, 56, 89, 95
+        ...    , 40, 80, 45), 'survival', make_array(0,0,0,1, 1, 1, 0, 1),
+        ...    'gender',  make_array('M', 'M', 'M', 'M', 'F', 'F', 'F', 'F'),
+        ...    'prediction', make_array(0, 0, 1, 1, 0, 1, 0, 1))
+        >>> titanic
+        age  | survival | gender | prediction
+        21   | 0        | M      | 0
+        44   | 0        | M      | 0
+        56   | 0        | M      | 1
+        89   | 1        | M      | 1
+        95   | 1        | F      | 0
+        40   | 1        | F      | 1
+        80   | 0        | F      | 0
+        45   | 1        | F      | 1
+        >>> titanic.move_column('survival', 3)
+        age  | gender | prediction | survival
+        21   | M      | 0          | 0
+        44   | M      | 0          | 0
+        56   | M      | 1          | 0
+        89   | M      | 1          | 1
+        95   | F      | 0          | 1
+        40   | F      | 1          | 1
+        80   | F      | 0          | 0
+        45   | F      | 1          | 1
+        """
+
         table = type(self)()
         col_order = list(self._columns)
         label_idx = col_order.index(self._as_label(label))
