@@ -8,7 +8,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 * Includes additional plotly-based plotting methods `Table#iplot`, `Table#ibarh`, `Table#iscatter`, `Table#ihist`, and `Table#iscatter3d`
 * New static methods `Table#interactive_plots` and `Table#static_plots` that redirect `Table#plot` to `Table#iplot`, `Table#barh` to `Table#ibarh`, etc. with same arguments
 * New method `Table#scatter3d` that is a wrapper for `Table#iscatter3d` but _does not_ implement a matplotlib plot and raises a `RuntimeError` if called when interactive plots are not enabled
-* Additional mapping options in `Marker#map_table`, including clustering, color scales, and area scales
+* New plotly-charts.ipynb notebook demonstrating how to work with the interactive function added to the testing directory
+* Enables markers to be shaded with hex colors using Folium's BeautifyIcon plugin 
+* Changed default marker's default icon from 'info-circle' to no icon
+* Added additional keyword column names to `map_table` including 'color_scale', 'area_scale', and 'cluster_by'
+* New options 'color_scale' and 'area_scale' draw color gradients for markers and area gradients for circles based on column values
+* New 'cluster_by' option groups column by value and assigns a cluster marker to each group 
+* Includes geocoding function `get_coordinates` that assigns latitude and longitude coordinates for U.S. locations by city, state, county, and zip code
+* Updated Maps.ipynb notebook to showcase new changes made to mapping
 * Data 8-friendly `datascience` reference notebook added to documentation using nbsphinx
 
 ### v0.15.6
