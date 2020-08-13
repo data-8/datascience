@@ -587,7 +587,22 @@ class Marker(_MapFeature):
         The areas column is not applicable to markers, but sets circle areas.
 
         Arguments: (TODO) document all options
-        
+
+        index_map: list of integers, default None (when not applicable)
+           list of indices that maps each marker to a corresponding label at the index in cluster_labels (only applicable when multiple marker clusters are being used)
+
+        cluster_labels: list of strings, default None (when not applicable)
+            list of labels used for each cluster of markers (only applicable when multiple marker clusters are being used)
+
+        colorbar_scale: list of floats, default None (when not applicable)
+            list of cutoffs used to indicate where the bins are for each color (only applicable when colorscale gradient is being used)
+
+        include_color_scale_outliers: boolean, default None (when not applicable)
+            boolean of whether or not outliers are included in the colorscale gradient for markers (only applicable when colorscale gradient is being used)
+
+        radius_in_meters: boolean, default False
+            boolean of whether or not Circles should have their radii specified in meters, scales with map zoom
+
         clustered_marker: boolean, default False
             boolean of whether or not you want the marker clustered with other markers
 
