@@ -11,6 +11,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 * Additional mapping options in `Marker#map_table`, including clustering, color scales, and area scales
 * Data 8-friendly `datascience` reference notebook added to documentation using nbsphinx
 
+### v0.15.6
+* Adds support for NumPy v1.18.0+.
+
 ### v0.15.5
 * Fixes multiple bugs with the `Table#remove`.
 

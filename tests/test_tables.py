@@ -154,6 +154,11 @@ def test_basic_rows(table):
         t.rows[2],
         "Row(letter='c', count=3, points=2)")
 
+def test_row_conversion_to_np_array(table):
+    t = table
+    t_subset = t.select("count", "points")
+    assert_array_equal(np.array(t_subset.row(0)), np.array([9, 1]))
+
 def test_select(table):
     t = table
     test = t.select('points', 1)
