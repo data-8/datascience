@@ -1,55 +1,54 @@
 # name: datascience
 dependencies:
-  - appnope
-  - coverage
-  - coveralls
-  - cycler
-  - decorator
-  - freetype
-  - ipython
-  - ipython_genutils
-  - libpng
-  - matplotlib
-  - numpy
-  - openssl
-  - pandas
-  - path.py
-  - pexpect
-  - pickleshare
-  - pip
-  - pyparsing
-  - pyqt
-  - pytest
-  - python
-  - python-dateutil
-  - python.app
-  - pytz
-  - qt
-  - readline
-  - scipy
-  - setuptools
-  - simplegeneric
-  - sip
-  - six
-  - sqlite
-  - tk
-  - traitlets
-  - wheel
-  - xz
-  - zlib
-  - pip:
-    - alabaster
-    - babel
-    - branca
-    - docutils
-    - folium==0.11.0
-    - ipython-genutils
-    - jinja2
-    - markupsafe
-    - nbsphinx
-    - plotly
-    - pygments
-    - snowballstemmer
-    - sphinx
-    - sphinx-rtd-theme
-
+- appnope
+- coverage
+- coveralls
+- cycler
+- decorator
+- freetype
+- ipython
+- ipython_genutils
+- libpng
+- matplotlib
+- numpy
+- openssl
+- pandas
+- path.py
+- pexpect
+- pickleshare
+- pip
+- pyparsing
+- pyqt
+- pytest
+- python
+- python-dateutil
+- python.app
+- pytz
+- qt
+- readline
+- scipy
+- setuptools
+- simplegeneric
+- sip
+- six
+- sqlite
+- tk
+- traitlets
+- wheel
+- xz
+- zlib
+- pip:
+  - alabaster
+  - babel
+  - branca
+  - docutils
+  - folium==0.11.0
+  - ipython-genutils
+  - jinja2
+  - markupsafe
+  - nbsphinx
+  - plotly
+  - pygments
+  - snowballstemmer
+  - sphinx
+  - sphinx-rtd-theme
