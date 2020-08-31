@@ -232,12 +232,44 @@ class Table(collections.abc.MutableMapping):
 
     @property
     def num_rows(self):
-        """Number of rows."""
+        """
+        Computes the number of rows in a table
+        
+        Returns:
+            integer value stating number of rows
+
+        Example:
+        >>> t = Table().with_columns({
+        ...     'letter': ['a', 'b', 'c', 'z'],
+        ...     'count':  [  9,   3,   3,   1],
+        ...     'points': [  1,   2,   2,  10],
+        ... })
+        >>> t.num_rows
+        4
+        """
         return self._num_rows
 
     @property
     def rows(self):
-        """Return a view of all rows."""
+        """
+        Return a view of all rows.
+        
+        Returns: 
+            list-like Rows object that contains tuple-like Row objects
+
+        Example:
+        >>> t = Table().with_columns({
+        ...     'letter': ['a', 'b', 'c', 'z'],
+        ...     'count':  [  9,   3,   3,   1],
+        ...     'points': [  1,   2,   2,  10],
+        ... })
+        >>> t.rows
+        Rows(letter | count | points
+        a      | 9     | 1
+        b      | 3     | 2
+        c      | 3     | 2
+        z      | 1     | 10)
+        """
         return self.Rows(self)
 
     def row(self, index):
@@ -246,7 +278,21 @@ class Table(collections.abc.MutableMapping):
 
     @property
     def labels(self):
-        """Return a tuple of column labels."""
+        """
+        Return a tuple of column labels.
+        
+        Returns: 
+            tuple of labels
+
+        Example:
+        >>> t = Table().with_columns({
+        ...     'letter': ['a', 'b', 'c', 'z'],
+        ...     'count':  [  9,   3,   3,   1],
+        ...     'points': [  1,   2,   2,  10],
+        ... })
+        >>> t.labels
+        ('letter', 'count', 'points')
+        """
         return tuple(self._columns.keys())
 
     # Deprecated
@@ -263,7 +309,23 @@ class Table(collections.abc.MutableMapping):
 
     @property
     def columns(self):
-        """Return a tuple of columns, each with the values in that column."""
+        """
+        Return a tuple of columns, each with the values in that column.
+        
+        Returns: 
+            tuple of columns
+
+        Example:
+        >>> t = Table().with_columns({
+        ...     'letter': ['a', 'b', 'c', 'z'],
+        ...     'count':  [  9,   3,   3,   1],
+        ...     'points': [  1,   2,   2,  10],
+        ... })
+        >>> t.columns
+        (array(['a', 'b', 'c', 'z'], dtype='<U1'),
+         array([9, 3, 3, 1]),
+         array([ 1,  2,  2, 10]))
+        """
         return tuple(self._columns.values())
 
     def column(self, index_or_label):
@@ -323,7 +385,24 @@ class Table(collections.abc.MutableMapping):
         return np.array(self.columns, dtype=dtype).T
 
     def column_index(self, label):
-        """Return the index of a column by looking up its label."""
+        """
+        Return the index of a column by looking up its label.
+        
+        Args:
+            ``label`` (str) -- label value of a column
+
+        Returns: 
+            integer value specifying the index of the column label
+
+        Example:
+        >>> t = Table().with_columns({
+        ...     'letter': ['a', 'b', 'c', 'z'],
+        ...     'count':  [  9,   3,   3,   1],
+        ...     'points': [  1,   2,   2,  10],
+        ... })
+        >>> t.column_index('letter')
+        0
+        """
         return self.labels.index(label)
 
     def apply(self, fn, *column_or_columns):
@@ -388,11 +467,45 @@ class Table(collections.abc.MutableMapping):
             return np.array([fn(*row) for row in rows])
 
     def first(self, label):
-        """Return the zeroth item in a column."""
+        """
+        Return the zeroth item in a column.
+
+        Args:
+            ``label`` (str) -- value of column label
+
+        Returns: 
+            zeroth item of column
+
+        Example:
+        >>> t = Table().with_columns({
+        ...     'letter': ['a', 'b', 'c', 'z'],
+        ...     'count':  [  9,   3,   3,   1],
+        ...     'points': [  1,   2,   2,  10],
+        ... })
+        >>> t.first('letter')
+        'a'
+        """
         return self.column(label)[0]
 
     def last(self, label):
-        """Return the last item in a column."""
+        """
+        Return the last item in a column.
+        
+        Args:
+            ``label`` (str) -- value of column label
+
+        Returns: 
+            last item of column
+
+        Example:
+        >>> t = Table().with_columns({
+        ...     'letter': ['a', 'b', 'c', 'z'],
+        ...     'count':  [  9,   3,   3,   1],
+        ...     'points': [  1,   2,   2,  10],
+        ... })
+        >>> t.last('letter')
+        'z'
+        """
         return self.column(label)[-1]
 
     ############
@@ -1891,7 +2004,39 @@ class Table(collections.abc.MutableMapping):
         return binned
 
     def move_column(self, label, index):
-        """Returns a new table with specified column moved to the specified column index."""
+        """Returns a new table with specified column moved to the specified column index.
+
+        Args:
+            ``label`` (str) A single label of column to be moved.
+
+            ``index`` (int) A single index of column to move to.
+
+        >>> titanic = Table().with_columns('age', make_array(21, 44, 56, 89, 95
+        ...    , 40, 80, 45), 'survival', make_array(0,0,0,1, 1, 1, 0, 1),
+        ...    'gender',  make_array('M', 'M', 'M', 'M', 'F', 'F', 'F', 'F'),
+        ...    'prediction', make_array(0, 0, 1, 1, 0, 1, 0, 1))
+        >>> titanic
+        age  | survival | gender | prediction
+        21   | 0        | M      | 0
+        44   | 0        | M      | 0
+        56   | 0        | M      | 1
+        89   | 1        | M      | 1
+        95   | 1        | F      | 0
+        40   | 1        | F      | 1
+        80   | 0        | F      | 0
+        45   | 1        | F      | 1
+        >>> titanic.move_column('survival', 3)
+        age  | gender | prediction | survival
+        21   | M      | 0          | 0
+        44   | M      | 0          | 0
+        56   | M      | 1          | 0
+        89   | M      | 1          | 1
+        95   | F      | 0          | 1
+        40   | F      | 1          | 1
+        80   | F      | 0          | 0
+        45   | F      | 1          | 1
+        """
+
         table = type(self)()
         col_order = list(self._columns)
         label_idx = col_order.index(self._as_label(label))
