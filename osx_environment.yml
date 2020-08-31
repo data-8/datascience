@@ -41,11 +41,15 @@ dependencies:
   - alabaster
   - babel
   - docutils
-  - folium==0.2.1
+  - folium==0.11.0
   - ipython-genutils
   - jinja2
+  - jupyter
+  - jupyter_client
   - markupsafe
   - nbval
+  - nbconvert
+  - nbformat
   - pygments
   - snowballstemmer
   - sphinx
