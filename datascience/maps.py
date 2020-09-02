@@ -698,12 +698,12 @@ class Marker(_MapFeature):
             clustered_marker = True
             cluster_column = table.column("cluster_by")
             cluster_labels = list(set(cluster_column))
-            table_df = table.to_df()
-            table_df["indices"] = [0] * table.num_rows
+            index_name = "".join(table.labels) # Ensure column name doesn't already exist in table
+            index_name += " "
+            table = table.with_columns(index_name, np.arange(table.num_rows))
+            index_map = np.array([-1] * table.num_rows)
             for i, label in enumerate(cluster_labels):
-                table_df.loc[table_df["cluster_by"] == label, "indices"] = i
-            index_map = table_df["indices"]
-            del table_df
+                index_map[list(table.where("cluster_by", label).column(index_name))] = i
         
         if "radius_scale" in table.labels:
             radius_column = table.column("radius_scale").astype(float)
@@ -932,8 +932,11 @@ def get_coordinates(table, replace_columns=False, remove_nans=False):
     """
     assert "zip code" in table.labels or (("city" in table.labels or "county" in table.labels) and "state" in table.labels)
     ref = Table.from_df(pandas.read_csv(pkg_resources.resource_filename(__name__, "geodata/geocode_states.csv")))
+
+    index_name = "".join(table.labels) # Ensures that index can't possibly be one of the preexisting columns
+    index_name += " "
     
-    table = table.with_columns("index", np.arange(table.num_rows))
+    table = table.with_columns(index_name, np.arange(table.num_rows))
     lat = np.array([np.nan] * table.num_rows)
     lon = np.array([np.nan] * table.num_rows)
     unassigned = set(range(table.num_rows)) 
@@ -941,7 +944,7 @@ def get_coordinates(table, replace_columns=False, remove_nans=False):
         index = unassigned.pop()
         row = table.take(index).take(0)
         if "zip code" in table.labels:
-            select = table.where("zip code", row["zip code"][0]).column("index")
+            select = table.where("zip code", row["zip code"][0]).column(index_name)
             unassigned -= set(select)
             try:
                 ref_lat, ref_lon = ref.where("zip", int(row["zip code"][0])).select("lat", "lon").row(0)
@@ -950,9 +953,9 @@ def get_coordinates(table, replace_columns=False, remove_nans=False):
             except IndexError:
                 pass
         else:
-            state_select = table.where("state", row["state"][0]).column("index")
-            county_select = table.where("county", row["county"][0]).column("index") if "county" in table.labels else np.arange(table.num_rows)
-            city_select = table.where("city", row["city"][0]).column("index") if "city" in table.labels else np.arange(table.num_rows)
+            state_select = table.where("state", row["state"][0]).column(index_name)
+            county_select = table.where("county", row["county"][0]).column(index_name) if "county" in table.labels else np.arange(table.num_rows)
+            city_select = table.where("city", row["city"][0]).column(index_name) if "city" in table.labels else np.arange(table.num_rows)
             select = set.intersection(set(state_select), set(county_select), set(city_select))
             unassigned -= select
             select = list(select)
@@ -968,7 +971,7 @@ def get_coordinates(table, replace_columns=False, remove_nans=False):
             except IndexError:
                 pass
     table = table.with_columns("lat", lat, "lon", lon)
-    table = table.drop("index")
+    table = table.drop(index_name)
     if replace_columns:
         for label in ["county", "city", "zip code", "state"]:
             try:
