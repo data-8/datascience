@@ -85,18 +85,6 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         tile_style = None
         if "tiles" in kwargs:
             tile_style = kwargs.pop("tiles")
-        self._index_map = self._cluster_labels = self._colorbar_scale = None
-        self._radius_in_meters = False
-        if "index_map" in kwargs:
-            self._index_map = kwargs.pop("index_map")
-        if "cluster_labels" in kwargs:
-            self._cluster_labels = kwargs.pop("cluster_labels")
-        if "colorbar_scale" in kwargs:
-            self._colorbar_scale = kwargs.pop("colorbar_scale")
-        if "include_color_scale_outliers" in kwargs:
-            self._include_color_scale_outliers = kwargs.pop("include_color_scale_outliers")
-        if "radius_in_meters" in kwargs and kwargs["radius_in_meters"] is not None:
-            self._radius_in_meters = kwargs.pop("radius_in_meters")
         self._features = features
         self._attrs = {
             'tiles': tile_style if tile_style else 'OpenStreetMap',
@@ -127,8 +115,10 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         return iter(self._features)
 
     def _set_folium_map(self):
+        index_map = self._attrs.pop("index_map", None)
+        cluster_labels = self._attrs.pop("cluster_labels", None)
         self._folium_map = self._create_map()
-        if 'clustered_marker' in self._attrs and self._attrs['clustered_marker']:
+        if self._attrs.get("clustered_marker", False):
             def customize_marker_cluster(color, label):
                 # Returns string for icon_create_function
                 hexcolor = mpl.colors.to_hex(color)
@@ -164,7 +154,7 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
                         }});
                     }}
                 """
-            if self._index_map is not None:
+            if index_map is not None:
                 chart_colors = (
                     (0.0, 30/256, 66/256),
                     (1.0, 200/256, 44/256),
@@ -173,8 +163,8 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
                     (172/256, 60/256, 72/256),
                 )
                 chart_colors += tuple(tuple((x+0.7)/2 for x in c) for c in chart_colors)
-                colors = list(itertools.islice(itertools.cycle(chart_colors), len(self._cluster_labels)))
-                marker_cluster = [MarkerCluster(icon_create_function = customize_marker_cluster(colors[i], label)).add_to(self._folium_map) for i, label in enumerate(self._cluster_labels)]
+                colors = list(itertools.islice(itertools.cycle(chart_colors), len(cluster_labels)))
+                marker_cluster = [MarkerCluster(icon_create_function = customize_marker_cluster(colors[i], label)).add_to(self._folium_map) for i, label in enumerate(cluster_labels)]
             else:
                 marker_cluster = MarkerCluster().add_to(self._folium_map)
             clustered = True
@@ -182,19 +172,21 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
             clustered = False
         for i, feature in enumerate(self._features.values()):
             if isinstance(feature, Circle):
-                feature.draw_on(self._folium_map, self._radius_in_meters)
+                feature.draw_on(self._folium_map, self._attrs.get("radius_in_meters", False))
             elif clustered and isinstance(feature, Marker):
                 if isinstance(marker_cluster, list):
-                    feature.draw_on(marker_cluster[self._index_map[i]])
+                    feature.draw_on(marker_cluster[index_map[i]])
                 else:
                     feature.draw_on(marker_cluster)
             else:
                 feature.draw_on(self._folium_map)
-        if self._colorbar_scale is not None: 
+        if self._attrs.get("colorbar_scale", None) is not None:
+            colorbar_scale = self._attrs["colorbar_scale"]
+            include_color_scale_outliers = self._attrs.get("include_color_scale_outliers", False)
             scale_colors = ["#340597", "#7008a5", "#a32494", "#cf5073", "#ee7c4c", "#f69344", "#fcc22d", "#f4e82d", "#f4e82d"]
-            vmin = self._colorbar_scale.pop(0)
-            vmax = self._colorbar_scale.pop(-1)
-            colormap = cm.LinearColormap(colors = scale_colors, index = self._colorbar_scale, caption = "*Legend above excludes outliers." if not self._include_color_scale_outliers else "", vmin = self._colorbar_scale[0], vmax = self._colorbar_scale[-1])
+            vmin = colorbar_scale.pop(0)
+            vmax = colorbar_scale.pop(-1)
+            colormap = cm.LinearColormap(colors = scale_colors, index = colorbar_scale, caption = "*Legend above may exclude outliers." if not include_color_scale_outliers else "", vmin = colorbar_scale[0], vmax = colorbar_scale[-1])
             self._folium_map.add_child(colormap)
 
     def _create_map(self):
@@ -616,18 +608,12 @@ class Marker(_MapFeature):
         assert len(latitudes) == len(longitudes)
         assert areas is None or hasattr(cls, '_has_radius'), "A " + cls.__name__ + " has no radius"
         inputs = [latitudes, longitudes]
-        index_map = include_color_scale_outliers = cluster_labels = colorbar_scale = None
-        radius_in_meters = False
-        if "index_map" in kwargs:
-            index_map = kwargs.pop("index_map")
-        if "cluster_labels" in kwargs:
-            cluster_labels = kwargs.pop("cluster_labels")
-        if "colorbar_scale" in kwargs:
-            colorbar_scale = kwargs.pop("colorbar_scale")
-        if "include_color_scale_outliers" in kwargs:
-            include_color_scale_outliers = kwargs.pop("include_color_scale_outliers")
-        if "radius_in_meters" in kwargs:
-            radius_in_meters = kwargs.pop("radius_in_meters")
+        # Variables passed into class Map kwargs instead of markers kwargs
+        index_map = kwargs.pop("index_map", None)
+        cluster_labels = kwargs.pop("cluster_labels", None)
+        colorbar_scale = kwargs.pop("colorbar_scale", None)
+        include_color_scale_outliers = kwargs.pop("include_color_scale_outliers", None)
+        radius_in_meters = kwargs.pop("radius_in_meters", False)
         if labels is not None:
             assert len(labels) == len(latitudes)
             inputs.append(labels)
