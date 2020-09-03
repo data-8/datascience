@@ -16,6 +16,7 @@ import functools
 import json
 import math
 import random
+import warnings
 
 from .tables import Table
 
@@ -295,7 +296,7 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
             if 'feature' in feature:
                 feature = feature['feature']
 
-            # if marker table e.g. table with columns: latitudes,longitudes,popup,color,radius
+            # if marker table e.g. table with columns: latitudes,longitudes,popup,color,area
             else:
                 feature = Circle.map_table(feature)
 
@@ -504,7 +505,7 @@ class Marker(_MapFeature):
         assert latitudes is not None
         assert longitudes is not None
         assert len(latitudes) == len(longitudes)
-        assert areas is None or hasattr(cls, '_has_radius'), "A " + cls.__name__ + " has no radius"
+        assert areas is None or hasattr(cls, '_has_area'), "A " + cls.__name__ + " has no area"
         inputs = [latitudes, longitudes]
         if labels is not None:
             assert len(labels) == len(latitudes)
@@ -516,7 +517,7 @@ class Marker(_MapFeature):
             inputs.append(colors)
         if areas is not None:
             assert len(areas) == len(latitudes)
-            inputs.append(np.array(areas) ** 0.5 / math.pi)
+            inputs.append(areas)
         if other_attrs is not None:
             other_attrs_processed = []
             for i in range(len(latitudes)):
@@ -570,7 +571,7 @@ class Circle(Marker):
 
     popup -- text that pops up when marker is clicked
     color -- fill color
-    radius -- pixel radius of the circle
+    area -- pixel-squared area of the circle
 
     Defaults from Folium:
 
@@ -587,14 +588,19 @@ class Circle(Marker):
                 'lon', [-122, -122.1, -121.9],
                 'label', ['one', 'two', 'three'],
                 'color', ['red', 'green', 'blue'],
-                'radius', [3000, 4000, 5000],
+                'area', [3000, 4000, 5000],
             ])
         Circle.map_table(t)
     """
 
-    _has_radius = True
+    _has_area = True
 
-    def __init__(self, lat, lon, popup='', color='blue', radius=10, **kwargs):
+    def __init__(self, lat, lon, popup='', color='blue', area=math.pi*(10**2), **kwargs):
+        # Add support for transitioning radius to area
+        radius = (area/math.pi)**0.5
+        if 'radius' in kwargs:
+            warnings.warn("The 'radius' argument is deprecated. Please use 'area' instead.", FutureWarning)
+            radius = kwargs.pop('radius')
         super().__init__(lat, lon, popup, color, radius=radius, **kwargs)
 
     @property

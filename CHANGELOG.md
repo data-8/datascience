@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.15.9
+* Changed the `radius` argument of a Circle (in Maps) to `area`.
+
 ### v0.15.8
 * Fixes deprecation warnings with matplotlib's warn parameter.
 * Small cleanups: update to latest version of folium.
