@@ -18,13 +18,16 @@ matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import pandas
 import IPython
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
+# import plotly.graph_objects as go
+# from plotly.subplots import make_subplots
 
 import datascience.formats as _formats
 import datascience.util as _util
 from datascience.util import make_array
 import datascience.predicates as _predicates
+
+# intitializing go and make_subplots as globals set to None
+go, make_subplots = None
 
 _INTERACTIVE_PLOTS = False
 
@@ -1654,7 +1657,7 @@ class Table(collections.abc.MutableMapping):
         >>> sizes.sample_from_distribution('count', 1000) # doctest: +SKIP
         size   | count | count sample
         small  | 50    | 239
-        medium | 100   | 46
+        medium | 100   | 496
         big    | 50    | 265
         >>> sizes.sample_from_distribution('count', 1000, True) # doctest: +SKIP
         size   | count | count sample
@@ -2230,7 +2233,16 @@ class Table(collections.abc.MutableMapping):
     }
 
     @staticmethod
-    def interactive_plots():
+    def _import_plotly():
+        """
+        Imports required plotly libraries and functions into the global namespace
+        """
+        global go, make_subplots
+        import plotly.graph_objects as go
+        from plotly.subplots import make_subplots
+
+    @classmethod
+    def interactive_plots(cls):
         """
         Redirects ``plot``, ``barh``, ``hist``, and ``scatter`` to their plotly equivalents
 
@@ -2257,9 +2269,11 @@ class Table(collections.abc.MutableMapping):
         """
         global _INTERACTIVE_PLOTS
         _INTERACTIVE_PLOTS = True
+        if go is None or make_subplots is None:
+            cls._import_plotly()
 
-    @staticmethod
-    def static_plots():
+    @classmethod
+    def static_plots(cls):
         """
         Turns off redirection of ``plot``, ``barh``, ``hist``, and ``scatter`` to their plotly equivalents
 
@@ -2411,6 +2425,9 @@ class Table(collections.abc.MutableMapping):
         >>> table.iplot("days", make_array("price", "projection"), overlay=False) # doctest: +SKIP
         <plotly line graph with days as x-axis and line for price>
         """
+        if go is None or make_subplots is None:
+            self._import_plotly()
+        
         if column_for_xticks is not None:
             x_data, y_labels = self._split_column_and_labels(column_for_xticks)
             x_label = self._as_label(column_for_xticks)
@@ -2686,6 +2703,9 @@ class Table(collections.abc.MutableMapping):
         >>> furniture_table.ibarh('Furniture', make_array(1, 2)) # doctest: +SKIP
         <plotly bar graph with furniture as categories and bars for count and price>
         """
+        if go is None or make_subplots is None:
+            self._import_plotly()
+
         yticks, labels = self._split_column_and_labels(column_for_categories)
 
         # reverse yticks so they're in same order as barh
@@ -3027,6 +3047,9 @@ class Table(collections.abc.MutableMapping):
         >>> table.iscatter('x', fit_line=True) # doctest: +SKIP
         <plotly scatterplot of values in y and z on x with lines of best fit>
         """
+        if go is None or make_subplots is None:
+            self._import_plotly()
+
         x_data, y_labels =  self._split_column_and_labels(column_for_x)
 
         if group is not None and colors is not None and group != colors:
@@ -3342,6 +3365,9 @@ class Table(collections.abc.MutableMapping):
         <plotly 3D scatterplot of values in z1 on x and y>
         <plotly 3D scatterplot of values in z2 on x and y
         """
+        if go is None or make_subplots is None:
+            self._import_plotly()
+
         x_data, y_data, z_labels = self._split_column_and_labels([column_for_x, column_for_y])
 
         if fit_line:
@@ -3683,6 +3709,9 @@ class Table(collections.abc.MutableMapping):
         >>> t.ihist('value', group='category') # doctest: +SKIP
         <two overlaid plotly histograms of the data [1, 2, 3] and [2, 5]>
         """
+        if go is None or make_subplots is None:
+            self._import_plotly()
+
         if counts is not None and bin_column is None:
             warnings.warn("counts arg of hist is deprecated; use bin_column")
             bin_column=counts
