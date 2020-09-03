@@ -18,13 +18,16 @@ matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import pandas
 import IPython
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
+# import plotly.graph_objects as go
+# from plotly.subplots import make_subplots
 
 import datascience.formats as _formats
 import datascience.util as _util
 from datascience.util import make_array
 import datascience.predicates as _predicates
+
+# intitializing go and make_subplots as globals set to None
+go, make_subplots = None, None
 
 _INTERACTIVE_PLOTS = False
 
@@ -52,7 +55,7 @@ class Table(collections.abc.MutableMapping):
         labels = labels if labels is not None else []
         columns = [[] for _ in labels]
 
-        self._num_rows = 0 if len(columns) is 0 else len(columns[0])
+        self._num_rows = 0 if len(columns) == 0 else len(columns[0])
 
         # Add each column to table
         for column, label in zip(columns, labels):
@@ -327,8 +330,8 @@ class Table(collections.abc.MutableMapping):
         ... })
         >>> t.columns
         (array(['a', 'b', 'c', 'z'], dtype='<U1'),
-         array([9, 3, 3, 1]),
-         array([ 1,  2,  2, 10]))
+        array([9, 3, 3, 1]),
+        array([ 1,  2,  2, 10]))
         """
         return tuple(self._columns.values())
 
@@ -1654,7 +1657,7 @@ class Table(collections.abc.MutableMapping):
         >>> sizes.sample_from_distribution('count', 1000) # doctest: +SKIP
         size   | count | count sample
         small  | 50    | 239
-        medium | 100   | 46
+        medium | 100   | 496
         big    | 50    | 265
         >>> sizes.sample_from_distribution('count', 1000, True) # doctest: +SKIP
         size   | count | count sample
@@ -2230,7 +2233,16 @@ class Table(collections.abc.MutableMapping):
     }
 
     @staticmethod
-    def interactive_plots():
+    def _import_plotly():
+        """
+        Imports required plotly libraries and functions into the global namespace
+        """
+        global go, make_subplots
+        import plotly.graph_objects as go
+        from plotly.subplots import make_subplots
+
+    @classmethod
+    def interactive_plots(cls):
         """
         Redirects ``plot``, ``barh``, ``hist``, and ``scatter`` to their plotly equivalents
 
@@ -2257,9 +2269,11 @@ class Table(collections.abc.MutableMapping):
         """
         global _INTERACTIVE_PLOTS
         _INTERACTIVE_PLOTS = True
+        if go is None or make_subplots is None:
+            cls._import_plotly()
 
-    @staticmethod
-    def static_plots():
+    @classmethod
+    def static_plots(cls):
         """
         Turns off redirection of ``plot``, ``barh``, ``hist``, and ``scatter`` to their plotly equivalents
 
@@ -2291,7 +2305,8 @@ class Table(collections.abc.MutableMapping):
         _INTERACTIVE_PLOTS = False
 
     def plot(self, column_for_xticks=None, select=None, overlay=True, width=None, height=None, **vargs):
-        """Plot line charts for the table.
+        """Plot line charts for the table. Redirects to ``Table#iplot`` for plotly charts if interactive
+        plots are enabled with ``Table#interactive_plots``
 
         Args:
             column_for_xticks (``str/array``): A column containing x-axis labels
@@ -2299,6 +2314,9 @@ class Table(collections.abc.MutableMapping):
         Kwargs:
             overlay (bool): create a chart with one color per data column;
                 if False, each plot will be displayed separately.
+
+            show (bool): whether to show the figure if using interactive plots; if false, the figure 
+                is returned instead
 
             vargs: Additional arguments that get passed into `plt.plot`.
                 See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot
@@ -2334,12 +2352,6 @@ class Table(collections.abc.MutableMapping):
         global _INTERACTIVE_PLOTS
         if _INTERACTIVE_PLOTS:
             return self.iplot(column_for_xticks, select, overlay, width, height, **vargs)
-
-        if width is None:
-            width = 6
-
-        if height is None:
-            height = 4
 
         options = self.default_options.copy()
         options.update(vargs)
@@ -2411,6 +2423,9 @@ class Table(collections.abc.MutableMapping):
         >>> table.iplot("days", make_array("price", "projection"), overlay=False) # doctest: +SKIP
         <plotly line graph with days as x-axis and line for price>
         """
+        if go is None or make_subplots is None:
+            self._import_plotly()
+        
         if column_for_xticks is not None:
             x_data, y_labels = self._split_column_and_labels(column_for_xticks)
             x_label = self._as_label(column_for_xticks)
@@ -2550,7 +2565,8 @@ class Table(collections.abc.MutableMapping):
         self.group(column_label).bar(column_label, **vargs)
 
     def barh(self, column_for_categories=None, select=None, overlay=True, width=None, **vargs):
-        """Plot horizontal bar charts for the table.
+        """Plot horizontal bar charts for the table. Redirects to ``Table#ibarh`` if interactive plots
+        are enabled with ``Table#interactive_plots``
         
         Args:
             ``column_for_categories`` (``str``): A column containing y-axis categories
@@ -2559,6 +2575,8 @@ class Table(collections.abc.MutableMapping):
         Kwargs:
             overlay (bool): create a chart with one color per data column;
                 if False, each will be displayed separately.
+            show (bool): whether to show the figure if using interactive plots; if false, the 
+                figure is returned instead
             vargs: Additional arguments that get passed into `plt.barh`.
                 See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.barh
                 for additional arguments that can be passed into vargs.
@@ -2595,9 +2613,6 @@ class Table(collections.abc.MutableMapping):
             # If width not specified, default width originally set to 6,
             # Multiply by 96 assuming 96 dpi
             return self.ibarh(column_for_categories, select, overlay, width, **vargs)
-
-        if width is None:
-            width = 6
 
         options = self.default_options.copy()
         # Matplotlib tries to center the labels, but we already handle that
@@ -2686,6 +2701,9 @@ class Table(collections.abc.MutableMapping):
         >>> furniture_table.ibarh('Furniture', make_array(1, 2)) # doctest: +SKIP
         <plotly bar graph with furniture as categories and bars for count and price>
         """
+        if go is None or make_subplots is None:
+            self._import_plotly()
+
         yticks, labels = self._split_column_and_labels(column_for_categories)
 
         # reverse yticks so they're in same order as barh
@@ -2817,7 +2835,8 @@ class Table(collections.abc.MutableMapping):
     def scatter(self, column_for_x, select=None, overlay=True, fit_line=False,
         group=None, labels=None, sizes=None, width=None, height=None, s=20,
         colors=None, **vargs):
-        """creates scatterplots, optionally adding a line of best fit.
+        """Creates scatterplots, optionally adding a line of best fit. Redirects to ``Table#iscatter``
+        if interactive plots are enabled with ``Table#interactive_plots``
 
         args:
             ``column_for_x`` (``str``): the column to use for the x-axis values
@@ -2847,6 +2866,9 @@ class Table(collections.abc.MutableMapping):
             ``colors``: (deprecated) A synonym for ``group``. Retained
                 temporarily for backwards compatibility. This argument
                 will be removed in future releases.
+
+            ``show`` (``bool``): whether to show the figure if using interactive plots; if false, 
+                the figure is returned instead
 
         Raises:
             ValueError -- Every column, ``column_for_x`` or ``select``, must be numerical
@@ -3027,6 +3049,9 @@ class Table(collections.abc.MutableMapping):
         >>> table.iscatter('x', fit_line=True) # doctest: +SKIP
         <plotly scatterplot of values in y and z on x with lines of best fit>
         """
+        if go is None or make_subplots is None:
+            self._import_plotly()
+
         x_data, y_labels =  self._split_column_and_labels(column_for_x)
 
         if group is not None and colors is not None and group != colors:
@@ -3233,6 +3258,8 @@ class Table(collections.abc.MutableMapping):
                 temporarily for backwards compatibility. This argument
                 will be removed in future releases.
 
+            ``show`` (``bool``): whether to show the figure; if false, the figure is returned instead
+
             ``vargs`` (``dict``): additional kwargs passed to
                 ``plotly.graph_objects.Figure.update_layout``
 
@@ -3342,6 +3369,9 @@ class Table(collections.abc.MutableMapping):
         <plotly 3D scatterplot of values in z1 on x and y>
         <plotly 3D scatterplot of values in z2 on x and y
         """
+        if go is None or make_subplots is None:
+            self._import_plotly()
+
         x_data, y_data, z_labels = self._split_column_and_labels([column_for_x, column_for_y])
 
         if fit_line:
@@ -3683,6 +3713,9 @@ class Table(collections.abc.MutableMapping):
         >>> t.ihist('value', group='category') # doctest: +SKIP
         <two overlaid plotly histograms of the data [1, 2, 3] and [2, 5]>
         """
+        if go is None or make_subplots is None:
+            self._import_plotly()
+
         if counts is not None and bin_column is None:
             warnings.warn("counts arg of hist is deprecated; use bin_column")
             bin_column=counts
@@ -4100,7 +4133,8 @@ class Table(collections.abc.MutableMapping):
     def hist(self, *columns, overlay=True, bins=None, bin_column=None, unit=None, counts=None, group=None,
         rug=False, side_by_side=False, left_end=None, right_end=None, width=None, height=None, **vargs):
         """Plots one histogram for each column in columns. If no column is
-        specified, plot all columns.
+        specified, plot all columns. If interactive plots are enabled via ``Table#interactive_plots``,
+        redirects plotting to plotly with ``Table#ihist``.
 
         Kwargs:
             overlay (bool): If True, plots 1 chart with all the histograms
@@ -4139,6 +4173,20 @@ class Table(collections.abc.MutableMapping):
                 the histogram. If only one of these is None, then that property
                 will be treated as the extreme edge of the histogram. If both are
                 left None, then no shading will occur.
+
+            density (boolean): If True, will plot a density distribution of the data.
+                Otherwise plots the counts.
+
+            shade_split (string, {"whole", "new", "split"}): If left_end or
+                right_end are specified, shade_split determines how a bin is split
+                that the end falls between two bin endpoints. If shade_split = "whole",
+                the entire bin will be shaded. If shade_split = "new", then a new bin
+                will be created and data split appropriately. If shade_split = "split",
+                the data will first be placed into the original bins, and then separated
+                into two bins with equal height.
+
+            show (bool): whether to show the figure for interactive plots; if false, the figure is 
+                returned instead
 
 
             vargs: Additional arguments that get passed into :func:plt.hist.
@@ -4203,12 +4251,6 @@ class Table(collections.abc.MutableMapping):
                 rug = rug,
                 **vargs
             )
-
-        if width == None:
-            width = 6
-
-        if height == None:
-            height = 4
 
         if counts is not None and bin_column is None:
             warnings.warn("counts arg of hist is deprecated; use bin_column")
