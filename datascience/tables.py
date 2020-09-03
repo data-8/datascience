@@ -2305,7 +2305,8 @@ class Table(collections.abc.MutableMapping):
         _INTERACTIVE_PLOTS = False
 
     def plot(self, column_for_xticks=None, select=None, overlay=True, width=None, height=None, **vargs):
-        """Plot line charts for the table.
+        """Plot line charts for the table. Redirects to ``Table#iplot`` for plotly charts if interactive
+        plots are enabled with ``Table#interactive_plots``
 
         Args:
             column_for_xticks (``str/array``): A column containing x-axis labels
@@ -2313,6 +2314,9 @@ class Table(collections.abc.MutableMapping):
         Kwargs:
             overlay (bool): create a chart with one color per data column;
                 if False, each plot will be displayed separately.
+
+            show (bool): whether to show the figure if using interactive plots; if false, the figure 
+                is returned instead
 
             vargs: Additional arguments that get passed into `plt.plot`.
                 See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot
@@ -2348,12 +2352,6 @@ class Table(collections.abc.MutableMapping):
         global _INTERACTIVE_PLOTS
         if _INTERACTIVE_PLOTS:
             return self.iplot(column_for_xticks, select, overlay, width, height, **vargs)
-
-        if width is None:
-            width = 6
-
-        if height is None:
-            height = 4
 
         options = self.default_options.copy()
         options.update(vargs)
@@ -2567,7 +2565,8 @@ class Table(collections.abc.MutableMapping):
         self.group(column_label).bar(column_label, **vargs)
 
     def barh(self, column_for_categories=None, select=None, overlay=True, width=None, **vargs):
-        """Plot horizontal bar charts for the table.
+        """Plot horizontal bar charts for the table. Redirects to ``Table#ibarh`` if interactive plots
+        are enabled with ``Table#interactive_plots``
         
         Args:
             ``column_for_categories`` (``str``): A column containing y-axis categories
@@ -2576,6 +2575,8 @@ class Table(collections.abc.MutableMapping):
         Kwargs:
             overlay (bool): create a chart with one color per data column;
                 if False, each will be displayed separately.
+            show (bool): whether to show the figure if using interactive plots; if false, the 
+                figure is returned instead
             vargs: Additional arguments that get passed into `plt.barh`.
                 See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.barh
                 for additional arguments that can be passed into vargs.
@@ -2612,9 +2613,6 @@ class Table(collections.abc.MutableMapping):
             # If width not specified, default width originally set to 6,
             # Multiply by 96 assuming 96 dpi
             return self.ibarh(column_for_categories, select, overlay, width, **vargs)
-
-        if width is None:
-            width = 6
 
         options = self.default_options.copy()
         # Matplotlib tries to center the labels, but we already handle that
@@ -2837,7 +2835,8 @@ class Table(collections.abc.MutableMapping):
     def scatter(self, column_for_x, select=None, overlay=True, fit_line=False,
         group=None, labels=None, sizes=None, width=None, height=None, s=20,
         colors=None, **vargs):
-        """creates scatterplots, optionally adding a line of best fit.
+        """Creates scatterplots, optionally adding a line of best fit. Redirects to ``Table#iscatter``
+        if interactive plots are enabled with ``Table#interactive_plots``
 
         args:
             ``column_for_x`` (``str``): the column to use for the x-axis values
@@ -2867,6 +2866,9 @@ class Table(collections.abc.MutableMapping):
             ``colors``: (deprecated) A synonym for ``group``. Retained
                 temporarily for backwards compatibility. This argument
                 will be removed in future releases.
+
+            ``show`` (``bool``): whether to show the figure if using interactive plots; if false, 
+                the figure is returned instead
 
         Raises:
             ValueError -- Every column, ``column_for_x`` or ``select``, must be numerical
@@ -3255,6 +3257,8 @@ class Table(collections.abc.MutableMapping):
             ``colors``: (deprecated) A synonym for ``group``. Retained
                 temporarily for backwards compatibility. This argument
                 will be removed in future releases.
+
+            ``show`` (``bool``): whether to show the figure; if false, the figure is returned instead
 
             ``vargs`` (``dict``): additional kwargs passed to
                 ``plotly.graph_objects.Figure.update_layout``
@@ -4129,7 +4133,8 @@ class Table(collections.abc.MutableMapping):
     def hist(self, *columns, overlay=True, bins=None, bin_column=None, unit=None, counts=None, group=None,
         rug=False, side_by_side=False, left_end=None, right_end=None, width=None, height=None, **vargs):
         """Plots one histogram for each column in columns. If no column is
-        specified, plot all columns.
+        specified, plot all columns. If interactive plots are enabled via ``Table#interactive_plots``,
+        redirects plotting to plotly with ``Table#ihist``.
 
         Kwargs:
             overlay (bool): If True, plots 1 chart with all the histograms
@@ -4168,6 +4173,20 @@ class Table(collections.abc.MutableMapping):
                 the histogram. If only one of these is None, then that property
                 will be treated as the extreme edge of the histogram. If both are
                 left None, then no shading will occur.
+
+            density (boolean): If True, will plot a density distribution of the data.
+                Otherwise plots the counts.
+
+            shade_split (string, {"whole", "new", "split"}): If left_end or
+                right_end are specified, shade_split determines how a bin is split
+                that the end falls between two bin endpoints. If shade_split = "whole",
+                the entire bin will be shaded. If shade_split = "new", then a new bin
+                will be created and data split appropriately. If shade_split = "split",
+                the data will first be placed into the original bins, and then separated
+                into two bins with equal height.
+
+            show (bool): whether to show the figure for interactive plots; if false, the figure is 
+                returned instead
 
 
             vargs: Additional arguments that get passed into :func:plt.hist.
@@ -4232,12 +4251,6 @@ class Table(collections.abc.MutableMapping):
                 rug = rug,
                 **vargs
             )
-
-        if width == None:
-            width = 6
-
-        if height == None:
-            height = 4
 
         if counts is not None and bin_column is None:
             warnings.warn("counts arg of hist is deprecated; use bin_column")
