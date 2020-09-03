@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.15.8
+* Fixes deprecation warnings with matplotlib's warn parameter.
+* Small cleanups: update to latest version of folium.
+* Add some additional documentation.
+
+### v0.15.7
+* Fixes bug with `Table#hist`.
+
 ### v0.15.6
 * Adds support for NumPy v1.18.0+.
 
