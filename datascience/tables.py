@@ -55,7 +55,7 @@ class Table(collections.abc.MutableMapping):
         labels = labels if labels is not None else []
         columns = [[] for _ in labels]
 
-        self._num_rows = 0 if len(columns) is 0 else len(columns[0])
+        self._num_rows = 0 if len(columns) == 0 else len(columns[0])
 
         # Add each column to table
         for column, label in zip(columns, labels):
@@ -330,8 +330,8 @@ class Table(collections.abc.MutableMapping):
         ... })
         >>> t.columns
         (array(['a', 'b', 'c', 'z'], dtype='<U1'),
-         array([9, 3, 3, 1]),
-         array([ 1,  2,  2, 10]))
+        array([9, 3, 3, 1]),
+        array([ 1,  2,  2, 10]))
         """
         return tuple(self._columns.values())
 

@@ -47,7 +47,7 @@ extensions = [
 ipython_mplbackend = None
 ipython_execlines = [
   'import matplotlib',
-  'matplotlib.use("Agg", warn=False)',
+  'matplotlib.use("agg")',
   'import numpy as np',
   'import matplotlib.pyplot as plt',
   'plt.style.use("fivethirtyeight")',
