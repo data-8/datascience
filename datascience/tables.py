@@ -48,7 +48,7 @@ class Table(collections.abc.MutableMapping):
         labels = labels if labels is not None else []
         columns = [[] for _ in labels]
 
-        self._num_rows = 0 if len(columns) is 0 else len(columns[0])
+        self._num_rows = 0 if len(columns) == 0 else len(columns[0])
 
         # Add each column to table
         for column, label in zip(columns, labels):
