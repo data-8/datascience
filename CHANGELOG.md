@@ -7,6 +7,17 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### v0.15.10
 * Include ipynb files in tests, and when measuring test coverage
 
+### v0.15.9
+* Changed the `radius` argument of a Circle (in Maps) to `area`.
+
+### v0.15.8
+* Fixes deprecation warnings with matplotlib's warn parameter.
+* Small cleanups: update to latest version of folium.
+* Add some additional documentation.
+
+### v0.15.7
+* Fixes bug with `Table#hist`.
+
 ### v0.15.6
 * Adds support for NumPy v1.18.0+.
 
