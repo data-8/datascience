@@ -323,8 +323,8 @@ class Table(collections.abc.MutableMapping):
         ... })
         >>> t.columns
         (array(['a', 'b', 'c', 'z'], dtype='<U1'),
-         array([9, 3, 3, 1]),
-         array([ 1,  2,  2, 10]))
+        array([9, 3, 3, 1]),
+        array([ 1,  2,  2, 10]))
         """
         return tuple(self._columns.values())
 
