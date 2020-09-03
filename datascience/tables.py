@@ -2228,12 +2228,11 @@ class Table(collections.abc.MutableMapping):
 
     default_alpha = 0.7
 
-    
+    default_width = 6
+    default_height = 4
 
     default_options = {
         'alpha': default_alpha,
-        'width': 6,
-        'height': 4,
     }
 
     @staticmethod
@@ -2361,10 +2360,10 @@ class Table(collections.abc.MutableMapping):
         options.update(vargs)
 
         if width is None:
-            width = options.get('width')
+            width = self.default_width
 
         if height is None:
-            height = options.get('height')
+            height = self.default_width
 
         if column_for_xticks is not None:
             x_data, y_labels = self._split_column_and_labels(column_for_xticks)
@@ -2631,7 +2630,7 @@ class Table(collections.abc.MutableMapping):
         options.update(vargs)
 
         if width is None:
-            width = options.get('width')
+            width = self.default_width
 
         yticks, labels = self._split_column_and_labels(column_for_categories)
         if select is not None:
@@ -4266,10 +4265,10 @@ class Table(collections.abc.MutableMapping):
             )
 
         if width is None:
-            width = self.default_options.get('width')
+            width = self.default_width
 
         if height is None:
-            height = self.default_options.get('height')
+            height = self.default_height
 
         if counts is not None and bin_column is None:
             warnings.warn("counts arg of hist is deprecated; use bin_column")
