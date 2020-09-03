@@ -2228,8 +2228,12 @@ class Table(collections.abc.MutableMapping):
 
     default_alpha = 0.7
 
+    
+
     default_options = {
         'alpha': default_alpha,
+        'width': 6,
+        'height': 4,
     }
 
     @staticmethod
@@ -2355,6 +2359,12 @@ class Table(collections.abc.MutableMapping):
 
         options = self.default_options.copy()
         options.update(vargs)
+
+        if width is None:
+            width = options.get('width')
+
+        if height is None:
+            height = options.get('height')
 
         if column_for_xticks is not None:
             x_data, y_labels = self._split_column_and_labels(column_for_xticks)
@@ -2619,6 +2629,9 @@ class Table(collections.abc.MutableMapping):
         # TODO consider changing the custom centering code and using matplotlib's default
         vargs['align'] = 'edge'
         options.update(vargs)
+
+        if width is None:
+            width = options.get('width')
 
         yticks, labels = self._split_column_and_labels(column_for_categories)
         if select is not None:
@@ -4251,6 +4264,12 @@ class Table(collections.abc.MutableMapping):
                 rug = rug,
                 **vargs
             )
+
+        if width is None:
+            width = self.default_options.get('width')
+
+        if height is None:
+            height = self.default_options.get('height')
 
         if counts is not None and bin_column is None:
             warnings.warn("counts arg of hist is deprecated; use bin_column")
