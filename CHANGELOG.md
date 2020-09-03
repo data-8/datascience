@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.15.10
+* Include ipynb files in tests, and when measuring test coverage
+
 ### v0.15.9
 * Changed the `radius` argument of a Circle (in Maps) to `area`.
 

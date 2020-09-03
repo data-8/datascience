@@ -1,7 +1,6 @@
 name: datascience
 dependencies:
 - appnope
-- coverage
 - coveralls
 - cycler
 - decorator
@@ -20,6 +19,7 @@ dependencies:
 - pyparsing
 - pyqt
 - pytest
+- pytest-cov
 - python
 - python-dateutil
 - python.app
@@ -44,7 +44,12 @@ dependencies:
   - folium==0.11.0
   - ipython-genutils
   - jinja2
+  - jupyter
+  - jupyter_client
   - markupsafe
+  - nbval
+  - nbconvert
+  - nbformat
   - pygments
   - snowballstemmer
   - sphinx
