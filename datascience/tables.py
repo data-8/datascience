@@ -27,7 +27,7 @@ from datascience.util import make_array
 import datascience.predicates as _predicates
 
 # intitializing go and make_subplots as globals set to None
-go, make_subplots = None
+go, make_subplots = None, None
 
 _INTERACTIVE_PLOTS = False
 
