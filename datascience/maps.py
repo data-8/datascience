@@ -909,7 +909,8 @@ def get_coordinates(table, replace_columns=False, remove_nans=False):
     that row's latitude and longitude coordinates are replaced with np.nans. The 'replace_columns' flag
     indicates if the "city", "county", "state", and "zip code" columns should be removed afterwards.
     The 'remove_nans' flag indicates if rows with nan latitudes and longitudes should be removed. Robust to 
-    capitalization.
+    capitalization in city and county names. If a row's location with multiple zip codes is specified, the latitude and longitude 
+    pair assigned to the row will correspond to the smallest zip code.
 
     Dataset was acquired on July 2, 2020 from https://docs.gaslamp.media/download-zip-code-latitude-longitude-city-state-county-csv. 
     Found in geocode_datasets/geocode_states.csv. Modified column names and made city/county columns all in lowercase. 
