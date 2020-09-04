@@ -610,11 +610,18 @@ class Marker(_MapFeature):
         assert areas is None or hasattr(cls, '_has_area'), "A " + cls.__name__ + " has no area"
         inputs = [latitudes, longitudes]
         # Variables passed into class Map kwargs instead of markers kwargs
-        index_map = kwargs.pop("index_map", None)
-        cluster_labels = kwargs.pop("cluster_labels", None)
-        colorbar_scale = kwargs.pop("colorbar_scale", None)
-        include_color_scale_outliers = kwargs.pop("include_color_scale_outliers", None)
-        radius_in_meters = kwargs.pop("radius_in_meters", False)
+        map_kwargs = {
+            'index_map': kwargs.pop("index_map", None),
+            'cluster_labels': kwargs.pop("cluster_labels", None),
+            'colorbar_scale': kwargs.pop("colorbar_scale", None),
+            'include_color_scale_outliers': kwargs.pop("include_color_scale_outliers", None),
+            'radius_in_meters': kwargs.pop("radius_in_meters", False)
+        }
+        # index_map = kwargs.pop("index_map", None)
+        # cluster_labels = kwargs.pop("cluster_labels", None)
+        # colorbar_scale = kwargs.pop("colorbar_scale", None)
+        # include_color_scale_outliers = kwargs.pop("include_color_scale_outliers", None)
+        # radius_in_meters = kwargs.pop("radius_in_meters", False)
         if labels is not None:
             assert len(labels) == len(latitudes)
             inputs.append(labels)
@@ -642,7 +649,7 @@ class Marker(_MapFeature):
             ms = [cls(*args, **other_attrs_processed[row_num]) for row_num, args in enumerate(zip(*inputs))]
         else:
             ms = [cls(*args, **kwargs) for row_num, args in enumerate(zip(*inputs))]
-        return Map(ms, clustered_marker=clustered_marker, index_map=index_map, cluster_labels=cluster_labels, colorbar_scale=colorbar_scale, include_color_scale_outliers=include_color_scale_outliers, radius_in_meters=radius_in_meters)
+        return Map(ms, clustered_marker=clustered_marker, **map_kwargs)
 
     @classmethod
     def map_table(cls, table, clustered_marker=False, include_color_scale_outliers=True, radius_in_meters=False, **kwargs):
