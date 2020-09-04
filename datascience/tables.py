@@ -2543,9 +2543,7 @@ class Table(collections.abc.MutableMapping):
         if group is None and colors is not None:
             # Backward compatibility
             group = colors
-            # TODO: In a future release, warn that this is deprecated.
-            # Deprecated
-            # warnings.warn("scatter(colors=x) is deprecated. Use scatter(group=x)", FutureWarning)
+            warnings.warn("scatter(colors=x) is deprecated. Use scatter(group=x)", FutureWarning)
         if group is not None:
             y_labels.remove(self._as_label(group))
         if sizes is not None:
