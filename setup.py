@@ -11,8 +11,9 @@ with open('requirements.txt') as fid:
 
 tests_requires = [
     'pytest',
-    'coverage==4.5.3',
-    'coveralls'
+    'coverage',
+    'coveralls',
+    'bokeh'
 ]
 
 
@@ -27,10 +28,13 @@ class PyTest(TestCommand):
 
     def initialize_options(self):
         TestCommand.initialize_options(self)
-        self.pytest_args = ['tests']
+        self.pytest_args = ['--nbval-lax', '--cov=datascience', 'tests']
 
     def finalize_options(self):
         TestCommand.finalize_options(self)
+
+    def pytest_collectstart(collector):
+        collector.skip_compare += 'text/html'
 
     def run_tests(self):
         # import here, cause outside the eggs aren't loaded
@@ -47,6 +51,7 @@ setup(
     tests_require = tests_requires,
     cmdclass = {'test': PyTest},
     description = 'A Jupyter notebook Python library for introductory data science',
+    long_description = 'A Jupyter notebook Python library for introductory data science',
     author = 'John DeNero, David Culler, Alvin Wan, Sam Lau',
     author_email = 'ds8-instructors@berkeley.edu',
     url = 'https://github.com/data-8/datascience',

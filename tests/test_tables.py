@@ -52,6 +52,16 @@ def table4():
         ])
 
 @pytest.fixture(scope='function')
+def table5():
+    """Setup fifth table; has NaNs in it"""
+    return Table().with_columns([
+        'letter', ['a', 'b', 'c', 'd', 'y', 'z'],
+        'count', [9, 3, 3, 4, 2, 1],
+        'points', [1, 2, 2, 2, 4, 10],
+        'person_id', [np.float64('nan'), np.float64('nan'), np.float64('nan'), 1, 2, 3]
+        ])
+
+@pytest.fixture(scope='function')
 def numbers_table():
     """Setup table containing only numbers"""
     return Table().with_columns([
@@ -144,6 +154,11 @@ def test_basic_rows(table):
         t.rows[2],
         "Row(letter='c', count=3, points=2)")
 
+def test_row_conversion_to_np_array(table):
+    t = table
+    t_subset = t.select("count", "points")
+    assert_array_equal(np.array(t_subset.row(0)), np.array([9, 1]))
+
 def test_select(table):
     t = table
     test = t.select('points', 1)
@@ -204,6 +219,15 @@ def test_take_iterable(table):
     c      | 3     | 2
     """)
 
+def test_take_floating_args(table):
+    t = table
+    test = t.take(0, 2)
+    assert_equal(test, """
+    letter | count | points
+    a      | 9     | 1
+    c      | 3     | 2
+    """)
+
 
 def test_exclude(table):
     t = table
@@ -243,6 +267,15 @@ def test_exclude_iterable(table):
     letter | count | points
     b      | 3     | 2
     z      | 1     | 10
+    """)
+
+def test_exclude_floating_args(table):
+    t = table
+    test = t.exclude(1, 3)
+    assert_equal(test, """
+    letter | count | points
+    a      | 9     | 1
+    c      | 3     | 2
     """)
 
 
@@ -378,7 +411,7 @@ def test_sort_syntax(table):
     """)
 
 
-def test_group(table):
+def test_group(table, table5):
     t = table
     test = t.group('points')
     assert_equal(test, """
@@ -393,6 +426,17 @@ def test_group(table):
     1      | 1
     2      | 2
     10     | 1
+    """)
+
+def test_group_nans(table5):
+    t = table5
+    test = t.group('person_id')
+    assert_equal(test, """
+    person_id  | count
+    nan        | 3
+    1          | 1
+    2          | 1
+    3          | 1
     """)
 
 
@@ -463,6 +507,18 @@ def test_groups_collect(table):
     1      | True  | 9
     2      | True  | 6
     10     | False | 1
+    """)
+
+def test_groups_nans(table5):
+    t = table5
+    test = t.group(['person_id', 'points'])
+    assert_equal(test, """
+    person_id  | points |count
+    nan        | 1      | 1
+    nan        | 2      | 2
+    1          | 2      | 1
+    2          | 4      | 1
+    3          | 10     | 1
     """)
 
 def test_join(table, table2):
@@ -823,43 +879,47 @@ def test_with_column_with_formatter(table):
 def test_with_columns():
     players = Table().with_columns('player_id', make_array(110234, 110235), 'wOBA', make_array(.354, .236))
     assert_equal(players, """
-    player_id  | wOBA
-    110,234    | 0.354
-    110,235    | 0.236
+    player_id | wOBA
+    110234    | 0.354
+    110235    | 0.236
     """)
     players = players.with_columns('salaries', 'N/A', 'season', 2016)
     assert_equal(players, """
-    player_id  | wOBA  | salaries | season
-    110,234    | 0.354 | N/A      | 2,016
-    110,235    | 0.236 | N/A      | 2,016
+    player_id | wOBA  | salaries | season
+    110234    | 0.354 | N/A      | 2016
+    110235    | 0.236 | N/A      | 2016
     """)
     salaries = Table().with_column('salary', make_array('$500,000', '$15,500,000'))
     players = players.with_columns('salaries', salaries.column('salary'), 'years', make_array(6, 1))
     assert_equal(players, """
-    player_id  | wOBA  | salaries    | season | years
-    110,234    | 0.354 | $500,000    | 2,016   | 6
-    110,235    | 0.236 | $15,500,000 | 2,016   | 1
+    player_id | wOBA  | salaries    | season | years
+    110234    | 0.354 | $500,000    | 2016   | 6
+    110235    | 0.236 | $15,500,000 | 2016   | 1
     """)
+
+def test_with_columns_exception_for_incorrect_usage():
+    with(pytest.raises(TypeError)):
+        Table.with_columns('player_id', make_array(110234, 110235), 'wOBA', make_array(.354, .236))
 
 def test_with_columns_with_formats():
     players = Table().with_columns('player_id', make_array(110234, 110235), 'wOBA', make_array(.354, .236))
     assert_equal(players, """
     player_id  | wOBA
-    110,234    | 0.354
-    110,235    | 0.236
+    110234    | 0.354
+    110235    | 0.236
     """)
     players = players.with_columns('salaries', 'N/A', 'season', 2016)
     assert_equal(players, """
-    player_id  | wOBA  | salaries | season
-    110,234    | 0.354 | N/A      | 2,016
-    110,235    | 0.236 | N/A      | 2,016
+    player_id | wOBA  | salaries | season
+    110234    | 0.354 | N/A      | 2016
+    110235    | 0.236 | N/A      | 2016
     """)
     salaries = Table().with_column('salary', make_array(500000, 15500000))
     players2 = players.with_columns('salaries', salaries.column('salary'), 'years', make_array(6, 1), formatter=CurrencyFormatter)
     assert_equal(players2, """
-    player_id  | wOBA  | salaries     | season | years
-    110,234    | 0.354 | $500,000     | 2,016  | $6
-    110,235    | 0.236 | $15,500,000  | 2,016  | $1
+    player_id | wOBA  | salaries     | season | years
+    110234    | 0.354 | $500,000     | 2016   | $6
+    110235    | 0.236 | $15,500,000  | 2016   | $1
     """)
 
     with(pytest.raises(Exception)):
@@ -920,23 +980,23 @@ def test_relabel():
     table.relabel('id', 'todo')
     assert_equal(table, """
     points | todo
-    1      | 12,345
+    1      | 12345
     2      | 123
-    3      | 5,123
+    3      | 5123
     """)
     table.relabel(1, 'yolo')
     assert_equal(table, """
     points | yolo
-    1      | 12,345
+    1      | 12345
     2      | 123
-    3      | 5,123
+    3      | 5123
     """)
     table.relabel(['points', 'yolo'], ['red', 'blue'])
     assert_equal(table, """
     red    | blue
-    1      | 12,345
+    1      | 12345
     2      | 123
-    3      | 5,123
+    3      | 5123
     """)
     with(pytest.raises(ValueError)):
         table.relabel(['red', 'blue'], ['magenta', 'cyan', 'yellow'])
@@ -1044,6 +1104,20 @@ def test_remove_single(table):
     c      | 3     | 2
     z      | 1     | 10
     """)
+
+def test_remove_zeroth_row(table):
+    table.remove(0)
+    assert_equal(table, """
+    letter | count | points
+    b      | 3     | 2
+    c      | 3     | 2
+    z      | 1     | 10
+    """)
+
+def test_remove_num_rows(table):
+    num_rows_before = table.num_rows
+    table.remove(0)
+    assert table.num_rows + 1 == num_rows_before
 
 
 ##########
@@ -1635,6 +1709,63 @@ def test_subtable():
 # Visualize #
 #############
 
+def test_compute_shading():
+
+    h = np.arange(5)
+    def single_test(start, end, x_expected, h_expected, w_expected):
+        h_this = h[:]
+        bins = np.arange(0, 51, 10)
+        x_actual, h_actual, w_actual = tables._compute_shading(h_this, bins, start, end)
+        assert np.allclose(x_actual, x_expected)
+        assert np.allclose(h_actual, h_expected)
+        assert np.allclose(w_actual, w_expected)
+
+    # Given the entire range, create all bins
+    single_test(0, 50,
+                np.arange(0, 41, 10), h,
+                10 * np.ones(5))
+
+    # Test subrange that aligns with bin start/ends
+    single_test(0, 30,
+                np.arange(0, 21, 10), h[:3],
+                np.array([10, 10, 10]))
+
+    # Test subrange that doesn't align with bin start/ends
+    single_test(5, 45,
+                np.array([5, 10, 20, 30, 40]), h,
+                np.array([5, 10, 10, 10, 5]))
+
+    # Test subrange that crosses only one bin boundary
+    single_test(5, 15,
+                np.array([5, 10]), h[:2],
+                np.array([5, 5]))
+
+    # Test subrange within a single bin
+    single_test(23, 28,
+                np.array([23]), h[2:3],
+                np.array([5]))
+
+    # Test subrange starting before data range
+    single_test(-32, 28,
+                np.array([0, 10, 20]), h[:3],
+                np.array([10, 10, 8]))
+
+    # Test subrange ending after data range
+    single_test(23, 200,
+                np.array([23, 30, 40]), h[2:],
+                np.array([7, 10, 10]))
+
+    # Test subrange with exactly first bin
+    single_test(0, 10,
+                np.array([0]), h[0:1],
+                np.array([10]))
+
+    # Test subrange with exactly last bin
+    single_test(40, 50,
+                np.array([40]), h[4:5],
+                np.array([10]))
+
+
 def test_scatter(numbers_table):
     """Tests that Table.scatter doesn't raise an error when the table doesn't
     contains non-numerical values. Not working right now because of TKinter
@@ -1697,6 +1828,15 @@ def test_df_roundtrip(table):
 
     for (c0, c1) in zip(t.columns, table.columns):
         assert_equal(c0, c1)
+
+def test_from_df_with_index(table):
+    from bokeh.sampledata.autompg import autompg as df
+    assert isinstance(df, pd.DataFrame)
+    test_no_index = Table.from_df(df)
+    assert not ("index" in test_no_index.labels)
+    test_with_index = Table.from_df(df, keep_index=True)
+    assert "index" in test_with_index.labels
+    assert test_with_index.num_columns == (test_no_index.num_columns + 1)
 
 def test_array_roundtrip(table):
     arr = table.to_array()

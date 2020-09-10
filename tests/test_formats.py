@@ -19,8 +19,8 @@ def test_doctests():
 def test_default_format():
     fmt = ds.default_formatter.format_value
     assert_equal(fmt(1.23456789), '1.23457')
-    assert_equal(fmt(123456789), '123,456,789')
-    assert_equal(fmt(123456789**5), '28,679,718,602,997,181,072,337,614,380,936,720,482,949')
+    assert_equal(fmt(123456789), '123456789')
+    assert_equal(fmt(123456789**5), '28679718602997181072337614380936720482949')
     assert_equal(fmt(123.456789**5), '2.86797e+10')
     assert_equal(fmt(True), 'True')
     assert_equal(fmt(False), 'False')

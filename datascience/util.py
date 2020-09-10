@@ -7,7 +7,7 @@ __all__ = ['make_array', 'percentile', 'plot_cdf_area', 'plot_normal_cdf',
 import numpy as np
 import pandas as pd
 import matplotlib
-matplotlib.use('agg', warn=False)
+matplotlib.use('agg')
 import matplotlib.pyplot as plt
 from scipy import stats
 from scipy import optimize
@@ -33,6 +33,10 @@ def make_array(*elements):
     >>> make_array()
     array([], dtype=float64)
     """
+    if elements and all(isinstance(item, (int, np.integer)) for item in elements):
+        # Specifically added for Windows machines where the default 
+        # integer is int32 - see GH issue #339.
+        return np.array(elements, dtype="int64")
     return np.array(elements)
 
 
@@ -84,10 +88,10 @@ def plot_normal_cdf(rbound=None, lbound=None, mean=0, sd=1):
     llabel = lbound
     if rbound is None:
         rbound = inf + mean
-        rlabel = "$\infty$"
+        rlabel = r"$\infty$"
     if lbound is None:
         lbound = -inf + mean
-        llabel = "-$\infty$"
+        llabel = r"-$\infty$"
     pdf_range = np.arange(-inf + mean, inf + mean, step)
     plt.plot(pdf_range, stats.norm.pdf(pdf_range, loc=mean, scale=sd), color='k', lw=1)
     cdf_range = np.arange(lbound, rbound + step, step)
@@ -98,8 +102,8 @@ def plot_normal_cdf(rbound=None, lbound=None, mean=0, sd=1):
         plt.fill_between(cdf_range, stats.norm.pdf(cdf_range, loc=mean, scale=sd), color='darkblue')
     plt.ylim(0, stats.norm.pdf(0, loc=0, scale=sd) * 1.25)
     plt.xlabel('z')
-    plt.ylabel('$\phi$(z)', rotation=90)
-    plt.title("Normal Curve ~ ($\mu$ = {0}, $\sigma$ = {1}) "
+    plt.ylabel(r'$\phi$(z)', rotation=90)
+    plt.title(r"Normal Curve ~ ($\mu$ = {0}, $\sigma$ = {1}) "
               "{2} < z < {3}".format(mean, sd, llabel, rlabel), fontsize=16)
     plt.show()
 

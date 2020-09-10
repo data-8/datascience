@@ -14,7 +14,7 @@ import warnings
 
 import numpy as np
 import matplotlib
-matplotlib.use('agg', warn=False)
+matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import pandas
 import IPython
@@ -28,7 +28,7 @@ class Table(collections.abc.MutableMapping):
     """A sequence of string-labeled columns."""
     plots = collections.deque(maxlen=10)
 
-    def __init__(self, labels=None, _deprecated=None, *, formatter=_formats.default_formatter):
+    def __init__(self, labels=None, formatter=_formats.default_formatter):
         """Create an empty table with column labels.
 
         >>> tiles = Table(make_array('letter', 'count', 'points'))
@@ -44,18 +44,11 @@ class Table(collections.abc.MutableMapping):
         self._columns = collections.OrderedDict()
         self._formats = dict()
         self.formatter = formatter
+        
+        labels = labels if labels is not None else []
+        columns = [[] for _ in labels]
 
-        if _deprecated is not None:
-            warnings.warn("Two-argument __init__ is deprecated. Use Table().with_columns(...)", FutureWarning)
-            columns, labels = labels, _deprecated
-            columns = columns if columns is not None else []
-            labels = labels if labels is not None else []
-            assert len(labels) == len(columns), 'label/column number mismatch'
-        else:
-            labels = labels if labels is not None else []
-            columns = [[] for _ in labels]
-
-        self._num_rows = 0 if len(columns) is 0 else len(columns[0])
+        self._num_rows = 0 if len(columns) == 0 else len(columns[0])
 
         # Add each column to table
         for column, label in zip(columns, labels):
@@ -93,7 +86,19 @@ class Table(collections.abc.MutableMapping):
 
     @classmethod
     def from_records(cls, records):
-        """Create a table from a sequence of records (dicts with fixed keys)."""
+        """Create a table from a sequence of records (dicts with fixed keys).
+
+           Args:
+
+               records: A list of dictionaries with same keys.
+
+           Returns:
+
+               If the list is empty, it will return an empty table.
+               Otherwise, it will return a table with the dictionary's keys as the column name, and the corresponding data.
+               If the dictionaries do not have identical keys, the keys of the first dictionary in the list is used.
+
+           """
         if not records:
             return cls()
         labels = sorted(list(records[0].keys()))
@@ -147,9 +152,17 @@ class Table(collections.abc.MutableMapping):
             table._formats[label] = self._formats[label]
 
     @classmethod
-    def from_df(cls, df):
-        """Convert a Pandas DataFrame into a Table."""
+    def from_df(cls, df, keep_index=False):
+        """Convert a Pandas DataFrame into a Table.
+
+        `keep_index` -- keeps the index of the DataFrame 
+            and turns it into a column called `index` in 
+            the new Table
+
+        """
         t = cls()
+        if keep_index:
+            t.append_column("index", df.index.values)
         labels = df.columns
         for label in labels:
             t.append_column(label, df[label])
@@ -157,7 +170,16 @@ class Table(collections.abc.MutableMapping):
 
     @classmethod
     def from_array(cls, arr):
-        """Convert a structured NumPy array into a Table."""
+        """Convert a structured NumPy array into a Table.
+
+           Args:
+ 
+               arr: A structured numpy array
+
+           Returns:
+
+               A table with the field names as the column names and the corresponding data. 
+        """
         return cls().with_columns([(f, arr[f]) for f in arr.dtype.names])
 
     #################
@@ -210,12 +232,44 @@ class Table(collections.abc.MutableMapping):
 
     @property
     def num_rows(self):
-        """Number of rows."""
+        """
+        Computes the number of rows in a table
+        
+        Returns:
+            integer value stating number of rows
+
+        Example:
+        >>> t = Table().with_columns({
+        ...     'letter': ['a', 'b', 'c', 'z'],
+        ...     'count':  [  9,   3,   3,   1],
+        ...     'points': [  1,   2,   2,  10],
+        ... })
+        >>> t.num_rows
+        4
+        """
         return self._num_rows
 
     @property
     def rows(self):
-        """Return a view of all rows."""
+        """
+        Return a view of all rows.
+        
+        Returns: 
+            list-like Rows object that contains tuple-like Row objects
+
+        Example:
+        >>> t = Table().with_columns({
+        ...     'letter': ['a', 'b', 'c', 'z'],
+        ...     'count':  [  9,   3,   3,   1],
+        ...     'points': [  1,   2,   2,  10],
+        ... })
+        >>> t.rows
+        Rows(letter | count | points
+        a      | 9     | 1
+        b      | 3     | 2
+        c      | 3     | 2
+        z      | 1     | 10)
+        """
         return self.Rows(self)
 
     def row(self, index):
@@ -224,7 +278,21 @@ class Table(collections.abc.MutableMapping):
 
     @property
     def labels(self):
-        """Return a tuple of column labels."""
+        """
+        Return a tuple of column labels.
+        
+        Returns: 
+            tuple of labels
+
+        Example:
+        >>> t = Table().with_columns({
+        ...     'letter': ['a', 'b', 'c', 'z'],
+        ...     'count':  [  9,   3,   3,   1],
+        ...     'points': [  1,   2,   2,  10],
+        ... })
+        >>> t.labels
+        ('letter', 'count', 'points')
+        """
         return tuple(self._columns.keys())
 
     # Deprecated
@@ -241,7 +309,23 @@ class Table(collections.abc.MutableMapping):
 
     @property
     def columns(self):
-        """Return a tuple of columns, each with the values in that column."""
+        """
+        Return a tuple of columns, each with the values in that column.
+        
+        Returns: 
+            tuple of columns
+
+        Example:
+        >>> t = Table().with_columns({
+        ...     'letter': ['a', 'b', 'c', 'z'],
+        ...     'count':  [  9,   3,   3,   1],
+        ...     'points': [  1,   2,   2,  10],
+        ... })
+        >>> t.columns
+        (array(['a', 'b', 'c', 'z'], dtype='<U1'),
+        array([9, 3, 3, 1]),
+        array([ 1,  2,  2, 10]))
+        """
         return tuple(self._columns.values())
 
     def column(self, index_or_label):
@@ -301,7 +385,24 @@ class Table(collections.abc.MutableMapping):
         return np.array(self.columns, dtype=dtype).T
 
     def column_index(self, label):
-        """Return the index of a column by looking up its label."""
+        """
+        Return the index of a column by looking up its label.
+        
+        Args:
+            ``label`` (str) -- label value of a column
+
+        Returns: 
+            integer value specifying the index of the column label
+
+        Example:
+        >>> t = Table().with_columns({
+        ...     'letter': ['a', 'b', 'c', 'z'],
+        ...     'count':  [  9,   3,   3,   1],
+        ...     'points': [  1,   2,   2,  10],
+        ... })
+        >>> t.column_index('letter')
+        0
+        """
         return self.labels.index(label)
 
     def apply(self, fn, *column_or_columns):
@@ -366,11 +467,45 @@ class Table(collections.abc.MutableMapping):
             return np.array([fn(*row) for row in rows])
 
     def first(self, label):
-        """Return the zeroth item in a column."""
+        """
+        Return the zeroth item in a column.
+
+        Args:
+            ``label`` (str) -- value of column label
+
+        Returns: 
+            zeroth item of column
+
+        Example:
+        >>> t = Table().with_columns({
+        ...     'letter': ['a', 'b', 'c', 'z'],
+        ...     'count':  [  9,   3,   3,   1],
+        ...     'points': [  1,   2,   2,  10],
+        ... })
+        >>> t.first('letter')
+        'a'
+        """
         return self.column(label)[0]
 
     def last(self, label):
-        """Return the last item in a column."""
+        """
+        Return the last item in a column.
+        
+        Args:
+            ``label`` (str) -- value of column label
+
+        Returns: 
+            last item of column
+
+        Example:
+        >>> t = Table().with_columns({
+        ...     'letter': ['a', 'b', 'c', 'z'],
+        ...     'count':  [  9,   3,   3,   1],
+        ...     'points': [  1,   2,   2,  10],
+        ... })
+        >>> t.last('letter')
+        'z'
+        """
         return self.column(label)[-1]
 
     ############
@@ -531,15 +666,15 @@ class Table(collections.abc.MutableMapping):
         ...     'id',     make_array(12345, 123, 5123))
         >>> table.relabel('id', 'yolo')
         points | yolo
-        1      | 12,345
+        1      | 12345
         2      | 123
-        3      | 5,123
+        3      | 5123
         >>> table.relabel(make_array('points', 'yolo'),
         ...   make_array('red', 'blue'))
         red  | blue
-        1    | 12,345
+        1    | 12345
         2    | 123
-        3    | 5,123
+        3    | 5123
         >>> table.relabel(make_array('red', 'green', 'blue'),
         ...   make_array('cyan', 'magenta', 'yellow', 'key'))
         Traceback (most recent call last):
@@ -561,16 +696,17 @@ class Table(collections.abc.MutableMapping):
         rewrite = lambda s: old_to_new[s] if s in old_to_new else s
         columns = [(rewrite(s), c) for s, c in self._columns.items()]
         self._columns = collections.OrderedDict(columns)
-        for label in self._formats:
+        for label in column_label:
             # TODO(denero) Error when old and new columns share a name
-            if label in column_label:
+            if label in self._formats:
                 formatter = self._formats.pop(label)
                 self._formats[old_to_new[label]] = formatter
+                
         return self
 
     def remove(self, row_or_row_indices):
         """Removes a row or multiple rows of a table in place."""
-        if not row_or_row_indices:
+        if not row_or_row_indices and not isinstance(row_or_row_indices, int):
             return
         if isinstance(row_or_row_indices, int):
             rows_remove = [row_or_row_indices]
@@ -578,6 +714,7 @@ class Table(collections.abc.MutableMapping):
             rows_remove = row_or_row_indices
         for col in self._columns:
             self._columns[col] = [elem for i, elem in enumerate(self[col]) if i not in rows_remove]
+        self._num_rows -= len(rows_remove)
         return self
 
 
@@ -1717,21 +1854,21 @@ class Table(collections.abc.MutableMapping):
         >>> players = Table().with_columns('player_id',
         ...     make_array(110234, 110235), 'wOBA', make_array(.354, .236))
         >>> players
-        player_id  | wOBA
-        110,234    | 0.354
-        110,235    | 0.236
+        player_id | wOBA
+        110234    | 0.354
+        110235    | 0.236
         >>> players = players.with_columns('salaries', 'N/A', 'season', 2016)
         >>> players
-        player_id  | wOBA  | salaries | season
-        110,234    | 0.354 | N/A      | 2,016
-        110,235    | 0.236 | N/A      | 2,016
+        player_id | wOBA  | salaries | season
+        110234    | 0.354 | N/A      | 2016
+        110235    | 0.236 | N/A      | 2016
         >>> salaries = Table().with_column('salary',
         ...     make_array(500000, 15500000))
         >>> players.with_columns('salaries', salaries.column('salary'),
         ...     'bonus', make_array(6, 1), formatter=_formats.CurrencyFormatter)
-        player_id  | wOBA  | salaries    | season  | bonus
-        110,234    | 0.354 | $500,000    | 2,016   | $6
-        110,235    | 0.236 | $15,500,000 | 2,016   | $1
+        player_id | wOBA  | salaries    | season | bonus
+        110234    | 0.354 | $500,000    | 2016   | $6
+        110235    | 0.236 | $15,500,000 | 2016   | $1
         >>> players.with_columns(2, make_array('$600,000', '$20,000,000'))
         Traceback (most recent call last):
             ...
@@ -1741,6 +1878,9 @@ class Table(collections.abc.MutableMapping):
             ...
         ValueError: Column length mismatch. New column does not have the same number of rows as table.
         """
+        if not isinstance(self, Table):
+            raise TypeError('Use Table().with_columns() to create a new table, \
+                not Table.with_columns()')
         if len(labels_and_values) == 1:
             labels_and_values = labels_and_values[0]
         if isinstance(labels_and_values, collections.abc.Mapping):
@@ -1864,7 +2004,39 @@ class Table(collections.abc.MutableMapping):
         return binned
 
     def move_column(self, label, index):
-        """Returns a new table with specified column moved to the specified column index."""
+        """Returns a new table with specified column moved to the specified column index.
+
+        Args:
+            ``label`` (str) A single label of column to be moved.
+
+            ``index`` (int) A single index of column to move to.
+
+        >>> titanic = Table().with_columns('age', make_array(21, 44, 56, 89, 95
+        ...    , 40, 80, 45), 'survival', make_array(0,0,0,1, 1, 1, 0, 1),
+        ...    'gender',  make_array('M', 'M', 'M', 'M', 'F', 'F', 'F', 'F'),
+        ...    'prediction', make_array(0, 0, 1, 1, 0, 1, 0, 1))
+        >>> titanic
+        age  | survival | gender | prediction
+        21   | 0        | M      | 0
+        44   | 0        | M      | 0
+        56   | 0        | M      | 1
+        89   | 1        | M      | 1
+        95   | 1        | F      | 0
+        40   | 1        | F      | 1
+        80   | 0        | F      | 0
+        45   | 1        | F      | 1
+        >>> titanic.move_column('survival', 3)
+        age  | gender | prediction | survival
+        21   | M      | 0          | 0
+        44   | M      | 0          | 0
+        56   | M      | 1          | 0
+        89   | M      | 1          | 1
+        95   | F      | 0          | 1
+        40   | F      | 1          | 1
+        80   | F      | 0          | 0
+        45   | F      | 1          | 1
+        """
+
         table = type(self)()
         col_order = list(self._columns)
         label_idx = col_order.index(self._as_label(label))
@@ -1965,6 +2137,16 @@ class Table(collections.abc.MutableMapping):
         column = self._get_column(column_or_label)
         index = {}
         for key, row in zip(column, self.rows):
+            if isinstance(key, tuple):
+                key_transformed = list(key)
+            else:
+                key_transformed = [key]
+            has_null = pandas.isnull(key_transformed)
+            if any(has_null):
+                for i in range(len(key_transformed)):
+                    if pandas.isnull(key_transformed[i]):
+                        key_transformed[i] = np.nan
+            key = tuple(key_transformed) if len(key_transformed) > 1 else key_transformed[0]
             index.setdefault(key, []).append(row)
         return index
 
@@ -2483,7 +2665,7 @@ class Table(collections.abc.MutableMapping):
         for label, column in zip(pvt_labels,vals):
             t[label] = column
 
-    def hist(self, *columns, overlay=True, bins=None, bin_column=None, unit=None, counts=None, group=None, side_by_side=False, width=6, height=4, **vargs):
+    def hist(self, *columns, overlay=True, bins=None, bin_column=None, unit=None, counts=None, group=None, side_by_side=False, left_end=None, right_end=None, width=6, height=4, **vargs):
         """Plots one histogram for each column in columns. If no column is
         specified, plot all columns.
 
@@ -2518,6 +2700,13 @@ class Table(collections.abc.MutableMapping):
                 side (instead of directly overlaid).  Makes sense only when
                 plotting multiple histograms, either by passing several columns
                 or by using the group option.
+
+            left_end (int or float) and right_end (int or float): (Not supported 
+                for overlayed histograms) The left and right edges of the shading of 
+                the histogram. If only one of these is None, then that property 
+                will be treated as the extreme edge of the histogram. If both are 
+                left None, then no shading will occur.
+
 
             vargs: Additional arguments that get passed into :func:plt.hist.
                 See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.hist
@@ -2618,6 +2807,17 @@ class Table(collections.abc.MutableMapping):
         else:
             values_dict = [(k, (self.column(k),)) for k in self.labels]
         values_dict = collections.OrderedDict(values_dict)
+        if left_end is not None or right_end is not None:
+            if left_end is None:
+                if bins is not None and bins[0]:
+                    left_end = bins[0]
+                else:
+                    left_end = min([min(self.column(k)) for k in self.labels if np.issubdtype(self.column(k).dtype, np.number)])
+            elif right_end is None:
+                if bins is not None and bins[-1]:
+                    right_end = bins[-1]
+                else:
+                    right_end = max([max(self.column(k)) for k in self.labels if np.issubdtype(self.column(k).dtype, np.number)])
 
         def draw_hist(values_dict):
             with np.printoptions(legacy='1.13'):
@@ -2679,7 +2879,11 @@ class Table(collections.abc.MutableMapping):
                         if len(weights) == n:
                             vargs['weights'] = weights[i]
                         axis.set_xlabel(hist_name + x_unit, fontsize=16)
-                        axis.hist(values_for_hist, color=color, **vargs)
+                        heights, bins, patches = axis.hist(values_for_hist, color=color, **vargs)
+                        if left_end is not None and right_end is not None:
+                            x_shade, height_shade, width_shade = _compute_shading(heights, bins.copy(), left_end, right_end)
+                            axis.bar(x_shade, height_shade, width=width_shade,
+                                     color=self.chart_colors[1], align="edge")
                         _vertical_x(axis)
                         type(self).plots.append(axis)
 
@@ -2838,7 +3042,10 @@ class Table(collections.abc.MutableMapping):
         _table = None  # Set by subclasses in Rows
 
         def __getattr__(self, column_label):
-            return self[self._table.column_index(column_label)]
+            try:
+                return self[self._table.column_index(column_label)]
+            except ValueError: #adding support for NumPy v1.18.0 as per changes in https://github.com/numpy/numpy/pull/14745
+                raise AttributeError("Attribute ({0}) not found in row.".format(column_label))
 
         def item(self, index_or_label):
             """Return the item at an index or label."""
@@ -2908,6 +3115,24 @@ def _zero_on_type_error(column_fn):
                 raise
     return wrapped
 
+def _compute_shading(heights, bins, left_end, right_end):
+    shade_start_idx = np.max(np.where(bins <= left_end)[0], initial=0)
+    shade_end_idx = np.max(np.where(bins < right_end)[0], initial=0) + 1
+    # x_shade are the bin starts, so ignore bins[-1], which is the RHS of the last bin
+    x_shade = bins[:-1][shade_start_idx:shade_end_idx]
+    height_shade = heights[shade_start_idx:shade_end_idx]
+    width_shade = np.diff(bins[shade_start_idx:(shade_end_idx+1)])
+
+    if left_end > x_shade[0]:
+        # shrink the width by the unshaded area, then move the bin start
+        width_shade[0] -= (left_end - x_shade[0])
+        x_shade[0] = left_end
+
+    original_ending = (x_shade[-1] + width_shade[-1])
+    if right_end < original_ending:
+        width_shade[-1] -= (original_ending - right_end)
+    return x_shade, height_shade, width_shade
+
 
 def _fill_with_zeros(partials, rows, zero=None):
     """Find and return values from rows for all partials. In cases where no
@@ -2963,7 +3188,7 @@ def _assert_same(values):
     assert len(values) > 0
     first, rest = values[0], values[1:]
     for v in rest:
-        assert v == first
+        assert (v == first) or (pandas.isnull(v) and pandas.isnull(first))
     return first
 
 
@@ -3002,8 +3227,14 @@ class _RowSelector(metaclass=abc.ABCMeta):
     def __init__(self, table):
         self._table = table
 
-    def __call__(self, row_numbers_or_slice):
-        return self[row_numbers_or_slice]
+    def __call__(self, row_numbers_or_slice, *args):
+        if args:
+            all_args = list(args)
+            all_args.insert(0, row_numbers_or_slice)
+            all_args = np.array(all_args)
+        else:
+            all_args = row_numbers_or_slice
+        return self.__getitem__(all_args)
 
     @abc.abstractmethod
     def __getitem__(self, item):
@@ -3058,6 +3289,10 @@ class _RowTaker(_RowSelector):
         letter grade | gpa
         A+           | 4
         A            | 4
+        A-           | 3.7
+        >>> grades.take(0, 2)
+        letter grade | gpa
+        A+           | 4
         A-           | 3.7
         >>> grades.take(10)
         Traceback (most recent call last):
@@ -3119,6 +3354,12 @@ class _RowExcluder(_RowSelector):
         B-           | 2.7
         >>> t.exclude(range(3))
         letter grade | gpa
+        B+           | 3.3
+        B            | 3
+        B-           | 2.7
+        >>> t.exclude(0, 2)
+        letter grade | gpa
+        A            | 4
         B+           | 3.3
         B            | 3
         B-           | 2.7

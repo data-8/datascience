@@ -5,6 +5,7 @@ __all__ = ['Map', 'Marker', 'Circle', 'Region']
 
 import IPython.display
 import folium
+from folium.plugins import MarkerCluster
 import pandas
 import numpy as np
 
@@ -15,6 +16,7 @@ import functools
 import json
 import math
 import random
+import warnings
 
 from .tables import Table
 
@@ -76,9 +78,12 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         elif isinstance(features, _MapFeature):
             features = {0: features}
         assert isinstance(features, dict), 'Map takes a list or dict of features'
+        tile_style = None
+        if "tiles" in kwargs:
+            tile_style = kwargs.pop("tiles")
         self._features = features
         self._attrs = {
-            'tiles': 'OpenStreetMap',
+            'tiles': tile_style if tile_style else 'OpenStreetMap',
             'max_zoom': 17,
             'min_zoom': 10,
         }
@@ -107,13 +112,22 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
 
     def _set_folium_map(self):
         self._folium_map = self._create_map()
+        if 'clustered_marker' in self._attrs and self._attrs['clustered_marker']:
+            marker_cluster = MarkerCluster().add_to(self._folium_map)
+            clustered = True
+        else:
+            clustered = False
         for feature in self._features.values():
-            feature.draw_on(self._folium_map)
+            if clustered and isinstance(feature, Marker):
+                feature.draw_on(marker_cluster)
+            else:
+                feature.draw_on(self._folium_map)
 
     def _create_map(self):
         attrs = {'width': self._width, 'height': self._height}
         attrs.update(self._autozoom())
         attrs.update(self._attrs.copy())
+
         # Enforce zoom consistency
         attrs['max_zoom'] = max(attrs['zoom_start']+2, attrs['max_zoom'])
         attrs['min_zoom'] = min(attrs['zoom_start']-2, attrs['min_zoom'])
@@ -129,11 +143,6 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
             midpoint(bounds['min_lat'], bounds['max_lat']),
             midpoint(bounds['min_lon'], bounds['max_lon'])
         )
-
-        # self._folium_map.fit_bounds(
-        #     [bounds['min_long'], bounds['min_lat']],
-        #     [bounds['max_long'], bounds['max_lat']]
-        # )
 
         # remove the following with new Folium release
         # rough approximation, assuming max_zoom is 18
@@ -249,14 +258,17 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         m = self._create_map()
         data = pandas.DataFrame({id_name: ids, value_name: values})
         attrs = {
-            'geo_str': json.dumps(self.geojson()),
+            'geo_data': json.dumps(self.geojson()),
             'data': data,
             'columns': [id_name, value_name],
             'key_on': key_on,
             'fill_color': palette,
         }
         kwargs.update(attrs)
-        m.geo_json(**kwargs)
+        folium.Choropleth(
+            **kwargs,
+            name='geojson'
+        ).add_to(m)
         colored = self.format()
         colored._folium_map = m
         return colored
@@ -284,7 +296,7 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
             if 'feature' in feature:
                 feature = feature['feature']
 
-            # if marker table e.g. table with columns: latitudes,longitudes,popup,color,radius
+            # if marker table e.g. table with columns: latitudes,longitudes,popup,color,area
             else:
                 feature = Circle.map_table(feature)
 
@@ -307,18 +319,18 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         return result
 
     @classmethod
-    def read_geojson(cls, path_or_json_or_string):
-        """Read a geoJSON string, object, or file. Return a dict of features keyed by ID."""
-        assert path_or_json_or_string
+    def read_geojson(cls, path_or_json_or_string_or_url):
+        """Read a geoJSON string, object, file, or URL. Return a dict of features keyed by ID."""
+        assert path_or_json_or_string_or_url
         data = None
-        if isinstance(path_or_json_or_string, (dict, list)):
-            data = path_or_json_or_string
+        if isinstance(path_or_json_or_string_or_url, (dict, list)):
+            data = path_or_json_or_string_or_url
         try:
-            data = json.loads(path_or_json_or_string)
+            data = json.loads(path_or_json_or_string_or_url)
         except ValueError:
             pass
         try:
-            path = path_or_json_or_string
+            path = path_or_json_or_string_or_url
             if path.endswith('.gz') or path.endswith('.gzip'):
                 import gzip
                 contents = gzip.open(path, 'r').read().decode('utf-8')
@@ -327,8 +339,11 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
             data = json.loads(contents)
         except FileNotFoundError:
             pass
-        # TODO web address
-        assert data, 'MapData accepts a valid geoJSON object, geoJSON string, or path to a geoJSON file'
+        if not data:
+            import urllib.request
+            with urllib.request.urlopen(path_or_json_or_string_or_url) as url:
+                data = json.loads(url.read().decode())
+        assert data, 'MapData accepts a valid geoJSON object, geoJSON string, path to a geoJSON file, or URL'
         return cls(cls._read_geojson_features(data))
 
     @staticmethod
@@ -355,17 +370,9 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
 class _MapFeature(_FoliumWrapper, abc.ABC):
     """A feature displayed on a map. When displayed alone, a map is created."""
 
-    # Method name for a folium.Map to add the feature
-    _map_method_name = ""
-
     # Default dimensions for displaying the feature in isolation
-    _width = 180
-    _height = 180
-
-    def draw_on(self, folium_map):
-        """Add feature to Folium map object."""
-        f = getattr(folium_map, self._map_method_name)
-        f(**self._folium_kwargs)
+    _width = 960
+    _height = 500
 
     def _set_folium_map(self):
         """A map containing only the feature."""
@@ -390,13 +397,20 @@ class _MapFeature(_FoliumWrapper, abc.ABC):
     def geojson(self, feature_id):
         """Return GeoJSON."""
 
+    @abc.abstractmethod
+    def draw_on(self, folium_map):
+        """Add feature to Folium map object."""
+
 
 class Marker(_MapFeature):
     """A marker displayed with Folium's simple_marker method.
 
     popup -- text that pops up when marker is clicked
-    color -- fill color
-
+    color -- The color of the marker. You can use:
+    [‘red’, ‘blue’, ‘green’, ‘purple’, ‘orange’, ‘darkred’,
+    ’lightred’, ‘beige’, ‘darkblue’, ‘darkgreen’, ‘cadetblue’, ‘darkpurple’, 
+    ‘white’, ‘pink’, ‘lightblue’, ‘lightgreen’, ‘gray’, ‘black’, ‘lightgray’]
+    
     Defaults from Folium:
 
     marker_icon: string, default 'info-sign'
@@ -409,10 +423,11 @@ class Marker(_MapFeature):
         angle of icon
     popup_width: int, default 300
         width of popup
-    """
 
-    _map_method_name = 'simple_marker'
-    _color_param = 'marker_color'
+    The icon can be further customized by by passing in attributes
+    into kwargs by using the attributes listed in 
+    `https://python-visualization.github.io/folium/modules.html#folium.map.Icon`.
+    """
 
     def __init__(self, lat, lon, popup='', color='blue', **kwargs):
         assert isinstance(lat, _number)
@@ -420,7 +435,8 @@ class Marker(_MapFeature):
         self.lat_lon = (lat, lon)
         self._attrs = {
             'popup': popup,
-            self._color_param: color,
+            'color': color,
+            **kwargs
         }
         self._attrs.update(kwargs)
 
@@ -436,6 +452,10 @@ class Marker(_MapFeature):
     def _folium_kwargs(self):
         attrs = self._attrs.copy()
         attrs['location'] = self.lat_lon
+        icon_args = {k: attrs.pop(k) for k in attrs.keys() & {'color', 'marker_icon', 'clustered_marker', 'icon_angle', 'popup_width'}}
+        if 'marker_icon' in icon_args:
+            icon_args['icon'] = icon_args.pop('marker_icon')
+        attrs['icon'] = folium.Icon(**icon_args)
         return attrs
 
     def geojson(self, feature_id):
@@ -457,6 +477,9 @@ class Marker(_MapFeature):
         lat, lon = self.lat_lon
         return type(self)(lat, lon, **attrs)
 
+    def draw_on(self, folium_map):
+        folium.Marker(**self._folium_kwargs).add_to(folium_map)
+
     @classmethod
     def _convert_point(cls, feature):
         """Convert a GeoJSON point to a Marker."""
@@ -465,13 +488,24 @@ class Marker(_MapFeature):
         return cls(lat, lon)
 
     @classmethod
-    def map(cls, latitudes, longitudes, labels=None, colors=None, areas=None, **kwargs):
+    def map(cls, latitudes, longitudes, labels=None, colors=None, areas=None, other_attrs = None, clustered_marker=False, **kwargs):
         """Return markers from columns of coordinates, labels, & colors.
 
         The areas column is not applicable to markers, but sets circle areas.
+
+        Arguments: (TODO) document all options
+        
+        clustered_marker: boolean, default False
+            boolean of whether or not you want the marker clustered with other markers
+
+        other_attrs: dictionary of (key) property names to (value) property values, default None
+            A dictionary that list any other attributes that the class Marker/Circle should have 
+
         """
+        assert latitudes is not None
+        assert longitudes is not None
         assert len(latitudes) == len(longitudes)
-        assert areas is None or hasattr(cls, '_has_radius'), "A " + cls.__name__ + " has no radius"
+        assert areas is None or hasattr(cls, '_has_area'), "A " + cls.__name__ + " has no area"
         inputs = [latitudes, longitudes]
         if labels is not None:
             assert len(labels) == len(latitudes)
@@ -483,27 +517,69 @@ class Marker(_MapFeature):
             inputs.append(colors)
         if areas is not None:
             assert len(areas) == len(latitudes)
-            inputs.append(np.array(areas) ** 0.5 / math.pi)
-        ms = [cls(*args, **kwargs) for args in zip(*inputs)]
-        return Map(ms)
+            inputs.append(areas)
+        if other_attrs is not None:
+            other_attrs_processed = []
+            for i in range(len(latitudes)):
+                other_attrs_processed.append({})
+            for prop in other_attrs:
+                for i in range(len(other_attrs[prop])):
+                    other_attrs_processed[i][prop] = other_attrs[prop][i]
+            for dic in other_attrs_processed:
+                dic.update(kwargs)
+        else:
+            other_attrs_processed = []
+
+        if other_attrs_processed:
+            ms = [cls(*args, **other_attrs_processed[row_num]) for row_num, args in enumerate(zip(*inputs))]
+        else:
+            ms = [cls(*args, **kwargs) for row_num, args in enumerate(zip(*inputs))]
+        return Map(ms, clustered_marker=clustered_marker)
 
     @classmethod
-    def map_table(cls, table, **kwargs):
-        """Return markers from the colums of a table."""
-        return cls.map(*table.columns, **kwargs)
+    def map_table(cls, table, clustered_marker=False, **kwargs):
+        """Return markers from the colums of a table.
+        
+        The first two columns of the table must be the latitudes and longitudes
+        (in that order), followed by 'labels', 'colors', and/or 'areas' (if applicable)
+        in any order with columns explicitly stating what property they are representing.
+        """
+        lat, lon, lab, color, areas, other_attrs = None, None, None, None, None, {}
 
+        for index, col in enumerate(table.labels):
+            this_col = table.column(col)
+            if index == 0:
+                lat = this_col
+            elif index == 1:
+                lon = this_col
+            elif col == "labels":
+                lab = this_col
+            elif col == "colors":
+                color = this_col
+            elif col == "areas":
+                areas = this_col
+            else:
+                other_attrs[col] = this_col
+        if not other_attrs:
+            other_attrs = None
+        return cls.map(latitudes=lat, longitudes=lon, labels=lab,
+            colors=color, areas=areas, other_attrs=other_attrs, 
+            clustered_marker=clustered_marker, **kwargs)
 
 class Circle(Marker):
     """A marker displayed with Folium's circle_marker method.
 
     popup -- text that pops up when marker is clicked
     color -- fill color
-    radius -- pixel radius of the circle
+    area -- pixel-squared area of the circle
 
     Defaults from Folium:
 
     fill_opacity: float, default 0.6
         Circle fill opacity
+
+    More options can be passed into kwargs by following the attributes
+    listed in `https://leafletjs.com/reference-1.4.0.html#circlemarker`.
 
     For example, to draw three circles::
 
@@ -512,23 +588,37 @@ class Circle(Marker):
                 'lon', [-122, -122.1, -121.9],
                 'label', ['one', 'two', 'three'],
                 'color', ['red', 'green', 'blue'],
-                'radius', [3000, 4000, 5000],
+                'area', [3000, 4000, 5000],
             ])
         Circle.map_table(t)
     """
 
-    _map_method_name = 'circle_marker'
-    _color_param = 'fill_color'
-    _has_radius = True
+    _has_area = True
 
-    def __init__(self, lat, lon, popup='', color='blue', radius=10, **kwargs):
-        super().__init__(lat, lon, popup, color, radius=radius, line_color=None, **kwargs)
+    def __init__(self, lat, lon, popup='', color='blue', area=math.pi*(10**2), **kwargs):
+        # Add support for transitioning radius to area
+        radius = (area/math.pi)**0.5
+        if 'radius' in kwargs:
+            warnings.warn("The 'radius' argument is deprecated. Please use 'area' instead.", FutureWarning)
+            radius = kwargs.pop('radius')
+        super().__init__(lat, lon, popup, color, radius=radius, **kwargs)
+
+    @property
+    def _folium_kwargs(self):
+        attrs = self._attrs.copy()
+        attrs['location'] = self.lat_lon
+        if 'color' in attrs:
+            attrs['fill_color'] = attrs.pop('color')
+        if 'line_color' in attrs:
+            attrs['color'] = attrs.pop('line_color')
+        return attrs
+
+    def draw_on(self, folium_map):
+        folium.CircleMarker(**self._folium_kwargs).add_to(folium_map)
 
 
 class Region(_MapFeature):
     """A GeoJSON feature displayed with Folium's geo_json method."""
-
-    _map_method_name = 'geo_json'
 
     def __init__(self, geojson, **kwargs):
         assert 'type' in geojson
@@ -579,7 +669,7 @@ class Region(_MapFeature):
     @property
     def _folium_kwargs(self):
         attrs = self._attrs.copy()
-        attrs['geo_str'] = json.dumps(self._geojson)
+        attrs['data'] = json.dumps(self._geojson)
         return attrs
 
     def geojson(self, feature_id):
@@ -596,6 +686,15 @@ class Region(_MapFeature):
         attrs = self._attrs.copy()
         attrs.update(kwargs)
         return Region(self._geojson, **attrs)
+
+    def draw_on(self, folium_map):
+        attrs = self._folium_kwargs
+        data = attrs.pop('data')
+        folium.GeoJson(
+            data=data,
+            style_function=lambda x: attrs,
+            name='geojson'
+        ).add_to(folium_map)
 
 
 def _lat_lons_from_geojson(s):

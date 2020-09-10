@@ -31,7 +31,7 @@ install:
   - python3 setup.py install
 
 script:
-  - coverage run setup.py test
+  - python3 setup.py test
 
 after_success:
   - coveralls
