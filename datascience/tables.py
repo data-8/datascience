@@ -5,6 +5,7 @@ __all__ = ['Table']
 import abc
 import collections
 import collections.abc
+import copy
 import functools
 import inspect
 import itertools
@@ -534,12 +535,70 @@ class Table(collections.abc.MutableMapping):
         return self
 
     def move_to_start(self, column_label):
-        """Move a column to the first in order."""
+        """
+        Move a column to be the first column.
+
+        The following example moves column C to be the first column. Note, move_to_start
+        not only returns the original table with the column moved but, it also moves
+        the column in the original. This is what's known as an inplace operation.
+
+        >>> table = Table().with_columns(
+        ...    "A", make_array(1, 2, 3, 4),
+        ...    "B", make_array("foo", "bar", "baz", "bat"),
+        ...    "C", make_array('a', 'b', 'c', 'd'))
+        >>> table
+        A    | B    | C
+        1    | foo  | a
+        2    | bar  | b
+        3    | baz  | c
+        4    | bat  | d
+        >>> table.move_to_start("C")
+        C    | A    | B
+        a    | 1    | foo
+        b    | 2    | bar
+        c    | 3    | baz
+        d    | 4    | bat
+        >>> table
+        C    | A    | B
+        a    | 1    | foo
+        b    | 2    | bar
+        c    | 3    | baz
+        d    | 4    | bat
+        """
         self._columns.move_to_end(self._as_label(column_label), last=False)
         return self
 
     def move_to_end(self, column_label):
-        """Move a column to the last in order."""
+        """
+        Move a column to be the last column.
+
+        The following example moves column A to be the last column. Note, move_to_end
+        not only returns the original table with the column moved but, it also moves
+        the column in the original. This is what's known as an inplace operation.
+
+        >>> table = Table().with_columns(
+        ...    "A", make_array(1, 2, 3, 4),
+        ...    "B", make_array("foo", "bar", "baz", "bat"),
+        ...    "C", make_array('a', 'b', 'c', 'd'))
+        >>> table
+        A    | B    | C
+        1    | foo  | a
+        2    | bar  | b
+        3    | baz  | c
+        4    | bat  | d
+        >>> table.move_to_end("A")
+        B    | C    | A
+        foo  | a    | 1
+        bar  | b    | 2
+        baz  | c    | 3
+        bat  | d    | 4
+        >>> table
+        B    | C    | A
+        foo  | a    | 1
+        bar  | b    | 2
+        baz  | c    | 3
+        bat  | d    | 4
+        """
         self._columns.move_to_end(self._as_label(column_label))
         return self
 
@@ -730,13 +789,90 @@ class Table(collections.abc.MutableMapping):
     ##################
 
     def copy(self, *, shallow=False):
-        """Return a copy of a table."""
+        """
+        Return a copy of a table.
+
+        Args:
+            ``shallow``: perform a shallow copy
+
+        Returns:
+            A copy of the table.
+
+        By default, copy performs a deep copy of the original table. This means that
+        it constructs a new object and recursively inserts copies into it of the objects
+        found in the original. Note in the following example, table_copy is a deep copy
+        of original_table so when original_table is updated it does not change
+        table_copy as it does not contain reference's to orignal_tables objects
+        due to the deep copy.
+
+        >>> value = ["foo"]
+        >>> original_table = Table().with_columns(
+        ...    "A", make_array(1, 2, 3),
+        ...    "B", make_array(value, ["foo", "bar"], ["foo"]),
+        ... )
+        >>> original_table
+        A    | B
+        1    | ['foo']
+        2    | ['foo', 'bar']
+        3    | ['foo']
+        >>> table_copy = original_table.copy()
+        >>> table_copy
+        A    | B
+        1    | ['foo']
+        2    | ['foo', 'bar']
+        3    | ['foo']
+        >>> value.append("bar")
+        >>> original_table
+        A    | B
+        1    | ['foo', 'bar']
+        2    | ['foo', 'bar']
+        3    | ['foo']
+        >>> table_copy
+        A    | B
+        1    | ['foo']
+        2    | ['foo', 'bar']
+        3    | ['foo']
+
+        By contrast, when a shallow copy is performed, a new object is contructed and
+        references are inserted into it to the objects found in the original. Note in
+        the following example how the update to original_table  occurs in both
+        table_shallow_copy and original_table because table_shallow_copy contains
+        references to the original_table.
+
+        >>> value = ["foo"]
+        >>> original_table = Table().with_columns(
+        ...    "A", make_array(1, 2, 3),
+        ...    "B", make_array(value, ["foo", "bar"], ["foo"]),
+        ... )
+        >>> original_table
+        A    | B
+        1    | ['foo']
+        2    | ['foo', 'bar']
+        3    | ['foo']
+        >>> table_shallow_copy = original_table.copy(shallow=True)
+        >>> table_shallow_copy
+        A    | B
+        1    | ['foo']
+        2    | ['foo', 'bar']
+        3    | ['foo']
+        >>> value.append("bar")
+        >>> original_table
+        A    | B
+        1    | ['foo', 'bar']
+        2    | ['foo', 'bar']
+        3    | ['foo']
+        >>> table_shallow_copy
+        A    | B
+        1    | ['foo', 'bar']
+        2    | ['foo', 'bar']
+        3    | ['foo']
+        """
         table = type(self)()
         for label in self.labels:
             if shallow:
                 column = self[label]
             else:
-                column = np.copy(self[label])
+                column = copy.deepcopy(self[label])
             self._add_column_and_format(table, label, column)
         return table
 
@@ -1472,7 +1608,65 @@ class Table(collections.abc.MutableMapping):
         return joined
 
     def stats(self, ops=(min, max, np.median, sum)):
-        """Compute statistics for each column and place them in a table."""
+        """
+        Compute statistics for each column and place them in a table.
+
+        Args:
+            ``ops`` -- A tuple of stat functions to use to compute stats.
+
+        Returns:
+            A ``Table`` with a prepended statistic column with the name of the
+            fucntion's as the values and the calculated stats values per column.
+
+        By default stats calculates the minimum, maximum, np.median, and sum of each
+        column.
+
+        >>> table = Table().with_columns(
+        ...     'A', make_array(4, 0, 6, 5),
+        ...     'B', make_array(10, 20, 17, 17),
+        ...     'C', make_array(18, 13, 2, 9))
+        >>> table.stats()
+        statistic | A    | B    | C
+        min       | 0    | 10   | 2
+        max       | 6    | 20   | 18
+        median    | 4.5  | 17   | 11
+        sum       | 15   | 64   | 42
+
+        Note, stats are calculated even on non-numeric columns which may lead to
+        unexpected behavior or in more severe cases errors. This is why it may be best
+        to eliminate non-numeric columns from the table before running stats.
+
+        >>> table = Table().with_columns(
+        ...     'B', make_array(10, 20, 17, 17),
+        ...     'C', make_array("foo", "bar", "baz", "baz"))
+        >>> table.stats()
+        statistic | B    | C
+        min       | 10   | bar
+        max       | 20   | foo
+        median    | 17   |
+        sum       | 64   |
+        >>> table.select('B').stats()
+        statistic | B
+        min       | 10
+        max       | 20
+        median    | 17
+        sum       | 64
+
+        ``ops`` can also be overridden to calculate custom stats.
+
+        >>> table = Table().with_columns(
+        ...     'A', make_array(4, 0, 6, 5),
+        ...     'B', make_array(10, 20, 17, 17),
+        ...     'C', make_array(18, 13, 2, 9))
+        >>> def weighted_average(x):
+        ...     return np.average(x, weights=[1, 0, 1.5, 1.25])
+        >>> table.stats(ops=(weighted_average, np.mean, np.median, np.std))
+        statistic        | A       | B       | C
+        weighted_average | 5.13333 | 15.1333 | 8.6
+        mean             | 3.75    | 16      | 10.5
+        median           | 4.5     | 17      | 11
+        std              | 2.27761 | 3.67423 | 5.85235
+        """
         names = [op.__name__ for op in ops]
         ops = [_zero_on_type_error(op) for op in ops]
         columns = [[op(column) for op in ops] for column in self.columns]
@@ -2845,8 +3039,7 @@ class Table(collections.abc.MutableMapping):
         self.group(column_label).barh(column_label, **vargs)
 
     def scatter(self, column_for_x, select=None, overlay=True, fit_line=False,
-        group=None, labels=None, sizes=None, width=None, height=None, s=20,
-        colors=None, **vargs):
+        group=None, labels=None, sizes=None, width=None, height=None, s=20, **vargs):
         """Creates scatterplots, optionally adding a line of best fit. Redirects to ``Table#iscatter``
         if interactive plots are enabled with ``Table#interactive_plots``
 
@@ -2940,14 +3133,8 @@ class Table(collections.abc.MutableMapping):
         options.update(vargs)
 
         x_data, y_labels =  self._split_column_and_labels(column_for_x)
-        if group is not None and colors is not None and group != colors:
-            warnings.warn("Do not pass both colors and group to scatter().")
-        if group is None and colors is not None:
-            # Backward compatibility
-            group = colors
-            # TODO: In a future release, warn that this is deprecated.
-            # Deprecated
-            # warnings.warn("scatter(colors=x) is deprecated. Use scatter(group=x)", FutureWarning)
+        if "colors" in vargs and vargs["colors"]:
+            warnings.warn("scatter(colors=x) has been removed. Use scatter(group=x)", FutureWarning)
         if group is not None:
             y_labels.remove(self._as_label(group))
         if sizes is not None:

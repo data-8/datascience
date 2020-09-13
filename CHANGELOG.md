@@ -4,7 +4,8 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-### v0.16.0
+
+### v0.17.0
 * Includes additional plotly-based plotting methods `Table#iplot`, `Table#ibarh`, `Table#iscatter`, `Table#ihist`, and `Table#iscatter3d`
 * New static methods `Table#interactive_plots` and `Table#static_plots` that redirect `Table#plot` to `Table#iplot`, `Table#barh` to `Table#ibarh`, etc. with same arguments
 * New method `Table#scatter3d` that is a wrapper for `Table#iscatter3d` but _does not_ implement a matplotlib plot and raises a `RuntimeError` if called when interactive plots are not enabled
@@ -17,6 +18,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 * Includes geocoding function `get_coordinates` that assigns latitude and longitude coordinates for U.S. locations by city, state, county, and zip code
 * Updated Maps.ipynb notebook to showcase new changes made to mapping
 * Data 8-friendly `datascience` reference notebook added to documentation using nbsphinx
+
+### v0.16.1
+* No longer support the `colors` argument for `Table#scatter`.  Use `group` instead.
+
 
 ### v0.15.10
 * Include ipynb files in tests, and when measuring test coverage
