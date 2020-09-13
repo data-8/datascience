@@ -514,7 +514,195 @@ class Table(collections.abc.MutableMapping):
     ############
 
     def set_format(self, column_or_columns, formatter):
-        """Set the format of a column."""
+        """
+        Set the pretty print format of a column(s) and/or convert its values.
+
+        Args:
+            ``column_or_columns``: values to group (column label or index, or array)
+
+            ``formatter``: a function applied to a single value within the
+                ``column_or_columns`` at a time or a formatter class, or formatter
+                class instance.
+
+        Returns:
+            A Table with ``formatter`` applied to each ``column_or_columns``.
+
+        The following example formats the column "balance" by passing in a formatter
+        class instance. The formatter is run each time ``__repr__`` is called. So, while
+        the table is formatted upon being printed to the console, the underlying values
+        within the table remain untouched. It's worth noting that while ``set_format``
+        returns the table with the new formatters applied, this change is applied
+        directly to the original table and then the original table is returned. This
+        means ``set_format`` is what's known as an inplace operation.
+
+        >>> account_info = Table().with_columns(
+        ...    "user", make_array("gfoo", "bbar", "tbaz", "hbat"),
+        ...    "balance", make_array(200, 555, 125, 430))
+        >>> account_info
+        user | balance
+        gfoo | 200
+        bbar | 555
+        tbaz | 125
+        hbat | 430
+        >>> from datascience.formats import CurrencyFormatter
+        >>> account_info.set_format("balance", CurrencyFormatter("BZ$")) # Belize Dollar
+        user | balance
+        gfoo | BZ$200
+        bbar | BZ$555
+        tbaz | BZ$125
+        hbat | BZ$430
+        >>> account_info["balance"]
+        array([200, 555, 125, 430])
+        >>> account_info
+        user | balance
+        gfoo | BZ$200
+        bbar | BZ$555
+        tbaz | BZ$125
+        hbat | BZ$430
+
+        The following example formats the column "balance" by passing in a formatter
+        function.
+
+        >>> account_info = Table().with_columns(
+        ...    "user", make_array("gfoo", "bbar", "tbaz", "hbat"),
+        ...    "balance", make_array(200, 555, 125, 430))
+        >>> account_info
+        user | balance
+        gfoo | 200
+        bbar | 555
+        tbaz | 125
+        hbat | 430
+        >>> def iceland_krona_formatter(value):
+        ...    return f"{value} kr"
+        >>> account_info.set_format("balance", iceland_krona_formatter)
+        user | balance
+        gfoo | 200 kr
+        bbar | 555 kr
+        tbaz | 125 kr
+        hbat | 430 kr
+
+        The following, formats the column "balance" by passing in a formatter class.
+        Note the formatter class must have a Boolean ``converts_values`` attribute set
+        and a ``format_column`` method that returns a function that formats a single
+        value at a time. The ``format_column`` method accepts the name of the column and
+        the value of the column as arguments and returns a formatter function that
+        accepts a value and Boolean indicating whether that value is the column name.
+        In the following example, if the ``if label: return value`` was removed, the
+        column name "balance" would be formatted and printed as "balance kr". The
+        ``converts_values`` attribute should be set to False unless a ``convert_values``
+        method is also defined on the formatter class.
+
+        >>> account_info = Table().with_columns(
+        ...    "user", make_array("gfoo", "bbar", "tbaz", "hbat"),
+        ...    "balance", make_array(200, 555, 125, 430))
+        >>> account_info
+        user | balance
+        gfoo | 200
+        bbar | 555
+        tbaz | 125
+        hbat | 430
+        >>> class IcelandKronaFormatter():
+        ...    def __init__(self):
+        ...        self.converts_values = False
+        ...
+        ...    def format_column(self, label, column):
+        ...        def format_krona(value, label):
+        ...            if label:
+        ...                return value
+        ...            return f"{value} kr"
+        ...
+        ...        return format_krona
+        >>> account_info.set_format("balance", IcelandKronaFormatter)
+        user | balance
+        gfoo | 200 kr
+        bbar | 555 kr
+        tbaz | 125 kr
+        hbat | 430 kr
+        >>> account_info["balance"]
+        array([200, 555, 125, 430])
+
+        ``set_format`` can also be used to convert values. If you set the
+        ``converts_values`` attribute to True and define a ``convert_column`` method
+        that accepts the column values and returns the converted column values on the
+        formatter class, the column values will be permanently converted to the new
+        column values in a one time operation.
+
+        >>> account_info = Table().with_columns(
+        ...    "user", make_array("gfoo", "bbar", "tbaz", "hbat"),
+        ...    "balance", make_array(200.01, 555.55, 125.65, 430.18))
+        >>> account_info
+        user | balance
+        gfoo | 200.01
+        bbar | 555.55
+        tbaz | 125.65
+        hbat | 430.18
+        >>> class IcelandKronaFormatter():
+        ...    def __init__(self):
+        ...        self.converts_values = True
+        ...
+        ...    def format_column(self, label, column):
+        ...        def format_krona(value, label):
+        ...            if label:
+        ...                return value
+        ...            return f"{value} kr"
+        ...
+        ...        return format_krona
+        ...
+        ...    def convert_column(self, values):
+        ...        # Drop the fractional kr.
+        ...        return values.astype(int)
+        >>> account_info.set_format("balance", IcelandKronaFormatter)
+        user | balance
+        gfoo | 200 kr
+        bbar | 555 kr
+        tbaz | 125 kr
+        hbat | 430 kr
+        >>> account_info
+        user | balance
+        gfoo | 200 kr
+        bbar | 555 kr
+        tbaz | 125 kr
+        hbat | 430 kr
+        >>> account_info["balance"]
+        array([200, 555, 125, 430])
+
+        In the following example, multiple columns are configured to use the same
+        formatter. Note the following formatter takes into account the length of all
+        values in the column and formats them to be the same character length. This is
+        something that the default table formatter does for you but, if you write a
+        custom formatter, you must do yourself.
+
+        >>> account_info = Table().with_columns(
+        ...    "user", make_array("gfoo", "bbar", "tbaz", "hbat"),
+        ...    "checking", make_array(200, 555, 125, 430),
+        ...    "savings", make_array(1000, 500, 1175, 6700))
+        >>> account_info
+        user | checking | savings
+        gfoo | 200      | 1000
+        bbar | 555      | 500
+        tbaz | 125      | 1175
+        hbat | 430      | 6700
+        >>> class IcelandKronaFormatter():
+        ...    def __init__(self):
+        ...        self.converts_values = False
+        ...
+        ...    def format_column(self, label, column):
+        ...        val_width = max([len(str(v)) + len(" kr") for v in column])
+        ...        val_width = max(len(str(label)), val_width)
+        ...
+        ...        def format_krona(value, label):
+        ...            if label:
+        ...                return value
+        ...            return f"{value} kr".ljust(val_width)
+        ...
+        ...        return format_krona
+        >>> account_info.set_format(["checking", "savings"], IcelandKronaFormatter)
+        user | checking | savings
+        gfoo | 200 kr   | 1000 kr
+        bbar | 555 kr   | 500 kr
+        tbaz | 125 kr   | 1175 kr
+        hbat | 430 kr   | 6700 kr
+        """
         if inspect.isclass(formatter):
             formatter = formatter()
         if callable(formatter) and not hasattr(formatter, 'format_column'):
