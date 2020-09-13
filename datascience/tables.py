@@ -3119,7 +3119,6 @@ class Table(collections.abc.MutableMapping):
                 s = s / 4, # Plotly dot sizes are much smaller, so divide s by 4
                 width =  width,
                 height = height,
-                colors = colors,
                 **vargs
             )
 
@@ -3183,7 +3182,7 @@ class Table(collections.abc.MutableMapping):
 
     def iscatter(self, column_for_x, select=None, overlay=True, fit_line=False,
         group=None, labels=None, sizes=None, width=None, height=None, s=5,
-        colors=None, show=True, **vargs):
+        show=True, **vargs):
         """Creates interactive scatterplots, optionally adding a line of best fit, using plotly.
 
         Args:
@@ -3253,15 +3252,18 @@ class Table(collections.abc.MutableMapping):
 
         x_data, y_labels =  self._split_column_and_labels(column_for_x)
 
-        if group is not None and colors is not None and group != colors:
-            warnings.warn("Do not pass both colors and group to scatter().")
+        # if group is not None and colors is not None and group != colors:
+        #     warnings.warn("Do not pass both colors and group to scatter().")
 
-        if group is None and colors is not None:
-            # Backward compatibility
-            group = colors
-            # TODO: In a future release, warn that this is deprecated.
-            # Deprecated
-            warnings.warn("scatter(colors=x) is deprecated. Use scatter(group=x)", FutureWarning)
+        # if group is None and colors is not None:
+        #     # Backward compatibility
+        #     group = colors
+        #     # TODO: In a future release, warn that this is deprecated.
+        #     # Deprecated
+        #     warnings.warn("scatter(colors=x) is deprecated. Use scatter(group=x)", FutureWarning)
+
+        if "colors" in vargs and vargs["colors"]:
+            warnings.warn("scatter(colors=x) has been removed. Use scatter(group=x)", FutureWarning)
 
         if group is not None:
             y_labels.remove(self._as_label(group))

@@ -931,7 +931,7 @@ def get_coordinates(table, replace_columns=False, remove_nans=False):
         Table with latitude and longitude coordinates 
     """
     assert "zip code" in table.labels or (("city" in table.labels or "county" in table.labels) and "state" in table.labels)
-    ref = Table.from_df(pandas.read_csv(pkg_resources.resource_filename(__name__, "geodata/geocode_states.csv")))
+    ref = Table.read_table(pkg_resources.resource_filename(__name__, "geodata/geocode_states.csv"))
 
     index_name = "".join(table.labels) # Ensures that index can't possibly be one of the preexisting columns
     index_name += " "
