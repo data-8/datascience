@@ -528,12 +528,70 @@ class Table(collections.abc.MutableMapping):
         return self
 
     def move_to_start(self, column_label):
-        """Move a column to the first in order."""
+        """
+        Move a column to be the first column.
+
+        The following example moves column C to be the first column. Note, move_to_start
+        not only returns the original table with the column moved but, it also moves
+        the column in the original. This is what's known as an inplace operation.
+
+        >>> table = Table().with_columns(
+        ...    "A", make_array(1, 2, 3, 4),
+        ...    "B", make_array("foo", "bar", "baz", "bat"),
+        ...    "C", make_array('a', 'b', 'c', 'd'))
+        >>> table
+        A    | B    | C
+        1    | foo  | a
+        2    | bar  | b
+        3    | baz  | c
+        4    | bat  | d
+        >>> table.move_to_start("C")
+        C    | A    | B
+        a    | 1    | foo
+        b    | 2    | bar
+        c    | 3    | baz
+        d    | 4    | bat
+        >>> table
+        C    | A    | B
+        a    | 1    | foo
+        b    | 2    | bar
+        c    | 3    | baz
+        d    | 4    | bat
+        """
         self._columns.move_to_end(self._as_label(column_label), last=False)
         return self
 
     def move_to_end(self, column_label):
-        """Move a column to the last in order."""
+        """
+        Move a column to be the last column.
+
+        The following example moves column A to be the last column. Note, move_to_end
+        not only returns the original table with the column moved but, it also moves
+        the column in the original. This is what's known as an inplace operation.
+
+        >>> table = Table().with_columns(
+        ...    "A", make_array(1, 2, 3, 4),
+        ...    "B", make_array("foo", "bar", "baz", "bat"),
+        ...    "C", make_array('a', 'b', 'c', 'd'))
+        >>> table
+        A    | B    | C
+        1    | foo  | a
+        2    | bar  | b
+        3    | baz  | c
+        4    | bat  | d
+        >>> table.move_to_end("A")
+        B    | C    | A
+        foo  | a    | 1
+        bar  | b    | 2
+        baz  | c    | 3
+        bat  | d    | 4
+        >>> table
+        B    | C    | A
+        foo  | a    | 1
+        bar  | b    | 2
+        baz  | c    | 3
+        bat  | d    | 4
+        """
         self._columns.move_to_end(self._as_label(column_label))
         return self
 
