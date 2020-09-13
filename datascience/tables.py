@@ -5,6 +5,7 @@ __all__ = ['Table']
 import abc
 import collections
 import collections.abc
+import copy
 import functools
 import inspect
 import itertools
@@ -723,13 +724,90 @@ class Table(collections.abc.MutableMapping):
     ##################
 
     def copy(self, *, shallow=False):
-        """Return a copy of a table."""
+        """
+        Return a copy of a table.
+
+        Args:
+            ``shallow``: perform a shallow copy
+
+        Returns:
+            A copy of the table.
+
+        By default, copy performs a deep copy of the original table. This means that
+        it constructs a new object and recursively inserts copies into it of the objects
+        found in the original. Note in the following example, table_copy is a deep copy
+        of original_table so when original_table is updated it does not change
+        table_copy as it does not contain reference's to orignal_tables objects
+        due to the deep copy.
+
+        >>> value = ["foo"]
+        >>> original_table = Table().with_columns(
+        ...    "A", make_array(1, 2, 3),
+        ...    "B", make_array(value, ["foo", "bar"], ["foo"]),
+        ... )
+        >>> original_table
+        A    | B
+        1    | ['foo']
+        2    | ['foo', 'bar']
+        3    | ['foo']
+        >>> table_copy = original_table.copy()
+        >>> table_copy
+        A    | B
+        1    | ['foo']
+        2    | ['foo', 'bar']
+        3    | ['foo']
+        >>> value.append("bar")
+        >>> original_table
+        A    | B
+        1    | ['foo', 'bar']
+        2    | ['foo', 'bar']
+        3    | ['foo']
+        >>> table_copy
+        A    | B
+        1    | ['foo']
+        2    | ['foo', 'bar']
+        3    | ['foo']
+
+        By contrast, when a shallow copy is performed, a new object is contructed and
+        references are inserted into it to the objects found in the original. Note in
+        the following example how the update to original_table  occurs in both
+        table_shallow_copy and original_table because table_shallow_copy contains
+        references to the original_table.
+
+        >>> value = ["foo"]
+        >>> original_table = Table().with_columns(
+        ...    "A", make_array(1, 2, 3),
+        ...    "B", make_array(value, ["foo", "bar"], ["foo"]),
+        ... )
+        >>> original_table
+        A    | B
+        1    | ['foo']
+        2    | ['foo', 'bar']
+        3    | ['foo']
+        >>> table_shallow_copy = original_table.copy(shallow=True)
+        >>> table_shallow_copy
+        A    | B
+        1    | ['foo']
+        2    | ['foo', 'bar']
+        3    | ['foo']
+        >>> value.append("bar")
+        >>> original_table
+        A    | B
+        1    | ['foo', 'bar']
+        2    | ['foo', 'bar']
+        3    | ['foo']
+        >>> table_shallow_copy
+        A    | B
+        1    | ['foo', 'bar']
+        2    | ['foo', 'bar']
+        3    | ['foo']
+        """
         table = type(self)()
         for label in self.labels:
             if shallow:
                 column = self[label]
             else:
-                column = np.copy(self[label])
+                column = copy.deepcopy(self[label])
             self._add_column_and_format(table, label, column)
         return table
 
