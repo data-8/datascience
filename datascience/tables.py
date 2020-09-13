@@ -1543,7 +1543,65 @@ class Table(collections.abc.MutableMapping):
         return joined
 
     def stats(self, ops=(min, max, np.median, sum)):
-        """Compute statistics for each column and place them in a table."""
+        """
+        Compute statistics for each column and place them in a table.
+
+        Args:
+            ``ops`` -- A tuple of stat functions to use to compute stats.
+
+        Returns:
+            A ``Table`` with a prepended statistic column with the name of the
+            fucntion's as the values and the calculated stats values per column.
+
+        By default stats calculates the minimum, maximum, np.median, and sum of each
+        column.
+
+        >>> table = Table().with_columns(
+        ...     'A', make_array(4, 0, 6, 5),
+        ...     'B', make_array(10, 20, 17, 17),
+        ...     'C', make_array(18, 13, 2, 9))
+        >>> table.stats()
+        statistic | A    | B    | C
+        min       | 0    | 10   | 2
+        max       | 6    | 20   | 18
+        median    | 4.5  | 17   | 11
+        sum       | 15   | 64   | 42
+
+        Note, stats are calculated even on non-numeric columns which may lead to
+        unexpected behavior or in more severe cases errors. This is why it may be best
+        to eliminate non-numeric columns from the table before running stats.
+
+        >>> table = Table().with_columns(
+        ...     'B', make_array(10, 20, 17, 17),
+        ...     'C', make_array("foo", "bar", "baz", "baz"))
+        >>> table.stats()
+        statistic | B    | C
+        min       | 10   | bar
+        max       | 20   | foo
+        median    | 17   |
+        sum       | 64   |
+        >>> table.select('B').stats()
+        statistic | B
+        min       | 10
+        max       | 20
+        median    | 17
+        sum       | 64
+
+        ``ops`` can also be overridden to calculate custom stats.
+
+        >>> table = Table().with_columns(
+        ...     'A', make_array(4, 0, 6, 5),
+        ...     'B', make_array(10, 20, 17, 17),
+        ...     'C', make_array(18, 13, 2, 9))
+        >>> def weighted_average(x):
+        ...     return np.average(x, weights=[1, 0, 1.5, 1.25])
+        >>> table.stats(ops=(weighted_average, np.mean, np.median, np.std))
+        statistic        | A       | B       | C
+        weighted_average | 5.13333 | 15.1333 | 8.6
+        mean             | 3.75    | 16      | 10.5
+        median           | 4.5     | 17      | 11
+        std              | 2.27761 | 3.67423 | 5.85235
+        """
         names = [op.__name__ for op in ops]
         ops = [_zero_on_type_error(op) for op in ops]
         columns = [[op(column) for op in ops] for column in self.columns]
