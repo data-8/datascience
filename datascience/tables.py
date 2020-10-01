@@ -1335,11 +1335,23 @@ class Table(collections.abc.MutableMapping):
         column = self._get_column(column_or_label)
         if distinct:
             _, row_numbers = np.unique(column, return_index=True)
+            if descending:
+                row_numbers = np.array(row_numbers[::-1])
         else:
-            row_numbers = np.argsort(column, axis=0, kind='mergesort')
+            if descending:
+                # In order to not reverse the original row order in case of ties,
+                # do the following:
+                # 1. Reverse the original array.
+                # 2. Sort the array in ascending order.
+                # 3. Invert the array indices via: len - 1 - indice.
+                # 4. Reverse the array so that it is in decending order.
+                column = column[::-1]
+                row_numbers = np.argsort(column, axis=0, kind='mergesort')
+                row_numbers = len(row_numbers) - 1 - row_numbers
+                row_numbers = np.array(row_numbers[::-1])
+            else:
+                row_numbers = np.argsort(column, axis=0, kind='mergesort')
         assert (row_numbers < self.num_rows).all(), row_numbers
-        if descending:
-            row_numbers = np.array(row_numbers[::-1])
         return self.take(row_numbers)
 
     def group(self, column_or_label, collect=None):

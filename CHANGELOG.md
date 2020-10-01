@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.16.2
+* Fix bug so Table.sort(descending=True) no longer reverses order of ties.
+* Fix bug so Table.copy(shallow=False) performs a deepcopy.
+
 ### v0.16.1
 * No longer support the `colors` argument for `Table#scatter`.  Use `group` instead.
 

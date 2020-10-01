@@ -398,6 +398,17 @@ def test_sort_args(table):
     """)
 
 
+def test_sort_descending(table):
+    sorted_table = table.sort('points', descending=True)
+    assert_equal(sorted_table, """
+    letter | count | points
+    z      | 1     | 10
+    b      | 3     | 2
+    c      | 3     | 2
+    a      | 9     | 1
+    """)
+
+
 def test_sort_syntax(table):
     t = table
     t['totals'] = t['points'] * t['count']
