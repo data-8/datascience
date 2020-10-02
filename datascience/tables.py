@@ -87,8 +87,8 @@ class Table(collections.abc.MutableMapping):
 
     @classmethod
     def from_records(cls, records):
-        """Create a table from a sequence of records (dicts with fixed keys).
-
+        """Create a table from a sequence of records (dicts with fixed keys)."""
+        """
            Args:
 
                records: A list of dictionaries with same keys.
@@ -98,8 +98,22 @@ class Table(collections.abc.MutableMapping):
                If the list is empty, it will return an empty table.
                Otherwise, it will return a table with the dictionary's keys as the column name, and the corresponding data.
                If the dictionaries do not have identical keys, the keys of the first dictionary in the list is used.
+               
+           Example:
+           
+               >>> t = Table().from_records([
+                       {'column1':'data1','column2':1},
+                       {'column1':'data2','column2':2},
+                       {'column1':'data3','column2':3}
+                       ])
+               >>> print(t)
+               >>>
+               column1 | column2
+                data1  |    1
+                data2  |    2
+                data3  |    3
 
-           """
+         """
         if not records:
             return cls()
         labels = sorted(list(records[0].keys()))
