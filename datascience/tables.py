@@ -784,8 +784,44 @@ class Table(collections.abc.MutableMapping):
         return self
 
     def append(self, row_or_table):
-        """Append a row or all rows of a table. An appended table must have all
-        columns of self."""
+        """
+        Append a row or all rows of a table in place. An appended table must have all
+        columns of self.
+
+        The following example appends a row record to the table,
+        followed by appending a table having all columns of self.
+
+        >>> table = Table().with_columns(
+        ...    "A", make_array(1),
+        ...    "B", make_array("foo"),
+        ...    "C", make_array('a'))
+        >>> table
+        A    | B    | C
+        1    | foo  | a
+        >>> table.append([2, "bar", 'b'])
+        A    | B    | C
+        1    | foo  | a
+        2    | bar  | b
+        >>> table
+        A    | B    | C
+        1    | foo  | a
+        2    | bar  | b
+        >>> table.append(Table().with_columns(
+        ...    "A", make_array(3, 4),
+        ...    "B", make_array("baz", "bat"),
+        ...    "C", make_array('c', 'd')))
+        A    | B    | C
+        1    | foo  | a
+        2    | bar  | b
+        3    | baz  | c
+        4    | bat  | d
+        >>> table
+        A    | B    | C
+        1    | foo  | a
+        2    | bar  | b
+        3    | baz  | c
+        4    | bat  | d
+        """
         if isinstance(row_or_table, np.ndarray):
             row_or_table = row_or_table.tolist()
         elif not row_or_table:
@@ -952,7 +988,40 @@ class Table(collections.abc.MutableMapping):
         return self
 
     def remove(self, row_or_row_indices):
-        """Removes a row or multiple rows of a table in place."""
+        """
+        Removes a row or multiple rows of a table in place (row number is 0 indexed).
+        If row_or_row_indices is not int or list, no changes will be made to the table.
+
+        The following example removes 2nd row (row_or_row_indices = 1), followed by removing 2nd
+        and 3rd rows (row_or_row_indices = [1, 2]).
+
+        >>> table = Table().with_columns(
+        ...    "A", make_array(1, 2, 3, 4),
+        ...    "B", make_array("foo", "bar", "baz", "bat"),
+        ...    "C", make_array('a', 'b', 'c', 'd'))
+        >>> table
+        A    | B    | C
+        1    | foo  | a
+        2    | bar  | b
+        3    | baz  | c
+        4    | bat  | d
+        >>> table.remove(1)
+        A    | B    | C
+        1    | foo  | a
+        3    | baz  | c
+        4    | bat  | d
+        >>> table
+        A    | B    | C
+        1    | foo  | a
+        3    | baz  | c
+        4    | bat  | d
+        >>> table.remove([1, 2])
+        A    | B    | C
+        1    | foo  | a
+        >>> table
+        A    | B    | C
+        1    | foo  | a
+        """
         if not row_or_row_indices and not isinstance(row_or_row_indices, int):
             return
         if isinstance(row_or_row_indices, int):
