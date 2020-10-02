@@ -2665,7 +2665,7 @@ class Table(collections.abc.MutableMapping):
             None
 
         Returns:
-            arr: a NumPy array of shape [4,]
+            arr: a NumPy array
 
         The following is an example of calling to_array()
         >>> t = Table().with_columns([
