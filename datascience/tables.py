@@ -255,7 +255,8 @@ class Table(collections.abc.MutableMapping):
 
     @classmethod
     def from_array(cls, arr):
-        """Convert a structured NumPy array into a Table.
+        """Convert a structured NumPy array into a Table."""
+        """
 
            Args:
  
@@ -263,7 +264,29 @@ class Table(collections.abc.MutableMapping):
 
            Returns:
 
-               A table with the field names as the column names and the corresponding data. 
+               A table with the field names as the column names and the corresponding data.
+               
+        Example:
+        
+        >>> arr = np.array([
+                           ('A',1,54.0), ('B',2,90.)],
+                           dtype=[
+                                 ('Name', 'U10'), ('Number', 'i4'), ('Data', 'f4')
+                                 ]
+                          )
+                         
+        >>> print(arr)
+        >>>
+        [('A',1,54.),('B',2,90.5)]
+        
+        >>> t = Table().from_array(arr)
+        
+        >>> print(t)
+        >>>
+        Name | Number | Data
+         A   |    1   |  81
+         B   |    2   |  90.5
+        
         """
         return cls().with_columns([(f, arr[f]) for f in arr.dtype.names])
 
