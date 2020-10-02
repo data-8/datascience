@@ -135,6 +135,9 @@ class Table(collections.abc.MutableMapping):
         filepath_or_buffer -- string or file handle / StringIO; The string
                               could be a URL. Valid URL schemes include http,
                               ftp, s3, and file.
+        
+        Returns:
+            a table read from argument
                               
         Example 1
         
@@ -206,11 +209,40 @@ class Table(collections.abc.MutableMapping):
 
     @classmethod
     def from_df(cls, df, keep_index=False):
-        """Convert a Pandas DataFrame into a Table.
+        """Convert a Pandas DataFrame into a Table."""
+        
+        """
 
         `keep_index` -- keeps the index of the DataFrame 
             and turns it into a column called `index` in 
             the new Table
+            
+        Returns:
+           a table from Pandas Dataframe in argument
+           
+        Example:
+        
+        >>> sample_DF = pd.DataFrame(
+                                    data = zip([1,2,3],['a','b','c'],['data1','data2','data3']),
+                                    columns = ['column1','column2','column3']
+                                    )
+        
+        >>> sample_DF
+        >>>
+           column1 | column2 | column3
+        0     1        a        data1
+        1     2        b        data2
+        2     3        c        data3
+        
+        >>> t = Table().from_df(sample_DF)
+        
+        >>> print(t)
+        
+        >>>
+        column1 | column2 | column3
+           1        a        data1
+           2        b        data2
+           3        c        data3
 
         """
         t = cls()
