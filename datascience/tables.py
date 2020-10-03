@@ -87,8 +87,8 @@ class Table(collections.abc.MutableMapping):
 
     @classmethod
     def from_records(cls, records):
-        """Create a table from a sequence of records (dicts with fixed keys)."""
-        """
+        """Create a table from a sequence of records (dicts with fixed keys).
+        
            Args:
 
                records: A list of dictionaries with same keys.
@@ -113,7 +113,7 @@ class Table(collections.abc.MutableMapping):
                 data2  |    2
                 data3  |    3
 
-         """
+        """
         if not records:
             return cls()
         labels = sorted(list(records[0].keys()))
@@ -129,10 +129,10 @@ class Table(collections.abc.MutableMapping):
 
     @classmethod
     def read_table(cls, filepath_or_buffer, *args, **vargs):
-        """Read a table from a file or web address."""
-        """
-
-        filepath_or_buffer -- string or file handle / StringIO; The string
+        """Read a table from a file or web address.
+        
+        Args:
+            filepath_or_buffer -- string or file handle / StringIO; The string
                               could be a URL. Valid URL schemes include http,
                               ftp, s3, and file.
         
@@ -209,11 +209,13 @@ class Table(collections.abc.MutableMapping):
 
     @classmethod
     def from_df(cls, df, keep_index=False):
-        """Convert a Pandas DataFrame into a Table."""
+        """Convert a Pandas DataFrame into a Table.
         
-        """
-
-        `keep_index` -- keeps the index of the DataFrame 
+        Args:
+        
+            df -- Pandas DataFrame utilized for creation of Table
+            
+            `keep_index` -- keeps the index of the DataFrame 
             and turns it into a column called `index` in 
             the new Table
             
@@ -255,12 +257,11 @@ class Table(collections.abc.MutableMapping):
 
     @classmethod
     def from_array(cls, arr):
-        """Convert a structured NumPy array into a Table."""
-        """
+        """Convert a structured NumPy array into a Table.
 
            Args:
  
-               arr: A structured numpy array
+               arr -- A structured numpy array
 
            Returns:
 
