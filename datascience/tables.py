@@ -2637,9 +2637,9 @@ class Table(collections.abc.MutableMapping):
              Here's an example of using the to_df() method:
              
             >>> table = Table().with_columns({'name': ['abc', 'xyz', 'uvw'],
-                        ... 'age': [12,14,20],
-                        ... 'height': [5.5,6.0,5.9],
-                        ... })
+            ... 'age': [12,14,20],
+            ... 'height': [5.5,6.0,5.9],
+            ... })
                         
             >>> table
             name | age  | height
