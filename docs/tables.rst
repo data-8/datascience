@@ -75,7 +75,7 @@ Accessing values
     Table.labels
     Table.first
     Table.last
-
+    Table.values
     Table.column_index
     Table.apply
 
@@ -118,6 +118,11 @@ Transformation (creates a new table)
     Table.split
     Table.bin
     Table.pivot_bin
+    Table.relabeled
+    Table.with_row
+    Table.with_rows
+    Table.with_column
+    Table.with_columns
 
 Exporting / Displaying
 
