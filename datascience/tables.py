@@ -257,8 +257,8 @@ class Table(collections.abc.MutableMapping):
         
         >>> print(t)
         Name | Number
-        A    | 9
-        B    | 3
+        A    | 1
+        B    | 2
         
         """
         return cls().with_columns([(f, arr[f]) for f in arr.dtype.names])
