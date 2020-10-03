@@ -1,13 +1,17 @@
 """Draw maps using folium."""
 
-__all__ = ['Map', 'Marker', 'Circle', 'Region']
+__all__ = ['Map', 'Marker', 'Circle', 'Region', 'get_coordinates']
 
 
 import IPython.display
+import itertools
 import folium
-from folium.plugins import MarkerCluster
+from folium.plugins import MarkerCluster, BeautifyIcon
 import pandas
 import numpy as np
+import matplotlib as mpl
+import pkg_resources
+import branca.colormap as cm
 
 import abc
 import collections
@@ -19,6 +23,7 @@ import random
 import warnings
 
 from .tables import Table
+from .predicates import are
 
 _number = (int, float, np.number)
 
@@ -111,17 +116,79 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         return iter(self._features)
 
     def _set_folium_map(self):
+        index_map = self._attrs.pop("index_map", None)
+        cluster_labels = self._attrs.pop("cluster_labels", None)
         self._folium_map = self._create_map()
-        if 'clustered_marker' in self._attrs and self._attrs['clustered_marker']:
-            marker_cluster = MarkerCluster().add_to(self._folium_map)
+        if self._attrs.get("clustered_marker", False):
+            def customize_marker_cluster(color, label):
+                # Returns string for icon_create_function
+                hexcolor = mpl.colors.to_hex(color)
+                return f"""
+                    function(cluster) {{ 
+                        return L.divIcon({{ 
+                            html: `<div
+                              style='
+                                opacity: 0.85; 
+                                background-color: {hexcolor}; 
+                                border: solid 2px rgba(66,135,245,1);
+                                border-radius: 50%;
+                                height: 40px;'
+                              onmouseover="document.getElementById('{hexcolor}').style.visibility='visible'"
+                              onmouseout="document.getElementById('{hexcolor}').style.visibility='hidden'">
+                              <div id="{hexcolor}" 
+                                style='
+                                  visibility: hidden;
+                                  font-size: 12px; 
+                                  background-color: white; 
+                                  color: {hexcolor};
+                                  text-align: center; 
+                                  padding: 6% 6%;
+                                  position: absolute; 
+                                  z-index: 1;
+                                  top: 120%; 
+                                  left: 50%; 
+                                  margin-left: -20px;
+                                  '>{label}</div>
+                            </div>`, 
+                            iconSize: [40, 40],
+                            className: 'dummy'
+                        }});
+                    }}
+                """
+            if index_map is not None:
+                chart_colors = (
+                    (0.0, 30/256, 66/256),
+                    (1.0, 200/256, 44/256),
+                    (0.0, 150/256, 207/256),
+                    (30/256, 100/256, 0.0),
+                    (172/256, 60/256, 72/256),
+                )
+                chart_colors += tuple(tuple((x+0.7)/2 for x in c) for c in chart_colors)
+                colors = list(itertools.islice(itertools.cycle(chart_colors), len(cluster_labels)))
+                marker_cluster = [MarkerCluster(icon_create_function = customize_marker_cluster(colors[i], label)).add_to(self._folium_map) for i, label in enumerate(cluster_labels)]
+            else:
+                marker_cluster = MarkerCluster().add_to(self._folium_map)
             clustered = True
         else:
             clustered = False
-        for feature in self._features.values():
-            if clustered and isinstance(feature, Marker):
-                feature.draw_on(marker_cluster)
+        for i, feature in enumerate(self._features.values()):
+            if isinstance(feature, Circle):
+                feature.draw_on(self._folium_map, self._attrs.get("radius_in_meters", False))
+            elif clustered and isinstance(feature, Marker):
+                if isinstance(marker_cluster, list):
+                    feature.draw_on(marker_cluster[index_map[i]])
+                else:
+                    feature.draw_on(marker_cluster)
             else:
                 feature.draw_on(self._folium_map)
+        if self._attrs.get("colorbar_scale", None) is not None:
+            colorbar_scale = self._attrs["colorbar_scale"]
+            include_color_scale_outliers = self._attrs.get("include_color_scale_outliers", False)
+            scale_colors = ["#340597", "#7008a5", "#a32494", "#cf5073", "#ee7c4c", "#f69344", "#fcc22d", "#f4e82d", "#f4e82d"]
+            vmin = colorbar_scale.pop(0)
+            vmax = colorbar_scale.pop(-1)
+            colormap = cm.LinearColormap(colors = scale_colors, index = colorbar_scale, caption = "*Legend above may exclude outliers." if not include_color_scale_outliers else "", vmin = colorbar_scale[0], vmax = colorbar_scale[-1])
+            self._folium_map.add_child(colormap)
 
     def _create_map(self):
         attrs = {'width': self._width, 'height': self._height}
@@ -409,7 +476,10 @@ class Marker(_MapFeature):
     color -- The color of the marker. You can use:
     [‘red’, ‘blue’, ‘green’, ‘purple’, ‘orange’, ‘darkred’,
     ’lightred’, ‘beige’, ‘darkblue’, ‘darkgreen’, ‘cadetblue’, ‘darkpurple’, 
-    ‘white’, ‘pink’, ‘lightblue’, ‘lightgreen’, ‘gray’, ‘black’, ‘lightgray’]
+    ‘white’, ‘pink’, ‘lightblue’, ‘lightgreen’, ‘gray’, ‘black’, ‘lightgray’] 
+    to use standard folium icons. If a hex color code is provided, 
+    (color must start with '#'), a folium.plugin.BeautifyIcon will
+    be used instead. 
     
     Defaults from Folium:
 
@@ -438,6 +508,10 @@ class Marker(_MapFeature):
             'color': color,
             **kwargs
         }
+        
+        # setting default icon to be empty; this is overwritten by .update()
+        # on the next line if 'marker_icon' is present in kwargs
+        self._attrs["marker_icon"] = "sign-blank"
         self._attrs.update(kwargs)
 
     @property
@@ -455,7 +529,20 @@ class Marker(_MapFeature):
         icon_args = {k: attrs.pop(k) for k in attrs.keys() & {'color', 'marker_icon', 'clustered_marker', 'icon_angle', 'popup_width'}}
         if 'marker_icon' in icon_args:
             icon_args['icon'] = icon_args.pop('marker_icon')
-        attrs['icon'] = folium.Icon(**icon_args)
+        if 'color' in icon_args and icon_args['color'][0] == '#':
+            # Checks if color provided is a hex code instead; if it is, uses BeautifyIcon to create markers. 
+            # If statement does not check to see if color is an empty string.
+            icon_args['background_color'] = icon_args['border_color'] = icon_args.pop('color')
+            if icon_args['background_color'][1] == icon_args['background_color'][3] == icon_args['background_color'][5] == 'f':
+                icon_args['text_color'] = 'gray'
+            else:
+                icon_args['text_color'] = 'white'
+            icon_args['icon_shape'] = 'marker'
+            if 'icon' not in icon_args:
+                icon_args['icon'] = 'circle'
+            attrs['icon'] = BeautifyIcon(**icon_args)
+        else:
+            attrs['icon'] = folium.Icon(**icon_args)
         return attrs
 
     def geojson(self, feature_id):
@@ -488,13 +575,28 @@ class Marker(_MapFeature):
         return cls(lat, lon)
 
     @classmethod
-    def map(cls, latitudes, longitudes, labels=None, colors=None, areas=None, other_attrs = None, clustered_marker=False, **kwargs):
+    def map(cls, latitudes, longitudes, labels=None, colors=None, areas=None, other_attrs=None, clustered_marker=False, **kwargs):
         """Return markers from columns of coordinates, labels, & colors.
 
         The areas column is not applicable to markers, but sets circle areas.
 
         Arguments: (TODO) document all options
-        
+
+        index_map: list of integers, default None (when not applicable)
+           list of indices that maps each marker to a corresponding label at the index in cluster_labels (only applicable when multiple marker clusters are being used)
+
+        cluster_labels: list of strings, default None (when not applicable)
+            list of labels used for each cluster of markers (only applicable when multiple marker clusters are being used)
+
+        colorbar_scale: list of floats, default None (when not applicable)
+            list of cutoffs used to indicate where the bins are for each color (only applicable when colorscale gradient is being used)
+
+        include_color_scale_outliers: boolean, default None (when not applicable)
+            boolean of whether or not outliers are included in the colorscale gradient for markers (only applicable when colorscale gradient is being used)
+
+        radius_in_meters: boolean, default False
+            boolean of whether or not Circles should have their radii specified in meters, scales with map zoom
+
         clustered_marker: boolean, default False
             boolean of whether or not you want the marker clustered with other markers
 
@@ -507,6 +609,19 @@ class Marker(_MapFeature):
         assert len(latitudes) == len(longitudes)
         assert areas is None or hasattr(cls, '_has_area'), "A " + cls.__name__ + " has no area"
         inputs = [latitudes, longitudes]
+        # Variables passed into class Map kwargs instead of markers kwargs
+        map_kwargs = {
+            'index_map': kwargs.pop("index_map", None),
+            'cluster_labels': kwargs.pop("cluster_labels", None),
+            'colorbar_scale': kwargs.pop("colorbar_scale", None),
+            'include_color_scale_outliers': kwargs.pop("include_color_scale_outliers", None),
+            'radius_in_meters': kwargs.pop("radius_in_meters", False)
+        }
+        # index_map = kwargs.pop("index_map", None)
+        # cluster_labels = kwargs.pop("cluster_labels", None)
+        # colorbar_scale = kwargs.pop("colorbar_scale", None)
+        # include_color_scale_outliers = kwargs.pop("include_color_scale_outliers", None)
+        # radius_in_meters = kwargs.pop("radius_in_meters", False)
         if labels is not None:
             assert len(labels) == len(latitudes)
             inputs.append(labels)
@@ -529,22 +644,34 @@ class Marker(_MapFeature):
                 dic.update(kwargs)
         else:
             other_attrs_processed = []
-
+        
         if other_attrs_processed:
             ms = [cls(*args, **other_attrs_processed[row_num]) for row_num, args in enumerate(zip(*inputs))]
         else:
             ms = [cls(*args, **kwargs) for row_num, args in enumerate(zip(*inputs))]
-        return Map(ms, clustered_marker=clustered_marker)
+        return Map(ms, clustered_marker=clustered_marker, **map_kwargs)
 
     @classmethod
-    def map_table(cls, table, clustered_marker=False, **kwargs):
+    def map_table(cls, table, clustered_marker=False, include_color_scale_outliers=True, radius_in_meters=False, **kwargs):
         """Return markers from the colums of a table.
         
         The first two columns of the table must be the latitudes and longitudes
-        (in that order), followed by 'labels', 'colors', and/or 'areas' (if applicable)
+        (in that order), followed by 'labels', 'colors', 'color_scale', 'radius_scale', 'cluster_by', 'area_scale', and/or 'areas' (if applicable)
         in any order with columns explicitly stating what property they are representing.
+
+        Args:
+            ``cls``: Type of marker being drawn on the map {Marker, Circle}.
+            
+            ``table``: Table of data to be made into markers. The first two columns of the table must be the latitudes and longitudes (in that order), followed by 'labels', 'colors', 'cluster_by', 'color_scale', 'radius_scale', 'area_scale', and/or 'areas' (if applicable) in any order with columns explicitly stating what property they are representing. Additional columns for marker-specific attributes such as 'marker_icon' for the Marker class can be included as well.
+
+            ``clustered_marker``: Boolean indicating if markers should be clustered with folium.plugins.MarkerCluster.
+
+            ``include_color_scale_outliers``: Boolean indicating if outliers should be included in the color scale gradient or not. 
+
+            ``radius_in_meters``: Boolean indicating if circle markers should be drawn to map scale or zoom scale.
         """
-        lat, lon, lab, color, areas, other_attrs = None, None, None, None, None, {}
+        lat, lon, lab, color, areas, colorbar_scale, index_map, cluster_labels, other_attrs = None, None, None, None, None, None, None, None, {}
+        excluded = ["color_scale", "cluster_by", "radius_scale", "area_scale"]
 
         for index, col in enumerate(table.labels):
             this_col = table.column(col)
@@ -558,16 +685,75 @@ class Marker(_MapFeature):
                 color = this_col
             elif col == "areas":
                 areas = this_col
-            else:
+            elif col not in excluded:
                 other_attrs[col] = this_col
+
+        if "cluster_by" in table.labels:
+            clustered_marker = True
+            cluster_column = table.column("cluster_by")
+            cluster_labels = list(set(cluster_column))
+            index_name = "".join(table.labels) # Ensure column name doesn't already exist in table
+            index_name += " "
+            table = table.with_columns(index_name, np.arange(table.num_rows))
+            index_map = np.array([-1] * table.num_rows)
+            for i, label in enumerate(cluster_labels):
+                index_map[list(table.where("cluster_by", label).column(index_name))] = i
+        
+        if "radius_scale" in table.labels:
+            radius_column = table.column("radius_scale").astype(float)
+            rmin, rmax = kwargs.get("radius_min", 5), kwargs.get("radius_max", 50)
+            vmin, vmax = radius_column.min(), radius_column.max()
+            scale_fn = lambda v: (v - vmin) / (vmax - vmin) * (rmax - rmin) + rmin
+            radii = scale_fn(radius_column)
+            other_attrs["radius"] = [float(r) for r in radii]
+        
+        if "area_scale" in table.labels: # takes precedence over radius_scale
+            area_column = table.column("area_scale").astype(float)
+            amin, amax = kwargs.get("area_min", 80), kwargs.get("area_max", 8000)
+            vmin, vmax = area_column.min(), area_column.max()
+            scale_fn = lambda v: (v - vmin) / (vmax - vmin) * (amax - amin) + amin
+            areas = scale_fn(area_column)
+            radii = np.sqrt(areas / np.pi)   # convert area into radius using A = pi * r^2
+            other_attrs["radius"] = [float(r) for r in radii]
+
+        if 'color_scale' in table.labels:
+            vmin = min(table.column("color_scale"))
+            vmax = max(table.column("color_scale"))
+            if include_color_scale_outliers:
+                outlier_min_bound = vmin
+                outlier_max_bound = vmax
+            else:
+                q1 = np.percentile(table.column("color_scale"), 25)
+                q3 = np.percentile(table.column("color_scale"), 75)
+                IQR = q3 - q1
+                outlier_min_bound = max(vmin, q1 - 1.5 * IQR)
+                outlier_max_bound = min(vmax, q3 + 1.5 * IQR)
+            colorbar_scale = list(np.linspace(outlier_min_bound, outlier_max_bound, 9))
+            scale_colors = ["#340597", "#7008a5", "#a32494", "#cf5073", "#ee7c4c", "#f69344", "#fcc22d", "#f4e82d", "#f4e82d"]
+            def interpolate_color(colors, cutoffs, datapoint):
+                for i, cutoff in enumerate(cutoffs):
+                    if cutoff >= datapoint:
+                        return colors[i - 1] if i > 0 else colors[0]
+                return colors[-1]
+            color = [""] * table.num_rows
+            for i, datapoint in enumerate(table.column('color_scale')): 
+                color[i] = interpolate_color(scale_colors, colorbar_scale, datapoint)
+            colorbar_scale = [vmin] + colorbar_scale + [vmax]
         if not other_attrs:
             other_attrs = None
-        return cls.map(latitudes=lat, longitudes=lon, labels=lab,
-            colors=color, areas=areas, other_attrs=other_attrs, 
-            clustered_marker=clustered_marker, **kwargs)
+        return cls.map(
+            latitudes=lat, longitudes=lon, labels=lab, colors=color, areas=areas, 
+            colorbar_scale=colorbar_scale, other_attrs=other_attrs, clustered_marker=clustered_marker, 
+            index_map=index_map, include_color_scale_outliers=include_color_scale_outliers, 
+            radius_in_meters=radius_in_meters, cluster_labels=cluster_labels, **kwargs
+        )
 
 class Circle(Marker):
-    """A marker displayed with Folium's circle_marker method.
+    """A marker displayed with either Folium's circle_marker or circle methods.
+
+    The ``circle_marker`` method draws circles that stay the same size regardless of map zoom, 
+    whereas the circle method draws circles that have a fixed radius in meters. To toggle 
+    between them, use the ``radius_in_meters`` flag in the draw_on function. 
 
     popup -- text that pops up when marker is clicked
     color -- fill color
@@ -579,9 +765,12 @@ class Circle(Marker):
         Circle fill opacity
 
     More options can be passed into kwargs by following the attributes
-    listed in `https://leafletjs.com/reference-1.4.0.html#circlemarker`.
+    listed in `https://leafletjs.com/reference-1.4.0.html#circlemarker` or 
+    `https://leafletjs.com/reference-1.4.0.html#circle`.
 
-    For example, to draw three circles::
+    For example, to draw three circles with circle_marker:
+
+    ..code-block:: python
 
         t = Table().with_columns([
                 'lat', [37.8, 38, 37.9],
@@ -591,6 +780,12 @@ class Circle(Marker):
                 'area', [3000, 4000, 5000],
             ])
         Circle.map_table(t)
+
+    To draw three circles with the circle methods, replace the last line with:
+
+    ..code-block:: python
+    
+        Circle.map_table(t, radius_in_meters=True)
     """
 
     _has_area = True
@@ -613,8 +808,11 @@ class Circle(Marker):
             attrs['color'] = attrs.pop('line_color')
         return attrs
 
-    def draw_on(self, folium_map):
-        folium.CircleMarker(**self._folium_kwargs).add_to(folium_map)
+    def draw_on(self, folium_map, radius_in_meters=False):
+        if radius_in_meters:
+            folium.Circle(**self._folium_kwargs).add_to(folium_map)
+        else:
+            folium.CircleMarker(**self._folium_kwargs).add_to(folium_map)
 
 
 class Region(_MapFeature):
@@ -707,3 +905,79 @@ def _lat_lons_from_geojson(s):
         return [(lat, lon)]
     else:
         return [lat_lon for sub in s for lat_lon in _lat_lons_from_geojson(sub)]
+
+
+def get_coordinates(table, replace_columns=False, remove_nans=False):
+    """
+    Adds latitude and longitude coordinates to table based on other location identifiers. Must be in the United States.
+
+    Takes table with columns "zip code" or "city" and/or "county" and "state" in column names and 
+    adds the columns "lat" and "lon". If a county is not found inside the dataset,
+    that row's latitude and longitude coordinates are replaced with np.nans. The 'replace_columns' flag
+    indicates if the "city", "county", "state", and "zip code" columns should be removed afterwards.
+    The 'remove_nans' flag indicates if rows with nan latitudes and longitudes should be removed. Robust to 
+    capitalization in city and county names. If a row's location with multiple zip codes is specified, the latitude and longitude 
+    pair assigned to the row will correspond to the smallest zip code.
+
+    Dataset was acquired on July 2, 2020 from https://docs.gaslamp.media/download-zip-code-latitude-longitude-city-state-county-csv. 
+    Found in geocode_datasets/geocode_states.csv. Modified column names and made city/county columns all in lowercase. 
+
+    Args:
+        table: A table with counties that need to mapped to coordinates
+        replace_columns: A boolean that indicates if "county", "city", "state", and "zip code" columns should be removed 
+        remove_nans: A boolean that indicates if columns with invalid longitudes and latitudes should be removed
+        
+    Returns:
+        Table with latitude and longitude coordinates 
+    """
+    assert "zip code" in table.labels or (("city" in table.labels or "county" in table.labels) and "state" in table.labels)
+    ref = Table.read_table(pkg_resources.resource_filename(__name__, "geodata/geocode_states.csv"))
+
+    index_name = "".join(table.labels) # Ensures that index can't possibly be one of the preexisting columns
+    index_name += " "
+    
+    table = table.with_columns(index_name, np.arange(table.num_rows))
+    lat = np.array([np.nan] * table.num_rows)
+    lon = np.array([np.nan] * table.num_rows)
+    unassigned = set(range(table.num_rows)) 
+    while len(unassigned) > 0:
+        index = unassigned.pop()
+        row = table.take(index).take(0)
+        if "zip code" in table.labels:
+            select = table.where("zip code", row["zip code"][0]).column(index_name)
+            unassigned -= set(select)
+            try:
+                ref_lat, ref_lon = ref.where("zip", int(row["zip code"][0])).select("lat", "lon").row(0)
+                lat[select] = ref_lat
+                lon[select] = ref_lon
+            except IndexError:
+                pass
+        else:
+            state_select = table.where("state", row["state"][0]).column(index_name)
+            county_select = table.where("county", row["county"][0]).column(index_name) if "county" in table.labels else np.arange(table.num_rows)
+            city_select = table.where("city", row["city"][0]).column(index_name) if "city" in table.labels else np.arange(table.num_rows)
+            select = set.intersection(set(state_select), set(county_select), set(city_select))
+            unassigned -= select
+            select = list(select)
+            try:
+                matched_ref = ref.where("state", row["state"][0])
+                if "county" in table.labels:
+                    matched_ref = matched_ref.where("county", row["county"][0].lower())
+                if "city" in table.labels:
+                    matched_ref = matched_ref.where("city", row["city"][0].lower())
+                ref_lat, ref_lon = matched_ref.select("lat", "lon").row(0)
+                lat[select] = ref_lat
+                lon[select] = ref_lon
+            except IndexError:
+                pass
+    table = table.with_columns("lat", lat, "lon", lon)
+    table = table.drop(index_name)
+    if replace_columns:
+        for label in ["county", "city", "zip code", "state"]:
+            try:
+                table = table.drop(label)
+            except KeyError:
+                pass
+    if remove_nans: 
+        table = table.where("lat", are.below(float("inf"))) # NaNs are not considered to be smaller than infinity
+    return table

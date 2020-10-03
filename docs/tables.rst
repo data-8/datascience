@@ -145,4 +145,7 @@ Visualizations
     Table.hist
     Table.hist_of_counts
     Table.scatter
+    Table.scatter3d
     Table.boxplot
+    Table.interactive_plots
+    Table.static_plots
