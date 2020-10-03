@@ -107,6 +107,10 @@ class Table(collections.abc.MutableMapping):
                ...     {'column1':'data3','column2':3}
                ... ])
                >>> print(t)
+               column1 | column2
+               data1   | 1
+               data2   | 2
+               data3   | 3
 
         """
         if not records:
@@ -137,6 +141,18 @@ class Table(collections.abc.MutableMapping):
         Example:
         
         >>> Table.read_table('https://www.inferentialthinking.com/data/sat2014.csv')
+        State        | Participation Rate | Critical Reading | Math | Writing | Combined
+        North Dakota | 2.3                | 612              | 620  | 584     | 1816
+        Illinois     | 4.6                | 599              | 616  | 587     | 1802
+        Iowa         | 3.1                | 605              | 611  | 578     | 1794
+        South Dakota | 2.9                | 604              | 609  | 579     | 1792
+        Minnesota    | 5.9                | 598              | 610  | 578     | 1786
+        Michigan     | 3.8                | 593              | 610  | 581     | 1784
+        Wisconsin    | 3.9                | 596              | 608  | 578     | 1782
+        Missouri     | 4.2                | 595              | 597  | 579     | 1771
+        Wyoming      | 3.3                | 590              | 599  | 573     | 1762
+        Kansas       | 5.3                | 591              | 596  | 566     | 1753
+        ... (41 rows omitted)
                 
         """
         # Look for .csv at the end of the path; use "," as a separator if found
@@ -193,10 +209,18 @@ class Table(collections.abc.MutableMapping):
         ...             )
         
         >>> print(sample_DF)
+           column1 column2 column3
+        0        1       a   data1
+        1        2       b   data2
+        2        3       c   data3
         
         >>> t = Table().from_df(sample_DF)
         
         >>> print(t)
+        column1 | column2 | column3
+        1       | a       | data1
+        2       | b       | data2
+        3       | c       | data3        
        
         """
         t = cls()
@@ -227,10 +251,14 @@ class Table(collections.abc.MutableMapping):
         ...       )
                          
         >>> print(arr)
+        [('A', 1, 54. ) ('B', 2, 90.)]
         
         >>> t = Table().from_array(arr)
         
         >>> print(t)
+        Name | Number | Data
+        A    | 1      | 54
+        B    | 2      | 90.
         
         """
         return cls().with_columns([(f, arr[f]) for f in arr.dtype.names])
