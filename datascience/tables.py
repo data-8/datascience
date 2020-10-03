@@ -105,7 +105,7 @@ class Table(collections.abc.MutableMapping):
                ...     {'column1':'data1','column2':1}, 
                ...     {'column1':'data2','column2':2}, 
                ...     {'column1':'data3','column2':3}
-               ...])
+               ... ])
                >>> print(t)
                >>>
                column1 | column2
