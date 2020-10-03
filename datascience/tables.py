@@ -2662,7 +2662,40 @@ class Table(collections.abc.MutableMapping):
         self.to_df().to_csv(filename, index=False)
 
     def to_array(self):
-        """Convert the table to a structured NumPy array."""
+        """Convert the table to a structured NumPy array.
+
+        The resulting array contains a sequence of rows from the table.
+
+        Args:
+            None
+
+        Returns:
+            arr: a NumPy array
+
+        The following is an example of calling to_array()
+        >>> t = Table().with_columns([
+        ... 'letter', ['a','b','c','z'],
+        ... 'count', [9,3,3,1],
+        ... 'points', [1,2,2,10],
+        ... ])
+
+        >>> t
+        letter | count | points
+        a      | 9     | 1
+        b      | 3     | 2
+        c      | 3     | 2
+        z      | 1     | 10
+
+        >>> example = t.to_array()
+
+        >>> example
+        array([('a', 9,  1), ('b', 3,  2), ('c', 3,  2), ('z', 1, 10)],
+        dtype=[('letter', '<U1'), ('count', '<i8'), ('points', '<i8')])
+
+        >>> example['letter']
+        array(['a', 'b', 'c', 'z'],
+        dtype='<U1')
+        """
         dt = np.dtype(list(zip(self.labels, (c.dtype for c in self.columns))))
         arr = np.empty_like(self.columns[0], dt)
         for label in self.labels:
