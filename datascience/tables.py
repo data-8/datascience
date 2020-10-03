@@ -107,11 +107,6 @@ class Table(collections.abc.MutableMapping):
                ...     {'column1':'data3','column2':3}
                ... ])
                >>> print(t)
-               >>>
-               column1 | column2
-               data1   | 1
-               data2   | 2
-               data3   | 3
 
         """
         if not records:
@@ -141,18 +136,7 @@ class Table(collections.abc.MutableMapping):
                               
         Example:
         
-        Read a table from a CSV (comma separated values) file, as shown for the sample CSV file sample.csv:
-        x,y,z
-        1,10,100
-        2,11,101
-        3,12,102
-        
-        >>> Table.read_table('sample.csv')
-        >>>
-        x | y | z
-        1 | 10 | 100
-        2 | 11 | 101
-        3 | 12 | 102
+        >>> Table.read_table('https://www.inferentialthinking.com/data/sat2014.csv')
                 
         """
         # Look for .csv at the end of the path; use "," as a separator if found
@@ -203,28 +187,17 @@ class Table(collections.abc.MutableMapping):
            
         Example:
         
-        >>> sample_DF = pd.DataFrame(
+        >>> sample_DF = pandas.DataFrame(
         ...             data = zip([1,2,3],['a','b','c'],['data1','data2','data3']),
         ...             columns = ['column1','column2','column3']
         ...             )
         
         >>> print(sample_DF)
-        >>>
-           column1 column2 column3
-        0        1       a   data1
-        1        2       b   data2
-        2        3       c   data3
         
         >>> t = Table().from_df(sample_DF)
         
         >>> print(t)
-        
-        >>>
-        column1 | column2 | column3
-        1       | a       | data1
-        2       | b       | data2
-        3       | c       | data3
-
+       
         """
         t = cls()
         if keep_index:
@@ -254,16 +227,10 @@ class Table(collections.abc.MutableMapping):
         ...       )
                          
         >>> print(arr)
-        >>>
-        [('A', 1, 54. ) ('B', 2, 90.)]
         
         >>> t = Table().from_array(arr)
         
         >>> print(t)
-        >>>
-        Name | Number | Data
-        A    | 1      | 54
-        B    | 2      | 90.
         
         """
         return cls().with_columns([(f, arr[f]) for f in arr.dtype.names])
