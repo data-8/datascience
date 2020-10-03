@@ -102,16 +102,16 @@ class Table(collections.abc.MutableMapping):
            Example:
            
                >>> t = Table().from_records([
-                       {'column1':'data1','column2':1},
-                       {'column1':'data2','column2':2},
-                       {'column1':'data3','column2':3}
-                       ])
+               ...     {'column1':'data1','column2':1}, 
+               ...     {'column1':'data2','column2':2}, 
+               ...     {'column1':'data3','column2':3}
+               ...])
                >>> print(t)
                >>>
                column1 | column2
-                data1  |    1
-                data2  |    2
-                data3  |    3
+               data1   | 1
+               data2   | 2
+               data3   | 3
 
         """
         if not records:
@@ -139,11 +139,9 @@ class Table(collections.abc.MutableMapping):
         Returns:
             a table read from argument
                               
-        Example 1
+        Example:
         
-        Read a table from a CSV (comma separated values) file, as shown:
-        
-        >>> cat sample.csv
+        Read a table from a CSV (comma separated values) file, as shown for the sample CSV file sample.csv:
         x,y,z
         1,10,100
         2,11,101
@@ -151,29 +149,10 @@ class Table(collections.abc.MutableMapping):
         
         >>> Table.read_table('sample.csv')
         >>>
-        x | y  | z
+        x | y | z
         1 | 10 | 100
         2 | 11 | 101
         3 | 12 | 102
-        
-        Example 2
-        
-        One can also read a table from URLs, as shown:
-        
-        >>> Table.read_table('https://www.inferentialthinking.com/data/sat2014.csv')
-        >>>
-        State        | Participation Rate | Critical Reading | Math | Writing | Combined
-        North Dakota | 2.3                | 612              | 620  | 584     | 1816
-        Illinois     | 4.6                | 599              | 616  | 587     | 1802
-        Iowa         | 3.1                | 605              | 611  | 578     | 1794
-        South Dakota | 2.9                | 604              | 609  | 579     | 1792
-        Minnesota    | 5.9                | 598              | 610  | 578     | 1786
-        Michigan     | 3.8                | 593              | 610  | 581     | 1784
-        Wisconsin    | 3.9                | 596              | 608  | 578     | 1782
-        Missouri     | 4.2                | 595              | 597  | 579     | 1771
-        Wyoming      | 3.3                | 590              | 599  | 573     | 1762
-        Kansas       | 5.3                | 591              | 596  | 566     | 1753
-        ... (41 rows omitted)
                 
         """
         # Look for .csv at the end of the path; use "," as a separator if found
@@ -225,16 +204,16 @@ class Table(collections.abc.MutableMapping):
         Example:
         
         >>> sample_DF = pd.DataFrame(
-                                    data = zip([1,2,3],['a','b','c'],['data1','data2','data3']),
-                                    columns = ['column1','column2','column3']
-                                    )
+        ...             data = zip([1,2,3],['a','b','c'],['data1','data2','data3']),
+        ...             columns = ['column1','column2','column3']
+        ...             )
         
-        >>> sample_DF
+        >>> print(sample_DF)
         >>>
-           column1 | column2 | column3
-        0     1        a        data1
-        1     2        b        data2
-        2     3        c        data3
+           column1 column2 column3
+        0        1       a   data1
+        1        2       b   data2
+        2        3       c   data3
         
         >>> t = Table().from_df(sample_DF)
         
@@ -242,9 +221,9 @@ class Table(collections.abc.MutableMapping):
         
         >>>
         column1 | column2 | column3
-           1        a        data1
-           2        b        data2
-           3        c        data3
+        1       | a       | data1
+        2       | b       | data2
+        3       | c       | data3
 
         """
         t = cls()
@@ -270,23 +249,21 @@ class Table(collections.abc.MutableMapping):
         Example:
         
         >>> arr = np.array([
-                           ('A',1,54.0), ('B',2,90.)],
-                           dtype=[
-                                 ('Name', 'U10'), ('Number', 'i4'), ('Data', 'f4')
-                                 ]
-                          )
+        ...       ('A',1,54.0), ('B',2,90.)], 
+        ...       dtype=[('Name', 'U10'), ('Number', 'i4'), ('Data', 'f4')]
+        ...       )
                          
         >>> print(arr)
         >>>
-        [('A',1,54.),('B',2,90.5)]
+        [('A', 1, 54. ) ('B', 2, 90.)]
         
         >>> t = Table().from_array(arr)
         
         >>> print(t)
         >>>
         Name | Number | Data
-         A   |    1   |  81
-         B   |    2   |  90.5
+        A    | 1      | 54
+        B    | 2      | 90.
         
         """
         return cls().with_columns([(f, arr[f]) for f in arr.dtype.names])
