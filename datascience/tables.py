@@ -2657,9 +2657,7 @@ class Table(collections.abc.MutableMapping):
     def to_array(self):
         """Convert the table to a structured NumPy array.
 
-        The elements in the resulting array preserve row and column replacement
-        in the table. The array's dtype attribute reflects both column names and
-        datatype.
+        The resulting array contains a sequence of rows from the table.
 
         Args:
             None
