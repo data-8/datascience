@@ -246,19 +246,19 @@ class Table(collections.abc.MutableMapping):
         Example:
         
         >>> arr = np.array([
-        ...       ('A',1,54.0), ('B',2,90.)], 
-        ...       dtype=[('Name', 'U10'), ('Number', 'i4'), ('Data', 'f4')]
+        ...       ('A',1), ('B',2)], 
+        ...       dtype=[('Name', 'U10'), ('Number', 'i4')]
         ...       )
                          
         >>> print(arr)
-        [('A', 1, 54. ) ('B', 2, 90.)]
+        [('A', 1) ('B', 2)]
         
         >>> t = Table().from_array(arr)
         
         >>> print(t)
-        Name | Number | Data
-        A    | 1      | 54
-        B    | 2      | 90.
+        Name | Number
+        A    | 9
+        B    | 3
         
         """
         return cls().with_columns([(f, arr[f]) for f in arr.dtype.names])
