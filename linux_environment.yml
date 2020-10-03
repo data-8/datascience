@@ -58,4 +58,3 @@ dependencies:
   - snowballstemmer
   - sphinx
   - sphinx-rtd-theme
-  - plotly
