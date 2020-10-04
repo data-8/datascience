@@ -2654,6 +2654,12 @@ class Table(collections.abc.MutableMapping):
             0  abc   12     5.5
             1  xyz   14     6.0
             2  uvw   20     5.9
+            
+            >>> type(table)
+            <class 'datascience.tables.Table'>
+
+            >>> type(table_df)
+            <class 'pandas.core.frame.DataFrame'>
 
         """
         return pandas.DataFrame(self._columns)
