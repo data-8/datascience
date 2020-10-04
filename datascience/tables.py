@@ -1810,9 +1810,133 @@ class Table(collections.abc.MutableMapping):
         return binned
 
     def stack(self, key, labels=None):
-        """Takes k original columns and returns two columns, with col. 1 of
-        all column names and col. 2 of all associated data.
-        """
+	""" Stacks rows from a table based on key and labels
+
+	    Args: key and an optional labels. key will be used as 
+		a key for each row, based on which other 2 columns 
+		will be populated
+
+	   Returns: A table with 3 columns where the first row
+	    is the passed argument "key" and the other two columns
+	    are all column names of the table and it's associated values,
+	    each column value combination as a row against that key.
+	    If labels is also passed, then last 2 columns have 
+	    only that label's associated column and it's value.
+
+
+		Few examples,
+
+		Example 1:
+			>> players = Table().with_columns('player_id', \
+				   make_array(110234, 110235), 'wOBA', make_array(.354, .236))
+			>> players.stack(key='player_id')
+		gives the following output,
+		
+		player_id | column | value
+		110234    | wOBA   | 0.354
+		110235    | wOBA   | 0.236
+
+		whereas if we pass a different key for the same table, 
+		we get a different combination. 
+
+			>> players = Table().with_columns('player_id', \
+				   make_array(110234, 110235), 'wOBA', make_array(.354, .236))
+			>> players.stack(key='wOBA')
+		gives the following output,
+
+		wOBA  | column    | value
+		0.354 | player_id | 110234
+		0.236 | player_id | 110235
+
+		Example 2:
+		
+			>> jobs = Table().with_columns( \
+				'job',  make_array('a', 'b', 'c', 'd'),
+				'wage', make_array(10, 20, 15, 8))
+			>> jobs.stack(key='wage')	
+
+		gives the following output,
+
+		wage | column | value
+		10   | job    | a
+		20   | job    | b
+		15   | job    | c
+		8    | job    | d
+
+		As in previous example, let's change the key.
+
+			>> jobs = Table().with_columns( \
+				'job',  make_array('a', 'b', 'c', 'd'),
+				'wage', make_array(10, 20, 15, 8))
+			>> jobs.stack(key='job')
+
+		gives the following output,
+
+		job  | column | value
+		a    | wage   | 10
+		b    | wage   | 20
+		c    | wage   | 15
+		d    | wage   | 8
+
+		Example 3:
+
+			>> table = Table().with_columns( \
+				'days',  make_array(0, 1, 2, 3, 4, 5), \
+				'price', make_array(90.5, 90.00, 83.00, 95.50, 82.00, 82.00), \
+				'projection', make_array(90.75, 82.00, 82.50, 82.50, 83.00, 82.50))
+			>> table.stack(key='price')
+
+		gives the following output,
+
+		price | column     | value
+		90.5  | days       | 0
+		90.5  | projection | 90.75
+		90    | days       | 1
+		90    | projection | 82
+		83    | days       | 2
+		83    | projection | 82.5
+		95.5  | days       | 3
+		95.5  | projection | 82.5
+		82    | days       | 4
+		82    | projection | 83
+		(2 rows omitted)
+
+		Example 4: 
+
+		If we specify a particular label, we then get that label related values only.
+			>> table.stack(key='price', labels="days")
+		
+		price | column | value
+		90.5  | days   | 0
+		90    | days   | 1
+		83    | days   | 2
+		95.5  | days   | 3
+		82    | days   | 4
+		82    | days   | 5
+
+		Example 5:
+
+		If we give a non-existent key, we get an Attribute Error
+
+			>> players = Table().with_columns('player_id', \
+					make_array(110234, 110235), 'wOBA', make_array(.354, .236))
+			>> players.stack(key='abc')
+
+		gives the following output,
+
+		AttributeError: Attribute (abc) not found in row.
+
+		Example 6:
+
+		If we give a non-existent label, we get an empty table without any errors.
+
+			>> players = Table().with_columns('player_id', \
+					 make_array(110234, 110235), 'wOBA', make_array(.354, .236))
+			>> players.stack(key="wOBA", labels="abc")
+
+		gives the following output,
+
+		wOBA | column | value """
         rows, labels = [], labels or self.labels
         for row in self.rows:
             [rows.append((getattr(row, key), k, v)) for k, v in row.asdict().items()
