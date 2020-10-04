@@ -95,7 +95,7 @@ class Table(collections.abc.MutableMapping):
     @classmethod
     def from_records(cls, records):
         """Create a table from a sequence of records (dicts with fixed keys).
-
+        
            Args:
 
                records: A list of dictionaries with same keys.
@@ -105,8 +105,21 @@ class Table(collections.abc.MutableMapping):
                If the list is empty, it will return an empty table.
                Otherwise, it will return a table with the dictionary's keys as the column name, and the corresponding data.
                If the dictionaries do not have identical keys, the keys of the first dictionary in the list is used.
+               
+           Example:
+           
+               >>> t = Table().from_records([
+               ...     {'column1':'data1','column2':1}, 
+               ...     {'column1':'data2','column2':2}, 
+               ...     {'column1':'data3','column2':3}
+               ... ])
+               >>> t
+               column1 | column2
+               data1   | 1
+               data2   | 2
+               data3   | 3
 
-           """
+        """
         if not records:
             return cls()
         labels = sorted(list(records[0].keys()))
@@ -123,10 +136,31 @@ class Table(collections.abc.MutableMapping):
     @classmethod
     def read_table(cls, filepath_or_buffer, *args, **vargs):
         """Read a table from a file or web address.
-
-        filepath_or_buffer -- string or file handle / StringIO; The string
+        
+        Args:
+            filepath_or_buffer -- string or file handle / StringIO; The string
                               could be a URL. Valid URL schemes include http,
                               ftp, s3, and file.
+        
+        Returns:
+            a table read from argument
+                              
+        Example:
+        
+        >>> Table.read_table('https://www.inferentialthinking.com/data/sat2014.csv')
+        State        | Participation Rate | Critical Reading | Math | Writing | Combined
+        North Dakota | 2.3                | 612              | 620  | 584     | 1816
+        Illinois     | 4.6                | 599              | 616  | 587     | 1802
+        Iowa         | 3.1                | 605              | 611  | 578     | 1794
+        South Dakota | 2.9                | 604              | 609  | 579     | 1792
+        Minnesota    | 5.9                | 598              | 610  | 578     | 1786
+        Michigan     | 3.8                | 593              | 610  | 581     | 1784
+        Wisconsin    | 3.9                | 596              | 608  | 578     | 1782
+        Missouri     | 4.2                | 595              | 597  | 579     | 1771
+        Wyoming      | 3.3                | 590              | 599  | 573     | 1762
+        Kansas       | 5.3                | 591              | 596  | 566     | 1753
+        ... (41 rows omitted)
+                
         """
         # Look for .csv at the end of the path; use "," as a separator if found
         try:
@@ -162,11 +196,38 @@ class Table(collections.abc.MutableMapping):
     @classmethod
     def from_df(cls, df, keep_index=False):
         """Convert a Pandas DataFrame into a Table.
-
-        `keep_index` -- keeps the index of the DataFrame
-            and turns it into a column called `index` in
-            the new Table
-
+        
+        Args:
+        
+            df -- Pandas DataFrame utilized for creation of Table
+            
+            `keep_index` -- keeps the index of the DataFrame 
+            and turns it into a column called `index` in the new Table
+            
+        Returns:
+           a table from Pandas Dataframe in argument
+           
+        Example:
+        
+        >>> sample_DF = pandas.DataFrame(
+        ...             data = zip([1,2,3],['a','b','c'],['data1','data2','data3']),
+        ...             columns = ['column1','column2','column3']
+        ...             )
+        
+        >>> sample_DF
+           column1 column2 column3
+        0        1       a   data1
+        1        2       b   data2
+        2        3       c   data3
+        
+        >>> t = Table().from_df(sample_DF)
+        
+        >>> t
+        column1 | column2 | column3
+        1       | a       | data1
+        2       | b       | data2
+        3       | c       | data3        
+       
         """
         t = cls()
         if keep_index:
@@ -182,11 +243,29 @@ class Table(collections.abc.MutableMapping):
 
            Args:
  
-               arr: A structured numpy array
+               arr -- A structured numpy array
 
            Returns:
 
-               A table with the field names as the column names and the corresponding data. 
+               A table with the field names as the column names and the corresponding data.
+               
+        Example:
+        
+        >>> arr = np.array([
+        ...       ('A',1), ('B',2)], 
+        ...       dtype=[('Name', 'U10'), ('Number', 'i4')]
+        ...       )
+                         
+        >>> arr
+        array([('A', 1), ('B', 2)], dtype=[('Name', '<U10'), ('Number', '<i4')])
+        
+        >>> t = Table().from_array(arr)
+        
+        >>> t
+        Name | Number
+        A    | 1
+        B    | 2
+        
         """
         return cls().with_columns([(f, arr[f]) for f in arr.dtype.names])
 
