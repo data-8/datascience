@@ -41,6 +41,7 @@ dependencies:
 - pip:
   - alabaster
   - babel
+  - branca
   - docutils
   - folium==0.11.0
   - ipython-genutils
@@ -48,9 +49,11 @@ dependencies:
   - jupyter
   - jupyter_client
   - markupsafe
-  - nbval
   - nbconvert
   - nbformat
+  - nbsphinx
+  - nbval
+  - plotly
   - pygments
   - snowballstemmer
   - sphinx

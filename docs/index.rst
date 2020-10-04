@@ -11,6 +11,7 @@ contains useful functionality for investigating and graphically displaying data.
     :maxdepth: 2
 
     tutorial
+    reference-nb/datascience-reference.ipynb
 
 Reference
 ---------

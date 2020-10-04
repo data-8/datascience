@@ -6,3 +6,6 @@ pandas
 scipy
 numpy
 ipython
+plotly
+branca
+nbsphinx
