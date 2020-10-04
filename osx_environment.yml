@@ -1,4 +1,4 @@
-name: datascience
+# name: datascience
 dependencies:
 - appnope
 - coveralls
@@ -40,6 +40,7 @@ dependencies:
 - pip:
   - alabaster
   - babel
+  - branca
   - docutils
   - folium==0.11.0
   - ipython-genutils
@@ -50,8 +51,9 @@ dependencies:
   - nbval
   - nbconvert
   - nbformat
+  - nbsphinx
+  - plotly
   - pygments
   - snowballstemmer
   - sphinx
   - sphinx-rtd-theme
-
