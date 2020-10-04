@@ -2709,7 +2709,45 @@ class Table(collections.abc.MutableMapping):
         return index
 
     def to_df(self):
-        """Convert the table to a Pandas DataFrame."""
+        """Convert the table to a Pandas DataFrame.
+            
+            Args:
+                None
+            
+            Returns:
+                The Pandas DataFrame of the table
+                
+             It just converts the table to Pandas DataFrame so that we can use 
+             DataFrame instead of the table at some required places.
+             
+             Here's an example of using the to_df() method:
+             
+            >>> table = Table().with_columns({'name': ['abc', 'xyz', 'uvw'],
+            ... 'age': [12,14,20],
+            ... 'height': [5.5,6.0,5.9],
+            ... })
+                        
+            >>> table
+            name | age  | height
+            abc  | 12   | 5.5
+            xyz  | 14   | 6
+            uvw  | 20   | 5.9
+            
+            >>> table_df = table.to_df()
+            
+            >>> table_df
+              name  age  height
+            0  abc   12     5.5
+            1  xyz   14     6.0
+            2  uvw   20     5.9
+            
+            >>> type(table)
+            <class 'datascience.tables.Table'>
+
+            >>> type(table_df)
+            <class 'pandas.core.frame.DataFrame'>
+
+        """
         return pandas.DataFrame(self._columns)
 
     def to_csv(self, filename):
