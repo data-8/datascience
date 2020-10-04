@@ -147,7 +147,7 @@ class Table(collections.abc.MutableMapping):
                               
         Example:
         
-        >>> Table.read_table('https://www.inferentialthinking.com/data/sat2014.csv')
+        >>> Table.read_table('http://www.inferentialthinking.com/data/sat2014.csv')
         State        | Participation Rate | Critical Reading | Math | Writing | Combined
         North Dakota | 2.3                | 612              | 620  | 584     | 1816
         Illinois     | 4.6                | 599              | 616  | 587     | 1802
