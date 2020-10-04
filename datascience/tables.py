@@ -113,7 +113,7 @@ class Table(collections.abc.MutableMapping):
                ...     {'column1':'data2','column2':2}, 
                ...     {'column1':'data3','column2':3}
                ... ])
-               >>> print(t)
+               >>> t
                column1 | column2
                data1   | 1
                data2   | 2
@@ -214,7 +214,7 @@ class Table(collections.abc.MutableMapping):
         ...             columns = ['column1','column2','column3']
         ...             )
         
-        >>> print(sample_DF)
+        >>> sample_DF
            column1 column2 column3
         0        1       a   data1
         1        2       b   data2
@@ -222,7 +222,7 @@ class Table(collections.abc.MutableMapping):
         
         >>> t = Table().from_df(sample_DF)
         
-        >>> print(t)
+        >>> t
         column1 | column2 | column3
         1       | a       | data1
         2       | b       | data2
@@ -256,12 +256,12 @@ class Table(collections.abc.MutableMapping):
         ...       dtype=[('Name', 'U10'), ('Number', 'i4')]
         ...       )
                          
-        >>> print(arr)
-        [('A', 1) ('B', 2)]
+        >>> arr
+        array([('A', 1), ('B', 2)], dtype=[('Name', '<U10'), ('Number', '<i4')])
         
         >>> t = Table().from_array(arr)
         
-        >>> print(t)
+        >>> t
         Name | Number
         A    | 1
         B    | 2
