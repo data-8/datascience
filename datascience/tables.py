@@ -1810,133 +1810,147 @@ class Table(collections.abc.MutableMapping):
         return binned
 
     def stack(self, key, labels=None):
-	""" Stacks rows from a table based on key and labels
+        """ Stacks rows from a table based on key and labels
 
-	    Args: key and an optional labels. key will be used as 
-		a key for each row, based on which other 2 columns 
-		will be populated
+        Args: 
+            ``key`` : Input argument key will be used as a key for 
+            each row, based on which other 2 columns will be populated
 
-	   Returns: A table with 3 columns where the first row
-	    is the passed argument "key" and the other two columns
-	    are all column names of the table and it's associated values,
-	    each column value combination as a row against that key.
-	    If labels is also passed, then last 2 columns have 
-	    only that label's associated column and it's value.
+        Kwargs: 
+            ``labels``: default None, if value is passed, return table has 
+            values corresponding to passed label value only and not all
 
+        Returns: 
+            A table with 3 columns where the first row
+            is the passed argument "key" and the other two columns
+            are all column names of the table and it's associated values,
+            each column value combination as a row against that key. 
+            If labels is also passed, then last 2 columns have 
+            only that label's associated column and it's value.
 
-		Few examples,
+        Few examples,
 
-		Example 1:
-			>> players = Table().with_columns('player_id', \
-				   make_array(110234, 110235), 'wOBA', make_array(.354, .236))
-			>> players.stack(key='player_id')
-		gives the following output,
-		
-		player_id | column | value
-		110234    | wOBA   | 0.354
-		110235    | wOBA   | 0.236
+        Example 1:
 
-		whereas if we pass a different key for the same table, 
-		we get a different combination. 
+        >>> players = Table().with_columns('player_id', \
+            make_array(110234, 110235), 'wOBA', make_array(.354, .236))
+        >>> players.stack(key='player_id')
+        
+        gives the following output,
+        
+        player_id | column | value
+        110234    | wOBA   | 0.354
+        110235    | wOBA   | 0.236
 
-			>> players = Table().with_columns('player_id', \
-				   make_array(110234, 110235), 'wOBA', make_array(.354, .236))
-			>> players.stack(key='wOBA')
-		gives the following output,
+        whereas if we pass a different key for the same table, 
+        we get a different combination. 
 
-		wOBA  | column    | value
-		0.354 | player_id | 110234
-		0.236 | player_id | 110235
+        >>> players = Table().with_columns('player_id', \
+            make_array(110234, 110235), 'wOBA', make_array(.354, .236))
+        >>> players.stack(key='wOBA')
+        
+        gives the following output,
 
-		Example 2:
-		
-			>> jobs = Table().with_columns( \
-				'job',  make_array('a', 'b', 'c', 'd'),
-				'wage', make_array(10, 20, 15, 8))
-			>> jobs.stack(key='wage')	
+        wOBA  | column    | value
+        0.354 | player_id | 110234
+        0.236 | player_id | 110235
 
-		gives the following output,
+        Example 2:
+        
+        Let's take another Table with different data set
 
-		wage | column | value
-		10   | job    | a
-		20   | job    | b
-		15   | job    | c
-		8    | job    | d
+        >>> jobs = Table().with_columns( \
+            'job',  make_array('a', 'b', 'c', 'd'), \
+            'wage', make_array(10, 20, 15, 8))
+        >>> jobs.stack(key='wage')   
 
-		As in previous example, let's change the key.
+        gives the following output,
 
-			>> jobs = Table().with_columns( \
-				'job',  make_array('a', 'b', 'c', 'd'),
-				'wage', make_array(10, 20, 15, 8))
-			>> jobs.stack(key='job')
+        wage | column | value
+        10   | job    | a
+        20   | job    | b
+        15   | job    | c
+        8    | job    | d
 
-		gives the following output,
+        As in previous example, let's change the key
 
-		job  | column | value
-		a    | wage   | 10
-		b    | wage   | 20
-		c    | wage   | 15
-		d    | wage   | 8
+        >>> jobs = Table().with_columns( \
+            'job',  make_array('a', 'b', 'c', 'd'), \
+            'wage', make_array(10, 20, 15, 8))
+        >>> jobs.stack(key='job')
 
-		Example 3:
+        gives the following output,
 
-			>> table = Table().with_columns( \
-				'days',  make_array(0, 1, 2, 3, 4, 5), \
-				'price', make_array(90.5, 90.00, 83.00, 95.50, 82.00, 82.00), \
-				'projection', make_array(90.75, 82.00, 82.50, 82.50, 83.00, 82.50))
-			>> table.stack(key='price')
+        job  | column | value
+        a    | wage   | 10
+        b    | wage   | 20
+        c    | wage   | 15
+        d    | wage   | 8
 
-		gives the following output,
+        Example 3:
 
-		price | column     | value
-		90.5  | days       | 0
-		90.5  | projection | 90.75
-		90    | days       | 1
-		90    | projection | 82
-		83    | days       | 2
-		83    | projection | 82.5
-		95.5  | days       | 3
-		95.5  | projection | 82.5
-		82    | days       | 4
-		82    | projection | 83
-		(2 rows omitted)
+        Let's take one more table, but with 3 columns rather than 2 as 
+        in previous examples
 
-		Example 4: 
+        >>> table = Table().with_columns( \
+            'days',  make_array(0, 1, 2, 3, 4, 5), \
+            'price', make_array(90.5, 90.00, 83.00, 95.50, 82.00, 82.00), \
+            'projection', make_array(90.75, 82.00, 82.50, 82.50, 83.00, 82.50))
+        >>> table.stack(key='price')
 
-		If we specify a particular label, we then get that label related values only.
-			>> table.stack(key='price', labels="days")
-		
-		price | column | value
-		90.5  | days   | 0
-		90    | days   | 1
-		83    | days   | 2
-		95.5  | days   | 3
-		82    | days   | 4
-		82    | days   | 5
+        gives the following output,
 
-		Example 5:
+        price | column     | value
+        90.5  | days       | 0
+        90.5  | projection | 90.75
+        90    | days       | 1
+        90    | projection | 82
+        83    | days       | 2
+        83    | projection | 82.5
+        95.5  | days       | 3
+        95.5  | projection | 82.5
+        82    | days       | 4
+        82    | projection | 83
+        (2 rows omitted)
 
-		If we give a non-existent key, we get an Attribute Error
+        Example 4: 
+        
+        If we specify a particular label, we then get that label related values only
 
-			>> players = Table().with_columns('player_id', \
-					make_array(110234, 110235), 'wOBA', make_array(.354, .236))
-			>> players.stack(key='abc')
+        >>> table.stack(key='price', labels="days")
+        
+        price | column | value
+        90.5  | days   | 0
+        90    | days   | 1
+        83    | days   | 2
+        95.5  | days   | 3
+        82    | days   | 4
+        82    | days   | 5
 
-		gives the following output,
+        Example 5:
 
-		AttributeError: Attribute (abc) not found in row.
+        If we give a non-existent key, we get an Attribute Error
 
-		Example 6:
+        >>> players = Table().with_columns('player_id', \
+            make_array(110234, 110235), 'wOBA', make_array(.354, .236))
+        >>> players.stack(key='abc')
 
-		If we give a non-existent label, we get an empty table without any errors.
+        gives the following output,
 
-			>> players = Table().with_columns('player_id', \
-					 make_array(110234, 110235), 'wOBA', make_array(.354, .236))
-			>> players.stack(key="wOBA", labels="abc")
+        AttributeError: Attribute (abc) not found in row.
 
-		gives the following output,
+        Example 6:
 
-		wOBA | column | value """
+        If we give a non-existent label, we get an empty table without any errors
+        
+        >>> players = Table().with_columns('player_id', \
+            make_array(110234, 110235), 'wOBA', make_array(.354, .236))
+        >>> players.stack(key="wOBA", labels="abc")
+        
+        gives the following output,
+
+        wOBA | column | value """
+
         rows, labels = [], labels or self.labels
         for row in self.rows:
             [rows.append((getattr(row, key), k, v)) for k, v in row.asdict().items()
