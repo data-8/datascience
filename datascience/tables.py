@@ -1797,27 +1797,27 @@ class Table(collections.abc.MutableMapping):
             distributed into specified ``bins`` and ``range``.
             
         Examples:
-        
-        >>> t = Table.from_records([
+	
+	>>> t = Table.from_records([
 	...   {
 	...    'column1':'data1',
 	...    'column2':86,
-        ...    'column3':'b',
-        ...    'column4':5,
+	...    'column3':'b',
+	...    'column4':5,
 	...   },
 	...   {
 	...    'column1':'data2',
 	...    'column2':51,
-        ...    'column3':'c',
-        ...    'column4':3,
+	...    'column3':'c',
+	...    'column4':3,
 	...   },
 	...   {
 	...    'column1':'data3',
 	...    'column2':32,
-        ...    'column3':'a',
-        ...    'column4':6,
+	...    'column3':'a',
+	...    'column4':6,
 	...   }
-        ... ])
+	... ]}
         
         >>> t
         column1 | column2 | column3 | column4
@@ -1907,27 +1907,27 @@ class Table(collections.abc.MutableMapping):
             new table.
             
         Examples:
-        
-        >>> t = Table.from_records([
+	
+	>>> t = Table.from_records([
 	...   {
 	...    'column1':'data1',
 	...    'column2':86,
-        ...    'column3':'b',
-        ...    'column4':5,
+	...    'column3':'b',
+	...    'column4':5,
 	...   },
 	...   {
 	...    'column1':'data2',
 	...    'column2':51,
-        ...    'column3':'c',
-        ...    'column4':3,
+	...    'column3':'c',
+	...    'column4':3,
 	...   },
 	...   {
 	...    'column1':'data3',
 	...    'column2':32,
-        ...    'column3':'a',
-        ...    'column4':6,
+	...    'column3':'a',
+	...    'column4':6,
 	...   }
-        ... ])
+	... ]}
         
         >>> t
         column1 | column2 | column3 | column4
