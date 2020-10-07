@@ -2550,7 +2550,7 @@ class Table(collections.abc.MutableMapping):
         return fmts
 
     def as_text(self, max_rows=0, sep=" | "):
-        """Format table as text.
+        """Format table as text
             
             Args:   
                 max_rows(int) The maximum number of rows to be present in the converted string of table. (Optional Argument)
