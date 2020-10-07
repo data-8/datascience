@@ -147,13 +147,19 @@ class Table(collections.abc.MutableMapping):
                               
         Example:
 	
-	Suppose there is a CSV file called file.csv with the following contents:
-	column1 | column2 | column 3
-	data 1  |   a     |    1
-	data 2  |   c     |    4
-	
-	>>> Table.read_table('file.csv') # doctest: +SKIP
-	<outputs a Table with the contents of file.csv>
+	>>> Table.read_table('https://www.inferentialthinking.com/data/sat2014.csv')
+        State        | Participation Rate | Critical Reading | Math | Writing | Combined
+        North Dakota | 2.3                | 612              | 620  | 584     | 1816
+        Illinois     | 4.6                | 599              | 616  | 587     | 1802
+        Iowa         | 3.1                | 605              | 611  | 578     | 1794
+        South Dakota | 2.9                | 604              | 609  | 579     | 1792
+        Minnesota    | 5.9                | 598              | 610  | 578     | 1786
+        Michigan     | 3.8                | 593              | 610  | 581     | 1784
+        Wisconsin    | 3.9                | 596              | 608  | 578     | 1782
+        Missouri     | 4.2                | 595              | 597  | 579     | 1771
+        Wyoming      | 3.3                | 590              | 599  | 573     | 1762
+        Kansas       | 5.3                | 591              | 596  | 566     | 1753
+        ... (41 rows omitted)
                 
         """
         # Look for .csv at the end of the path; use "," as a separator if found
