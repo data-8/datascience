@@ -1817,7 +1817,7 @@ class Table(collections.abc.MutableMapping):
 	...    'column3':'a',
 	...    'column4':6,
 	...   }
-	... ]}
+	... ])
         
         >>> t
         column1 | column2 | column3 | column4
@@ -1927,7 +1927,7 @@ class Table(collections.abc.MutableMapping):
 	...    'column3':'a',
 	...    'column4':6,
 	...   }
-	... ]}
+	... ])
         
         >>> t
         column1 | column2 | column3 | column4
