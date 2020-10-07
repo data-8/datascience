@@ -1835,9 +1835,6 @@ class Table(collections.abc.MutableMapping):
         >>> players = Table().with_columns('player_id', \
             make_array(110234, 110235), 'wOBA', make_array(.354, .236))
         >>> players.stack(key='player_id')
-        
-        gives the following output,
-        
         player_id | column | value
         110234    | wOBA   | 0.354
         110235    | wOBA   | 0.236
@@ -1848,10 +1845,7 @@ class Table(collections.abc.MutableMapping):
         >>> players = Table().with_columns('player_id', \
             make_array(110234, 110235), 'wOBA', make_array(.354, .236))
         >>> players.stack(key='wOBA')
-        
-        gives the following output,
-
-        wOBA  | column    | value
+         wOBA  | column    | value
         0.354 | player_id | 110234
         0.236 | player_id | 110235
 
@@ -1863,9 +1857,6 @@ class Table(collections.abc.MutableMapping):
             'job',  make_array('a', 'b', 'c', 'd'), \
             'wage', make_array(10, 20, 15, 8))
         >>> jobs.stack(key='wage')   
-
-        gives the following output,
-
         wage | column | value
         10   | job    | a
         20   | job    | b
@@ -1878,9 +1869,6 @@ class Table(collections.abc.MutableMapping):
             'job',  make_array('a', 'b', 'c', 'd'), \
             'wage', make_array(10, 20, 15, 8))
         >>> jobs.stack(key='job')
-
-        gives the following output,
-
         job  | column | value
         a    | wage   | 10
         b    | wage   | 20
@@ -1897,9 +1885,6 @@ class Table(collections.abc.MutableMapping):
             'price', make_array(90.5, 90.00, 83.00, 95.50, 82.00, 82.00), \
             'projection', make_array(90.75, 82.00, 82.50, 82.50, 83.00, 82.50))
         >>> table.stack(key='price')
-
-        gives the following output,
-
         price | column     | value
         90.5  | days       | 0
         90.5  | projection | 90.75
@@ -1917,8 +1902,7 @@ class Table(collections.abc.MutableMapping):
         
         If we specify a particular label, we then get that label related values only
 
-        >>> table.stack(key='price', labels="days")
-        
+        >>> table.stack(key='price', labels="days")    
         price | column | value
         90.5  | days   | 0
         90    | days   | 1
@@ -1929,27 +1913,13 @@ class Table(collections.abc.MutableMapping):
 
         Example 5:
 
-        If we give a non-existent key, we get an Attribute Error
-
-        >>> players = Table().with_columns('player_id', \
-            make_array(110234, 110235), 'wOBA', make_array(.354, .236))
-        >>> players.stack(key='abc')
-
-        gives the following output,
-
-        AttributeError: Attribute (abc) not found in row.
-
-        Example 6:
-
         If we give a non-existent label, we get an empty table without any errors
         
         >>> players = Table().with_columns('player_id', \
             make_array(110234, 110235), 'wOBA', make_array(.354, .236))
         >>> players.stack(key="wOBA", labels="abc")
-        
-        gives the following output,
-
-        wOBA | column | value """
+        wOBA | column | value 
+        """
 
         rows, labels = [], labels or self.labels
         for row in self.rows:
