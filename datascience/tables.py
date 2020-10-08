@@ -2994,7 +2994,7 @@ class Table(collections.abc.MutableMapping):
         data3   | 32      | a       | 6
 	
 	>>> t.index_by('column2')
-        {32: [Row(column1='data3', column2=32, column3='a', column4=6)],
+	{32: [Row(column1='data3', column2=32, column3='a', column4=6)],
 	51: [Row(column1='data2', column2=51, column3='c', column4=3)],
 	86: [Row(column1='data1', column2=86, column3='b', column4=5)]}
 	
