@@ -146,8 +146,8 @@ class Table(collections.abc.MutableMapping):
             a table read from argument
                               
         Example:
-        
-        >>> Table.read_table('https://www.inferentialthinking.com/data/sat2014.csv')
+	
+	>>> Table.read_table('https://www.inferentialthinking.com/data/sat2014.csv')
         State        | Participation Rate | Critical Reading | Math | Writing | Combined
         North Dakota | 2.3                | 612              | 620  | 584     | 1816
         Illinois     | 4.6                | 599              | 616  | 587     | 1802
@@ -1790,6 +1790,84 @@ class Table(collections.abc.MutableMapping):
             ``normed`` (bool): If False, the result will contain the number of
                 samples in each bin. If True, the result is normalized such that
                 the integral over the range is 1.
+                
+        Returns:
+            New pivot table with unique rows of specified ``pivot_columns``, 
+            populated with 0s and 1s with respect to values from ``value_column`` 
+            distributed into specified ``bins`` and ``range``.
+            
+        Examples:
+	
+	>>> t = Table.from_records([
+	...   {
+	...    'column1':'data1',
+	...    'column2':86,
+	...    'column3':'b',
+	...    'column4':5,
+	...   },
+	...   {
+	...    'column1':'data2',
+	...    'column2':51,
+	...    'column3':'c',
+	...    'column4':3,
+	...   },
+	...   {
+	...    'column1':'data3',
+	...    'column2':32,
+	...    'column3':'a',
+	...    'column4':6,
+	...   }
+	... ])
+        
+        >>> t
+        column1 | column2 | column3 | column4
+        data1   | 86      | b       | 5
+        data2   | 51      | c       | 3
+        data3   | 32      | a       | 6
+        
+        >>> t.pivot_bin(pivot_columns='column1',value_column='column2')
+        bin  | data1 | data2 | data3
+        32   | 0     | 0     | 1
+        37.4 | 0     | 0     | 0
+        42.8 | 0     | 0     | 0
+        48.2 | 0     | 1     | 0
+        53.6 | 0     | 0     | 0
+        59   | 0     | 0     | 0
+        64.4 | 0     | 0     | 0
+        69.8 | 0     | 0     | 0
+        75.2 | 0     | 0     | 0
+        80.6 | 1     | 0     | 0
+        ... (1 rows omitted)
+        
+        >>> t.pivot_bin(pivot_columns=['column1','column2'],value_column='column4')
+        bin  | data1-86 | data2-51 | data3-32
+        3    | 0        | 1        | 0
+        3.3  | 0        | 0        | 0
+        3.6  | 0        | 0        | 0
+        3.9  | 0        | 0        | 0
+        4.2  | 0        | 0        | 0
+        4.5  | 0        | 0        | 0
+        4.8  | 1        | 0        | 0
+        5.1  | 0        | 0        | 0
+        5.4  | 0        | 0        | 0
+        5.7  | 0        | 0        | 1
+        ... (1 rows omitted)
+        
+        >>> t.pivot_bin(pivot_columns='column1',value_column='column2',bins=[20,45,100])
+        bin  | data1 | data2 | data3
+        20   | 0     | 0     | 1
+        45   | 1     | 1     | 0
+        100  | 0     | 0     | 0
+        
+        >>> t.pivot_bin(pivot_columns='column1',value_column='column2',bins=5,range=[30,60])
+        bin  | data1 | data2 | data3
+        30   | 0     | 0     | 1
+        36   | 0     | 0     | 0
+        42   | 0     | 0     | 0
+        48   | 0     | 1     | 0
+        54   | 0     | 0     | 0
+        60   | 0     | 0     | 0
+               
         """
         pivot_columns = _as_labels(pivot_columns)
         selected = self.select(pivot_columns + [value_column])
@@ -1812,6 +1890,72 @@ class Table(collections.abc.MutableMapping):
     def stack(self, key, labels=None):
         """Takes k original columns and returns two columns, with col. 1 of
         all column names and col. 2 of all associated data.
+        
+        Args:
+            ``key``: Name of a column from table which is the basis for stacking 
+                values from the table.
+             
+            ``labels``: List of column names which must be included in the stacked
+                representation of the table. If no value is supplied for this argument,
+                then the function considers all columns from the original table.
+                
+        Returns:
+            A table whose first column consists of stacked values from column passed in
+            ``key``. The second column of this returned table consists of the column names
+            passed in ``labels``, whereas the final column consists of the data values
+            corresponding to the respective values in the first and second columns of the
+            new table.
+            
+        Examples:
+	
+	>>> t = Table.from_records([
+	...   {
+	...    'column1':'data1',
+	...    'column2':86,
+	...    'column3':'b',
+	...    'column4':5,
+	...   },
+	...   {
+	...    'column1':'data2',
+	...    'column2':51,
+	...    'column3':'c',
+	...    'column4':3,
+	...   },
+	...   {
+	...    'column1':'data3',
+	...    'column2':32,
+	...    'column3':'a',
+	...    'column4':6,
+	...   }
+	... ])
+        
+        >>> t
+        column1 | column2 | column3 | column4
+        data1   | 86      | b       | 5
+        data2   | 51      | c       | 3
+        data3   | 32      | a       | 6
+        
+        >>> t.stack('column2')
+        column2 | column  | value
+        86      | column1 | data1
+        86      | column3 | b
+        86      | column4 | 5
+        51      | column1 | data2
+        51      | column3 | c
+        51      | column4 | 3
+        32      | column1 | data3
+        32      | column3 | a
+        32      | column4 | 6
+        
+        >>> t.stack('column2',labels=['column4','column1'])
+        column2 | column  | value
+        86      | column1 | data1
+        86      | column4 | 5
+        51      | column1 | data2
+        51      | column4 | 3
+        32      | column1 | data3
+        32      | column4 | 6
+        
         """
         rows, labels = [], labels or self.labels
         for row in self.rows:
