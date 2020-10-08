@@ -2906,7 +2906,7 @@ class Table(collections.abc.MutableMapping):
           </tbody>
         </table>
 	
-	>>>t.as_html(max_rows=2)
+	>>> t.as_html(max_rows=2)
 	<table border="1" class="dataframe">
           <thead>
             <tr>
