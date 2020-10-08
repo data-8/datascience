@@ -2574,7 +2574,7 @@ class Table(collections.abc.MutableMapping):
                 >>> table_astext = table.as_text()
 
                 >>> table_astext
-                'name | age  | height\nabc  | 12   | 5.5\nxyz  | 14   | 6\nuvw  | 20   | 5.9'
+                'name | age  | height\\nabc  | 12   | 5.5\\nxyz  | 14   | 6\\nuvw  | 20   | 5.9'
 
                 >>> type(table)
                 <class 'datascience.tables.Table'>
@@ -2594,19 +2594,19 @@ class Table(collections.abc.MutableMapping):
                 >>> sizes_astext = sizes.as_text()
 
                 >>> sizes_astext
-                'size   | count\nsmall  | 50\nmedium | 100\nbig    | 50'
+                'size   | count\\nsmall  | 50\\nmedium | 100\\nbig    | 50'
                     
                 3. 
                 >>> sizes_astext = sizes.as_text(1)
 
                 >>> sizes_astext
-                'size  | count\nsmall | 50\n... (2 rows omitted)'
+                'size  | count\\nsmall | 50\\n... (2 rows omitted)'
 
                  4.
                 >>> sizes_astext = sizes.as_text(2, ' - ')
 
                 >>> sizes_astext
-                'size   - count\nsmall  - 50\nmedium - 100\n... (1 rows omitted)'
+                'size   - count\\nsmall  - 50\\nmedium - 100\\n... (1 rows omitted)'
 
         """
         if not max_rows or max_rows > self.num_rows:
