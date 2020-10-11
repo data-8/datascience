@@ -4610,27 +4610,32 @@ class Table(collections.abc.MutableMapping):
                     bins_for_key = np.linspace(min(values), max(values), bins + 1)
                 elif bins is None:
                     bins_for_key = np.linspace(min(values), max(values), 11)
-                bins_dict[k] = bins_for_key[:-1]
             bins = bins_dict 
         else:
             if type(bins) == np.integer or type(bins) == int:
                 bins = np.linspace(data_min, data_max, bins + 1)
-                bins = bins[:-1]
             elif bins is None:
                 # Chose 11 (creates 10 bins) since default setting for Matplotlib
                 # is to create 10 bins
                 bins = np.linspace(data_min, data_max, 11)
-                bins = bins[:-1]
             else:
                 bins = np.array(bins)
+        bins = bins.astype(float)
 
-        def insert_ordered(arr, n):
+        def insert_ordered(nums, item):
             # Utility function, orderly inserts n into arr given arr is sorted
             # Also returns the index n was inserted at
-            for i in range(len(arr)):
-                if arr[i] > n:
-                    return i, np.insert(arr, i, n)
-            return len(arr), np.insert(arr, len(arr), n)
+            left = 0
+            right = len(nums) - 1
+            while left <= right:
+                mid = (left + right) // 2
+                if (nums[mid] == item):
+                    return mid, np.insert(nums, mid, item)
+                elif (nums[mid] > item):
+                    right = mid - 1
+                else:
+                    left = mid + 1
+            return left, np.insert(nums, left, item)
 
         # Adding bins if shade_split = "new"
         if shade_split == "new":
@@ -4649,37 +4654,36 @@ class Table(collections.abc.MutableMapping):
                     _, bins = insert_ordered(bins, left_end)
 
         # Getting bin widths and midpoints
-        def get_widths_and_midpoints(bins, data_max): 
-            widths = np.zeros(len(bins))
+        def get_widths_and_midpoints(bins):
+            widths = np.zeros(len(bins) - 1)
             for i in range(len(bins) - 1):
                 widths[i] = max(bins[i + 1] - bins[i], 0)
-            widths[-1] = max(max(data_max - bins[-1], 0), 0)
-            bin_mids = bins + widths / 2
+            bin_mids = bins[:-1] + widths / 2
             return widths, bin_mids
             
         if multiple_bins: 
             widths = dict()
             bin_mids = dict()
             for k in bins.keys():
-                widths[k], bin_mids[k] = get_widths_and_midpoints(bins[k], max(values_dict[k][0]))
+                widths[k], bin_mids[k] = get_widths_and_midpoints(bins[k])
         else:
-            widths, bin_mids = get_widths_and_midpoints(bins, data_max)
+            widths, bin_mids = get_widths_and_midpoints(bins)
 
         # Get heights of each bar
         def get_bar_heights(vals, bins, widths):
             if len(vals) == 1:
                 data = vals[0]
-                inds = np.digitize(data, bins) - 1
-                heights = np.zeros(len(bins))
+                inds = np.digitize(data, bins)
+                heights = np.zeros(len(bins) - 1)
                 for e in inds:
-                    heights[e] += 1
+                    if 0 < e < len(bins):
+                        heights[e - 1] += 1
                 if density:
                     with np.errstate(divide = "ignore", invalid = "ignore"):
                         # With custom bins that have edges on the max value in dataset,
                         # could produce a truedivide warning. This line just temporarily
                         # ignores that warning.
-                        heights /= (widths * len(data))
-                        heights = 100 * np.nan_to_num(heights)
+                        heights = 100 * heights * widths / np.dot(heights, widths)
                 return heights
             with np.errstate(divide = "ignore", invalid = "ignore"):
                 heights = np.zeros(len(bins))
@@ -4700,8 +4704,7 @@ class Table(collections.abc.MutableMapping):
         if shade_split == "split":
             if multiple_bins: 
                 for k in heights.keys():
-                    bin_min = min(bins[k])
-                    bin_max = max(bins[k])
+                    bin_min, bin_max = bins[k][0], bins[k][-1]
                     i = -1
                     if right_end is not None and bin_min < right_end < bin_max:
                         i, bins[k] = insert_ordered(bins[k], right_end)
@@ -4710,19 +4713,22 @@ class Table(collections.abc.MutableMapping):
                         i, bins[k] = insert_ordered(bins[k], left_end)
                         heights[k] = np.insert(heights[k], i, heights[k][i - 1])
                     if i != -1:
-                        widths[k], bin_mids[k] = get_widths_and_midpoints(bins[k], max(values_dict[k][0]))
+                        widths[k], bin_mids[k] = get_widths_and_midpoints(bins[k])
             else:
-                i = -1
-                if right_end is not None and data_min < right_end < data_max: 
+                bin_min, bin_max = bins[0], bins[-1]
+                shaded = False
+                if right_end is not None and bin_min < right_end < bin_max: 
                     i, bins = insert_ordered(bins, right_end)
                     for k in heights.keys():
                         heights[k] = np.insert(heights[k], i, heights[k][i - 1])
-                if left_end is not None and data_min < left_end < data_max:
+                    shaded = True
+                if left_end is not None and bin_min < left_end < bin_max:
                     i, bins = insert_ordered(bins, left_end)
                     for k in heights.keys():
                         heights[k] = np.insert(heights[k], i, heights[k][i - 1])
-                if i != -1:
-                    widths, bin_mids = get_widths_and_midpoints(bins, max(values_dict[k][0]))
+                    shaded = True
+                if shaded:
+                    widths, bin_mids = get_widths_and_midpoints(bins)
         
         # Formatter function for bin_ranges, 6 significant figures
         bin_range_formatter = lambda tup: "".join(["(", str(float("%.6g" % tup[0])), ", ", str(float("%.6g" % tup[1])), ")"])
@@ -4740,38 +4746,32 @@ class Table(collections.abc.MutableMapping):
         colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors),
             n + int(left_end is not None or right_end is not None)))
 
-        def get_shaded_colors(bins, left_end, right_end, i, data_min, data_max):
+        def get_shaded_colors(bins, left_end, right_end, i):
             # Handles colors for shading, returns colors and boolean indicating if anything was shaded 
-            _, bins_with_max = insert_ordered(bins, data_max)
-            left_end_ind = np.digitize(left_end, bins_with_max) - 1 if left_end is not None else -1
-            right_end_ind = np.digitize(right_end, bins_with_max) - 1 if right_end is not None else len(bins)
-            shaded = False
+            left_end_ind = np.digitize(left_end, bins) - 1 if left_end is not None else len(bins)
+            right_end_ind = np.digitize(right_end, bins) - 1 if right_end is not None else -1
             if left_end is not None or right_end is not None:
-                if i >= 1:
+                if i >= 1: # Gold is reserved for shading
                     i += 1
-                bin_colors = [colors[i]] * len(bins)
+                shade_color = colors[1] 
+                bin_colors = [colors[i]] * (len(bins) - 1)
                 if left_end == right_end:
                     return False, bin_colors
                 elif left_end is not None and right_end is None:
                     for shade_ind in range(left_end_ind, len(bin_colors)):
-                        shaded = True
-                        bin_colors[shade_ind] = colors[1] # Gold is always second color
+                        bin_colors[shade_ind] = shade_color
                 elif left_end is None and right_end is not None:
                     for shade_ind in range(right_end_ind + int(shade_split == "whole")):
-                        shaded = True
-                        bin_colors[shade_ind] = colors[1]
+                        bin_colors[shade_ind] = shade_color
                 elif left_end < right_end:
                     for shade_ind in range(max(left_end_ind, 0), min(right_end_ind + int(shade_split == "whole"), len(bin_colors))):
-                        shaded = True
-                        bin_colors[shade_ind] = colors[1] 
+                        bin_colors[shade_ind] = shade_color
                 elif left_end > right_end:
                     for shade_ind in range(right_end_ind):
-                        shaded = True
-                        bin_colors[shade_ind] = colors[1]
+                        bin_colors[shade_ind] = shade_color
                     for shade_ind in range(left_end_ind, len(bin_colors)):
-                        shaded = True
-                        bin_colors[shade_ind] = colors[1]
-                return shaded, bin_colors
+                        bin_colors[shade_ind] = shade_color
+                return True, bin_colors
             else:
                 return False, colors[i]
 
@@ -4827,7 +4827,7 @@ class Table(collections.abc.MutableMapping):
                 fig.update_layout(height = height)
 
             for i, k in enumerate(heights.keys()):
-                shaded, marker_colors = get_shaded_colors(bins, left_end, right_end, i, data_min, data_max)
+                shaded, marker_colors = get_shaded_colors(bins, left_end, right_end, i)
                 text, hovertemplate = get_text_and_template(shaded, marker_colors, heights, widths)
                 fig.add_trace(go.Bar(
                     x = bin_mids,
@@ -4890,7 +4890,7 @@ class Table(collections.abc.MutableMapping):
             for i, k in enumerate(heights.keys()):
                 trace_bins = bins[k] if multiple_bins else bins
                 trace_widths = widths[k] if multiple_bins else widths
-                shaded, marker_colors = get_shaded_colors(bins[k], left_end, right_end, i, min(trace_bins), max(trace_bins))
+                shaded, marker_colors = get_shaded_colors(bins[k], left_end, right_end, i)
                 text, hovertemplate = get_text_and_template(shaded, marker_colors, heights, trace_widths)
                 fig.append_trace(go.Bar(
                     x = bin_mids[k] if multiple_bins else bin_mids,
