@@ -5,6 +5,7 @@ __all__ = ['Table']
 import abc
 import collections
 import collections.abc
+import copy
 import functools
 import inspect
 import itertools
@@ -94,7 +95,7 @@ class Table(collections.abc.MutableMapping):
     @classmethod
     def from_records(cls, records):
         """Create a table from a sequence of records (dicts with fixed keys).
-
+        
            Args:
 
                records: A list of dictionaries with same keys.
@@ -104,8 +105,21 @@ class Table(collections.abc.MutableMapping):
                If the list is empty, it will return an empty table.
                Otherwise, it will return a table with the dictionary's keys as the column name, and the corresponding data.
                If the dictionaries do not have identical keys, the keys of the first dictionary in the list is used.
+               
+           Example:
+           
+               >>> t = Table().from_records([
+               ...     {'column1':'data1','column2':1}, 
+               ...     {'column1':'data2','column2':2}, 
+               ...     {'column1':'data3','column2':3}
+               ... ])
+               >>> t
+               column1 | column2
+               data1   | 1
+               data2   | 2
+               data3   | 3
 
-           """
+        """
         if not records:
             return cls()
         labels = sorted(list(records[0].keys()))
@@ -122,10 +136,31 @@ class Table(collections.abc.MutableMapping):
     @classmethod
     def read_table(cls, filepath_or_buffer, *args, **vargs):
         """Read a table from a file or web address.
-
-        filepath_or_buffer -- string or file handle / StringIO; The string
+        
+        Args:
+            filepath_or_buffer -- string or file handle / StringIO; The string
                               could be a URL. Valid URL schemes include http,
                               ftp, s3, and file.
+        
+        Returns:
+            a table read from argument
+                              
+        Example:
+	
+	>>> Table.read_table('https://www.inferentialthinking.com/data/sat2014.csv')
+        State        | Participation Rate | Critical Reading | Math | Writing | Combined
+        North Dakota | 2.3                | 612              | 620  | 584     | 1816
+        Illinois     | 4.6                | 599              | 616  | 587     | 1802
+        Iowa         | 3.1                | 605              | 611  | 578     | 1794
+        South Dakota | 2.9                | 604              | 609  | 579     | 1792
+        Minnesota    | 5.9                | 598              | 610  | 578     | 1786
+        Michigan     | 3.8                | 593              | 610  | 581     | 1784
+        Wisconsin    | 3.9                | 596              | 608  | 578     | 1782
+        Missouri     | 4.2                | 595              | 597  | 579     | 1771
+        Wyoming      | 3.3                | 590              | 599  | 573     | 1762
+        Kansas       | 5.3                | 591              | 596  | 566     | 1753
+        ... (41 rows omitted)
+                
         """
         # Look for .csv at the end of the path; use "," as a separator if found
         try:
@@ -161,11 +196,38 @@ class Table(collections.abc.MutableMapping):
     @classmethod
     def from_df(cls, df, keep_index=False):
         """Convert a Pandas DataFrame into a Table.
-
-        `keep_index` -- keeps the index of the DataFrame
-            and turns it into a column called `index` in
-            the new Table
-
+        
+        Args:
+        
+            df -- Pandas DataFrame utilized for creation of Table
+            
+            `keep_index` -- keeps the index of the DataFrame 
+            and turns it into a column called `index` in the new Table
+            
+        Returns:
+           a table from Pandas Dataframe in argument
+           
+        Example:
+        
+        >>> sample_DF = pandas.DataFrame(
+        ...             data = zip([1,2,3],['a','b','c'],['data1','data2','data3']),
+        ...             columns = ['column1','column2','column3']
+        ...             )
+        
+        >>> sample_DF
+           column1 column2 column3
+        0        1       a   data1
+        1        2       b   data2
+        2        3       c   data3
+        
+        >>> t = Table().from_df(sample_DF)
+        
+        >>> t
+        column1 | column2 | column3
+        1       | a       | data1
+        2       | b       | data2
+        3       | c       | data3        
+       
         """
         t = cls()
         if keep_index:
@@ -181,11 +243,29 @@ class Table(collections.abc.MutableMapping):
 
            Args:
  
-               arr: A structured numpy array
+               arr -- A structured numpy array
 
            Returns:
 
-               A table with the field names as the column names and the corresponding data. 
+               A table with the field names as the column names and the corresponding data.
+               
+        Example:
+        
+        >>> arr = np.array([
+        ...       ('A',1), ('B',2)], 
+        ...       dtype=[('Name', 'U10'), ('Number', 'i4')]
+        ...       )
+                         
+        >>> arr
+        array([('A', 1), ('B', 2)], dtype=[('Name', '<U10'), ('Number', '<i4')])
+        
+        >>> t = Table().from_array(arr)
+        
+        >>> t
+        Name | Number
+        A    | 1
+        B    | 2
+        
         """
         return cls().with_columns([(f, arr[f]) for f in arr.dtype.names])
 
@@ -520,7 +600,195 @@ class Table(collections.abc.MutableMapping):
     ############
 
     def set_format(self, column_or_columns, formatter):
-        """Set the format of a column."""
+        """
+        Set the pretty print format of a column(s) and/or convert its values.
+
+        Args:
+            ``column_or_columns``: values to group (column label or index, or array)
+
+            ``formatter``: a function applied to a single value within the
+                ``column_or_columns`` at a time or a formatter class, or formatter
+                class instance.
+
+        Returns:
+            A Table with ``formatter`` applied to each ``column_or_columns``.
+
+        The following example formats the column "balance" by passing in a formatter
+        class instance. The formatter is run each time ``__repr__`` is called. So, while
+        the table is formatted upon being printed to the console, the underlying values
+        within the table remain untouched. It's worth noting that while ``set_format``
+        returns the table with the new formatters applied, this change is applied
+        directly to the original table and then the original table is returned. This
+        means ``set_format`` is what's known as an inplace operation.
+
+        >>> account_info = Table().with_columns(
+        ...    "user", make_array("gfoo", "bbar", "tbaz", "hbat"),
+        ...    "balance", make_array(200, 555, 125, 430))
+        >>> account_info
+        user | balance
+        gfoo | 200
+        bbar | 555
+        tbaz | 125
+        hbat | 430
+        >>> from datascience.formats import CurrencyFormatter
+        >>> account_info.set_format("balance", CurrencyFormatter("BZ$")) # Belize Dollar
+        user | balance
+        gfoo | BZ$200
+        bbar | BZ$555
+        tbaz | BZ$125
+        hbat | BZ$430
+        >>> account_info["balance"]
+        array([200, 555, 125, 430])
+        >>> account_info
+        user | balance
+        gfoo | BZ$200
+        bbar | BZ$555
+        tbaz | BZ$125
+        hbat | BZ$430
+
+        The following example formats the column "balance" by passing in a formatter
+        function.
+
+        >>> account_info = Table().with_columns(
+        ...    "user", make_array("gfoo", "bbar", "tbaz", "hbat"),
+        ...    "balance", make_array(200, 555, 125, 430))
+        >>> account_info
+        user | balance
+        gfoo | 200
+        bbar | 555
+        tbaz | 125
+        hbat | 430
+        >>> def iceland_krona_formatter(value):
+        ...    return f"{value} kr"
+        >>> account_info.set_format("balance", iceland_krona_formatter)
+        user | balance
+        gfoo | 200 kr
+        bbar | 555 kr
+        tbaz | 125 kr
+        hbat | 430 kr
+
+        The following, formats the column "balance" by passing in a formatter class.
+        Note the formatter class must have a Boolean ``converts_values`` attribute set
+        and a ``format_column`` method that returns a function that formats a single
+        value at a time. The ``format_column`` method accepts the name of the column and
+        the value of the column as arguments and returns a formatter function that
+        accepts a value and Boolean indicating whether that value is the column name.
+        In the following example, if the ``if label: return value`` was removed, the
+        column name "balance" would be formatted and printed as "balance kr". The
+        ``converts_values`` attribute should be set to False unless a ``convert_values``
+        method is also defined on the formatter class.
+
+        >>> account_info = Table().with_columns(
+        ...    "user", make_array("gfoo", "bbar", "tbaz", "hbat"),
+        ...    "balance", make_array(200, 555, 125, 430))
+        >>> account_info
+        user | balance
+        gfoo | 200
+        bbar | 555
+        tbaz | 125
+        hbat | 430
+        >>> class IcelandKronaFormatter():
+        ...    def __init__(self):
+        ...        self.converts_values = False
+        ...
+        ...    def format_column(self, label, column):
+        ...        def format_krona(value, label):
+        ...            if label:
+        ...                return value
+        ...            return f"{value} kr"
+        ...
+        ...        return format_krona
+        >>> account_info.set_format("balance", IcelandKronaFormatter)
+        user | balance
+        gfoo | 200 kr
+        bbar | 555 kr
+        tbaz | 125 kr
+        hbat | 430 kr
+        >>> account_info["balance"]
+        array([200, 555, 125, 430])
+
+        ``set_format`` can also be used to convert values. If you set the
+        ``converts_values`` attribute to True and define a ``convert_column`` method
+        that accepts the column values and returns the converted column values on the
+        formatter class, the column values will be permanently converted to the new
+        column values in a one time operation.
+
+        >>> account_info = Table().with_columns(
+        ...    "user", make_array("gfoo", "bbar", "tbaz", "hbat"),
+        ...    "balance", make_array(200.01, 555.55, 125.65, 430.18))
+        >>> account_info
+        user | balance
+        gfoo | 200.01
+        bbar | 555.55
+        tbaz | 125.65
+        hbat | 430.18
+        >>> class IcelandKronaFormatter():
+        ...    def __init__(self):
+        ...        self.converts_values = True
+        ...
+        ...    def format_column(self, label, column):
+        ...        def format_krona(value, label):
+        ...            if label:
+        ...                return value
+        ...            return f"{value} kr"
+        ...
+        ...        return format_krona
+        ...
+        ...    def convert_column(self, values):
+        ...        # Drop the fractional kr.
+        ...        return values.astype(int)
+        >>> account_info.set_format("balance", IcelandKronaFormatter)
+        user | balance
+        gfoo | 200 kr
+        bbar | 555 kr
+        tbaz | 125 kr
+        hbat | 430 kr
+        >>> account_info
+        user | balance
+        gfoo | 200 kr
+        bbar | 555 kr
+        tbaz | 125 kr
+        hbat | 430 kr
+        >>> account_info["balance"]
+        array([200, 555, 125, 430])
+
+        In the following example, multiple columns are configured to use the same
+        formatter. Note the following formatter takes into account the length of all
+        values in the column and formats them to be the same character length. This is
+        something that the default table formatter does for you but, if you write a
+        custom formatter, you must do yourself.
+
+        >>> account_info = Table().with_columns(
+        ...    "user", make_array("gfoo", "bbar", "tbaz", "hbat"),
+        ...    "checking", make_array(200, 555, 125, 430),
+        ...    "savings", make_array(1000, 500, 1175, 6700))
+        >>> account_info
+        user | checking | savings
+        gfoo | 200      | 1000
+        bbar | 555      | 500
+        tbaz | 125      | 1175
+        hbat | 430      | 6700
+        >>> class IcelandKronaFormatter():
+        ...    def __init__(self):
+        ...        self.converts_values = False
+        ...
+        ...    def format_column(self, label, column):
+        ...        val_width = max([len(str(v)) + len(" kr") for v in column])
+        ...        val_width = max(len(str(label)), val_width)
+        ...
+        ...        def format_krona(value, label):
+        ...            if label:
+        ...                return value
+        ...            return f"{value} kr".ljust(val_width)
+        ...
+        ...        return format_krona
+        >>> account_info.set_format(["checking", "savings"], IcelandKronaFormatter)
+        user | checking | savings
+        gfoo | 200 kr   | 1000 kr
+        bbar | 555 kr   | 500 kr
+        tbaz | 125 kr   | 1175 kr
+        hbat | 430 kr   | 6700 kr
+        """
         if inspect.isclass(formatter):
             formatter = formatter()
         if callable(formatter) and not hasattr(formatter, 'format_column'):
@@ -534,18 +802,112 @@ class Table(collections.abc.MutableMapping):
         return self
 
     def move_to_start(self, column_label):
-        """Move a column to the first in order."""
+        """
+        Move a column to be the first column.
+
+        The following example moves column C to be the first column. Note, move_to_start
+        not only returns the original table with the column moved but, it also moves
+        the column in the original. This is what's known as an inplace operation.
+
+        >>> table = Table().with_columns(
+        ...    "A", make_array(1, 2, 3, 4),
+        ...    "B", make_array("foo", "bar", "baz", "bat"),
+        ...    "C", make_array('a', 'b', 'c', 'd'))
+        >>> table
+        A    | B    | C
+        1    | foo  | a
+        2    | bar  | b
+        3    | baz  | c
+        4    | bat  | d
+        >>> table.move_to_start("C")
+        C    | A    | B
+        a    | 1    | foo
+        b    | 2    | bar
+        c    | 3    | baz
+        d    | 4    | bat
+        >>> table
+        C    | A    | B
+        a    | 1    | foo
+        b    | 2    | bar
+        c    | 3    | baz
+        d    | 4    | bat
+        """
         self._columns.move_to_end(self._as_label(column_label), last=False)
         return self
 
     def move_to_end(self, column_label):
-        """Move a column to the last in order."""
+        """
+        Move a column to be the last column.
+
+        The following example moves column A to be the last column. Note, move_to_end
+        not only returns the original table with the column moved but, it also moves
+        the column in the original. This is what's known as an inplace operation.
+
+        >>> table = Table().with_columns(
+        ...    "A", make_array(1, 2, 3, 4),
+        ...    "B", make_array("foo", "bar", "baz", "bat"),
+        ...    "C", make_array('a', 'b', 'c', 'd'))
+        >>> table
+        A    | B    | C
+        1    | foo  | a
+        2    | bar  | b
+        3    | baz  | c
+        4    | bat  | d
+        >>> table.move_to_end("A")
+        B    | C    | A
+        foo  | a    | 1
+        bar  | b    | 2
+        baz  | c    | 3
+        bat  | d    | 4
+        >>> table
+        B    | C    | A
+        foo  | a    | 1
+        bar  | b    | 2
+        baz  | c    | 3
+        bat  | d    | 4
+        """
         self._columns.move_to_end(self._as_label(column_label))
         return self
 
     def append(self, row_or_table):
-        """Append a row or all rows of a table. An appended table must have all
-        columns of self."""
+        """
+        Append a row or all rows of a table in place. An appended table must have all
+        columns of self.
+
+        The following example appends a row record to the table,
+        followed by appending a table having all columns of self.
+
+        >>> table = Table().with_columns(
+        ...    "A", make_array(1),
+        ...    "B", make_array("foo"),
+        ...    "C", make_array('a'))
+        >>> table
+        A    | B    | C
+        1    | foo  | a
+        >>> table.append([2, "bar", 'b'])
+        A    | B    | C
+        1    | foo  | a
+        2    | bar  | b
+        >>> table
+        A    | B    | C
+        1    | foo  | a
+        2    | bar  | b
+        >>> table.append(Table().with_columns(
+        ...    "A", make_array(3, 4),
+        ...    "B", make_array("baz", "bat"),
+        ...    "C", make_array('c', 'd')))
+        A    | B    | C
+        1    | foo  | a
+        2    | bar  | b
+        3    | baz  | c
+        4    | bat  | d
+        >>> table
+        A    | B    | C
+        1    | foo  | a
+        2    | bar  | b
+        3    | baz  | c
+        4    | bat  | d
+        """
         if isinstance(row_or_table, np.ndarray):
             row_or_table = row_or_table.tolist()
         elif not row_or_table:
@@ -712,7 +1074,40 @@ class Table(collections.abc.MutableMapping):
         return self
 
     def remove(self, row_or_row_indices):
-        """Removes a row or multiple rows of a table in place."""
+        """
+        Removes a row or multiple rows of a table in place (row number is 0 indexed).
+        If row_or_row_indices is not int or list, no changes will be made to the table.
+
+        The following example removes 2nd row (row_or_row_indices = 1), followed by removing 2nd
+        and 3rd rows (row_or_row_indices = [1, 2]).
+
+        >>> table = Table().with_columns(
+        ...    "A", make_array(1, 2, 3, 4),
+        ...    "B", make_array("foo", "bar", "baz", "bat"),
+        ...    "C", make_array('a', 'b', 'c', 'd'))
+        >>> table
+        A    | B    | C
+        1    | foo  | a
+        2    | bar  | b
+        3    | baz  | c
+        4    | bat  | d
+        >>> table.remove(1)
+        A    | B    | C
+        1    | foo  | a
+        3    | baz  | c
+        4    | bat  | d
+        >>> table
+        A    | B    | C
+        1    | foo  | a
+        3    | baz  | c
+        4    | bat  | d
+        >>> table.remove([1, 2])
+        A    | B    | C
+        1    | foo  | a
+        >>> table
+        A    | B    | C
+        1    | foo  | a
+        """
         if not row_or_row_indices and not isinstance(row_or_row_indices, int):
             return
         if isinstance(row_or_row_indices, int):
@@ -730,13 +1125,90 @@ class Table(collections.abc.MutableMapping):
     ##################
 
     def copy(self, *, shallow=False):
-        """Return a copy of a table."""
+        """
+        Return a copy of a table.
+
+        Args:
+            ``shallow``: perform a shallow copy
+
+        Returns:
+            A copy of the table.
+
+        By default, copy performs a deep copy of the original table. This means that
+        it constructs a new object and recursively inserts copies into it of the objects
+        found in the original. Note in the following example, table_copy is a deep copy
+        of original_table so when original_table is updated it does not change
+        table_copy as it does not contain reference's to orignal_tables objects
+        due to the deep copy.
+
+        >>> value = ["foo"]
+        >>> original_table = Table().with_columns(
+        ...    "A", make_array(1, 2, 3),
+        ...    "B", make_array(value, ["foo", "bar"], ["foo"]),
+        ... )
+        >>> original_table
+        A    | B
+        1    | ['foo']
+        2    | ['foo', 'bar']
+        3    | ['foo']
+        >>> table_copy = original_table.copy()
+        >>> table_copy
+        A    | B
+        1    | ['foo']
+        2    | ['foo', 'bar']
+        3    | ['foo']
+        >>> value.append("bar")
+        >>> original_table
+        A    | B
+        1    | ['foo', 'bar']
+        2    | ['foo', 'bar']
+        3    | ['foo']
+        >>> table_copy
+        A    | B
+        1    | ['foo']
+        2    | ['foo', 'bar']
+        3    | ['foo']
+
+        By contrast, when a shallow copy is performed, a new object is contructed and
+        references are inserted into it to the objects found in the original. Note in
+        the following example how the update to original_table  occurs in both
+        table_shallow_copy and original_table because table_shallow_copy contains
+        references to the original_table.
+
+        >>> value = ["foo"]
+        >>> original_table = Table().with_columns(
+        ...    "A", make_array(1, 2, 3),
+        ...    "B", make_array(value, ["foo", "bar"], ["foo"]),
+        ... )
+        >>> original_table
+        A    | B
+        1    | ['foo']
+        2    | ['foo', 'bar']
+        3    | ['foo']
+        >>> table_shallow_copy = original_table.copy(shallow=True)
+        >>> table_shallow_copy
+        A    | B
+        1    | ['foo']
+        2    | ['foo', 'bar']
+        3    | ['foo']
+        >>> value.append("bar")
+        >>> original_table
+        A    | B
+        1    | ['foo', 'bar']
+        2    | ['foo', 'bar']
+        3    | ['foo']
+        >>> table_shallow_copy
+        A    | B
+        1    | ['foo', 'bar']
+        2    | ['foo', 'bar']
+        3    | ['foo']
+        """
         table = type(self)()
         for label in self.labels:
             if shallow:
                 column = self[label]
             else:
-                column = np.copy(self[label])
+                column = copy.deepcopy(self[label])
             self._add_column_and_format(table, label, column)
         return table
 
@@ -1018,11 +1490,23 @@ class Table(collections.abc.MutableMapping):
         column = self._get_column(column_or_label)
         if distinct:
             _, row_numbers = np.unique(column, return_index=True)
+            if descending:
+                row_numbers = np.array(row_numbers[::-1])
         else:
-            row_numbers = np.argsort(column, axis=0, kind='mergesort')
+            if descending:
+                # In order to not reverse the original row order in case of ties,
+                # do the following:
+                # 1. Reverse the original array.
+                # 2. Sort the array in ascending order.
+                # 3. Invert the array indices via: len - 1 - indice.
+                # 4. Reverse the array so that it is in decending order.
+                column = column[::-1]
+                row_numbers = np.argsort(column, axis=0, kind='mergesort')
+                row_numbers = len(row_numbers) - 1 - row_numbers
+                row_numbers = np.array(row_numbers[::-1])
+            else:
+                row_numbers = np.argsort(column, axis=0, kind='mergesort')
         assert (row_numbers < self.num_rows).all(), row_numbers
-        if descending:
-            row_numbers = np.array(row_numbers[::-1])
         return self.take(row_numbers)
 
     def group(self, column_or_label, collect=None):
@@ -1306,6 +1790,84 @@ class Table(collections.abc.MutableMapping):
             ``normed`` (bool): If False, the result will contain the number of
                 samples in each bin. If True, the result is normalized such that
                 the integral over the range is 1.
+                
+        Returns:
+            New pivot table with unique rows of specified ``pivot_columns``, 
+            populated with 0s and 1s with respect to values from ``value_column`` 
+            distributed into specified ``bins`` and ``range``.
+            
+        Examples:
+	
+	>>> t = Table.from_records([
+	...   {
+	...    'column1':'data1',
+	...    'column2':86,
+	...    'column3':'b',
+	...    'column4':5,
+	...   },
+	...   {
+	...    'column1':'data2',
+	...    'column2':51,
+	...    'column3':'c',
+	...    'column4':3,
+	...   },
+	...   {
+	...    'column1':'data3',
+	...    'column2':32,
+	...    'column3':'a',
+	...    'column4':6,
+	...   }
+	... ])
+        
+        >>> t
+        column1 | column2 | column3 | column4
+        data1   | 86      | b       | 5
+        data2   | 51      | c       | 3
+        data3   | 32      | a       | 6
+        
+        >>> t.pivot_bin(pivot_columns='column1',value_column='column2')
+        bin  | data1 | data2 | data3
+        32   | 0     | 0     | 1
+        37.4 | 0     | 0     | 0
+        42.8 | 0     | 0     | 0
+        48.2 | 0     | 1     | 0
+        53.6 | 0     | 0     | 0
+        59   | 0     | 0     | 0
+        64.4 | 0     | 0     | 0
+        69.8 | 0     | 0     | 0
+        75.2 | 0     | 0     | 0
+        80.6 | 1     | 0     | 0
+        ... (1 rows omitted)
+        
+        >>> t.pivot_bin(pivot_columns=['column1','column2'],value_column='column4')
+        bin  | data1-86 | data2-51 | data3-32
+        3    | 0        | 1        | 0
+        3.3  | 0        | 0        | 0
+        3.6  | 0        | 0        | 0
+        3.9  | 0        | 0        | 0
+        4.2  | 0        | 0        | 0
+        4.5  | 0        | 0        | 0
+        4.8  | 1        | 0        | 0
+        5.1  | 0        | 0        | 0
+        5.4  | 0        | 0        | 0
+        5.7  | 0        | 0        | 1
+        ... (1 rows omitted)
+        
+        >>> t.pivot_bin(pivot_columns='column1',value_column='column2',bins=[20,45,100])
+        bin  | data1 | data2 | data3
+        20   | 0     | 0     | 1
+        45   | 1     | 1     | 0
+        100  | 0     | 0     | 0
+        
+        >>> t.pivot_bin(pivot_columns='column1',value_column='column2',bins=5,range=[30,60])
+        bin  | data1 | data2 | data3
+        30   | 0     | 0     | 1
+        36   | 0     | 0     | 0
+        42   | 0     | 0     | 0
+        48   | 0     | 1     | 0
+        54   | 0     | 0     | 0
+        60   | 0     | 0     | 0
+               
         """
         pivot_columns = _as_labels(pivot_columns)
         selected = self.select(pivot_columns + [value_column])
@@ -1328,6 +1890,72 @@ class Table(collections.abc.MutableMapping):
     def stack(self, key, labels=None):
         """Takes k original columns and returns two columns, with col. 1 of
         all column names and col. 2 of all associated data.
+        
+        Args:
+            ``key``: Name of a column from table which is the basis for stacking 
+                values from the table.
+             
+            ``labels``: List of column names which must be included in the stacked
+                representation of the table. If no value is supplied for this argument,
+                then the function considers all columns from the original table.
+                
+        Returns:
+            A table whose first column consists of stacked values from column passed in
+            ``key``. The second column of this returned table consists of the column names
+            passed in ``labels``, whereas the final column consists of the data values
+            corresponding to the respective values in the first and second columns of the
+            new table.
+            
+        Examples:
+	
+	>>> t = Table.from_records([
+	...   {
+	...    'column1':'data1',
+	...    'column2':86,
+	...    'column3':'b',
+	...    'column4':5,
+	...   },
+	...   {
+	...    'column1':'data2',
+	...    'column2':51,
+	...    'column3':'c',
+	...    'column4':3,
+	...   },
+	...   {
+	...    'column1':'data3',
+	...    'column2':32,
+	...    'column3':'a',
+	...    'column4':6,
+	...   }
+	... ])
+        
+        >>> t
+        column1 | column2 | column3 | column4
+        data1   | 86      | b       | 5
+        data2   | 51      | c       | 3
+        data3   | 32      | a       | 6
+        
+        >>> t.stack('column2')
+        column2 | column  | value
+        86      | column1 | data1
+        86      | column3 | b
+        86      | column4 | 5
+        51      | column1 | data2
+        51      | column3 | c
+        51      | column4 | 3
+        32      | column1 | data3
+        32      | column3 | a
+        32      | column4 | 6
+        
+        >>> t.stack('column2',labels=['column4','column1'])
+        column2 | column  | value
+        86      | column1 | data1
+        86      | column4 | 5
+        51      | column1 | data2
+        51      | column4 | 3
+        32      | column1 | data3
+        32      | column4 | 6
+        
         """
         rows, labels = [], labels or self.labels
         for row in self.rows:
@@ -1472,7 +2100,65 @@ class Table(collections.abc.MutableMapping):
         return joined
 
     def stats(self, ops=(min, max, np.median, sum)):
-        """Compute statistics for each column and place them in a table."""
+        """
+        Compute statistics for each column and place them in a table.
+
+        Args:
+            ``ops`` -- A tuple of stat functions to use to compute stats.
+
+        Returns:
+            A ``Table`` with a prepended statistic column with the name of the
+            fucntion's as the values and the calculated stats values per column.
+
+        By default stats calculates the minimum, maximum, np.median, and sum of each
+        column.
+
+        >>> table = Table().with_columns(
+        ...     'A', make_array(4, 0, 6, 5),
+        ...     'B', make_array(10, 20, 17, 17),
+        ...     'C', make_array(18, 13, 2, 9))
+        >>> table.stats()
+        statistic | A    | B    | C
+        min       | 0    | 10   | 2
+        max       | 6    | 20   | 18
+        median    | 4.5  | 17   | 11
+        sum       | 15   | 64   | 42
+
+        Note, stats are calculated even on non-numeric columns which may lead to
+        unexpected behavior or in more severe cases errors. This is why it may be best
+        to eliminate non-numeric columns from the table before running stats.
+
+        >>> table = Table().with_columns(
+        ...     'B', make_array(10, 20, 17, 17),
+        ...     'C', make_array("foo", "bar", "baz", "baz"))
+        >>> table.stats()
+        statistic | B    | C
+        min       | 10   | bar
+        max       | 20   | foo
+        median    | 17   |
+        sum       | 64   |
+        >>> table.select('B').stats()
+        statistic | B
+        min       | 10
+        max       | 20
+        median    | 17
+        sum       | 64
+
+        ``ops`` can also be overridden to calculate custom stats.
+
+        >>> table = Table().with_columns(
+        ...     'A', make_array(4, 0, 6, 5),
+        ...     'B', make_array(10, 20, 17, 17),
+        ...     'C', make_array(18, 13, 2, 9))
+        >>> def weighted_average(x):
+        ...     return np.average(x, weights=[1, 0, 1.5, 1.25])
+        >>> table.stats(ops=(weighted_average, np.mean, np.median, np.std))
+        statistic        | A       | B       | C
+        weighted_average | 5.13333 | 15.1333 | 8.6
+        mean             | 3.75    | 16      | 10.5
+        median           | 4.5     | 17      | 11
+        std              | 2.27761 | 3.67423 | 5.85235
+        """
         names = [op.__name__ for op in ops]
         ops = [_zero_on_type_error(op) for op in ops]
         columns = [[op(column) for op in ops] for column in self.columns]
@@ -2094,7 +2780,65 @@ class Table(collections.abc.MutableMapping):
         return fmts
 
     def as_text(self, max_rows=0, sep=" | "):
-        """Format table as text."""
+        """Format table as text
+            
+            Args:   
+                max_rows(int) The maximum number of rows to be present in the converted string of table. (Optional Argument)
+                sep(str) The seperator which will appear in converted string between the columns. (Optional Argument)
+                
+            Returns:
+                String form of the table
+                
+                The table is just converted to a string with columns seperated by the seperator(argument- default(' | ')) and rows seperated by '\n'
+                
+                Few examples of the as_text() method are as follows: 
+                1.
+                >>> table = Table().with_columns({'name': ['abc', 'xyz', 'uvw'], 'age': [12,14,20],'height': [5.5,6.0,5.9],})
+
+                >>> table
+                name | age  | height
+                abc  | 12   | 5.5
+                xyz  | 14   | 6
+                uvw  | 20   | 5.9
+
+                >>> table_astext = table.as_text()
+
+                >>> table_astext
+                'name | age  | height\\nabc  | 12   | 5.5\\nxyz  | 14   | 6\\nuvw  | 20   | 5.9'
+
+                >>> type(table)
+                <class 'datascience.tables.Table'>
+
+                >>> type(table_astext)
+                <class 'str'>
+                 
+                2.
+                >>> sizes = Table(['size', 'count']).with_rows([     ['small', 50],     ['medium', 100],     ['big', 50], ])
+
+                >>> sizes
+                size   | count
+                small  | 50
+                medium | 100
+                big    | 50
+
+                >>> sizes_astext = sizes.as_text()
+
+                >>> sizes_astext
+                'size   | count\\nsmall  | 50\\nmedium | 100\\nbig    | 50'
+                    
+                3. 
+                >>> sizes_astext = sizes.as_text(1)
+
+                >>> sizes_astext
+                'size  | count\\nsmall | 50\\n... (2 rows omitted)'
+
+                 4.
+                >>> sizes_astext = sizes.as_text(2, ' - ')
+
+                >>> sizes_astext
+                'size   - count\\nsmall  - 50\\nmedium - 100\\n... (1 rows omitted)'
+
+        """
         if not max_rows or max_rows > self.num_rows:
             max_rows = self.num_rows
         omitted = max(0, self.num_rows - max_rows)
@@ -2167,7 +2911,45 @@ class Table(collections.abc.MutableMapping):
         return index
 
     def to_df(self):
-        """Convert the table to a Pandas DataFrame."""
+        """Convert the table to a Pandas DataFrame.
+            
+            Args:
+                None
+            
+            Returns:
+                The Pandas DataFrame of the table
+                
+             It just converts the table to Pandas DataFrame so that we can use 
+             DataFrame instead of the table at some required places.
+             
+             Here's an example of using the to_df() method:
+             
+            >>> table = Table().with_columns({'name': ['abc', 'xyz', 'uvw'],
+            ... 'age': [12,14,20],
+            ... 'height': [5.5,6.0,5.9],
+            ... })
+                        
+            >>> table
+            name | age  | height
+            abc  | 12   | 5.5
+            xyz  | 14   | 6
+            uvw  | 20   | 5.9
+            
+            >>> table_df = table.to_df()
+            
+            >>> table_df
+              name  age  height
+            0  abc   12     5.5
+            1  xyz   14     6.0
+            2  uvw   20     5.9
+            
+            >>> type(table)
+            <class 'datascience.tables.Table'>
+
+            >>> type(table_df)
+            <class 'pandas.core.frame.DataFrame'>
+
+        """
         return pandas.DataFrame(self._columns)
 
     def to_csv(self, filename):
@@ -2199,7 +2981,40 @@ class Table(collections.abc.MutableMapping):
         self.to_df().to_csv(filename, index=False)
 
     def to_array(self):
-        """Convert the table to a structured NumPy array."""
+        """Convert the table to a structured NumPy array.
+
+        The resulting array contains a sequence of rows from the table.
+
+        Args:
+            None
+
+        Returns:
+            arr: a NumPy array
+
+        The following is an example of calling to_array()
+        >>> t = Table().with_columns([
+        ... 'letter', ['a','b','c','z'],
+        ... 'count', [9,3,3,1],
+        ... 'points', [1,2,2,10],
+        ... ])
+
+        >>> t
+        letter | count | points
+        a      | 9     | 1
+        b      | 3     | 2
+        c      | 3     | 2
+        z      | 1     | 10
+
+        >>> example = t.to_array()
+
+        >>> example
+        array([('a', 9,  1), ('b', 3,  2), ('c', 3,  2), ('z', 1, 10)],
+        dtype=[('letter', '<U1'), ('count', '<i8'), ('points', '<i8')])
+
+        >>> example['letter']
+        array(['a', 'b', 'c', 'z'],
+        dtype='<U1')
+        """
         dt = np.dtype(list(zip(self.labels, (c.dtype for c in self.columns))))
         arr = np.empty_like(self.columns[0], dt)
         for label in self.labels:
@@ -2845,8 +3660,7 @@ class Table(collections.abc.MutableMapping):
         self.group(column_label).barh(column_label, **vargs)
 
     def scatter(self, column_for_x, select=None, overlay=True, fit_line=False,
-        group=None, labels=None, sizes=None, width=None, height=None, s=20,
-        colors=None, **vargs):
+        group=None, labels=None, sizes=None, width=None, height=None, s=20, **vargs):
         """Creates scatterplots, optionally adding a line of best fit. Redirects to ``Table#iscatter``
         if interactive plots are enabled with ``Table#interactive_plots``
 
@@ -2926,7 +3740,6 @@ class Table(collections.abc.MutableMapping):
                 s = s / 4, # Plotly dot sizes are much smaller, so divide s by 4
                 width =  width,
                 height = height,
-                colors = colors,
                 **vargs
             )
 
@@ -2940,14 +3753,8 @@ class Table(collections.abc.MutableMapping):
         options.update(vargs)
 
         x_data, y_labels =  self._split_column_and_labels(column_for_x)
-        if group is not None and colors is not None and group != colors:
-            warnings.warn("Do not pass both colors and group to scatter().")
-        if group is None and colors is not None:
-            # Backward compatibility
-            group = colors
-            # TODO: In a future release, warn that this is deprecated.
-            # Deprecated
-            # warnings.warn("scatter(colors=x) is deprecated. Use scatter(group=x)", FutureWarning)
+        if "colors" in vargs and vargs["colors"]:
+            warnings.warn("scatter(colors=x) has been removed. Use scatter(group=x)", FutureWarning)
         if group is not None:
             y_labels.remove(self._as_label(group))
         if sizes is not None:
@@ -2996,7 +3803,7 @@ class Table(collections.abc.MutableMapping):
 
     def iscatter(self, column_for_x, select=None, overlay=True, fit_line=False,
         group=None, labels=None, sizes=None, width=None, height=None, s=5,
-        colors=None, show=True, **vargs):
+        show=True, **vargs):
         """Creates interactive scatterplots, optionally adding a line of best fit, using plotly.
 
         Args:
@@ -3066,15 +3873,18 @@ class Table(collections.abc.MutableMapping):
 
         x_data, y_labels =  self._split_column_and_labels(column_for_x)
 
-        if group is not None and colors is not None and group != colors:
-            warnings.warn("Do not pass both colors and group to scatter().")
+        # if group is not None and colors is not None and group != colors:
+        #     warnings.warn("Do not pass both colors and group to scatter().")
 
-        if group is None and colors is not None:
-            # Backward compatibility
-            group = colors
-            # TODO: In a future release, warn that this is deprecated.
-            # Deprecated
-            warnings.warn("scatter(colors=x) is deprecated. Use scatter(group=x)", FutureWarning)
+        # if group is None and colors is not None:
+        #     # Backward compatibility
+        #     group = colors
+        #     # TODO: In a future release, warn that this is deprecated.
+        #     # Deprecated
+        #     warnings.warn("scatter(colors=x) is deprecated. Use scatter(group=x)", FutureWarning)
+
+        if "colors" in vargs and vargs["colors"]:
+            warnings.warn("scatter(colors=x) has been removed. Use scatter(group=x)", FutureWarning)
 
         if group is not None:
             y_labels.remove(self._as_label(group))
