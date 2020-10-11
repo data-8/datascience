@@ -4619,8 +4619,7 @@ class Table(collections.abc.MutableMapping):
                 # is to create 10 bins
                 bins = np.linspace(data_min, data_max, 11)
             else:
-                bins = np.array(bins)
-        bins = bins.astype(float)
+                bins = np.array(bins).astype(float)
 
         def insert_ordered(nums, item):
             # Utility function, orderly inserts n into arr given arr is sorted
