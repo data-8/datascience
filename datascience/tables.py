@@ -4602,24 +4602,28 @@ class Table(collections.abc.MutableMapping):
         data_min = min([min(arr[0]) for arr in values_dict.values()])
 
         # Creating bins
+        iterable_bin_types = set((list, np.ndarray, tuple))
         if multiple_bins:
             bins_dict = dict()
             for k in values_dict.keys():
                 values = values_dict[k][0]
                 if type(bins) == np.integer or type(bins) == int:
                     bins_for_key = np.linspace(min(values), max(values), bins + 1)
-                elif bins is None:
+                elif type(bins) in iterable_bin_types:
+                    bins_for_key = np.array(bins).astype(float)
+                else:
                     bins_for_key = np.linspace(min(values), max(values), 11)
+                bins_dict[k] = bins_for_key
             bins = bins_dict 
         else:
             if type(bins) == np.integer or type(bins) == int:
                 bins = np.linspace(data_min, data_max, bins + 1)
-            elif bins is None:
-                # Chose 11 (creates 10 bins) since default setting for Matplotlib
+            elif type(bins) in iterable_bin_types:
+                bins = np.array(bins).astype(float)
+            else:
+                # Chose 11 (creates 10 bins) since default setting for matplotlib
                 # is to create 10 bins
                 bins = np.linspace(data_min, data_max, 11)
-            else:
-                bins = np.array(bins).astype(float)
 
         def insert_ordered(nums, item):
             # Utility function, orderly inserts n into arr given arr is sorted
@@ -4682,14 +4686,14 @@ class Table(collections.abc.MutableMapping):
                         # With custom bins that have edges on the max value in dataset,
                         # could produce a truedivide warning. This line just temporarily
                         # ignores that warning.
-                        heights = 100 * heights * widths / np.dot(heights, widths)
+                        heights = 100 * heights / np.dot(heights, widths)
                 return heights
             with np.errstate(divide = "ignore", invalid = "ignore"):
-                heights = np.zeros(len(bins))
+                heights = np.zeros(len(bins) - 1)
                 for i, left_endpoint in enumerate(vals[0]):
                     ind = np.digitize(left_endpoint, bins) - 1
                     heights[ind] = vals[1][i]
-                return heights / (widths * sum(heights))
+                return 100 * heights / np.dot(heights, widths)
 
         heights = dict()
         for k in values_dict.keys():
