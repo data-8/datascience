@@ -4596,7 +4596,7 @@ class Table(collections.abc.MutableMapping):
         n = len(values_dict)
 
         # Define boolean indicating if there needs to be multiple sets of bins 
-        multiple_bins = (not overlay) and n > 1 and (type(bins) == np.integer or type(bins) == int or bins is None)
+        multiple_bins = (not overlay) and n > 1
 
         data_max = max([max(arr[0]) for arr in values_dict.values()])
         data_min = min([min(arr[0]) for arr in values_dict.values()])
