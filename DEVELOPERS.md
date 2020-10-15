@@ -38,6 +38,10 @@ Then, run the tests:
 
 Alternatively you can use tox. Its used for testing the package against different python versions in one go. Just make sure you have the python versions available globally or in your virtual environment
 
+Install tox
+
+`pip install tox`
+
 Run tests
 
 `$ tox`
