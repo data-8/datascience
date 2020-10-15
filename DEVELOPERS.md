@@ -36,6 +36,12 @@ Then, run the tests:
 
     make test
 
+Alternatively you can use tox. Its used for testing the package against different python versions in one go. Just make sure you have the python versions available globally or in your virtual environment
+
+Run tests
+
+`$ tox`
+
 After that, go ahead and start hacking!
 
 The `source activate datascience` command must be run each time you develop in
@@ -43,7 +49,7 @@ the package. Alternatively, you can install [direnv][direnv] to auto-load/unload
 the environment.
 
 Documentation is generated from the docstrings in the methods and is pushed online
-at http://data8.org/datascience/ automatically. If you want to preview the docs
+at <http://data8.org/datascience/> automatically. If you want to preview the docs
 locally, use these commands:
 
     make docs       # Generates docs inside doc/ folder
