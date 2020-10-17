@@ -2792,10 +2792,10 @@ class Table(collections.abc.MutableMapping):
         data3   | 32      | a       | 6
 	
 	>>> t.show()
-	'<table border="1" class="dataframe">\n    <thead>\n        <tr>\n            <th>column1</th> <th>column2</th> <th>column3</th> <th>column4</th>\n        </tr>\n    </thead>\n    <tbody>\n        <tr>\n            <td>data1  </td> <td>86     </td> <td>b      </td> <td>5      </td>\n        </tr>\n        <tr>\n            <td>data2  </td> <td>51     </td> <td>c      </td> <td>3      </td>\n        </tr>\n        <tr>\n            <td>data3  </td> <td>32     </td> <td>a      </td> <td>6      </td>\n        </tr>\n    </tbody>\n</table>'
+	'<table border="1" class="dataframe">\\n    <thead>\\n        <tr>\\n            <th>column1</th> <th>column2</th> <th>column3</th> <th>column4</th>\\n        </tr>\\n    </thead>\\n    <tbody>\\n        <tr>\\n            <td>data1  </td> <td>86     </td> <td>b      </td> <td>5      </td>\\n        </tr>\\n        <tr>\\n            <td>data2  </td> <td>51     </td> <td>c      </td> <td>3      </td>\\n        </tr>\\n        <tr>\\n            <td>data3  </td> <td>32     </td> <td>a      </td> <td>6      </td>\\n        </tr>\\n    </tbody>\\n</table>'
 	
 	>>> t.show(max_rows=2)
-	'<table border="1" class="dataframe">\n    <thead>\n        <tr>\n            <th>column1</th> <th>column2</th> <th>column3</th> <th>column4</th>\n        </tr>\n    </thead>\n    <tbody>\n        <tr>\n            <td>data1  </td> <td>86     </td> <td>b      </td> <td>5      </td>\n        </tr>\n        <tr>\n            <td>data2  </td> <td>51     </td> <td>c      </td> <td>3      </td>\n        </tr>\n    </tbody>\n</table>\n<p>... (1 rows omitted)</p>'
+	'<table border="1" class="dataframe">\\n    <thead>\\n        <tr>\\n            <th>column1</th> <th>column2</th> <th>column3</th> <th>column4</th>\\n        </tr>\\n    </thead>\\n    <tbody>\\n        <tr>\\n            <td>data1  </td> <td>86     </td> <td>b      </td> <td>5      </td>\\n        </tr>\\n        <tr>\\n            <td>data2  </td> <td>51     </td> <td>c      </td> <td>3      </td>\\n        </tr>\\n    </tbody>\\n</table>\\n<p>... (1 rows omitted)</p>'
 	
 	"""
         IPython.display.display(IPython.display.HTML(self.as_html(max_rows)))
