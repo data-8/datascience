@@ -2792,16 +2792,10 @@ class Table(collections.abc.MutableMapping):
         data3   | 32      | a       | 6
 	
 	>>> t.show()
-	column1 | column2 | column3 | column4
-        data1   | 86      | b       | 5
-        data2   | 51      | c       | 3
-        data3   | 32      | a       | 6
+	'<table border="1" class="dataframe">\n    <thead>\n        <tr>\n            <th>column1</th> <th>column2</th> <th>column3</th> <th>column4</th>\n        </tr>\n    </thead>\n    <tbody>\n        <tr>\n            <td>data1  </td> <td>86     </td> <td>b      </td> <td>5      </td>\n        </tr>\n        <tr>\n            <td>data2  </td> <td>51     </td> <td>c      </td> <td>3      </td>\n        </tr>\n        <tr>\n            <td>data3  </td> <td>32     </td> <td>a      </td> <td>6      </td>\n        </tr>\n    </tbody>\n</table>'
 	
 	>>> t.show(max_rows=2)
-	column1 | column2 | column3 | column4
-        data1   | 86      | b       | 5
-        data2   | 51      | c       | 3
-	... (1 rows omitted)
+	'<table border="1" class="dataframe">\n    <thead>\n        <tr>\n            <th>column1</th> <th>column2</th> <th>column3</th> <th>column4</th>\n        </tr>\n    </thead>\n    <tbody>\n        <tr>\n            <td>data1  </td> <td>86     </td> <td>b      </td> <td>5      </td>\n        </tr>\n        <tr>\n            <td>data2  </td> <td>51     </td> <td>c      </td> <td>3      </td>\n        </tr>\n    </tbody>\n</table>\n<p>... (1 rows omitted)</p>'
 	
 	"""
         IPython.display.display(IPython.display.HTML(self.as_html(max_rows)))
@@ -2846,7 +2840,7 @@ class Table(collections.abc.MutableMapping):
         return '\n'.join([line.rstrip() for line in lines])
 
     def as_html(self, max_rows=0):
-        """Format table as HTML.
+        r"""Format table as HTML.
 	
 	Args:
 	    ``max_rows``: Number of rows from the Table to be displayed as HTML elements.
@@ -2887,41 +2881,10 @@ class Table(collections.abc.MutableMapping):
         data3   | 32      | a       | 6
 	
 	>>> t.as_html()
-	<table border="1" class="dataframe">
-          <thead>
-            <tr>
-              <th>column1</th> <th>column2</th> <th>column3</th> <th>column4</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>data1  </td> <td>86     </td> <td>b      </td> <td>5      </td>
-            </tr>
-            <tr>
-              <td>data2  </td> <td>51     </td> <td>c      </td> <td>3      </td>
-            </tr>
-            <tr>
-              <td>data3  </td> <td>32     </td> <td>a      </td> <td>6      </td>
-            </tr>
-          </tbody>
-        </table>
+	'<table border="1" class="dataframe">\n    <thead>\n        <tr>\n            <th>column1</th> <th>column2</th> <th>column3</th> <th>column4</th>\n        </tr>\n    </thead>\n    <tbody>\n        <tr>\n            <td>data1  </td> <td>86     </td> <td>b      </td> <td>5      </td>\n        </tr>\n        <tr>\n            <td>data2  </td> <td>51     </td> <td>c      </td> <td>3      </td>\n        </tr>\n        <tr>\n            <td>data3  </td> <td>32     </td> <td>a      </td> <td>6      </td>\n        </tr>\n    </tbody>\n</table>'
 	
 	>>> t.as_html(max_rows=2)
-	<table border="1" class="dataframe">
-          <thead>
-            <tr>
-              <th>column1</th> <th>column2</th> <th>column3</th> <th>column4</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>data1  </td> <td>86     </td> <td>b      </td> <td>5      </td>
-            </tr>
-            <tr>
-              <td>data2  </td> <td>51     </td> <td>c      </td> <td>3      </td>
-            </tr>
-          </tbody>
-        </table>
+	'<table border="1" class="dataframe">\n    <thead>\n        <tr>\n            <th>column1</th> <th>column2</th> <th>column3</th> <th>column4</th>\n        </tr>\n    </thead>\n    <tbody>\n        <tr>\n            <td>data1  </td> <td>86     </td> <td>b      </td> <td>5      </td>\n        </tr>\n        <tr>\n            <td>data2  </td> <td>51     </td> <td>c      </td> <td>3      </td>\n        </tr>\n    </tbody>\n</table>\n<p>... (1 rows omitted)</p>'
 	
 	"""
         if not max_rows or max_rows > self.num_rows:
@@ -2952,7 +2915,7 @@ class Table(collections.abc.MutableMapping):
         return '\n'.join(4 * indent * ' ' + text for indent, text in lines)
 
     def index_by(self, column_or_label):
-        """Return a dict keyed by values in a column that contains lists of
+        r"""Return a dict keyed by values in a column that contains lists of
         rows corresponding to each value.
 	
 	Args:
@@ -2994,14 +2957,10 @@ class Table(collections.abc.MutableMapping):
         data3   | 32      | a       | 6
 	
 	>>> t.index_by('column2')
-	{32: [Row(column1='data3', column2=32, column3='a', column4=6)],
-	51: [Row(column1='data2', column2=51, column3='c', column4=3)],
-	86: [Row(column1='data1', column2=86, column3='b', column4=5)]}
+	{86: [Row(column1='data1', column2=86, column3='b', column4=5)], 51: [Row(column1='data2', column2=51, column3='c', column4=3)], 32: [Row(column1='data3', column2=32, column3='a', column4=6)]}
 	
 	>>> t.index_by('column3')
-	{'a': [Row(column1='data3', column2=32, column3='a', column4=6)],
-	'b': [Row(column1='data1', column2=86, column3='b', column4=5)],
-	'c': [Row(column1='data2', column2=51, column3='c', column4=3)]}
+	{'b': [Row(column1='data1', column2=86, column3='b', column4=5)], 'c': [Row(column1='data2', column2=51, column3='c', column4=3)], 'a': [Row(column1='data3', column2=32, column3='a', column4=6)]}
 	    
         """
         column = self._get_column(column_or_label)
