@@ -1879,3 +1879,13 @@ def test_read_table():
     assert isinstance(Table().read_table("tests/us-unemployment-copy"), Table)
     assert isinstance(Table().read_table("tests/us-unemployment.txt"), Table)
     assert isinstance(Table().read_table("https://raw.githubusercontent.com/data-8/textbook/gh-pages/data/deflategate.csv"), Table)
+
+def test_boxplot(table):
+    t = table
+    t1 = Table().with_columns({
+        'id': [1, 2, 3, 4],
+        'count': [9, 3, 3, 1],
+        })
+    with pytest.raises(ValueError):
+        t.boxplot()
+    t1.boxplot()
