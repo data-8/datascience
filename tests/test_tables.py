@@ -141,6 +141,10 @@ def test_column(table):
     t = table
     assert_array_equal(t.column('letter'), np.array(['a', 'b', 'c', 'z']))
     assert_array_equal(t.column(1), np.array([9, 3, 3, 1]))
+    with pytest.raises(ValueError):
+        t.column(-1)
+    with pytest.raises(ValueError):
+        t.column('abc')
 
 def test_values():
     t1 = Table().with_columns({
