@@ -3,6 +3,7 @@ import doctest
 import datascience as ds
 from datascience import util
 import numpy as np
+import pytest
 
 def test_doctests():
     results = doctest.testmod(util, optionflags=doctest.NORMALIZE_WHITESPACE)
@@ -49,6 +50,10 @@ def test_table_apply():
     newtab = util.table_apply(tab, lambda a: a+1, subset=['b', 'c'])
     assert all(newtab['a'] == tab['a'])
     assert all(newtab['b'] == tab['b'] + 1)
+
+    with pytest.raises(ValueError) as err:
+        util.table_apply(tab, lambda a: a+1, subset=['b', 'd'])
+        assert "Colum mismatch: ['d']" in str(err.value)
 
 
 def _round_eq(a, b):
