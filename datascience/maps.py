@@ -770,7 +770,7 @@ class Circle(Marker):
 
     For example, to draw three circles with circle_marker:
 
-    ..code-block:: python
+    .. code-block:: python
 
         t = Table().with_columns([
                 'lat', [37.8, 38, 37.9],
@@ -783,7 +783,7 @@ class Circle(Marker):
 
     To draw three circles with the circle methods, replace the last line with:
 
-    ..code-block:: python
+    .. code-block:: python
     
         Circle.map_table(t, radius_in_meters=True)
     """

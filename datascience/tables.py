@@ -2789,7 +2789,7 @@ class Table(collections.abc.MutableMapping):
             Returns:
                 String form of the table
                 
-                The table is just converted to a string with columns seperated by the seperator(argument- default(' | ')) and rows seperated by '\n'
+                The table is just converted to a string with columns seperated by the seperator(argument- default(' | ')) and rows seperated by '\\n'
                 
                 Few examples of the as_text() method are as follows: 
                 1.
@@ -2825,14 +2825,14 @@ class Table(collections.abc.MutableMapping):
 
                 >>> sizes_astext
                 'size   | count\\nsmall  | 50\\nmedium | 100\\nbig    | 50'
-                    
+
                 3. 
                 >>> sizes_astext = sizes.as_text(1)
 
                 >>> sizes_astext
                 'size  | count\\nsmall | 50\\n... (2 rows omitted)'
 
-                 4.
+                4.
                 >>> sizes_astext = sizes.as_text(2, ' - ')
 
                 >>> sizes_astext
