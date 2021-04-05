@@ -3450,7 +3450,7 @@ class Table(collections.abc.MutableMapping):
         else:
             return fig
 
-    def bar(self, column_for_categories=None, select=None, overlay=True, width=6, height=4, **vargs):
+    def bar(self, column_for_categories=None, select=None, overlay=True, width=None, height=None, **vargs):
         """Plot bar charts for the table.
 
         Each plot is labeled using the values in `column_for_categories` and
@@ -3473,6 +3473,9 @@ class Table(collections.abc.MutableMapping):
         global _INTERACTIVE_PLOTS
         if _INTERACTIVE_PLOTS:
             return self.ibar(column_for_categories, select, overlay, width, height, **vargs)
+
+        width = 6 if width is None else width
+        height = 4 if height is None else height
 
         options = self.default_options.copy()
 
