@@ -3493,6 +3493,52 @@ class Table(collections.abc.MutableMapping):
 
         self._visualize(column_for_categories, labels, xticks, overlay, draw, annotate, width=width, height=height)
 
+    def ibar(self, column_for_categories=None, select=None, overlay=True, width=None, show=True, **vargs):
+        """Plot interactive bar charts for the table using plotly.
+
+        Kwargs:
+            column_for_categories (str): A column containing y-axis categories
+                used to create buckets for bar chart.
+
+            overlay (bool): create a chart with one color per data column;
+                if False, each will be displayed separately.
+
+            width (int): the width (in pixels) of the plot area
+
+            height (int): the height (in pixels) of the plot area
+
+            show (bool): whether to show the figure; if false, the figure is returned instead
+
+            vargs (dict): additional kwargs passed to ``plotly.graph_objects.Figure.update_layout``
+
+        Raises:
+            ValueError -- Every selected except column for ``column_for_categories``
+                must be numerical.
+
+        Returns:
+            Bar graph with buckets specified by ``column_for_categories``.
+            Each plot is labeled using the values in ``column_for_categories``
+            and one plot is produced for every other column (or for the columns
+            designated by ``select``).
+
+        >>> t = Table().with_columns(
+        ...     'Furniture', make_array('chairs', 'tables', 'desks'),
+        ...     'Count', make_array(6, 1, 2),
+        ...     'Price', make_array(10, 20, 30)
+        ...     )
+        >>> t
+        Furniture | Count | Price
+        chairs    | 6     | 10
+        tables    | 1     | 20
+        desks     | 2     | 30
+        >>> furniture_table.ibar('Furniture') # doctest: +SKIP
+        <plotly bar graph with furniture as categories and bars for count and price>
+        >>> furniture_table.ibar('Furniture', 'Price') # doctest: +SKIP
+        <plotly bar graph with furniture as categories and bars for price>
+        >>> furniture_table.ibar('Furniture', make_array(1, 2)) # doctest: +SKIP
+        <plotly bar graph with furniture as categories and bars for count and price>
+        """
+        return self._ibar('v', column_for_categories, select, overlay, width, show, **vargs)
 
     def group_bar(self, column_label, **vargs):
         """Plot a bar chart for the table.
