@@ -3316,7 +3316,7 @@ class Table(collections.abc.MutableMapping):
         else:
             return fig
 
-    def _ibar(self, orientation, column_for_categories=None, select=None, overlay=True, width=None, show=True, **vargs):
+    def _ibar(self, orientation, column_for_categories=None, select=None, overlay=True, width=None, height=None, show=True, **vargs):
         """Plot interactive bar charts for the table using plotly.
 
         Args:
@@ -3470,6 +3470,10 @@ class Table(collections.abc.MutableMapping):
                 See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.bar
                 for additional arguments that can be passed into vargs.
         """
+        global _INTERACTIVE_PLOTS
+        if _INTERACTIVE_PLOTS:
+            return self.ibar(column_for_categories, select, overlay, width, height, **vargs)
+
         options = self.default_options.copy()
 
         # Matplotlib tries to center the labels, but we already handle that
@@ -3493,7 +3497,7 @@ class Table(collections.abc.MutableMapping):
 
         self._visualize(column_for_categories, labels, xticks, overlay, draw, annotate, width=width, height=height)
 
-    def ibar(self, column_for_categories=None, select=None, overlay=True, width=None, show=True, **vargs):
+    def ibar(self, column_for_categories=None, select=None, overlay=True, width=None, height=None, show=True, **vargs):
         """Plot interactive bar charts for the table using plotly.
 
         Kwargs:
