@@ -3568,6 +3568,34 @@ class Table(collections.abc.MutableMapping):
         """
         self.group(column_label).bar(column_label, **vargs)
 
+    def group_ibar(self, column_label, **vargs):
+        """Plot an interactive bar chart for the table.
+
+        The values of the specified column are grouped and counted, and one
+        bar is produced for each group.
+
+        Note: This differs from ``ibar`` in that there is no need to specify
+        bar heights; the height of a category's bar is the number of copies
+        of that category in the given column.  This method behaves more like
+        ``hist`` in that regard, while ``bar`` behaves more like ``plot`` or
+        ``scatter`` (which require the height of each point to be specified).
+
+        Args:
+            ``column_label`` (str or int): The name or index of a column
+
+        Kwargs:
+            overlay (bool): create a chart with one color per data column;
+                if False, each will be displayed separately.
+
+            width (float): The width of the plot, in inches
+            height (float): The height of the plot, in inches
+
+            vargs: Additional arguments that get passed into `plt.bar`.
+                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.bar
+                for additional arguments that can be passed into vargs.
+        """
+        self.group(column_label).ibar(column_label, **vargs)
+
     def barh(self, column_for_categories=None, select=None, overlay=True, width=None, **vargs):
         """Plot horizontal bar charts for the table. Redirects to ``Table#ibarh`` if interactive plots
         are enabled with ``Table#interactive_plots``
