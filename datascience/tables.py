@@ -3472,7 +3472,15 @@ class Table(collections.abc.MutableMapping):
         """
         global _INTERACTIVE_PLOTS
         if _INTERACTIVE_PLOTS:
-            return self.ibar(column_for_categories, select, overlay, width, height, **vargs)
+            show = vargs.pop('show', True)
+            return self.ibar(
+                    column_for_categories=column_for_categories,
+                    select=select,
+                    overlay=overlay,
+                    width=width,
+                    height=height,
+                    show=show,
+                    **vargs)
 
         width = 6 if width is None else width
         height = 4 if height is None else height
@@ -3545,7 +3553,15 @@ class Table(collections.abc.MutableMapping):
         >>> furniture_table.ibar('Furniture', make_array(1, 2)) # doctest: +SKIP
         <plotly bar graph with furniture as categories and bars for count and price>
         """
-        return self._ibar('v', column_for_categories, select, overlay, width, show, **vargs)
+        return self._ibar(
+                'v',
+                column_for_categories=column_for_categories,
+                select=select,
+                overlay=overlay,
+                width=width,
+                height=height,
+                show=show,
+                **vargs)
 
     def group_bar(self, column_label, **vargs):
         """Plot a bar chart for the table.
@@ -3649,9 +3665,14 @@ class Table(collections.abc.MutableMapping):
         """
         global _INTERACTIVE_PLOTS
         if _INTERACTIVE_PLOTS:
-            # If width not specified, default width originally set to 6,
-            # Multiply by 96 assuming 96 dpi
-            return self.ibarh(column_for_categories, select, overlay, width, **vargs)
+            show = vargs.pop('show', True)
+            return self.ibarh(
+                    column_for_categories=column_for_categories,
+                    select=select,
+                    overlay=overlay,
+                    width=width,
+                    show=show,
+                    **vargs)
 
         options = self.default_options.copy()
         # Matplotlib tries to center the labels, but we already handle that
@@ -3742,7 +3763,14 @@ class Table(collections.abc.MutableMapping):
         >>> furniture_table.ibarh('Furniture', make_array(1, 2)) # doctest: +SKIP
         <plotly bar graph with furniture as categories and bars for count and price>
         """
-        return self._ibar('h', column_for_categories, select, overlay, width, show, **vargs)
+        return self._ibar(
+                'h',
+                column_for_categories=column_for_categories,
+                select=select,
+                overlay=overlay,
+                width=width,
+                show=show,
+                **vargs)
 
     def group_barh(self, column_label, **vargs):
         """Plot a horizontal bar chart for the table.
