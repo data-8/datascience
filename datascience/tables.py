@@ -3316,6 +3316,140 @@ class Table(collections.abc.MutableMapping):
         else:
             return fig
 
+    def _ibar(self, orientation, column_for_categories=None, select=None, overlay=True, width=None, show=True, **vargs):
+        """Plot interactive bar charts for the table using plotly.
+
+        Args:
+            orientation (str): either 'h' to produce a horizontal bar chart or 'v' to produce a
+                vertical bar chart.
+
+        Kwargs:
+            column_for_categories (str): A column containing y-axis categories
+                used to create buckets for bar chart.
+
+            overlay (bool): create a chart with one color per data column;
+                if False, each will be displayed separately.
+
+            width (int): the width (in pixels) of the plot area
+
+            height (int): the height (in pixels) of the plot area
+
+            show (bool): whether to show the figure; if false, the figure is returned instead
+
+            vargs (dict): additional kwargs passed to ``plotly.graph_objects.Figure.update_layout``
+
+        Raises:
+            ValueError -- Every selected except column for ``column_for_categories``
+                must be numerical.
+
+        Returns:
+            Bar graph with buckets specified by ``column_for_categories``.
+            Each plot is labeled using the values in ``column_for_categories``
+            and one plot is produced for every other column (or for the columns
+            designated by ``select``).
+        """
+        if go is None or make_subplots is None:
+            self._import_plotly()
+
+        yticks, labels = self._split_column_and_labels(column_for_categories)
+
+        # reverse yticks so they're in same order as barh
+        yticks = yticks[::-1]
+
+        if select is not None:
+            labels = self._as_labels(select)
+
+        ylabel = self._as_label(column_for_categories)
+
+        def make_unique_labels(labels):
+        # Since Plotly bar charts don't allow duplicate labels, this function
+        # takes in a list of labels and pads duplicates with a unique amount of
+        # zero width white space.
+            unique_labels = list(set(labels))
+            if len(unique_labels) != len(labels):
+                space_count = dict(zip(unique_labels, [0] * len(unique_labels)))
+                updated_labels = [''] * len(labels)
+                for i in range(len(labels)):
+                    updated_labels[i] = ''.join(['\u200c' * space_count[labels[i]], str(labels[i]), '  '])
+                    space_count[labels[i]] += 1
+                return updated_labels
+            labels = ["".join([str(label), '  ']) for label in labels]
+            return labels
+
+        yticks_unique = make_unique_labels(yticks)
+
+        colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors), len(labels)))
+
+        bar_width = 20
+        margin = 5
+
+        if overlay:
+            height = max(len(yticks) * (margin + bar_width * len(labels)), 500)
+
+        else:
+            subplot_heights = [max(len(yticks) * (margin + bar_width), 500)] * len(labels)
+            height = subplot_heights[0] * len(labels)
+
+        if overlay:
+            fig = go.Figure()
+
+            if width:
+                fig.update_layout(width = width)
+
+            if height:
+                fig.update_layout(height = height)
+
+            for i in range(len(labels)):
+                fig.add_trace(go.Bar(
+                    x = np.flip(self.column(labels[i])), # flipping so this matches the order of yticks
+                    y = yticks_unique,
+                    name = labels[i],
+                    orientation = orientation,
+                    marker_color = colors[i],
+                    customdata = yticks,
+                    hovertemplate = '(%{x}, %{customdata})',
+                    opacity = 0.7
+                ))
+
+            fig.update_xaxes(title_text = labels[0] if len(labels) == 1 else None)
+            fig.update_yaxes(title_text = ylabel, type = 'category', dtick = 1, showticklabels = True)
+
+            if len(labels) == 1:
+                fig.update_xaxes(title_text = labels[0])
+
+        else:
+            fig = make_subplots(rows = len(labels), cols = 1, vertical_spacing = 0.1, row_heights = subplot_heights)
+
+            if width:
+                fig.update_layout(width = width)
+
+            if height:
+                fig.update_layout(height = height)
+
+            for i in range(len(labels)):
+                fig.append_trace(go.Bar(
+                    x = np.flip(self.column(labels[i])), # flipping so this matches the order of yticks
+                    y = yticks_unique,
+                    name = labels[i],
+                    orientation = orientation,
+                    customdata = yticks,
+                    hovertemplate = '(%{x}, %{customdata})',
+                    marker_color = colors[i],
+                    opacity = 0.7
+                ), row = i + 1, col = 1)
+
+                fig.update_yaxes(title_text = ylabel, type = 'category', dtick = 1, showticklabels = True)
+                fig.update_xaxes(title_text = labels[i], row = i + 1, col = 1)
+
+            fig.update_layout(showlegend=False)
+
+        fig.update_layout(**vargs)
+
+        if show:
+            fig.show()
+        else:
+            return fig
+
     def bar(self, column_for_categories=None, select=None, overlay=True, width=6, height=4, **vargs):
         """Plot bar charts for the table.
 
@@ -3485,11 +3619,10 @@ class Table(collections.abc.MutableMapping):
     def ibarh(self, column_for_categories=None, select=None, overlay=True, width=None, show=True, **vargs):
         """Plot interactive horizontal bar charts for the table using plotly.
 
-        Args:
-            ``column_for_categories`` (``str``): A column containing y-axis categories
+        Kwargs:
+            column_for_categories (str): A column containing y-axis categories
                 used to create buckets for bar chart.
 
-        Kwargs:
             overlay (bool): create a chart with one color per data column;
                 if False, each will be displayed separately.
 
@@ -3528,107 +3661,7 @@ class Table(collections.abc.MutableMapping):
         >>> furniture_table.ibarh('Furniture', make_array(1, 2)) # doctest: +SKIP
         <plotly bar graph with furniture as categories and bars for count and price>
         """
-        if go is None or make_subplots is None:
-            self._import_plotly()
-
-        yticks, labels = self._split_column_and_labels(column_for_categories)
-
-        # reverse yticks so they're in same order as barh
-        yticks = yticks[::-1]
-
-        if select is not None:
-            labels = self._as_labels(select)
-
-        ylabel = self._as_label(column_for_categories)
-
-        def make_unique_labels(labels):
-        # Since Plotly bar charts don't allow duplicate labels, this function
-        # takes in a list of labels and pads duplicates with a unique amount of
-        # zero width white space.
-            unique_labels = list(set(labels))
-            if len(unique_labels) != len(labels):
-                space_count = dict(zip(unique_labels, [0] * len(unique_labels)))
-                updated_labels = [''] * len(labels)
-                for i in range(len(labels)):
-                    updated_labels[i] = ''.join(['\u200c' * space_count[labels[i]], str(labels[i]), '  '])
-                    space_count[labels[i]] += 1
-                return updated_labels
-            labels = ["".join([str(label), '  ']) for label in labels]
-            return labels
-
-        yticks_unique = make_unique_labels(yticks)
-
-        colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors), len(labels)))
-
-        bar_width = 20
-        margin = 5
-
-        if overlay:
-            height = max(len(yticks) * (margin + bar_width * len(labels)), 500)
-
-        else:
-            subplot_heights = [max(len(yticks) * (margin + bar_width), 500)] * len(labels)
-            height = subplot_heights[0] * len(labels)
-
-        if overlay:
-            fig = go.Figure()
-
-            if width:
-                fig.update_layout(width = width)
-
-            if height:
-                fig.update_layout(height = height)
-
-            for i in range(len(labels)):
-                fig.add_trace(go.Bar(
-                    x = np.flip(self.column(labels[i])), # flipping so this matches the order of yticks
-                    y = yticks_unique,
-                    name = labels[i],
-                    orientation = 'h',
-                    marker_color = colors[i],
-                    customdata = yticks,
-                    hovertemplate = '(%{x}, %{customdata})',
-                    opacity = 0.7
-                ))
-
-            fig.update_xaxes(title_text = labels[0] if len(labels) == 1 else None)
-            fig.update_yaxes(title_text = ylabel, type = 'category', dtick = 1, showticklabels = True)
-
-            if len(labels) == 1:
-                fig.update_xaxes(title_text = labels[0])
-
-        else:
-            fig = make_subplots(rows = len(labels), cols = 1, vertical_spacing = 0.1, row_heights = subplot_heights)
-
-            if width:
-                fig.update_layout(width = width)
-
-            if height:
-                fig.update_layout(height = height)
-
-            for i in range(len(labels)):
-                fig.append_trace(go.Bar(
-                    x = np.flip(self.column(labels[i])), # flipping so this matches the order of yticks
-                    y = yticks_unique,
-                    name = labels[i],
-                    orientation = 'h',
-                    customdata = yticks,
-                    hovertemplate = '(%{x}, %{customdata})',
-                    marker_color = colors[i],
-                    opacity = 0.7
-                ), row = i + 1, col = 1)
-
-                fig.update_yaxes(title_text = ylabel, type = 'category', dtick = 1, showticklabels = True)
-                fig.update_xaxes(title_text = labels[i], row = i + 1, col = 1)
-
-            fig.update_layout(showlegend=False)
-
-        fig.update_layout(**vargs)
-
-        if show:
-            fig.show()
-        else:
-            return fig
+        return self._ibar('h', column_for_categories, select, overlay, width, show, **vargs)
 
     def group_barh(self, column_label, **vargs):
         """Plot a horizontal bar chart for the table.
