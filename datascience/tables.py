@@ -3609,7 +3609,7 @@ class Table(collections.abc.MutableMapping):
         """
         self.group(column_label).bar(column_label, **vargs)
 
-    def group_ibar(self, column_label, **vargs):
+    def igroup_bar(self, column_label, **vargs):
         """Plot an interactive bar chart for the table.
 
         The values of the specified column are grouped and counted, and one
@@ -3819,7 +3819,7 @@ class Table(collections.abc.MutableMapping):
         """
         self.group(column_label).barh(column_label, **vargs)
 
-    def group_ibarh(self, column_label, **vargs):
+    def igroup_barh(self, column_label, **vargs):
         """Plot an interactive horizontal bar chart for the table.
 
         The values of the specified column are grouped and counted, and one
