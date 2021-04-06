@@ -3423,8 +3423,6 @@ class Table(collections.abc.MutableMapping):
                 fig.update_xaxes(title_text = col_label, type = 'category', dtick = 1, showticklabels = True)
                 fig.update_yaxes(title_text = labels[0] if len(labels) == 1 else None)
 
-            if len(labels) == 1:
-                fig.update_xaxes(title_text = labels[0])
         else:
             fig = make_subplots(rows = len(labels), cols = 1, vertical_spacing = 0.1, row_heights = [subplot_height] * len(labels))
 
