@@ -3348,18 +3348,11 @@ class Table(collections.abc.MutableMapping):
             and one plot is produced for every other column (or for the columns
             designated by ``select``).
         """
+        assert orientation in ('h', 'v'), "orientation must be in ('h', 'v')"
+        horizontal = orientation == 'h'
+
         if go is None or make_subplots is None:
             self._import_plotly()
-
-        yticks, labels = self._split_column_and_labels(column_for_categories)
-
-        # reverse yticks so they're in same order as barh
-        yticks = yticks[::-1]
-
-        if select is not None:
-            labels = self._as_labels(select)
-
-        ylabel = self._as_label(column_for_categories)
 
         def make_unique_labels(labels):
         # Since Plotly bar charts don't allow duplicate labels, this function
@@ -3376,7 +3369,12 @@ class Table(collections.abc.MutableMapping):
             labels = ["".join([str(label), '  ']) for label in labels]
             return labels
 
-        yticks_unique = make_unique_labels(yticks)
+        ticks, labels = self._split_column_and_labels(column_for_categories)
+        ticks = ticks[::-1] if horizontal else ticks
+        ticks_unique = make_unique_labels(ticks)
+        if select is not None:
+            labels = self._as_labels(select)
+        col_label = self._as_label(column_for_categories)
 
         colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors), len(labels)))
 
@@ -3384,62 +3382,84 @@ class Table(collections.abc.MutableMapping):
         margin = 5
 
         if overlay:
-            height = max(len(yticks) * (margin + bar_width * len(labels)), 500)
-
+            height = max(len(ticks) * (margin + bar_width * len(labels)), 500)
         else:
-            subplot_heights = [max(len(yticks) * (margin + bar_width), 500)] * len(labels)
-            height = subplot_heights[0] * len(labels)
+            subplot_height = max(len(ticks) * (margin + bar_width), 500)
+            height = subplot_height * len(labels)
 
         if overlay:
             fig = go.Figure()
 
             if width:
                 fig.update_layout(width = width)
-
             if height:
                 fig.update_layout(height = height)
 
             for i in range(len(labels)):
+                if horizontal:
+                    x = np.flip(self.column(labels[i]))
+                    y = ticks_unique
+                    hovertemplate = '(%{x}, %{customdata})'
+                else:
+                    x = ticks_unique
+                    y = self.column(labels[i])
+                    hovertemplate = '(%{customdata}, %{y})'
+
                 fig.add_trace(go.Bar(
-                    x = np.flip(self.column(labels[i])), # flipping so this matches the order of yticks
-                    y = yticks_unique,
+                    x = x,
+                    y = y,
                     name = labels[i],
                     orientation = orientation,
                     marker_color = colors[i],
-                    customdata = yticks,
-                    hovertemplate = '(%{x}, %{customdata})',
+                    customdata = ticks,
+                    hovertemplate = hovertemplate,
                     opacity = 0.7
                 ))
 
-            fig.update_xaxes(title_text = labels[0] if len(labels) == 1 else None)
-            fig.update_yaxes(title_text = ylabel, type = 'category', dtick = 1, showticklabels = True)
+            if horizontal:
+                fig.update_xaxes(title_text = labels[0] if len(labels) == 1 else None)
+                fig.update_yaxes(title_text = col_label, type = 'category', dtick = 1, showticklabels = True)
+            else:
+                fig.update_xaxes(title_text = col_label, type = 'category', dtick = 1, showticklabels = True)
+                fig.update_yaxes(title_text = labels[0] if len(labels) == 1 else None)
 
             if len(labels) == 1:
                 fig.update_xaxes(title_text = labels[0])
-
         else:
-            fig = make_subplots(rows = len(labels), cols = 1, vertical_spacing = 0.1, row_heights = subplot_heights)
+            fig = make_subplots(rows = len(labels), cols = 1, vertical_spacing = 0.1, row_heights = [subplot_height] * len(labels))
 
             if width:
                 fig.update_layout(width = width)
-
             if height:
                 fig.update_layout(height = height)
 
             for i in range(len(labels)):
+                if horizontal:
+                    x = np.flip(self.column(labels[i]))
+                    y = ticks_unique
+                    hovertemplate = '(%{x}, %{customdata})'
+                else:
+                    x = ticks_unique
+                    y = self.column(labels[i])
+                    hovertemplate = '(%{customdata}, %{y})'
+
                 fig.append_trace(go.Bar(
-                    x = np.flip(self.column(labels[i])), # flipping so this matches the order of yticks
-                    y = yticks_unique,
+                    x = x,
+                    y = y,
                     name = labels[i],
                     orientation = orientation,
-                    customdata = yticks,
-                    hovertemplate = '(%{x}, %{customdata})',
+                    customdata = ticks,
+                    hovertemplate = hovertemplate,
                     marker_color = colors[i],
                     opacity = 0.7
                 ), row = i + 1, col = 1)
 
-                fig.update_yaxes(title_text = ylabel, type = 'category', dtick = 1, showticklabels = True)
-                fig.update_xaxes(title_text = labels[i], row = i + 1, col = 1)
+                if horizontal:
+                    fig.update_yaxes(title_text = col_label, type = 'category', dtick = 1, showticklabels = True)
+                    fig.update_xaxes(title_text = labels[i], row = i + 1, col = 1)
+                else:
+                    fig.update_yaxes(title_text = labels[i], row = i + 1, col = 1)
+                    fig.update_xaxes(title_text = col_label, type = 'category', dtick = 1, showticklabels = True)
 
             fig.update_layout(showlegend=False)
 
