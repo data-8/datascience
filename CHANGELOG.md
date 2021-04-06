@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### v0.17.0
-* Includes additional plotly-based plotting methods `Table#iplot`, `Table#ibarh`, `Table#iscatter`, `Table#ihist`, and `Table#iscatter3d`
+* Includes additional plotly-based plotting methods `Table#iplot`, `Table#ibar`, `Table#ibarh`, `Table#igroup_bar`, `Table#igroup_barh`, `Table#iscatter`, `Table#ihist`, and `Table#iscatter3d`
 * New static methods `Table#interactive_plots` and `Table#static_plots` that redirect `Table#plot` to `Table#iplot`, `Table#barh` to `Table#ibarh`, etc. with same arguments
 * New method `Table#scatter3d` that is a wrapper for `Table#iscatter3d` but _does not_ implement a matplotlib plot and raises a `RuntimeError` if called when interactive plots are not enabled
 * New plotly-charts.ipynb notebook demonstrating how to work with the interactive function added to the testing directory
