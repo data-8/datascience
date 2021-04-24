@@ -1,5 +1,12 @@
 """Tables are sequences of labeled columns."""
 
+import datascience.predicates as _predicates
+from datascience.util import make_array
+import datascience.util as _util
+import datascience.formats as _formats
+import IPython
+import pandas
+import matplotlib.pyplot as plt
 __all__ = ['Table']
 
 import abc
@@ -16,21 +23,15 @@ import warnings
 import numpy as np
 import matplotlib
 matplotlib.use('agg')
-import matplotlib.pyplot as plt
-import pandas
-import IPython
 # import plotly.graph_objects as go
 # from plotly.subplots import make_subplots
 
-import datascience.formats as _formats
-import datascience.util as _util
-from datascience.util import make_array
-import datascience.predicates as _predicates
 
 # intitializing go and make_subplots as globals set to None
 go, make_subplots = None, None
 
 _INTERACTIVE_PLOTS = False
+
 
 class Table(collections.abc.MutableMapping):
     """A sequence of string-labeled columns."""
@@ -79,7 +80,8 @@ class Table(collections.abc.MutableMapping):
         Returns:
             A new instance of ``Table``.
         """
-        warnings.warn("Table.empty(labels) is deprecated. Use Table(labels)", FutureWarning)
+        warnings.warn(
+            "Table.empty(labels) is deprecated. Use Table(labels)", FutureWarning)
         if labels is None:
             return cls()
         values = [[] for label in labels]
@@ -89,13 +91,14 @@ class Table(collections.abc.MutableMapping):
     @classmethod
     def from_rows(cls, rows, labels):
         """Create a table from a sequence of rows (fixed-length sequences). [Deprecated]"""
-        warnings.warn("Table.from_rows is deprecated. Use Table(labels).with_rows(...)", FutureWarning)
+        warnings.warn(
+            "Table.from_rows is deprecated. Use Table(labels).with_rows(...)", FutureWarning)
         return cls(labels).with_rows(rows)
 
     @classmethod
     def from_records(cls, records):
         """Create a table from a sequence of records (dicts with fixed keys).
-        
+
            Args:
 
                records: A list of dictionaries with same keys.
@@ -105,9 +108,9 @@ class Table(collections.abc.MutableMapping):
                If the list is empty, it will return an empty table.
                Otherwise, it will return a table with the dictionary's keys as the column name, and the corresponding data.
                If the dictionaries do not have identical keys, the keys of the first dictionary in the list is used.
-               
+
            Example:
-           
+
                >>> t = Table().from_records([
                ...     {'column1':'data1','column2':1}, 
                ...     {'column1':'data2','column2':2}, 
@@ -130,24 +133,25 @@ class Table(collections.abc.MutableMapping):
     @classmethod
     def from_columns_dict(cls, columns):
         """Create a table from a mapping of column labels to column values. [Deprecated]"""
-        warnings.warn("Table.from_columns_dict is deprecated. Use Table().with_columns(...)", FutureWarning)
+        warnings.warn(
+            "Table.from_columns_dict is deprecated. Use Table().with_columns(...)", FutureWarning)
         return cls().with_columns(columns.items())
 
     @classmethod
     def read_table(cls, filepath_or_buffer, *args, **vargs):
         """Read a table from a file or web address.
-        
+
         Args:
             filepath_or_buffer -- string or file handle / StringIO; The string
                               could be a URL. Valid URL schemes include http,
                               ftp, s3, and file.
-        
+
         Returns:
             a table read from argument
-                              
+
         Example:
-	
-	>>> Table.read_table('https://www.inferentialthinking.com/data/sat2014.csv')
+
+        >>> Table.read_table('https://www.inferentialthinking.com/data/sat2014.csv')
         State        | Participation Rate | Critical Reading | Math | Writing | Combined
         North Dakota | 2.3                | 612              | 620  | 584     | 1816
         Illinois     | 4.6                | 599              | 616  | 587     | 1802
@@ -160,7 +164,7 @@ class Table(collections.abc.MutableMapping):
         Wyoming      | 3.3                | 590              | 599  | 573     | 1762
         Kansas       | 5.3                | 591              | 596  | 566     | 1753
         ... (41 rows omitted)
-                
+
         """
         # Look for .csv at the end of the path; use "," as a separator if found
         try:
@@ -196,38 +200,38 @@ class Table(collections.abc.MutableMapping):
     @classmethod
     def from_df(cls, df, keep_index=False):
         """Convert a Pandas DataFrame into a Table.
-        
+
         Args:
-        
+
             df -- Pandas DataFrame utilized for creation of Table
-            
+
             `keep_index` -- keeps the index of the DataFrame 
             and turns it into a column called `index` in the new Table
-            
+
         Returns:
            a table from Pandas Dataframe in argument
-           
+
         Example:
-        
+
         >>> sample_DF = pandas.DataFrame(
         ...             data = zip([1,2,3],['a','b','c'],['data1','data2','data3']),
         ...             columns = ['column1','column2','column3']
         ...             )
-        
+
         >>> sample_DF
            column1 column2 column3
         0        1       a   data1
         1        2       b   data2
         2        3       c   data3
-        
+
         >>> t = Table().from_df(sample_DF)
-        
+
         >>> t
         column1 | column2 | column3
         1       | a       | data1
         2       | b       | data2
         3       | c       | data3        
-       
+
         """
         t = cls()
         if keep_index:
@@ -242,30 +246,30 @@ class Table(collections.abc.MutableMapping):
         """Convert a structured NumPy array into a Table.
 
            Args:
- 
+
                arr -- A structured numpy array
 
            Returns:
 
                A table with the field names as the column names and the corresponding data.
-               
+
         Example:
-        
+
         >>> arr = np.array([
         ...       ('A',1), ('B',2)], 
         ...       dtype=[('Name', 'U10'), ('Number', 'i4')]
         ...       )
-                         
+
         >>> arr
         array([('A', 1), ('B', 2)], dtype=[('Name', '<U10'), ('Number', '<i4')])
-        
+
         >>> t = Table().from_array(arr)
-        
+
         >>> t
         Name | Number
         A    | 1
         B    | 2
-        
+
         """
         return cls().with_columns([(f, arr[f]) for f in arr.dtype.names])
 
@@ -298,7 +302,8 @@ class Table(collections.abc.MutableMapping):
         E.g., t.sum() on a Table will return a table with the sum of each column.
         """
         if self.columns and all(hasattr(c, attr) for c in self.columns):
-            warnings.warn("Implicit column method lookup is deprecated.", FutureWarning)
+            warnings.warn(
+                "Implicit column method lookup is deprecated.", FutureWarning)
             attrs = [getattr(c, attr) for c in self.columns]
             if all(callable(attr) for attr in attrs):
                 @functools.wraps(attrs[0])
@@ -310,7 +315,8 @@ class Table(collections.abc.MutableMapping):
             else:
                 return self._with_columns([[attr] for attr in attrs])
         else:
-            msg = "'{0}' object has no attribute '{1}'".format(type(self).__name__, attr)
+            msg = "'{0}' object has no attribute '{1}'".format(
+                type(self).__name__, attr)
             raise AttributeError(msg)
 
     ####################
@@ -321,7 +327,7 @@ class Table(collections.abc.MutableMapping):
     def num_rows(self):
         """
         Computes the number of rows in a table
-        
+
         Returns:
             integer value stating number of rows
 
@@ -340,7 +346,7 @@ class Table(collections.abc.MutableMapping):
     def rows(self):
         """
         Return a view of all rows.
-        
+
         Returns: 
             list-like Rows object that contains tuple-like Row objects
 
@@ -367,7 +373,7 @@ class Table(collections.abc.MutableMapping):
     def labels(self):
         """
         Return a tuple of column labels.
-        
+
         Returns: 
             tuple of labels
 
@@ -398,7 +404,7 @@ class Table(collections.abc.MutableMapping):
     def columns(self):
         """
         Return a tuple of columns, each with the values in that column.
-        
+
         Returns: 
             tuple of columns
 
@@ -474,7 +480,7 @@ class Table(collections.abc.MutableMapping):
     def column_index(self, label):
         """
         Return the index of a column by looking up its label.
-        
+
         Args:
             ``label`` (str) -- label value of a column
 
@@ -548,7 +554,7 @@ class Table(collections.abc.MutableMapping):
             if len(column_or_columns) == 1 and \
                     _is_non_string_iterable(column_or_columns[0]):
                 warnings.warn(
-                   "column lists are deprecated; pass each as an argument", FutureWarning)
+                    "column lists are deprecated; pass each as an argument", FutureWarning)
                 column_or_columns = column_or_columns[0]
             rows = zip(*self.select(*column_or_columns).columns)
             return np.array([fn(*row) for row in rows])
@@ -577,7 +583,7 @@ class Table(collections.abc.MutableMapping):
     def last(self, label):
         """
         Return the last item in a column.
-        
+
         Args:
             ``label`` (str) -- value of column label
 
@@ -794,7 +800,8 @@ class Table(collections.abc.MutableMapping):
         if callable(formatter) and not hasattr(formatter, 'format_column'):
             formatter = _formats.FunctionFormatter(formatter)
         if not hasattr(formatter, 'format_column'):
-            raise Exception('Expected Formatter or function: ' + str(formatter))
+            raise Exception(
+                'Expected Formatter or function: ' + str(formatter))
         for label in self._as_labels(column_or_columns):
             if formatter.converts_values:
                 self[label] = formatter.convert_column(self[label])
@@ -918,7 +925,8 @@ class Table(collections.abc.MutableMapping):
             n = t.num_rows
         else:
             if (len(list(row_or_table)) != self.num_columns):
-                raise Exception('Row should have '+ str(self.num_columns) + " columns")
+                raise Exception('Row should have ' +
+                                str(self.num_columns) + " columns")
             columns, n = [[value] for value in row_or_table], 1
         for i, column in enumerate(self._columns):
             if self.num_rows:
@@ -990,7 +998,7 @@ class Table(collections.abc.MutableMapping):
         # over formatter as needed.
         if not isinstance(label, str):
             raise ValueError('The column label must be a string, but a '
-                '{} was given'.format(label.__class__.__name__))
+                             '{} was given'.format(label.__class__.__name__))
 
         if not isinstance(values, np.ndarray):
             # Coerce a single value to a sequence
@@ -1056,13 +1064,15 @@ class Table(collections.abc.MutableMapping):
             column_label, new_label = [column_label], [new_label]
         if len(column_label) != len(new_label):
             raise ValueError('Invalid arguments. column_label and new_label '
-                'must be of equal length.')
-        old_to_new = dict(zip(column_label, new_label)) # maps old labels to new ones
+                             'must be of equal length.')
+        # maps old labels to new ones
+        old_to_new = dict(zip(column_label, new_label))
         for label in column_label:
             if not (label in self.labels):
                 raise ValueError('Invalid labels. Column labels must '
-                'already exist in table in order to be replaced.')
-        rewrite = lambda s: old_to_new[s] if s in old_to_new else s
+                                 'already exist in table in order to be replaced.')
+
+        def rewrite(s): return old_to_new[s] if s in old_to_new else s
         columns = [(rewrite(s), c) for s, c in self._columns.items()]
         self._columns = collections.OrderedDict(columns)
         for label in column_label:
@@ -1115,10 +1125,10 @@ class Table(collections.abc.MutableMapping):
         else:
             rows_remove = row_or_row_indices
         for col in self._columns:
-            self._columns[col] = [elem for i, elem in enumerate(self[col]) if i not in rows_remove]
+            self._columns[col] = [elem for i, elem in enumerate(
+                self[col]) if i not in rows_remove]
         self._num_rows -= len(rows_remove)
         return self
-
 
     ##################
     # Transformation #
@@ -1414,7 +1424,8 @@ class Table(collections.abc.MutableMapping):
         """
         column = self._get_column(column_or_label)
         if other is not None:
-            assert callable(value_or_predicate), "Predicate required for 3-arg where"
+            assert callable(
+                value_or_predicate), "Predicate required for 3-arg where"
             predicate = value_or_predicate
             other = self._get_column(other)
             column = [predicate(y)(x) for x, y in zip(column, other)]
@@ -1580,13 +1591,15 @@ class Table(collections.abc.MutableMapping):
 
         # Generate grouped columns
         if collect is None:
-            labels = [column_label, 'count' if column_label != 'count' else self._unused_label('count')]
+            labels = [column_label, 'count' if column_label !=
+                      'count' else self._unused_label('count')]
             columns = [keys, [len(groups[k]) for k in keys]]
         else:
             columns, labels = [], []
             for i, label in enumerate(self.labels):
                 labels.append(_collected_label(collect, label))
-                c = [collect(np.array([row[i] for row in groups[k]])) for k in keys]
+                c = [collect(np.array([row[i] for row in groups[k]]))
+                     for k in keys]
                 columns.append(c)
 
         grouped = type(self)().with_columns(zip(labels, columns))
@@ -1654,7 +1667,7 @@ class Table(collections.abc.MutableMapping):
                 raise ValueError("All labels must exist in the table")
             columns.append(self._get_column(label))
         grouped = self.group(list(zip(*columns)), lambda s: s)
-        grouped._columns.popitem(last=False) # Discard the column of tuples
+        grouped._columns.popitem(last=False)  # Discard the column of tuples
 
         # Flatten grouping values and move them to front
         counts = [len(v) for v in grouped[0]]
@@ -1664,7 +1677,8 @@ class Table(collections.abc.MutableMapping):
 
         # Aggregate other values
         if collect is None:
-            count = 'count' if 'count' not in labels else self._unused_label('count')
+            count = 'count' if 'count' not in labels else self._unused_label(
+                'count')
             return grouped.select(labels).with_column(count, counts)
         else:
             for label in grouped.labels:
@@ -1762,13 +1776,13 @@ class Table(collections.abc.MutableMapping):
         # Generate other columns and add them to pivoted
         by_columns = grouped.index_by(columns)
         for label in sorted(by_columns):
-            tuples = [t[1:] for t in by_columns[label]] # Discard column value
+            tuples = [t[1:] for t in by_columns[label]]  # Discard column value
             column = _fill_with_zeros(rows_values, tuples, zero)
             pivot = self._unused_label(str(label))
             pivoted[pivot] = column
         return pivoted
 
-    def pivot_bin(self, pivot_columns, value_column, bins=None, **vargs) :
+    def pivot_bin(self, pivot_columns, value_column, bins=None, **vargs):
         """Form a table with columns formed by the unique tuples in pivot_columns
         containing counts per bin of the values associated with each tuple in the value_column.
 
@@ -1790,41 +1804,41 @@ class Table(collections.abc.MutableMapping):
             ``normed`` (bool): If False, the result will contain the number of
                 samples in each bin. If True, the result is normalized such that
                 the integral over the range is 1.
-                
+
         Returns:
             New pivot table with unique rows of specified ``pivot_columns``, 
             populated with 0s and 1s with respect to values from ``value_column`` 
             distributed into specified ``bins`` and ``range``.
-            
+
         Examples:
-	
-	>>> t = Table.from_records([
-	...   {
-	...    'column1':'data1',
-	...    'column2':86,
-	...    'column3':'b',
-	...    'column4':5,
-	...   },
-	...   {
-	...    'column1':'data2',
-	...    'column2':51,
-	...    'column3':'c',
-	...    'column4':3,
-	...   },
-	...   {
-	...    'column1':'data3',
-	...    'column2':32,
-	...    'column3':'a',
-	...    'column4':6,
-	...   }
-	... ])
-        
+
+        >>> t = Table.from_records([
+        ...   {
+        ...    'column1':'data1',
+        ...    'column2':86,
+        ...    'column3':'b',
+        ...    'column4':5,
+        ...   },
+        ...   {
+        ...    'column1':'data2',
+        ...    'column2':51,
+        ...    'column3':'c',
+        ...    'column4':3,
+        ...   },
+        ...   {
+        ...    'column1':'data3',
+        ...    'column2':32,
+        ...    'column3':'a',
+        ...    'column4':6,
+        ...   }
+        ... ])
+
         >>> t
         column1 | column2 | column3 | column4
         data1   | 86      | b       | 5
         data2   | 51      | c       | 3
         data3   | 32      | a       | 6
-        
+
         >>> t.pivot_bin(pivot_columns='column1',value_column='column2')
         bin  | data1 | data2 | data3
         32   | 0     | 0     | 1
@@ -1838,7 +1852,7 @@ class Table(collections.abc.MutableMapping):
         75.2 | 0     | 0     | 0
         80.6 | 1     | 0     | 0
         ... (1 rows omitted)
-        
+
         >>> t.pivot_bin(pivot_columns=['column1','column2'],value_column='column4')
         bin  | data1-86 | data2-51 | data3-32
         3    | 0        | 1        | 0
@@ -1852,13 +1866,13 @@ class Table(collections.abc.MutableMapping):
         5.4  | 0        | 0        | 0
         5.7  | 0        | 0        | 1
         ... (1 rows omitted)
-        
+
         >>> t.pivot_bin(pivot_columns='column1',value_column='column2',bins=[20,45,100])
         bin  | data1 | data2 | data3
         20   | 0     | 0     | 1
         45   | 1     | 1     | 0
         100  | 0     | 0     | 0
-        
+
         >>> t.pivot_bin(pivot_columns='column1',value_column='column2',bins=5,range=[30,60])
         bin  | data1 | data2 | data3
         30   | 0     | 0     | 1
@@ -1867,74 +1881,74 @@ class Table(collections.abc.MutableMapping):
         48   | 0     | 1     | 0
         54   | 0     | 0     | 0
         60   | 0     | 0     | 0
-               
+
         """
         pivot_columns = _as_labels(pivot_columns)
         selected = self.select(pivot_columns + [value_column])
-        grouped = selected.groups(pivot_columns, collect=lambda x:x)
+        grouped = selected.groups(pivot_columns, collect=lambda x: x)
 
         # refine bins by taking a histogram over all the data
         if bins is not None:
             vargs['bins'] = bins
-        _, rbins = np.histogram(self[value_column],**vargs)
+        _, rbins = np.histogram(self[value_column], **vargs)
         # create a table with these bins a first column and counts for each group
         vargs['bins'] = rbins
-        binned = type(self)().with_column('bin',rbins)
+        binned = type(self)().with_column('bin', rbins)
         for group in grouped.rows:
-            col_label = "-".join(map(str,group[0:-1]))
+            col_label = "-".join(map(str, group[0:-1]))
             col_vals = group[-1]
-            counts,_ = np.histogram(col_vals,**vargs)
-            binned[col_label] = np.append(counts,0)
+            counts, _ = np.histogram(col_vals, **vargs)
+            binned[col_label] = np.append(counts, 0)
         return binned
 
     def stack(self, key, labels=None):
         """Takes k original columns and returns two columns, with col. 1 of
         all column names and col. 2 of all associated data.
-        
+
         Args:
             ``key``: Name of a column from table which is the basis for stacking 
                 values from the table.
-             
+
             ``labels``: List of column names which must be included in the stacked
                 representation of the table. If no value is supplied for this argument,
                 then the function considers all columns from the original table.
-                
+
         Returns:
             A table whose first column consists of stacked values from column passed in
             ``key``. The second column of this returned table consists of the column names
             passed in ``labels``, whereas the final column consists of the data values
             corresponding to the respective values in the first and second columns of the
             new table.
-            
+
         Examples:
-	
-	>>> t = Table.from_records([
-	...   {
-	...    'column1':'data1',
-	...    'column2':86,
-	...    'column3':'b',
-	...    'column4':5,
-	...   },
-	...   {
-	...    'column1':'data2',
-	...    'column2':51,
-	...    'column3':'c',
-	...    'column4':3,
-	...   },
-	...   {
-	...    'column1':'data3',
-	...    'column2':32,
-	...    'column3':'a',
-	...    'column4':6,
-	...   }
-	... ])
-        
+
+        >>> t = Table.from_records([
+        ...   {
+        ...    'column1':'data1',
+        ...    'column2':86,
+        ...    'column3':'b',
+        ...    'column4':5,
+        ...   },
+        ...   {
+        ...    'column1':'data2',
+        ...    'column2':51,
+        ...    'column3':'c',
+        ...    'column4':3,
+        ...   },
+        ...   {
+        ...    'column1':'data3',
+        ...    'column2':32,
+        ...    'column3':'a',
+        ...    'column4':6,
+        ...   }
+        ... ])
+
         >>> t
         column1 | column2 | column3 | column4
         data1   | 86      | b       | 5
         data2   | 51      | c       | 3
         data3   | 32      | a       | 6
-        
+
         >>> t.stack('column2')
         column2 | column  | value
         86      | column1 | data1
@@ -1946,7 +1960,7 @@ class Table(collections.abc.MutableMapping):
         32      | column1 | data3
         32      | column3 | a
         32      | column4 | 6
-        
+
         >>> t.stack('column2',labels=['column4','column1'])
         column2 | column  | value
         86      | column1 | data1
@@ -1955,7 +1969,7 @@ class Table(collections.abc.MutableMapping):
         51      | column4 | 3
         32      | column1 | data3
         32      | column4 | 6
-        
+
         """
         rows, labels = [], labels or self.labels
         for row in self.rows:
@@ -2058,12 +2072,12 @@ class Table(collections.abc.MutableMapping):
 
     def _multiple_join(self, column_label, other, other_label=[]):
         """joins when column_label is a non-string iterable"""
-        assert len(column_label) == len(other_label), 'unequal number of columns'
+        assert len(column_label) == len(
+            other_label), 'unequal number of columns'
 
         self_rows = self._multi_index(column_label)
         other_rows = other._multi_index(other_label)
         return self._join_helper(column_label, self_rows, other, other_label, other_rows)
-
 
     def _join_helper(self, column_label, self_rows, other, other_label, other_rows):
         # Gather joined rows from self_rows that have join values in other_rows
@@ -2078,7 +2092,8 @@ class Table(collections.abc.MutableMapping):
         self_labels = list(self.labels)
         other_labels = [self._unused_label(s) for s in other.labels]
         if (len(set(self_labels + other_labels)) != len(list(self_labels + other_labels))):
-            other_labels = [self._unused_label_in_either_table(s, other) for s in other.labels]
+            other_labels = [self._unused_label_in_either_table(
+                s, other) for s in other.labels]
         other_labels_map = dict(zip(other.labels, other_labels))
         joined = type(self)(self_labels + other_labels).with_rows(joined_rows)
 
@@ -2217,7 +2232,8 @@ class Table(collections.abc.MutableMapping):
         elif isinstance(c, numbers.Integral):
             return self[c]
         elif isinstance(c, str):
-            raise ValueError('label "{}" not in labels {}'.format(c, self.labels))
+            raise ValueError(
+                'label "{}" not in labels {}'.format(c, self.labels))
         else:
             assert len(c) == self.num_rows, 'column length mismatch'
             return c
@@ -2246,7 +2262,8 @@ class Table(collections.abc.MutableMapping):
         count | points
         9     | 10
         """
-        percentiles = [[_util.percentile(p, column)] for column in self.columns]
+        percentiles = [[_util.percentile(p, column)]
+                       for column in self.columns]
         return self._with_columns(percentiles)
 
     def sample(self, k=None, with_replacement=True, weights=None):
@@ -2353,7 +2370,8 @@ class Table(collections.abc.MutableMapping):
         """
         dist = self._get_column(distribution)
         total = sum(dist)
-        assert total > 0 and np.all(dist >= 0), 'Counts or a distribution required'
+        assert total > 0 and np.all(
+            dist >= 0), 'Counts or a distribution required'
         dist = dist/sum(dist)
         sample = np.random.multinomial(k, dist)
         if proportions:
@@ -2406,7 +2424,6 @@ class Table(collections.abc.MutableMapping):
             first._formats[column_label] = self._formats[column_label]
             rest._formats[column_label] = self._formats[column_label]
         return first, rest
-
 
     def with_row(self, row):
         """Return a table with an additional row.
@@ -2593,8 +2610,6 @@ class Table(collections.abc.MutableMapping):
             self = self.with_column(label, values, formatter)
         return self
 
-
-
     def relabeled(self, label, new_label):
         """Return a new table with ``label`` specifying column label(s)
         replaced by corresponding ``new_label``.
@@ -2646,7 +2661,8 @@ class Table(collections.abc.MutableMapping):
 
     # Deprecated
     def with_relabeling(self, *args):
-        warnings.warn("with_relabeling is deprecated; use relabeled", FutureWarning)
+        warnings.warn(
+            "with_relabeling is deprecated; use relabeled", FutureWarning)
         return self.relabeled(*args)
 
     def bin(self, *columns, **vargs):
@@ -2772,7 +2788,8 @@ class Table(collections.abc.MutableMapping):
 
         Each function has the signature f(value, label=False) -> str
         """
-        formats = {s: self._formats.get(s, self.formatter) for s in self.labels}
+        formats = {s: self._formats.get(s, self.formatter)
+                   for s in self.labels}
         cols = self._columns.items()
         fmts = [formats[k].format_column(k, v[:max_rows]) for k, v in cols]
         if as_html:
@@ -2781,16 +2798,16 @@ class Table(collections.abc.MutableMapping):
 
     def as_text(self, max_rows=0, sep=" | "):
         """Format table as text
-            
+
             Args:   
                 max_rows(int) The maximum number of rows to be present in the converted string of table. (Optional Argument)
                 sep(str) The seperator which will appear in converted string between the columns. (Optional Argument)
-                
+
             Returns:
                 String form of the table
-                
+
                 The table is just converted to a string with columns seperated by the seperator(argument- default(' | ')) and rows seperated by '\\n'
-                
+
                 Few examples of the as_text() method are as follows: 
                 1.
                 >>> table = Table().with_columns({'name': ['abc', 'xyz', 'uvw'], 'age': [12,14,20],'height': [5.5,6.0,5.9],})
@@ -2811,7 +2828,7 @@ class Table(collections.abc.MutableMapping):
 
                 >>> type(table_astext)
                 <class 'str'>
-                 
+
                 2.
                 >>> sizes = Table(['size', 'count']).with_rows([     ['small', 50],     ['medium', 100],     ['big', 50], ])
 
@@ -2872,7 +2889,7 @@ class Table(collections.abc.MutableMapping):
             lines += [
                 (2, '<tr>'),
                 (3, ' '.join('<td>' + fmt(v, label=False) + '</td>' for
-                    v, fmt in zip(row, fmts))),
+                             v, fmt in zip(row, fmts))),
                 (2, '</tr>'),
             ]
         lines.append((1, '</tbody>'))
@@ -2882,8 +2899,53 @@ class Table(collections.abc.MutableMapping):
         return '\n'.join(4 * indent * ' ' + text for indent, text in lines)
 
     def index_by(self, column_or_label):
-        """Return a dict keyed by values in a column that contains lists of
-        rows corresponding to each value.
+        """
+        Returns a dictionary keyed by values in a column that contains lists of rows corresponding to each value.
+
+        Args:
+            self: 
+
+                Table on which the function is to be applied.
+
+            column_or_label: 
+
+                Column whose values will be considered as keys in the dictionary that will be returned.(Only one columns can be passed)
+
+        Returns:
+
+            A new dictionary.
+            Its keys are the values of the column that was passed as a parameter.
+            Its values will contain a list of the format [Row(column1_name=value)].
+
+        Here is an example where we have created a Dataframe intially and then converted to table using "from_df" function. Later we have implemented the "index_by" function using that table.
+
+        Example 1:
+
+            >>> import datascience 
+            >>> import pandas as pd
+
+            >>> df = pd.DataFrame({
+            ...    'Name':['Farhan', 'Roy', 'Rhea', 'Omay']
+            ...})
+
+            >>> df = datascience.Table.from_df(df) 
+
+            >>> datascience.Table.index_by(df,column_or_label=df[0])
+            {'Farhan': [Row(Name='Farhan')], 'Roy': [Row(Name='Roy')], 'Rhea': [Row(Name='Rhea')], 'Omay': [Row(Name='Omay')]}
+
+        Example 2: 
+
+            >>> df = pd.DataFrame({
+            ...     'label':['a','b','c','d'],
+            ...     'number':['1','2','3','4']
+            ... })
+            >>> df = datascience.Table.from_df(df)
+            >>> datascience.Table.index_by(df,column_or_label=df[1])
+            {'1': [Row(label='a', number='1')],
+            '2': [Row(label='b', number='2')],
+            '3': [Row(label='c', number='3')],
+            '4': [Row(label='d', number='4')]}
+
         """
         column = self._get_column(column_or_label)
         index = {}
@@ -2897,7 +2959,8 @@ class Table(collections.abc.MutableMapping):
                 for i in range(len(key_transformed)):
                     if pandas.isnull(key_transformed[i]):
                         key_transformed[i] = np.nan
-            key = tuple(key_transformed) if len(key_transformed) > 1 else key_transformed[0]
+            key = tuple(key_transformed) if len(
+                key_transformed) > 1 else key_transformed[0]
             index.setdefault(key, []).append(row)
         return index
 
@@ -2912,37 +2975,37 @@ class Table(collections.abc.MutableMapping):
 
     def to_df(self):
         """Convert the table to a Pandas DataFrame.
-            
+
             Args:
                 None
-            
+
             Returns:
                 The Pandas DataFrame of the table
-                
+
              It just converts the table to Pandas DataFrame so that we can use 
              DataFrame instead of the table at some required places.
-             
+
              Here's an example of using the to_df() method:
-             
+
             >>> table = Table().with_columns({'name': ['abc', 'xyz', 'uvw'],
             ... 'age': [12,14,20],
             ... 'height': [5.5,6.0,5.9],
             ... })
-                        
+
             >>> table
             name | age  | height
             abc  | 12   | 5.5
             xyz  | 14   | 6
             uvw  | 20   | 5.9
-            
+
             >>> table_df = table.to_df()
-            
+
             >>> table_df
               name  age  height
             0  abc   12     5.5
             1  xyz   14     6.0
             2  uvw   20     5.9
-            
+
             >>> type(table)
             <class 'datascience.tables.Table'>
 
@@ -3039,7 +3102,6 @@ class Table(collections.abc.MutableMapping):
         f"rgb({tup[0]},{tup[1]},{tup[2]})" for tup in
         tuple(tuple(int(256 * val) for val in tup) for tup in chart_colors)
     )
-
 
     default_alpha = 0.7
 
@@ -3199,7 +3261,8 @@ class Table(collections.abc.MutableMapping):
             else:
                 axis.plot(x_data, self[label], color=color, **options)
 
-        self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x, width=width, height=height)
+        self._visualize(x_label, y_labels, None, overlay, draw,
+                        _vertical_x, width=width, height=height)
 
     def iplot(self, column_for_xticks=None, select=None, overlay=True, width=None, height=None, show=True, **vargs):
         """Plot interactive line charts for the table using plotly.
@@ -3249,7 +3312,7 @@ class Table(collections.abc.MutableMapping):
         """
         if go is None or make_subplots is None:
             self._import_plotly()
-        
+
         if column_for_xticks is not None:
             x_data, y_labels = self._split_column_and_labels(column_for_xticks)
             x_label = self._as_label(column_for_xticks)
@@ -3265,7 +3328,8 @@ class Table(collections.abc.MutableMapping):
             x_data = np.sort(x_data)
 
         n = len(y_labels)
-        colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors), n))
+        colors = list(itertools.islice(
+            itertools.cycle(self.plotly_chart_colors), n))
 
         if overlay:
             fig = go.Figure()
@@ -3297,8 +3361,8 @@ class Table(collections.abc.MutableMapping):
                         name=label,
                         line=dict(color=colors[i])
                     ),
-                    row = i + 1,
-                    col = 1,
+                    row=i + 1,
+                    col=1,
                 )
                 fig.update_xaxes(title_text=column_for_xticks, row=i+1, col=1)
                 fig.update_yaxes(title_text=label, row=i+1, col=1)
@@ -3353,12 +3417,13 @@ class Table(collections.abc.MutableMapping):
             axis.bar(index-0.5, self[label], 1.0, color=color, **options)
 
         def annotate(axis, ticks):
-            if (ticks is not None) :
-                tick_labels = [ticks[int(l)] if 0<=l<len(ticks) else '' for l in axis.get_xticks()]
+            if (ticks is not None):
+                tick_labels = [ticks[int(l)] if 0 <= l < len(
+                    ticks) else '' for l in axis.get_xticks()]
                 axis.set_xticklabels(tick_labels, stretch='ultra-condensed')
 
-        self._visualize(column_for_categories, labels, xticks, overlay, draw, annotate, width=width, height=height)
-
+        self._visualize(column_for_categories, labels, xticks,
+                        overlay, draw, annotate, width=width, height=height)
 
     def group_bar(self, column_label, **vargs):
         """Plot a bar chart for the table.
@@ -3391,11 +3456,11 @@ class Table(collections.abc.MutableMapping):
     def barh(self, column_for_categories=None, select=None, overlay=True, width=None, **vargs):
         """Plot horizontal bar charts for the table. Redirects to ``Table#ibarh`` if interactive plots
         are enabled with ``Table#interactive_plots``
-        
+
         Args:
             ``column_for_categories`` (``str``): A column containing y-axis categories
                 used to create buckets for bar chart.
-        
+
         Kwargs:
             overlay (bool): create a chart with one color per data column;
                 if False, each will be displayed separately.
@@ -3404,17 +3469,17 @@ class Table(collections.abc.MutableMapping):
             vargs: Additional arguments that get passed into `plt.barh`.
                 See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.barh
                 for additional arguments that can be passed into vargs.
-        
+
         Raises:
             ValueError -- Every selected except column for ``column_for_categories``
                 must be numerical.
-        
+
         Returns:
             Horizontal bar graph with buckets specified by ``column_for_categories``.
             Each plot is labeled using the values in ``column_for_categories``
             and one plot is produced for every other column (or for the columns
             designated by ``select``).
-        
+
         >>> t = Table().with_columns(
         ...     'Furniture', make_array('chairs', 'tables', 'desks'),
         ...     'Count', make_array(6, 1, 2),
@@ -3465,7 +3530,8 @@ class Table(collections.abc.MutableMapping):
 
         def draw(axis, label, color):
             if overlay:
-                ypos = index + margin + (1-2*margin)*(n - 1 - labels.index(label))/n
+                ypos = index + margin + (1-2*margin) * \
+                    (n - 1 - labels.index(label))/n
             else:
                 ypos = index
             # barh plots entries in reverse order from bottom to top
@@ -3474,13 +3540,14 @@ class Table(collections.abc.MutableMapping):
         ylabel = self._as_label(column_for_categories)
 
         def annotate(axis, ticks):
-            axis.set_yticks(index+0.5) # Center labels on bars
+            axis.set_yticks(index+0.5)  # Center labels on bars
             # barh plots entries in reverse order from bottom to top
             axis.set_yticklabels(ticks[::-1], stretch='ultra-condensed')
             axis.set_xlabel(axis.get_ylabel())
             axis.set_ylabel(ylabel)
 
-        self._visualize('', labels, yticks, overlay, draw, annotate, width=width, height=height)
+        self._visualize('', labels, yticks, overlay, draw,
+                        annotate, width=width, height=height)
 
     def ibarh(self, column_for_categories=None, select=None, overlay=True, width=None, show=True, **vargs):
         """Plot interactive horizontal bar charts for the table using plotly.
@@ -3542,15 +3609,17 @@ class Table(collections.abc.MutableMapping):
         ylabel = self._as_label(column_for_categories)
 
         def make_unique_labels(labels):
-        # Since Plotly bar charts don't allow duplicate labels, this function
-        # takes in a list of labels and pads duplicates with a unique amount of
-        # zero width white space.
+            # Since Plotly bar charts don't allow duplicate labels, this function
+            # takes in a list of labels and pads duplicates with a unique amount of
+            # zero width white space.
             unique_labels = list(set(labels))
             if len(unique_labels) != len(labels):
-                space_count = dict(zip(unique_labels, [0] * len(unique_labels)))
+                space_count = dict(
+                    zip(unique_labels, [0] * len(unique_labels)))
                 updated_labels = [''] * len(labels)
                 for i in range(len(labels)):
-                    updated_labels[i] = ''.join(['\u200c' * space_count[labels[i]], str(labels[i]), '  '])
+                    updated_labels[i] = ''.join(
+                        ['\u200c' * space_count[labels[i]], str(labels[i]), '  '])
                     space_count[labels[i]] += 1
                 return updated_labels
             labels = ["".join([str(label), '  ']) for label in labels]
@@ -3558,7 +3627,8 @@ class Table(collections.abc.MutableMapping):
 
         yticks_unique = make_unique_labels(yticks)
 
-        colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors), len(labels)))
+        colors = list(itertools.islice(itertools.cycle(
+            self.plotly_chart_colors), len(labels)))
 
         bar_width = 20
         margin = 5
@@ -3567,59 +3637,66 @@ class Table(collections.abc.MutableMapping):
             height = max(len(yticks) * (margin + bar_width * len(labels)), 500)
 
         else:
-            subplot_heights = [max(len(yticks) * (margin + bar_width), 500)] * len(labels)
+            subplot_heights = [
+                max(len(yticks) * (margin + bar_width), 500)] * len(labels)
             height = subplot_heights[0] * len(labels)
 
         if overlay:
             fig = go.Figure()
 
             if width:
-                fig.update_layout(width = width)
+                fig.update_layout(width=width)
 
             if height:
-                fig.update_layout(height = height)
+                fig.update_layout(height=height)
 
             for i in range(len(labels)):
                 fig.add_trace(go.Bar(
-                    x = np.flip(self.column(labels[i])), # flipping so this matches the order of yticks
-                    y = yticks_unique,
-                    name = labels[i],
-                    orientation = 'h',
-                    marker_color = colors[i],
-                    customdata = yticks,
-                    hovertemplate = '(%{x}, %{customdata})',
-                    opacity = 0.7
+                    # flipping so this matches the order of yticks
+                    x=np.flip(self.column(labels[i])),
+                    y=yticks_unique,
+                    name=labels[i],
+                    orientation='h',
+                    marker_color=colors[i],
+                    customdata=yticks,
+                    hovertemplate='(%{x}, %{customdata})',
+                    opacity=0.7
                 ))
 
-            fig.update_xaxes(title_text = labels[0] if len(labels) == 1 else None)
-            fig.update_yaxes(title_text = ylabel, type = 'category', dtick = 1, showticklabels = True)
+            fig.update_xaxes(
+                title_text=labels[0] if len(labels) == 1 else None)
+            fig.update_yaxes(title_text=ylabel, type='category',
+                             dtick=1, showticklabels=True)
 
             if len(labels) == 1:
-                fig.update_xaxes(title_text = labels[0])
+                fig.update_xaxes(title_text=labels[0])
 
         else:
-            fig = make_subplots(rows = len(labels), cols = 1, vertical_spacing = 0.1, row_heights = subplot_heights)
+            fig = make_subplots(rows=len(labels), cols=1,
+                                vertical_spacing=0.1, row_heights=subplot_heights)
 
             if width:
-                fig.update_layout(width = width)
+                fig.update_layout(width=width)
 
             if height:
-                fig.update_layout(height = height)
+                fig.update_layout(height=height)
 
             for i in range(len(labels)):
                 fig.append_trace(go.Bar(
-                    x = np.flip(self.column(labels[i])), # flipping so this matches the order of yticks
-                    y = yticks_unique,
-                    name = labels[i],
-                    orientation = 'h',
-                    customdata = yticks,
-                    hovertemplate = '(%{x}, %{customdata})',
-                    marker_color = colors[i],
-                    opacity = 0.7
-                ), row = i + 1, col = 1)
+                    # flipping so this matches the order of yticks
+                    x=np.flip(self.column(labels[i])),
+                    y=yticks_unique,
+                    name=labels[i],
+                    orientation='h',
+                    customdata=yticks,
+                    hovertemplate='(%{x}, %{customdata})',
+                    marker_color=colors[i],
+                    opacity=0.7
+                ), row=i + 1, col=1)
 
-                fig.update_yaxes(title_text = ylabel, type = 'category', dtick = 1, showticklabels = True)
-                fig.update_xaxes(title_text = labels[i], row = i + 1, col = 1)
+                fig.update_yaxes(title_text=ylabel,
+                                 type='category', dtick=1, showticklabels=True)
+                fig.update_xaxes(title_text=labels[i], row=i + 1, col=1)
 
             fig.update_layout(showlegend=False)
 
@@ -3660,7 +3737,7 @@ class Table(collections.abc.MutableMapping):
         self.group(column_label).barh(column_label, **vargs)
 
     def scatter(self, column_for_x, select=None, overlay=True, fit_line=False,
-        group=None, labels=None, sizes=None, width=None, height=None, s=20, **vargs):
+                group=None, labels=None, sizes=None, width=None, height=None, s=20, **vargs):
         """Creates scatterplots, optionally adding a line of best fit. Redirects to ``Table#iscatter``
         if interactive plots are enabled with ``Table#interactive_plots``
 
@@ -3730,16 +3807,16 @@ class Table(collections.abc.MutableMapping):
         global _INTERACTIVE_PLOTS
         if _INTERACTIVE_PLOTS:
             return self.iscatter(
-                column_for_x = column_for_x,
-                select = select,
-                overlay = overlay,
-                fit_line = fit_line,
-                group = group,
-                labels = labels,
-                sizes = sizes,
-                s = s / 4, # Plotly dot sizes are much smaller, so divide s by 4
-                width =  width,
-                height = height,
+                column_for_x=column_for_x,
+                select=select,
+                overlay=overlay,
+                fit_line=fit_line,
+                group=group,
+                labels=labels,
+                sizes=sizes,
+                s=s / 4,  # Plotly dot sizes are much smaller, so divide s by 4
+                width=width,
+                height=height,
                 **vargs
             )
 
@@ -3752,9 +3829,10 @@ class Table(collections.abc.MutableMapping):
         options = self.default_options.copy()
         options.update(vargs)
 
-        x_data, y_labels =  self._split_column_and_labels(column_for_x)
+        x_data, y_labels = self._split_column_and_labels(column_for_x)
         if "colors" in vargs and vargs["colors"]:
-            warnings.warn("scatter(colors=x) has been removed. Use scatter(group=x)", FutureWarning)
+            warnings.warn(
+                "scatter(colors=x) has been removed. Use scatter(group=x)", FutureWarning)
         if group is not None:
             y_labels.remove(self._as_label(group))
         if sizes is not None:
@@ -3768,7 +3846,8 @@ class Table(collections.abc.MutableMapping):
         def draw(axis, label, color):
             if group is not None:
                 colored = sorted(np.unique(self.column(group)))
-                color_list = list(itertools.islice(itertools.cycle(self.chart_colors), len(colored)))
+                color_list = list(itertools.islice(
+                    itertools.cycle(self.chart_colors), len(colored)))
                 color_map = collections.OrderedDict(zip(colored, color_list))
                 color = [color_map[x] for x in self.column(group)]
             elif 'color' in options:
@@ -3782,28 +3861,30 @@ class Table(collections.abc.MutableMapping):
             axis.scatter(x_data, y_data, color=color, s=size, **options)
             if fit_line:
                 m, b = np.polyfit(x_data, self[label], 1)
-                minx, maxx = np.min(x_data),np.max(x_data)
-                axis.plot([minx,maxx],[m*minx+b,m*maxx+b], color=color)
+                minx, maxx = np.min(x_data), np.max(x_data)
+                axis.plot([minx, maxx], [m*minx+b, m*maxx+b], color=color)
             if labels is not None:
                 for x, y, label in zip(x_data, y_data, self[labels]):
                     axis.annotate(label, (x, y),
-                        xytext=(-20, 20),
-                        textcoords='offset points', ha='right', va='bottom',
-                        bbox=dict(boxstyle='round,pad=0.5', fc='white', alpha=0.7),
-                        arrowprops = dict(arrowstyle = '->', connectionstyle = 'arc3,rad=0', color='black'))
+                                  xytext=(-20, 20),
+                                  textcoords='offset points', ha='right', va='bottom',
+                                  bbox=dict(boxstyle='round,pad=0.5',
+                                  fc='white', alpha=0.7),
+                                  arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0', color='black'))
             if group is not None:
                 import matplotlib.patches as mpatches
                 group_col_name = self._as_label(group)
-                patches = [mpatches.Patch(color=c, label="{0}={1}".format(group_col_name, v)) \
-                    for (v, c) in color_map.items()]
+                patches = [mpatches.Patch(color=c, label="{0}={1}".format(group_col_name, v))
+                           for (v, c) in color_map.items()]
                 axis.legend(loc=2, bbox_to_anchor=(1.05, 1), handles=patches)
 
         x_label = self._as_label(column_for_x)
-        self._visualize(x_label, y_labels, None, overlay, draw, _vertical_x, width=width, height=height)
+        self._visualize(x_label, y_labels, None, overlay, draw,
+                        _vertical_x, width=width, height=height)
 
     def iscatter(self, column_for_x, select=None, overlay=True, fit_line=False,
-        group=None, labels=None, sizes=None, width=None, height=None, s=5,
-        show=True, **vargs):
+                 group=None, labels=None, sizes=None, width=None, height=None, s=5,
+                 show=True, **vargs):
         """Creates interactive scatterplots, optionally adding a line of best fit, using plotly.
 
         Args:
@@ -3871,7 +3952,7 @@ class Table(collections.abc.MutableMapping):
         if go is None or make_subplots is None:
             self._import_plotly()
 
-        x_data, y_labels =  self._split_column_and_labels(column_for_x)
+        x_data, y_labels = self._split_column_and_labels(column_for_x)
 
         # if group is not None and colors is not None and group != colors:
         #     warnings.warn("Do not pass both colors and group to scatter().")
@@ -3884,7 +3965,8 @@ class Table(collections.abc.MutableMapping):
         #     warnings.warn("scatter(colors=x) is deprecated. Use scatter(group=x)", FutureWarning)
 
         if "colors" in vargs and vargs["colors"]:
-            warnings.warn("scatter(colors=x) has been removed. Use scatter(group=x)", FutureWarning)
+            warnings.warn(
+                "scatter(colors=x) has been removed. Use scatter(group=x)", FutureWarning)
 
         if group is not None:
             y_labels.remove(self._as_label(group))
@@ -3913,7 +3995,8 @@ class Table(collections.abc.MutableMapping):
                 grouped_x_data.append(x_data[self.column(group) == val])
             overlay = False
 
-        colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors), max(len(y_labels), len(group_vals))))
+        colors = list(itertools.islice(itertools.cycle(
+            self.plotly_chart_colors), max(len(y_labels), len(group_vals))))
 
         size = None
         if sizes is not None:
@@ -3926,102 +4009,106 @@ class Table(collections.abc.MutableMapping):
             fig = go.Figure()
 
             if width:
-                fig.update_layout(width = width)
+                fig.update_layout(width=width)
 
             if height:
-                fig.update_layout(height = height)
+                fig.update_layout(height=height)
 
             for i, label in enumerate(y_labels):
                 fig.add_trace(go.Scatter(
-                    x = x_data,
-                    y = self[label],
-                    name = label,
-                    marker_color = colors[i],
-                    marker = dict(size = size),
-                    mode = "markers+text" if labels else "markers",
-                    text = self[labels] if labels else None,
-                    textposition = "bottom center",
-                    textfont = dict(color = colors[i])
+                    x=x_data,
+                    y=self[label],
+                    name=label,
+                    marker_color=colors[i],
+                    marker=dict(size=size),
+                    mode="markers+text" if labels else "markers",
+                    text=self[labels] if labels else None,
+                    textposition="bottom center",
+                    textfont=dict(color=colors[i])
                 ))
 
                 if fit_line:
                     m, b = np.polyfit(x_data, self[label], 1)
                     fig.add_trace(go.Scatter(
-                        x = x_data,
-                        y = m * x_data + b,
-                        name = " ".join([label, "best fit line"]),
-                        marker_color = colors[i],
-                        hovertemplate = "".join([str(m), " * x + ", str(b)]),
-                        mode = "lines"
+                        x=x_data,
+                        y=m * x_data + b,
+                        name=" ".join([label, "best fit line"]),
+                        marker_color=colors[i],
+                        hovertemplate="".join([str(m), " * x + ", str(b)]),
+                        mode="lines"
                     ))
 
             fig.update_layout(
-                xaxis_title = column_for_x,
-                yaxis_title = y_labels[0] if len(y_labels) == 1 else None,
+                xaxis_title=column_for_x,
+                yaxis_title=y_labels[0] if len(y_labels) == 1 else None,
             )
 
         else:
-            fig = make_subplots(rows = len(y_labels), cols = 1, x_title=column_for_x)
+            fig = make_subplots(rows=len(y_labels), cols=1,
+                                x_title=column_for_x)
             for i, label in enumerate(y_labels):
                 if not group:
                     fig.append_trace(go.Scatter(
-                        x = x_data,
-                        y = self[label],
-                        name = label,
-                        marker_color = colors[i],
-                        marker = dict(size = size),
-                        mode = "markers+text" if labels else "markers",
-                        text = self[labels] if labels else None,
-                        textposition = "bottom center",
-                        textfont = dict(color = colors[i])
-                    ), row = i + 1, col = 1)
+                        x=x_data,
+                        y=self[label],
+                        name=label,
+                        marker_color=colors[i],
+                        marker=dict(size=size),
+                        mode="markers+text" if labels else "markers",
+                        text=self[labels] if labels else None,
+                        textposition="bottom center",
+                        textfont=dict(color=colors[i])
+                    ), row=i + 1, col=1)
 
                     if fit_line:
                         m, b = np.polyfit(x_data, self[label], 1)
                         fig.add_trace(go.Scatter(
-                            x = x_data,
-                            y = m * x_data + b,
-                            name = " ".join([label, "best fit line"]),
-                            marker_color = colors[i],
-                            hovertemplate = "".join([str(m), " * x + ", str(b)]),
-                            mode = "lines"
-                        ), row = i + 1, col = 1)
+                            x=x_data,
+                            y=m * x_data + b,
+                            name=" ".join([label, "best fit line"]),
+                            marker_color=colors[i],
+                            hovertemplate="".join([str(m), " * x + ", str(b)]),
+                            mode="lines"
+                        ), row=i + 1, col=1)
 
                 else:
                     grouped_y_data = []
                     for val in group_vals:
-                        grouped_y_data.append(self[label][self.column(group) == val])
+                        grouped_y_data.append(
+                            self[label][self.column(group) == val])
 
                     for group_index in range(len(group_vals)):
                         if group_index == 0:
                             fig.append_trace(go.Scatter(
-                                x = grouped_x_data[group_index],
-                                y = grouped_y_data[group_index],
-                                name = "=".join([group, str(group_vals[group_index])]),
-                                marker_color = colors[group_index],
-                                marker = dict(size = size),
-                                mode = "markers+text" if labels else "markers",
-                                showlegend = i == 0,
-                                text = self[labels] if labels else None,
-                                textposition = "bottom center",
-                                textfont = dict(color = colors[i])
-                            ), row = i + 1, col = 1)
+                                x=grouped_x_data[group_index],
+                                y=grouped_y_data[group_index],
+                                name="=".join(
+                                    [group, str(group_vals[group_index])]),
+                                marker_color=colors[group_index],
+                                marker=dict(size=size),
+                                mode="markers+text" if labels else "markers",
+                                showlegend=i == 0,
+                                text=self[labels] if labels else None,
+                                textposition="bottom center",
+                                textfont=dict(color=colors[i])
+                            ), row=i + 1, col=1)
 
                         else:
                             fig.add_trace(go.Scatter(
-                                x = grouped_x_data[group_index],
-                                y = grouped_y_data[group_index],
-                                name = "=".join([group, str(group_vals[group_index])]),
-                                marker_color = colors[group_index],
-                                marker = dict(size = size),
-                                mode = "markers+text" if labels else "markers",
-                                showlegend = i == 0,
-                                text = self[labels] if labels else None,
-                                textposition = "bottom center",
-                                textfont = dict(color = colors[i])
-                            ), row = i + 1, col = 1)
+                                x=grouped_x_data[group_index],
+                                y=grouped_y_data[group_index],
+                                name="=".join(
+                                    [group, str(group_vals[group_index])]),
+                                marker_color=colors[group_index],
+                                marker=dict(size=size),
+                                mode="markers+text" if labels else "markers",
+                                showlegend=i == 0,
+                                text=self[labels] if labels else None,
+                                textposition="bottom center",
+                                textfont=dict(color=colors[i])
+                            ), row=i + 1, col=1)
 
-                fig.update_yaxes(title_text = label, row = i + 1, col = 1)
+                fig.update_yaxes(title_text=label, row=i + 1, col=1)
 
             if height is not None:
                 plot_height = height
@@ -4044,10 +4131,10 @@ class Table(collections.abc.MutableMapping):
             return fig
 
     def scatter3d(self, column_for_x, column_for_y, select=None, overlay=True, fit_line=False,
-        group=None, labels=None, sizes=None, width=None, height=None, s=5,
-        colors=None, **vargs):
+                  group=None, labels=None, sizes=None, width=None, height=None, s=5,
+                  colors=None, **vargs):
         """Convenience wrapper for ``Table#iscatter3d``
-        
+
         Creates 3D scatterplots by calling ``Table#iscatter3d`` with the same arguments. Cannot be 
         used if interactive plots are not enabled (by calling ``Table#interactive_plots``).
 
@@ -4128,8 +4215,8 @@ class Table(collections.abc.MutableMapping):
             )
 
     def iscatter3d(self, column_for_x, column_for_y, select=None, overlay=True, fit_line=False,
-        group=None, labels=None, sizes=None, width=None, height=None, s=5,
-        colors=None, show=True, **vargs):
+                   group=None, labels=None, sizes=None, width=None, height=None, s=5,
+                   colors=None, show=True, **vargs):
         """Creates interactive 3D scatterplots using plotly.
 
         Args:
@@ -4160,7 +4247,7 @@ class Table(collections.abc.MutableMapping):
             ``colors``: (deprecated) A synonym for ``group``. Retained
                 temporarily for backwards compatibility. This argument
                 will be removed in future releases.
-            
+
             ``show`` (``bool``): whether to show the figure; if false, the figure is returned instead
 
             ``vargs`` (``dict``): additional kwargs passed to
@@ -4194,10 +4281,12 @@ class Table(collections.abc.MutableMapping):
         if go is None or make_subplots is None:
             self._import_plotly()
 
-        x_data, y_data, z_labels = self._split_column_and_labels([column_for_x, column_for_y])
+        x_data, y_data, z_labels = self._split_column_and_labels(
+            [column_for_x, column_for_y])
 
         if fit_line:
-            warnings.warn("fit_line is currently unsupported by iscatter3d", UserWarning)
+            warnings.warn(
+                "fit_line is currently unsupported by iscatter3d", UserWarning)
             fit_line = False
 
         if group is not None and colors is not None and group != colors:
@@ -4208,7 +4297,8 @@ class Table(collections.abc.MutableMapping):
             group = colors
             # TODO: In a future release, warn that this is deprecated.
             # Deprecated
-            warnings.warn("scatter(colors=x) is deprecated. Use scatter(group=x)", FutureWarning)
+            warnings.warn(
+                "scatter(colors=x) is deprecated. Use scatter(group=x)", FutureWarning)
 
         if group is not None:
             z_labels.remove(self._as_label(group))
@@ -4240,7 +4330,8 @@ class Table(collections.abc.MutableMapping):
                 grouped_y_data.append(y_data[self.column(group) == val])
             overlay = False
 
-        colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors), max(len(z_labels), len(group_vals))))
+        colors = list(itertools.islice(itertools.cycle(
+            self.plotly_chart_colors), max(len(z_labels), len(group_vals))))
 
         size = None
         if sizes is not None:
@@ -4253,87 +4344,90 @@ class Table(collections.abc.MutableMapping):
             fig = go.Figure()
 
             if width:
-                fig.update_layout(width = width)
+                fig.update_layout(width=width)
 
             if height:
-                fig.update_layout(height = height)
+                fig.update_layout(height=height)
 
             for i, label in enumerate(z_labels):
                 fig.add_trace(go.Scatter3d(
-                    x = x_data,
-                    y = y_data,
-                    z = self[label],
-                    name = label,
-                    marker_color = colors[i],
-                    marker = dict(size = size),
-                    mode = "markers+text" if labels else "markers",
-                    text = self[labels] if labels else None,
-                    textposition = "bottom center",
-                    textfont = dict(color = colors[i])
+                    x=x_data,
+                    y=y_data,
+                    z=self[label],
+                    name=label,
+                    marker_color=colors[i],
+                    marker=dict(size=size),
+                    mode="markers+text" if labels else "markers",
+                    text=self[labels] if labels else None,
+                    textposition="bottom center",
+                    textfont=dict(color=colors[i])
                 ))
 
             fig.update_layout(scene=dict(
-                xaxis_title = column_for_x,
-                yaxis_title = column_for_y,
-                zaxis_title = z_labels[0] if len(z_labels) == 1 else "",
+                xaxis_title=column_for_x,
+                yaxis_title=column_for_y,
+                zaxis_title=z_labels[0] if len(z_labels) == 1 else "",
             ))
 
         else:
             fig = make_subplots(
-                rows = len(z_labels),
-                cols = 1,
+                rows=len(z_labels),
+                cols=1,
                 specs=[[{"type": "scene"}] for _ in range(len(z_labels))]
             )
             for i, label in enumerate(z_labels):
                 if not group:
                     fig.append_trace(go.Scatter3d(
-                        x = x_data,
-                        y = y_data,
-                        z = self[label],
-                        name = label,
-                        marker_color = colors[i],
-                        marker = dict(size = size),
-                        mode = "markers+text" if labels else "markers",
-                        text = self[labels] if labels else None,
-                        textposition = "bottom center",
-                        textfont = dict(color = colors[i]),
-                    ), row = i + 1, col = 1)
+                        x=x_data,
+                        y=y_data,
+                        z=self[label],
+                        name=label,
+                        marker_color=colors[i],
+                        marker=dict(size=size),
+                        mode="markers+text" if labels else "markers",
+                        text=self[labels] if labels else None,
+                        textposition="bottom center",
+                        textfont=dict(color=colors[i]),
+                    ), row=i + 1, col=1)
 
                 else:
                     grouped_z_data = []
                     for val in group_vals:
-                        grouped_z_data.append(self[label][self.column(group) == val])
+                        grouped_z_data.append(
+                            self[label][self.column(group) == val])
 
                     for group_index in range(len(group_vals)):
                         if group_index == 0:
                             fig.append_trace(go.Scatter3d(
-                                x = grouped_x_data[group_index],
-                                y = grouped_y_data[group_index],
-                                z = grouped_z_data[group_index],
-                                name = "=".join([group, str(group_vals[group_index])]),
-                                marker_color = colors[group_index],
-                                marker = dict(size = size),
-                                mode = "markers+text" if labels else "markers",
-                                showlegend = i == 0,
-                                text = self[labels] if labels else None,
-                                textposition = "bottom center",
-                                textfont = dict(color = colors[i])
-                            ), row = i + 1, col = 1)
+                                x=grouped_x_data[group_index],
+                                y=grouped_y_data[group_index],
+                                z=grouped_z_data[group_index],
+                                name="=".join(
+                                    [group, str(group_vals[group_index])]),
+                                marker_color=colors[group_index],
+                                marker=dict(size=size),
+                                mode="markers+text" if labels else "markers",
+                                showlegend=i == 0,
+                                text=self[labels] if labels else None,
+                                textposition="bottom center",
+                                textfont=dict(color=colors[i])
+                            ), row=i + 1, col=1)
 
                         else:
                             fig.add_trace(go.Scatter3d(
-                                x = grouped_x_data[group_index],
-                                y = grouped_y_data[group_index],
-                                z = grouped_z_data[group_index],
-                                name = "=".join([group, str(group_vals[group_index])]),
-                                marker_color = colors[group_index],
-                                marker = dict(size = size),
-                                mode = "markers+text" if labels else "markers",
-                                showlegend = i == 0,
-                                text = self[labels] if labels else None,
-                                textposition = "bottom center",
-                                textfont = dict(color = colors[i])
-                            ), row = i + 1, col = 1)
+                                x=grouped_x_data[group_index],
+                                y=grouped_y_data[group_index],
+                                z=grouped_z_data[group_index],
+                                name="=".join(
+                                    [group, str(group_vals[group_index])]),
+                                marker_color=colors[group_index],
+                                marker=dict(size=size),
+                                mode="markers+text" if labels else "markers",
+                                showlegend=i == 0,
+                                text=self[labels] if labels else None,
+                                textposition="bottom center",
+                                textfont=dict(color=colors[i])
+                            ), row=i + 1, col=1)
 
             for scene, label in zip(fig.select_scenes(), z_labels):
                 scene["xaxis_title_text"] = column_for_x
@@ -4370,8 +4464,8 @@ class Table(collections.abc.MutableMapping):
         for label in y_labels:
             if not all(isinstance(x, numbers.Real) for x in self[label]):
                 raise ValueError("The column '{0}' contains non-numerical "
-                    "values. A plot cannot be drawn for this column."
-                    .format(label))
+                                 "values. A plot cannot be drawn for this column."
+                                 .format(label))
 
         n = len(y_labels)
         colors = list(itertools.islice(itertools.cycle(self.chart_colors), n))
@@ -4388,7 +4482,7 @@ class Table(collections.abc.MutableMapping):
         else:
             fig, axes = plt.subplots(n, 1, figsize=(width, height*n))
             if not isinstance(axes, collections.Iterable):
-                axes=[axes]
+                axes = [axes]
             for axis, y_label, color in zip(axes, y_labels, colors):
                 draw(axis, y_label, color)
                 axis.set_ylabel(y_label, fontsize=16)
@@ -4401,12 +4495,16 @@ class Table(collections.abc.MutableMapping):
     def _split_column_and_labels(self, column_or_label):
         """Return the specified column and labels of other columns."""
         if isinstance(column_or_label, list):
-            columns = tuple(None if col is None else self._get_column(col) for col in column_or_label)
-            labels = [label for i, label in enumerate(self.labels) if i not in column_or_label and label not in column_or_label]
+            columns = tuple(None if col is None else self._get_column(col)
+                            for col in column_or_label)
+            labels = [label for i, label in enumerate(
+                self.labels) if i not in column_or_label and label not in column_or_label]
             return columns + (labels,)
 
-        column = None if column_or_label is None else self._get_column(column_or_label)
-        labels = [label for i, label in enumerate(self.labels) if column_or_label not in (i, label)]
+        column = None if column_or_label is None else self._get_column(
+            column_or_label)
+        labels = [label for i, label in enumerate(
+            self.labels) if column_or_label not in (i, label)]
         return column, labels
 
     # Deprecated
@@ -4417,7 +4515,8 @@ class Table(collections.abc.MutableMapping):
                       "with side_by_side=True if you really want side-by-side "
                       "bars.")
         pvt_labels = np.unique(self[pivot_column_label])
-        pvt_columns = [self[value_column_label][np.where(self[pivot_column_label] == pivot)] for pivot in pvt_labels]
+        pvt_columns = [self[value_column_label][np.where(
+            self[pivot_column_label] == pivot)] for pivot in pvt_labels]
         n = len(pvt_labels)
         colors = list(itertools.islice(itertools.cycle(self.chart_colors), n))
         if overlay:
@@ -4430,9 +4529,11 @@ class Table(collections.abc.MutableMapping):
             bins = None
             for axis, label, column, color in zip(axes, pvt_labels, pvt_columns, colors):
                 if isinstance(bins, np.ndarray):
-                    avals, abins, patches = axis.hist(column, color=color, bins=bins, **vargs)
+                    avals, abins, patches = axis.hist(
+                        column, color=color, bins=bins, **vargs)
                 else:
-                    avals, abins, patches = axis.hist(column, color=color, **vargs)
+                    avals, abins, patches = axis.hist(
+                        column, color=color, **vargs)
                 axis.set_xlabel(label, fontsize=16)
                 vals.append(avals)
                 if not isinstance(bins, np.ndarray):
@@ -4442,13 +4543,12 @@ class Table(collections.abc.MutableMapping):
         t = type(self)()
         t['start'] = bins[0:-1]
         t['end'] = bins[1:]
-        for label, column in zip(pvt_labels,vals):
+        for label, column in zip(pvt_labels, vals):
             t[label] = column
 
-
     def ihist(self, *columns, overlay=True, bins=None, bin_column=None, unit=None, counts=None, group=None,
-        side_by_side=False, left_end=None, right_end=None, width=None, height=None, density=True, 
-        shade_split="split", rug=False, show=True, **vargs):
+              side_by_side=False, left_end=None, right_end=None, width=None, height=None, density=True,
+              shade_split="split", rug=False, show=True, **vargs):
         """Plots interactive histograms for each column in columns using plotly. If no column is
         specified, plot all columns.
 
@@ -4540,7 +4640,7 @@ class Table(collections.abc.MutableMapping):
 
         if counts is not None and bin_column is None:
             warnings.warn("counts arg of hist is deprecated; use bin_column")
-            bin_column=counts
+            bin_column = counts
         if columns:
             columns_included = list(columns)
             if bin_column is not None:
@@ -4560,8 +4660,8 @@ class Table(collections.abc.MutableMapping):
         for col in self:
             if col != group and any(isinstance(cell, np.flexible) for cell in self[col]):
                 raise ValueError("The column '{0}' contains non-numerical "
-                    "values. A histogram cannot be drawn for this table."
-                    .format(col))
+                                 "values. A histogram cannot be drawn for this table."
+                                 .format(col))
 
         if bin_column is not None and bins is None:
             bins = np.unique(self.column(bin_column))
@@ -4570,8 +4670,8 @@ class Table(collections.abc.MutableMapping):
             # This code is factored as a function for clarity only.
             weight_columns = [c for c in self.labels if c != bin_column]
             bin_values = self.column(bin_column)
-            values_dict = [(w[:-6] if w.endswith(' count') else w, (bin_values, self.column(w))) \
-                for w in weight_columns]
+            values_dict = [(w[:-6] if w.endswith(' count') else w, (bin_values, self.column(w)))
+                           for w in weight_columns]
             return values_dict
 
         def prepare_hist_with_group(group):
@@ -4595,7 +4695,7 @@ class Table(collections.abc.MutableMapping):
         values_dict = collections.OrderedDict(values_dict)
         n = len(values_dict)
 
-        # Define boolean indicating if there needs to be multiple sets of bins 
+        # Define boolean indicating if there needs to be multiple sets of bins
         multiple_bins = (not overlay) and n > 1
 
         data_max = max([max(arr[0]) for arr in values_dict.values()])
@@ -4608,13 +4708,14 @@ class Table(collections.abc.MutableMapping):
             for k in values_dict.keys():
                 values = values_dict[k][0]
                 if type(bins) == np.integer or type(bins) == int:
-                    bins_for_key = np.linspace(min(values), max(values), bins + 1)
+                    bins_for_key = np.linspace(
+                        min(values), max(values), bins + 1)
                 elif type(bins) in iterable_bin_types:
                     bins_for_key = np.array(bins).astype(float)
                 else:
                     bins_for_key = np.linspace(min(values), max(values), 11)
                 bins_dict[k] = bins_for_key
-            bins = bins_dict 
+            bins = bins_dict
         else:
             if type(bins) == np.integer or type(bins) == int:
                 bins = np.linspace(data_min, data_max, bins + 1)
@@ -4663,8 +4764,8 @@ class Table(collections.abc.MutableMapping):
                 widths[i] = max(bins[i + 1] - bins[i], 0)
             bin_mids = bins[:-1] + widths / 2
             return widths, bin_mids
-            
-        if multiple_bins: 
+
+        if multiple_bins:
             widths = dict()
             bin_mids = dict()
             for k in bins.keys():
@@ -4682,13 +4783,13 @@ class Table(collections.abc.MutableMapping):
                     if 0 < e < len(bins):
                         heights[e - 1] += 1
                 if density:
-                    with np.errstate(divide = "ignore", invalid = "ignore"):
+                    with np.errstate(divide="ignore", invalid="ignore"):
                         # With custom bins that have edges on the max value in dataset,
                         # could produce a truedivide warning. This line just temporarily
                         # ignores that warning.
                         heights = 100 * heights / np.dot(heights, widths)
                 return heights
-            with np.errstate(divide = "ignore", invalid = "ignore"):
+            with np.errstate(divide="ignore", invalid="ignore"):
                 heights = np.zeros(len(bins) - 1)
                 for i, left_endpoint in enumerate(vals[0]):
                     ind = np.digitize(left_endpoint, bins) - 1
@@ -4698,65 +4799,76 @@ class Table(collections.abc.MutableMapping):
         heights = dict()
         for k in values_dict.keys():
             if multiple_bins:
-                heights[k] = get_bar_heights(values_dict[k], bins[k], widths[k])
+                heights[k] = get_bar_heights(
+                    values_dict[k], bins[k], widths[k])
             else:
                 heights[k] = get_bar_heights(values_dict[k], bins, widths)
 
         # Dealing with shaded_split = "split" case where two bins of same height
         # are produced at left_end or right_end
         if shade_split == "split":
-            if multiple_bins: 
+            if multiple_bins:
                 for k in heights.keys():
                     bin_min, bin_max = bins[k][0], bins[k][-1]
                     i = -1
                     if right_end is not None and bin_min < right_end < bin_max:
                         i, bins[k] = insert_ordered(bins[k], right_end)
-                        heights[k] = np.insert(heights[k], i, heights[k][i - 1])
+                        heights[k] = np.insert(
+                            heights[k], i, heights[k][i - 1])
                     if left_end is not None and bin_min < left_end < bin_max:
                         i, bins[k] = insert_ordered(bins[k], left_end)
-                        heights[k] = np.insert(heights[k], i, heights[k][i - 1])
+                        heights[k] = np.insert(
+                            heights[k], i, heights[k][i - 1])
                     if i != -1:
-                        widths[k], bin_mids[k] = get_widths_and_midpoints(bins[k])
+                        widths[k], bin_mids[k] = get_widths_and_midpoints(
+                            bins[k])
             else:
                 bin_min, bin_max = bins[0], bins[-1]
                 shaded = False
-                if right_end is not None and bin_min < right_end < bin_max: 
+                if right_end is not None and bin_min < right_end < bin_max:
                     i, bins = insert_ordered(bins, right_end)
                     for k in heights.keys():
-                        heights[k] = np.insert(heights[k], i, heights[k][i - 1])
+                        heights[k] = np.insert(
+                            heights[k], i, heights[k][i - 1])
                     shaded = True
                 if left_end is not None and bin_min < left_end < bin_max:
                     i, bins = insert_ordered(bins, left_end)
                     for k in heights.keys():
-                        heights[k] = np.insert(heights[k], i, heights[k][i - 1])
+                        heights[k] = np.insert(
+                            heights[k], i, heights[k][i - 1])
                     shaded = True
                 if shaded:
                     widths, bin_mids = get_widths_and_midpoints(bins)
-        
+
         # Formatter function for bin_ranges, 6 significant figures
-        bin_range_formatter = lambda tup: "".join(["(", str(float("%.6g" % tup[0])), ", ", str(float("%.6g" % tup[1])), ")"])
+        def bin_range_formatter(tup): return "".join(
+            ["(", str(float("%.6g" % tup[0])), ", ", str(float("%.6g" % tup[1])), ")"])
 
         # Getting range of bins
         if multiple_bins:
             bin_ranges = dict()
             for k in bins.keys():
-                bin_ranges[k] = list(zip(bins[k], np.insert(bins[k], len(bins[k]), max(values_dict[k][0]))[1:]))
+                bin_ranges[k] = list(zip(bins[k], np.insert(
+                    bins[k], len(bins[k]), max(values_dict[k][0]))[1:]))
                 bin_ranges[k] = list(map(bin_range_formatter, bin_ranges[k]))
         else:
-            bin_ranges = list(zip(bins, np.insert(bins, len(bins), data_max)[1:]))
+            bin_ranges = list(
+                zip(bins, np.insert(bins, len(bins), data_max)[1:]))
             bin_ranges = list(map(bin_range_formatter, bin_ranges))
 
         colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors),
-            n + int(left_end is not None or right_end is not None)))
+                                       n + int(left_end is not None or right_end is not None)))
 
         def get_shaded_colors(bins, left_end, right_end, i):
-            # Handles colors for shading, returns colors and boolean indicating if anything was shaded 
-            left_end_ind = np.digitize(left_end, bins) - 1 if left_end is not None else len(bins)
-            right_end_ind = np.digitize(right_end, bins) - 1 if right_end is not None else -1
+            # Handles colors for shading, returns colors and boolean indicating if anything was shaded
+            left_end_ind = np.digitize(
+                left_end, bins) - 1 if left_end is not None else len(bins)
+            right_end_ind = np.digitize(
+                right_end, bins) - 1 if right_end is not None else -1
             if left_end is not None or right_end is not None:
-                if i >= 1: # Gold is reserved for shading
+                if i >= 1:  # Gold is reserved for shading
                     i += 1
-                shade_color = colors[1] 
+                shade_color = colors[1]
                 bin_colors = [colors[i]] * (len(bins) - 1)
                 if left_end == right_end:
                     return False, bin_colors
@@ -4785,15 +4897,18 @@ class Table(collections.abc.MutableMapping):
                 hovertemplate = "Bin Endpoints: %{customdata}<br>Bar Height: %{y}"
                 if shaded and not side_by_side:
                     shaded_mask = np.array(marker_colors) == colors[1]
-                    shaded_percentage = np.dot(shaded_mask * heights[k], widths) 
+                    shaded_percentage = np.dot(
+                        shaded_mask * heights[k], widths)
                     text = [""] * len(marker_colors)
                     shaded_template = "<br>Shaded Area Percentage: " if shade_split == "new" else "<br>Shaded Area Percentage (Approx.): "
                     unshaded_template = "<br>Unshaded Area Percentage: " if shade_split == "new" else "<br>Shaded Area Percentage (Approx.): "
                     for i, color in enumerate(marker_colors):
                         if color == colors[1]:
-                            text[i] = "".join([shaded_template, str(float("%.6g" % shaded_percentage))])
+                            text[i] = "".join([shaded_template, str(
+                                float("%.6g" % shaded_percentage))])
                         else:
-                            text[i] = "".join([unshaded_template, str(float("%.6g" % (100 - shaded_percentage)))])
+                            text[i] = "".join([unshaded_template, str(
+                                float("%.6g" % (100 - shaded_percentage)))])
             else:
                 hovertemplate = "Bin Endpoints: %{customdata}<br>Bar Height: %{y}"
                 if shaded and not side_by_side:
@@ -4805,9 +4920,11 @@ class Table(collections.abc.MutableMapping):
                     unshaded_template = "<br>Unshaded Count Sum: " if shade_split == "new" else "<br>Shaded Count Sum (Approx.): "
                     for i, color in enumerate(marker_colors):
                         if color == colors[1]:
-                            text[i] = "".join([shaded_template, str(float("%.6g" % count_sum))])
+                            text[i] = "".join(
+                                [shaded_template, str(float("%.6g" % count_sum))])
                         else:
-                            text[i] = "".join([unshaded_template, str(float("%.6g" % unshaded_count_sum))])
+                            text[i] = "".join([unshaded_template, str(
+                                float("%.6g" % unshaded_count_sum))])
             if len(text) > 0:
                 hovertemplate = "".join([hovertemplate, "%{text}"])
             else:
@@ -4821,52 +4938,54 @@ class Table(collections.abc.MutableMapping):
         if n == 1 or overlay:
             fig = go.Figure()
 
-            fig.update_layout(barmode = "overlay")
+            fig.update_layout(barmode="overlay")
 
             if width:
-                fig.update_layout(width = width)
+                fig.update_layout(width=width)
 
             if height:
-                fig.update_layout(height = height)
+                fig.update_layout(height=height)
 
             for i, k in enumerate(heights.keys()):
-                shaded, marker_colors = get_shaded_colors(bins, left_end, right_end, i)
-                text, hovertemplate = get_text_and_template(shaded, marker_colors, heights, widths)
+                shaded, marker_colors = get_shaded_colors(
+                    bins, left_end, right_end, i)
+                text, hovertemplate = get_text_and_template(
+                    shaded, marker_colors, heights, widths)
                 fig.add_trace(go.Bar(
-                    x = bin_mids,
-                    y = heights[k],
-                    marker_color = marker_colors,
-                    text = text, 
-                    customdata = bin_ranges[k] if multiple_bins else bin_ranges,
-                    width = None if side_by_side else widths,
-                    name = k,
-                    opacity = 0.7,
-                    hovertemplate = hovertemplate
+                    x=bin_mids,
+                    y=heights[k],
+                    marker_color=marker_colors,
+                    text=text,
+                    customdata=bin_ranges[k] if multiple_bins else bin_ranges,
+                    width=None if side_by_side else widths,
+                    name=k,
+                    opacity=0.7,
+                    hovertemplate=hovertemplate
                 ))
 
                 if rug:
                     fig.add_trace(go.Scatter(
-                        x = values_dict[k][0], 
-                        y = np.zeros_like(values_dict[k][0]), 
-                        mode = "markers",
-                        marker = dict(
-                            symbol = "line-ns-open",
-                            color = "black",
-                            size = 10,
-                            opacity = 1,
+                        x=values_dict[k][0],
+                        y=np.zeros_like(values_dict[k][0]),
+                        mode="markers",
+                        marker=dict(
+                            symbol="line-ns-open",
+                            color="black",
+                            size=10,
+                            opacity=1,
                         )
                     ))
 
             fig.update_yaxes(
-                title_text = "".join([
+                title_text="".join([
                     "Percent Per " if density else "Count",
                     (unit if unit else "Unit") if density else ""
                 ]),
-                automargin = True
+                automargin=True
             )
 
             fig.update_xaxes(
-                title_text = " ".join([
+                title_text=" ".join([
                     list(heights.keys())[0],
                     "".join(["(", unit, ")"]) if unit else ""
                 ]) if len(heights.keys()) == 1 else None
@@ -4877,75 +4996,77 @@ class Table(collections.abc.MutableMapping):
                 # plot the counts; however, since this function has to be passed the density param
                 # from the hist function and density = True by default, default behavior for side
                 # by side is to plot density unless density = False.
-                fig.update_layout(barmode = "group")
+                fig.update_layout(barmode="group")
 
         else:
             fig = make_subplots(
-                rows = n,
-                cols = 1,
+                rows=n,
+                cols=1,
             )
 
             if width:
-                fig.update_layout(width = width)
+                fig.update_layout(width=width)
 
-            fig.update_layout(height = height if height is not None else 400 * n, showlegend = False)
+            fig.update_layout(
+                height=height if height is not None else 400 * n, showlegend=False)
 
             for i, k in enumerate(heights.keys()):
                 trace_bins = bins[k] if multiple_bins else bins
                 trace_widths = widths[k] if multiple_bins else widths
-                shaded, marker_colors = get_shaded_colors(bins[k], left_end, right_end, i)
-                text, hovertemplate = get_text_and_template(shaded, marker_colors, heights, trace_widths)
+                shaded, marker_colors = get_shaded_colors(
+                    bins[k], left_end, right_end, i)
+                text, hovertemplate = get_text_and_template(
+                    shaded, marker_colors, heights, trace_widths)
                 fig.append_trace(go.Bar(
-                    x = bin_mids[k] if multiple_bins else bin_mids,
-                    y = heights[k],
-                    marker_color = marker_colors, 
-                    text = text,
-                    customdata = bin_ranges[k] if multiple_bins else bin_ranges,
-                    width = trace_widths,
-                    name = k,
-                    opacity = 0.7,
-                    hovertemplate = hovertemplate
-                ), row = i + 1, col = 1)
+                    x=bin_mids[k] if multiple_bins else bin_mids,
+                    y=heights[k],
+                    marker_color=marker_colors,
+                    text=text,
+                    customdata=bin_ranges[k] if multiple_bins else bin_ranges,
+                    width=trace_widths,
+                    name=k,
+                    opacity=0.7,
+                    hovertemplate=hovertemplate
+                ), row=i + 1, col=1)
 
                 if rug:
                     fig.append_trace(go.Scatter(
-                        x = values_dict[k][0], 
-                        y = np.zeros_like(values_dict[k][0]), 
-                        mode = "markers",
+                        x=values_dict[k][0],
+                        y=np.zeros_like(values_dict[k][0]),
+                        mode="markers",
                         marker_symbol="line-ns",
                         marker_color="black"
-                    ), row = i + 1, col = 1)
+                    ), row=i + 1, col=1)
                 if rug:
                     fig.append_trace(go.Scatter(
-                        x = values_dict[k][0], 
-                        y = np.zeros_like(values_dict[k][0]), 
-                        mode = "markers",
-                        marker = dict(
-                            symbol = "line-ns-open",
-                            color = "black",
-                            size = 10,
-                            opacity = 1,
+                        x=values_dict[k][0],
+                        y=np.zeros_like(values_dict[k][0]),
+                        mode="markers",
+                        marker=dict(
+                            symbol="line-ns-open",
+                            color="black",
+                            size=10,
+                            opacity=1,
                         )),
-                        row = i + 1, col = 1
+                        row=i + 1, col=1
                     )
 
-
                 fig.update_yaxes(
-                    title_text = "".join([
+                    title_text="".join([
                         "Percent Per " if density else "Count",
                         (unit if unit else "Unit") if density else ""
                     ]),
-                    automargin = True,
-                    row = i + 1,
-                    col = 1
+                    automargin=True,
+                    row=i + 1,
+                    col=1
                 )
                 fig.update_xaxes(
-                    title_text = " ".join([
+                    title_text=" ".join([
                         k,
                         "".join(["(", unit, ")"]) if unit else ""
                     ]),
-                    row = i + 1,
-                    col = 1
+                    row=i + 1,
+                    col=1
                 )
 
         fig.update_layout(**vargs)
@@ -4956,7 +5077,7 @@ class Table(collections.abc.MutableMapping):
             return fig
 
     def hist(self, *columns, overlay=True, bins=None, bin_column=None, unit=None, counts=None, group=None,
-        rug=False, side_by_side=False, left_end=None, right_end=None, width=None, height=None, **vargs):
+             rug=False, side_by_side=False, left_end=None, right_end=None, width=None, height=None, **vargs):
         """Plots one histogram for each column in columns. If no column is
         specified, plot all columns. If interactive plots are enabled via ``Table#interactive_plots``,
         redirects plotting to plotly with ``Table#ihist``.
@@ -5062,18 +5183,18 @@ class Table(collections.abc.MutableMapping):
 
             return self.ihist(
                 *columns,
-                overlay = overlay,
-                bins = bins,
-                bin_column = bin_column,
-                unit = unit,
-                counts = counts,
-                group = group,
-                side_by_side = side_by_side,
-                left_end = left_end,
-                right_end = right_end,
-                width = width,
-                height = height,
-                rug = rug,
+                overlay=overlay,
+                bins=bins,
+                bin_column=bin_column,
+                unit=unit,
+                counts=counts,
+                group=group,
+                side_by_side=side_by_side,
+                left_end=left_end,
+                right_end=right_end,
+                width=width,
+                height=height,
+                rug=rug,
                 **vargs
             )
 
@@ -5085,7 +5206,7 @@ class Table(collections.abc.MutableMapping):
 
         if counts is not None and bin_column is None:
             warnings.warn("counts arg of hist is deprecated; use bin_column")
-            bin_column=counts
+            bin_column = counts
         if columns:
             columns_included = list(columns)
             if bin_column is not None:
@@ -5105,9 +5226,8 @@ class Table(collections.abc.MutableMapping):
         for col in self:
             if col != group and any(isinstance(cell, np.flexible) for cell in self[col]):
                 raise ValueError("The column '{0}' contains non-numerical "
-                    "values. A histogram cannot be drawn for this table."
-                    .format(col))
-
+                                 "values. A histogram cannot be drawn for this table."
+                                 .format(col))
 
         if bin_column is not None and bins is None:
             bins = np.unique(self.column(bin_column))
@@ -5118,8 +5238,8 @@ class Table(collections.abc.MutableMapping):
             # This code is factored as a function for clarity only.
             weight_columns = [c for c in self.labels if c != bin_column]
             bin_values = self.column(bin_column)
-            values_dict = [(w[:-6] if w.endswith(' count') else w, (bin_values, self.column(w))) \
-                for w in weight_columns]
+            values_dict = [(w[:-6] if w.endswith(' count') else w, (bin_values, self.column(w)))
+                           for w in weight_columns]
             return values_dict
 
         def prepare_hist_with_group(group):
@@ -5146,19 +5266,21 @@ class Table(collections.abc.MutableMapping):
                 if bins is not None and bins[0]:
                     left_end = bins[0]
                 else:
-                    left_end = min([min(self.column(k)) for k in self.labels if np.issubdtype(self.column(k).dtype, np.number)])
+                    left_end = min([min(self.column(k)) for k in self.labels if np.issubdtype(
+                        self.column(k).dtype, np.number)])
             elif right_end is None:
                 if bins is not None and bins[-1]:
                     right_end = bins[-1]
                 else:
-                    right_end = max([max(self.column(k)) for k in self.labels if np.issubdtype(self.column(k).dtype, np.number)])
+                    right_end = max([max(self.column(k)) for k in self.labels if np.issubdtype(
+                        self.column(k).dtype, np.number)])
 
         def draw_hist(values_dict):
             with np.printoptions(legacy='1.13'):
                 # This code is factored as a function for clarity only.
                 n = len(values_dict)
                 colors = [rgb_color + (self.default_alpha,) for rgb_color in
-                    itertools.islice(itertools.cycle(self.chart_colors), n)]
+                          itertools.islice(itertools.cycle(self.chart_colors), n)]
                 hist_names = list(values_dict.keys())
                 values = [v[0] for v in values_dict.values()]
                 weights = [v[1] for v in values_dict.values() if len(v) > 1]
@@ -5166,10 +5288,12 @@ class Table(collections.abc.MutableMapping):
                     raise ValueError("Weights were provided for some columns, but not "
                                      " all, and that's not supported.")
                 if rug and overlay and n > 1:
-                    warnings.warn("Cannot plot overlaid rug plots; rug=True ignored", UserWarning)
+                    warnings.warn(
+                        "Cannot plot overlaid rug plots; rug=True ignored", UserWarning)
                 if vargs['density']:
                     y_label = 'Percent per ' + (unit if unit else 'unit')
-                    percentage = plt.FuncFormatter(lambda x, _: "{:g}".format(100*x))
+                    percentage = plt.FuncFormatter(
+                        lambda x, _: "{:g}".format(100*x))
                 else:
                     y_label = 'Count'
 
@@ -5193,9 +5317,11 @@ class Table(collections.abc.MutableMapping):
                         axis.yaxis.set_major_formatter(percentage)
                     x_unit = ' (' + unit + ')' if unit else ''
                     if group is not None and len(self.labels) == 2:
-                        #There's a grouping in place but we're only plotting one column's values
-                        label_not_grouped = [l for l in self.labels if l != group][0]
-                        axis.set_xlabel(label_not_grouped + x_unit, fontsize=16)
+                        # There's a grouping in place but we're only plotting one column's values
+                        label_not_grouped = [
+                            l for l in self.labels if l != group][0]
+                        axis.set_xlabel(label_not_grouped +
+                                        x_unit, fontsize=16)
                     else:
                         axis.set_xlabel(x_unit, fontsize=16)
                     plt.legend(hist_names, loc=2, bbox_to_anchor=(1.05, 1))
@@ -5217,9 +5343,11 @@ class Table(collections.abc.MutableMapping):
                         if len(weights) == n:
                             vargs['weights'] = weights[i]
                         axis.set_xlabel(hist_name + x_unit, fontsize=16)
-                        heights, bins, patches = axis.hist(values_for_hist, color=color, **vargs)
+                        heights, bins, patches = axis.hist(
+                            values_for_hist, color=color, **vargs)
                         if left_end is not None and right_end is not None:
-                            x_shade, height_shade, width_shade = _compute_shading(heights, bins.copy(), left_end, right_end)
+                            x_shade, height_shade, width_shade = _compute_shading(
+                                heights, bins.copy(), left_end, right_end)
                             axis.bar(x_shade, height_shade, width=width_shade,
                                      color=self.chart_colors[1], align="edge")
                         _vertical_x(axis)
@@ -5326,7 +5454,6 @@ class Table(collections.abc.MutableMapping):
                                  "make sure to set normed=True")
         return self.hist(*columns, overlay=overlay, bins=bins, bin_column=bin_column, group=group, side_by_side=side_by_side, width=width, height=height, **vargs)
 
-
     def boxplot(self, **vargs):
         """Plots a boxplot for the table.
 
@@ -5366,14 +5493,13 @@ class Table(collections.abc.MutableMapping):
         for col in self:
             if any(isinstance(cell, np.flexible) for cell in self[col]):
                 raise ValueError("The column '{0}' contains non-numerical "
-                    "values. A histogram cannot be drawn for this table."
-                    .format(col))
+                                 "values. A histogram cannot be drawn for this table."
+                                 .format(col))
 
         columns = self._columns.copy()
         vargs['labels'] = columns.keys()
         values = list(columns.values())
         plt.boxplot(values, **vargs)
-
 
     ###########
     # Support #
@@ -5385,8 +5511,9 @@ class Table(collections.abc.MutableMapping):
         def __getattr__(self, column_label):
             try:
                 return self[self._table.column_index(column_label)]
-            except ValueError: #adding support for NumPy v1.18.0 as per changes in https://github.com/numpy/numpy/pull/14745
-                raise AttributeError("Attribute ({0}) not found in row.".format(column_label))
+            except ValueError:  # adding support for NumPy v1.18.0 as per changes in https://github.com/numpy/numpy/pull/14745
+                raise AttributeError(
+                    "Attribute ({0}) not found in row.".format(column_label))
 
         def item(self, index_or_label):
             """Return the item at an index or label."""
@@ -5405,6 +5532,7 @@ class Table(collections.abc.MutableMapping):
 
     class Rows(collections.abc.Sequence):
         """An iterable view over the rows in a table."""
+
         def __init__(self, table):
             self._table = table
             self._labels = None
@@ -5416,7 +5544,8 @@ class Table(collections.abc.MutableMapping):
             labels = tuple(self._table.labels)
             if labels != self._labels:
                 self._labels = labels
-                self._row = type('Row', (Table.Row, ), dict(_table=self._table))
+                self._row = type('Row', (Table.Row, ),
+                                 dict(_table=self._table))
             return self._row(c[i] for c in self._table._columns.values())
 
         def __len__(self):
@@ -5439,22 +5568,25 @@ def _is_array_integer(arr):
     """
     return issubclass(arr.dtype.type, np.integer) or np.allclose(arr, np.round(arr))
 
+
 def _zero_on_type_error(column_fn):
     """Wrap a function on an np.ndarray to return 0 on a type error."""
     if not column_fn:
         return column_fn
     if not callable(column_fn):
         raise TypeError('column functions must be callable')
+
     @functools.wraps(column_fn)
     def wrapped(column):
         try:
             return column_fn(column)
         except TypeError:
             if isinstance(column, np.ndarray):
-                return column.dtype.type() # A typed zero value
+                return column.dtype.type()  # A typed zero value
             else:
                 raise
     return wrapped
+
 
 def _compute_shading(heights, bins, left_end, right_end):
     shade_start_idx = np.max(np.where(bins <= left_end)[0], initial=0)
@@ -5510,6 +5642,7 @@ def _as_labels(column_or_columns):
     else:
         return column_or_columns
 
+
 def _varargs_labels_as_list(label_list):
     """Return a list of labels for a list of labels or singleton list of list
     of labels."""
@@ -5523,6 +5656,7 @@ def _varargs_labels_as_list(label_list):
     else:
         raise ValueError("Labels {} contain more than list.".format(label_list),
                          "Pass just one list of labels.")
+
 
 def _assert_same(values):
     """Assert that all values are identical and return the unique value."""
@@ -5551,6 +5685,7 @@ def _is_non_string_iterable(value):
         return True
     return False
 
+
 def _vertical_x(axis, ticks=None, max_width=5):
     """Switch labels to vertical if they are long."""
     if ticks is None:
@@ -5563,6 +5698,7 @@ def _vertical_x(axis, ticks=None, max_width=5):
 ###################
 # Slicing support #
 ###################
+
 
 class _RowSelector(metaclass=abc.ABCMeta):
     def __init__(self, table):
@@ -5732,6 +5868,7 @@ class _RowExcluder(_RowSelector):
         rows = itertools.chain(self._table.rows[:row_slice.start or 0],
                                self._table.rows[row_slice.stop:])
         return self._table._with_columns(zip(*rows))
+
 
 # For Sphinx: grab the docstrings from `Taker.__getitem__` and `Withouter.__getitem__`
 Table.take.__doc__ = _RowTaker.__getitem__.__doc__
