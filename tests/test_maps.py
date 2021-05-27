@@ -1,6 +1,7 @@
 import doctest
 import json
 import pytest
+from collections import OrderedDict
 
 import datascience as ds
 from datascience import maps
@@ -54,6 +55,16 @@ def test_map_marker_and_region(states):
     ds.Map([region]).show()
     ds.Map([marker, region]).show()
 
+def test_map_property_features(states):
+
+    feature_list = states.features
+    assert isinstance(feature_list, list)
+    assert isinstance(feature_list[0], OrderedDict)
+    assert feature_list[0]['id'] == 'AL'
+    assert feature_list[0]['name'] == 'Alabama'
+    assert isinstance(feature_list[0]['feature'], maps.Region)
+    tt = [list(i.keys()) == ['id', 'feature', 'name'] for i in feature_list]
+    assert all(tt)
 
 ##########
 # ds.Marker #
