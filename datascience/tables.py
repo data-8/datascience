@@ -135,12 +135,13 @@ class Table(collections.abc.MutableMapping):
 
     @classmethod
     def read_table(cls, filepath_or_buffer, *args, **vargs):
-        """Read a table from a file or web address.
-        
+        """read_table() functions helps in reading a table format dataset.
+           CSVs from URLs are also valid inputs to read_table():
         Args:
-            filepath_or_buffer -- string or file handle / StringIO; The string
-                              could be a URL. Valid URL schemes include http,
-                              ftp, s3, and file.
+          Parameters:
+                    filepath_or_bufferstr, path object or file-like object
+                    Any valid string path is acceptable. The string could be a URL. 
+                    Valid URL schemes include http, ftp, s3 and file. For file URLs, a host is expected.
         
         Returns:
             a table read from argument
