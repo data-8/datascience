@@ -2853,7 +2853,53 @@ class Table(collections.abc.MutableMapping):
         return '\n'.join([line.rstrip() for line in lines])
 
     def as_html(self, max_rows=0):
-        """Format table as HTML."""
+        """Format tables as HTML
+
+        Args:
+            max_rows (int, optional): The maximum number of rows to be present in the converted string of table.Defaults to 0.
+
+        Returns:
+            [string]: The table is converted into an HTML table of "dataframe" class. The 4 space indentation is managed internally. 
+            Few examples of the as_html() method are as follows: 
+            1.
+            >>> table = Table().with_columns({'name': ['abc', 'xyz', 'uvw'], 'age': [12,14,20],'height': [5.5,6.0,5.9],})
+
+            >>> table
+            name | age  | height
+            abc  | 12   | 5.5
+            xyz  | 14   | 6
+            uvw  | 20   | 5.9
+
+            >>> table_ashtml = table.as_html()
+            >>> table_ashtml
+            <table border="1" class="dataframe">
+                <thead>
+                    <tr>
+                        <th>name</th>
+                        <th>age</th>
+                        <th>height</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>abc</td>
+                        <td>12</td>
+                        <td>5.5</td>
+                    </tr>
+                    <tr>
+                        <td>xyz</td>
+                        <td>14</td>
+                        <td>6</td>
+                    </tr>
+                    <tr>
+                        <td>uvw</td>
+                        <td>20</td>
+                        <td>5.9</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        """
         if not max_rows or max_rows > self.num_rows:
             max_rows = self.num_rows
         omitted = max(0, self.num_rows - max_rows)
@@ -2882,8 +2928,16 @@ class Table(collections.abc.MutableMapping):
         return '\n'.join(4 * indent * ' ' + text for indent, text in lines)
 
     def index_by(self, column_or_label):
-        """Return a dict keyed by values in a column that contains lists of
-        rows corresponding to each value.
+        # """Return a dict keyed by values in a column that contains lists of
+        # rows corresponding to each value.
+        # """
+        """[summary]
+
+        Args:
+            column_or_label ([type]): [description]
+
+        Returns:
+            [type]: [description]
         """
         column = self._get_column(column_or_label)
         index = {}

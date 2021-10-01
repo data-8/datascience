@@ -47,7 +47,10 @@ class _FoliumWrapper(abc.ABC):
         return self._inline_map(self._folium_map, self._width, self._height)
 
     def show(self):
-        """Publish HTML."""
+        """
+        Display map in Jupyter notebook, after automatically generating an HTML.
+        e.g : Map(tiles='Stamen Toner').show()
+        """
         IPython.display.display(IPython.display.HTML(self.as_html()))
 
     def _repr_html_(self):
