@@ -17,6 +17,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 * Includes geocoding function `get_coordinates` that assigns latitude and longitude coordinates for U.S. locations by city, state, county, and zip code
 * Updated Maps.ipynb notebook to showcase new changes made to mapping
 * Data 8-friendly `datascience` reference notebook added to documentation using nbsphinx
+* Added documentations for the show() method in maps.py and as_html() method in tables.py  
 
 ### v0.16.2
 * Fix bug so Table.sort(descending=True) no longer reverses order of ties.
