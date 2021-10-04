@@ -653,7 +653,7 @@ class Marker(_MapFeature):
 
     @classmethod
     def map_table(cls, table, clustered_marker=False, include_color_scale_outliers=True, radius_in_meters=False, **kwargs):
-        """Return markers from the colums of a table.
+        """Return markers from the columns of a table.
         
         The first two columns of the table must be the latitudes and longitudes
         (in that order), followed by 'labels', 'colors', 'color_scale', 'radius_scale', 'cluster_by', 'area_scale', and/or 'areas' (if applicable)

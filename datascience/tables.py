@@ -27,7 +27,7 @@ import datascience.util as _util
 from datascience.util import make_array
 import datascience.predicates as _predicates
 
-# intitializing go and make_subplots as globals set to None
+# initializing go and make_subplots as globals set to None
 go, make_subplots = None, None
 
 _INTERACTIVE_PLOTS = False
@@ -243,7 +243,7 @@ class Table(collections.abc.MutableMapping):
 
            Args:
  
-               arr -- A structured numpy array
+               arr -- A structured NumPy array
 
            Returns:
 
@@ -507,7 +507,7 @@ class Table(collections.abc.MutableMapping):
         Raises:
             ``ValueError`` -- if  ``column_label`` is not an existing
                 column in the table.
-            ``TypeError`` -- if insufficent number of ``column_label`` passed
+            ``TypeError`` -- if insufficient number of ``column_label`` passed
                 to ``fn``.
 
         Returns:
@@ -1169,7 +1169,7 @@ class Table(collections.abc.MutableMapping):
         2    | ['foo', 'bar']
         3    | ['foo']
 
-        By contrast, when a shallow copy is performed, a new object is contructed and
+        By contrast, when a shallow copy is performed, a new object is constructed and
         references are inserted into it to the objects found in the original. Note in
         the following example how the update to original_table  occurs in both
         table_shallow_copy and original_table because table_shallow_copy contains
@@ -1499,7 +1499,7 @@ class Table(collections.abc.MutableMapping):
                 # 1. Reverse the original array.
                 # 2. Sort the array in ascending order.
                 # 3. Invert the array indices via: len - 1 - indice.
-                # 4. Reverse the array so that it is in decending order.
+                # 4. Reverse the array so that it is in descending order.
                 column = column[::-1]
                 row_numbers = np.argsort(column, axis=0, kind='mergesort')
                 row_numbers = len(row_numbers) - 1 - row_numbers
