@@ -3674,11 +3674,11 @@ class Table(collections.abc.MutableMapping):
         chairs    | 6     | 10
         tables    | 1     | 20
         desks     | 2     | 30
-        >>> furniture_table.barh('Furniture') # doctest: +SKIP
+        >>> t.barh('Furniture') # doctest: +SKIP
         <bar graph with furniture as categories and bars for count and price>
-        >>> furniture_table.barh('Furniture', 'Price') # doctest: +SKIP
+        >>> t.barh('Furniture', 'Price') # doctest: +SKIP
         <bar graph with furniture as categories and bars for price>
-        >>> furniture_table.barh('Furniture', make_array(1, 2)) # doctest: +SKIP
+        >>> t.barh('Furniture', make_array(1, 2)) # doctest: +SKIP
         <bar graph with furniture as categories and bars for count and price>
         """
         global _INTERACTIVE_PLOTS
