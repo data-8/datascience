@@ -10,16 +10,17 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
-    - name: Set up Python Version
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.6
-        
-    - name: Install dependencies
     # Note that miniconda is installed by default in environments
+    - name: Set up conda environment
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        activate-environment: datascience
+        environment-file: linux_environment.yml
+        python-version: 3.6
+        auto-activate-base: true
+        
+    - name: Setup python
       run: | 
-        conda env update -f linux_environment.yml
-        source activate datascience
         python3 setup.py install
         
     - name: Run Tests
