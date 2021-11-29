@@ -1,0 +1,4 @@
+pytest
+coverage
+coveralls
+bokeh
