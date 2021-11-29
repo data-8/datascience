@@ -19,9 +19,16 @@ jobs:
         python-version: 3.6
         auto-activate-base: true
         
-    - name: Setup python
+    # TODO: Because we are testing, installing some of these requirements
+    # manually. Will fix this when it works. 
+    - name: Setup python requirements
       run: | 
-        python3 setup.py install
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest
+        pip install coverage
+        pip install coveralls
+        pip install bokeh
         
     - name: Run Tests
       run: python3 setup.py test
