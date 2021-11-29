@@ -2792,9 +2792,10 @@ class Table(collections.abc.MutableMapping):
                 The table is just converted to a string with columns seperated by the seperator(argument- default(' | ')) and rows seperated by '\\n'
                 
                 Few examples of the as_text() method are as follows: 
-                1.
-                >>> table = Table().with_columns({'name': ['abc', 'xyz', 'uvw'], 'age': [12,14,20],'height': [5.5,6.0,5.9],})
 
+                1.
+
+                >>> table = Table().with_columns({'name': ['abc', 'xyz', 'uvw'], 'age': [12,14,20],'height': [5.5,6.0,5.9],})
                 >>> table
                 name | age  | height
                 abc  | 12   | 5.5
@@ -2802,7 +2803,6 @@ class Table(collections.abc.MutableMapping):
                 uvw  | 20   | 5.9
 
                 >>> table_astext = table.as_text()
-
                 >>> table_astext
                 'name | age  | height\\nabc  | 12   | 5.5\\nxyz  | 14   | 6\\nuvw  | 20   | 5.9'
 
@@ -2813,8 +2813,8 @@ class Table(collections.abc.MutableMapping):
                 <class 'str'>
                  
                 2.
-                >>> sizes = Table(['size', 'count']).with_rows([     ['small', 50],     ['medium', 100],     ['big', 50], ])
 
+                >>> sizes = Table(['size', 'count']).with_rows([     ['small', 50],     ['medium', 100],     ['big', 50], ])
                 >>> sizes
                 size   | count
                 small  | 50
@@ -2822,19 +2822,18 @@ class Table(collections.abc.MutableMapping):
                 big    | 50
 
                 >>> sizes_astext = sizes.as_text()
-
                 >>> sizes_astext
                 'size   | count\\nsmall  | 50\\nmedium | 100\\nbig    | 50'
 
                 3. 
-                >>> sizes_astext = sizes.as_text(1)
 
+                >>> sizes_astext = sizes.as_text(1)
                 >>> sizes_astext
                 'size  | count\\nsmall | 50\\n... (2 rows omitted)'
 
                 4.
-                >>> sizes_astext = sizes.as_text(2, ' - ')
 
+                >>> sizes_astext = sizes.as_text(2, ' - ')
                 >>> sizes_astext
                 'size   - count\\nsmall  - 50\\nmedium - 100\\n... (1 rows omitted)'
 
@@ -2853,7 +2852,58 @@ class Table(collections.abc.MutableMapping):
         return '\n'.join([line.rstrip() for line in lines])
 
     def as_html(self, max_rows=0):
-        """Format table as HTML."""
+        """Format table as HTML
+            
+            Args:   
+                max_rows(int) The maximum number of rows to be present in the converted string of table. (Optional Argument)
+                
+            Returns:
+                String representing the HTML form of the table
+                
+                The table is converted to the html format of the table which can be used on a website to represent the table.
+                
+                Few examples of the as_html() method are as follows. 
+                - These examples seem difficult for us to observe and understand since they are in html format, 
+                they are useful when you want to display the table on webpages
+                
+                1. Simple table being converted to HTML
+
+                >>> table = Table().with_columns({'name': ['abc', 'xyz', 'uvw'], 'age': [12,14,20],'height': [5.5,6.0,5.9],})
+
+                >>> table
+                name | age  | height
+                abc  | 12   | 5.5
+                xyz  | 14   | 6
+                uvw  | 20   | 5.9
+
+                >>> table_as_html = table.as_html()
+                <table border="1" class="dataframe">\\n    <thead>\\n        <tr>\\n            
+                <th>name</th> <th>age</th> <th>height</th>\\n        
+                </tr>\\n    </thead>\\n    <tbody>\\n        
+                <tr>\\n            <td>abc </td> <td>12  </td> <td>5.5   </td>\\n        </tr>\\n        
+                <tr>\\n            <td>xyz </td> <td>14  </td> <td>6     </td>\\n        </tr>\\n        
+                <tr>\\n            <td>uvw </td> <td>20  </td> <td>5.9   </td>\\n        </tr>\\n    
+                </tbody>\\n</table>
+
+                2. Simple table being converted to HTML with max_rows passed in
+
+                >>> table
+                name | age  | height
+                abc  | 12   | 5.5
+                xyz  | 14   | 6
+                uvw  | 20   | 5.9
+
+                >>> table_as_html_2 = table.as_html(max_rows = 2)
+                >>> table_as_html_2
+                '<table border="1" class="dataframe">\\n    <thead>\\n        <tr>\\n            
+                <th>name</th> <th>age</th> <th>height</th>\\n        
+                </tr>\\n    </thead>\\n    <tbody>\\n        
+                <tr>\\n            <td>abc </td> <td>12  </td> <td>5.5   </td>\\n        </tr>\\n        
+                <tr>\\n            <td>xyz </td> <td>14  </td> <td>6     </td>\\n        </tr>\\n    
+                </tbody>\\n</table>\\n<p>... (1 rows omitted)</p>'
+
+
+        """
         if not max_rows or max_rows > self.num_rows:
             max_rows = self.num_rows
         omitted = max(0, self.num_rows - max_rows)
