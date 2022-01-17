@@ -24,7 +24,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install -r requirements-tests.txt
-        python3 setup.py install
         
     - name: Run Tests
       run: python3 setup.py test
