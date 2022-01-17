@@ -54,7 +54,7 @@ dependencies:
   - nbsphinx
   - nbval
   - plotly
-  - pygments
+  - pygments==2.4.1
   - snowballstemmer
   - sphinx
   - sphinx-rtd-theme
