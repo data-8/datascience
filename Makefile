@@ -17,7 +17,7 @@ install:
 	python setup.py develop
 
 test:
-	python setup.py test
+	python3 tests.py
 
 docs:
 	cd $(DOCS_DIR) ; make html

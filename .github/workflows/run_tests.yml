@@ -26,7 +26,7 @@ jobs:
         pip install -r requirements-tests.txt
         
     - name: Run Tests
-      run: python3 tests.py
+      run: make test
 
     - name: Coveralls
       uses: coverallsapp/github-action@master
