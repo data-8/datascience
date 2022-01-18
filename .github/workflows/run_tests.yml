@@ -21,15 +21,17 @@ jobs:
         
     - name: Setup python requirements
       run: |
-        conda info --envs
+        conda activate datascience
         python -m pip install --upgrade pip
         python -m pip --version
         python -m pip install -r requirements.txt
         python -m pip install -r requirements-tests.txt
-        sudo `which python` setup.py develop
+        sudo `whchpython` setup.py develop
         
     - name: Run Tests
-      run: make test
+      run: |
+      conda activate datascience
+      make test
 
     - name: Coveralls
       uses: coverallsapp/github-action@master
