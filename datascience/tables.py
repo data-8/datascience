@@ -4626,7 +4626,7 @@ class Table(collections.abc.MutableMapping):
             type(self).plots.append(axis)
         else:
             fig, axes = plt.subplots(n, 1, figsize=(width, height*n))
-            if not isinstance(axes, collections.Iterable):
+            if not isinstance(axes, collections.abc.Iterable):
                 axes=[axes]
             for axis, y_label, color in zip(axes, y_labels, colors):
                 draw(axis, y_label, color)
