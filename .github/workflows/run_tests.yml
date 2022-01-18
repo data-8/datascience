@@ -25,7 +25,7 @@ jobs:
         python -m pip --version
         python -m pip install -r requirements.txt
         python -m pip install -r requirements-tests.txt
-        sudo python setup.py develop
+        sudo `which python` setup.py develop
         
     - name: Run Tests
       run: make test
