@@ -18,10 +18,15 @@ jobs:
         environment-file: linux_environment.yml
         python-version: 3.6
         auto-activate-base: true
+
+    - name: Add conda to system path
+      run: |
+        # $CONDA is an environment variable pointing to the root of the miniconda directory
+        echo $CONDA/bin >> $GITHUB_PATH
         
     - name: Setup python requirements
       run: |
-        source activate datascience
+        conda activate datascience
         python -m pip install --upgrade pip
         python -m pip --version
         python -m pip install -r requirements.txt
@@ -30,7 +35,7 @@ jobs:
         
     - name: Run Tests
       run: |
-        source activate datascience
+        conda activate datascience
         make test
 
     - name: Coveralls
