@@ -4,4 +4,4 @@ coveralls
 bokeh
 nbval
 pytest-cov
-pygments==2.4.1
+pygments
