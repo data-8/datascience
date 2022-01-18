@@ -47,5 +47,4 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    # - name: Coveralls
-    #   uses: AndreMiras/coveralls-python-action@develop
+    # TODO: Add Docs deployment to run
