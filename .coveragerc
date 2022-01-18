@@ -3,7 +3,6 @@ branch = True
 include = datascience/*
 omit =
     *__init__.py
-relative_files = True
 
 [report]
 # Regexes for lines to exclude from consideration
