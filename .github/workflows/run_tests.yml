@@ -40,5 +40,10 @@ jobs:
         source activate datascience
         make test
 
-    - name: Coveralls
-      uses: AndreMiras/coveralls-python-action@develop
+    - name: Upload coverage data to Coveralls
+      run: coveralls
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    # - name: Coveralls
+    #   uses: AndreMiras/coveralls-python-action@develop
