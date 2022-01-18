@@ -21,10 +21,10 @@ jobs:
         
     - name: Setup python requirements
       run: |
-        python3 -m pip install --upgrade pip
-        pip --version
-        pip install -r requirements.txt
-        pip install -r requirements-tests.txt
+        python -m pip install --upgrade pip
+        python -m pip --version
+        python -m pip install -r requirements.txt
+        python -m pip install -r requirements-tests.txt
         make install
         
     - name: Run Tests
