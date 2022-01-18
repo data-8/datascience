@@ -23,6 +23,7 @@ jobs:
       run: |
         # $CONDA is an environment variable pointing to the root of the miniconda directory
         echo $CONDA/bin >> $GITHUB_PATH
+        export PATH="$CONDA/bin:$PATH"
         conda init bash
         
     - name: Setup python requirements
@@ -32,7 +33,7 @@ jobs:
         python -m pip --version
         python -m pip install -r requirements.txt
         python -m pip install -r requirements-tests.txt
-        sudo `whchpython` setup.py develop
+        python setup.py develop
         
     - name: Run Tests
       run: |
