@@ -21,7 +21,7 @@ jobs:
         
     - name: Setup python requirements
       run: |
-        conda activate datascience
+        source activate datascience
         python -m pip install --upgrade pip
         python -m pip --version
         python -m pip install -r requirements.txt
@@ -30,7 +30,7 @@ jobs:
         
     - name: Run Tests
       run: |
-        conda activate datascience
+        source activate datascience
         make test
 
     - name: Coveralls
