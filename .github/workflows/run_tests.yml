@@ -41,7 +41,9 @@ jobs:
         make test
 
     - name: Upload coverage data to Coveralls
-      run: coveralls
+      run: |
+        source activate datascience
+        coveralls
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
