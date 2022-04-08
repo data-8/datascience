@@ -1,0 +1,50 @@
+name: Running Test Suite on Pushes
+
+# We run the test suite on every push
+on: [push]
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    # Note that miniconda is installed by default in environments
+    - name: Set up conda environment
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        activate-environment: datascience
+        environment-file: linux_environment.yml
+        python-version: 3.6
+        auto-activate-base: true
+
+    - name: Add conda to system path
+      run: |
+        # $CONDA is an environment variable pointing to the root of the miniconda directory
+        echo $CONDA/bin >> $GITHUB_PATH
+        export PATH="$CONDA/bin:$PATH"
+        conda init bash
+        
+    - name: Setup python requirements
+      run: |
+        source activate datascience
+        python -m pip install --upgrade pip
+        python -m pip --version
+        python -m pip install -r requirements.txt
+        python -m pip install -r requirements-tests.txt
+        python setup.py develop
+        
+    - name: Run Tests
+      run: |
+        source activate datascience
+        make test
+
+    - name: Upload coverage data to Coveralls
+      run: |
+        source activate datascience
+        coveralls --service=github
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    # TODO: Add Docs deployment to run

@@ -1,0 +1,7 @@
+pytest==6.0.1
+coverage
+coveralls
+bokeh
+nbval
+pytest-cov
+pygments
