@@ -1,5 +1,4 @@
 folium>=0.9.1
-sphinx
 setuptools
 matplotlib>=3.0.0
 pandas
@@ -8,4 +7,3 @@ numpy
 ipython
 plotly
 branca
-nbsphinx
