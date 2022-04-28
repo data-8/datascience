@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.17.2
+
+* Remove test requirements from being installed all the time.
+  [Issue 523](https://github.com/data-8/datascience/issues/523)
+
 ### v0.17.1
 
 * Remove sphinx & nbsphinx from requirements.txt, as it is not needed during runtime
