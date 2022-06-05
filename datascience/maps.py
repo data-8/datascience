@@ -806,6 +806,9 @@ class Circle(Marker):
             attrs['fill_color'] = attrs.pop('color')
         if 'line_color' in attrs:
             attrs['color'] = attrs.pop('line_color')
+        else:
+            if 'fill_color' in attrs:
+                attrs['color'] = attrs['fill_color']
         return attrs
 
     def draw_on(self, folium_map, radius_in_meters=False):
