@@ -2877,13 +2877,14 @@ class Table(collections.abc.MutableMapping):
                 uvw  | 20   | 5.9
 
                 >>> table_as_html = table.as_html()
-                <table border="1" class="dataframe">\\n    <thead>\\n        <tr>\\n            
+                >>> table_as_html
+                '<table border="1" class="dataframe">\\n    <thead>\\n        <tr>\\n            
                 <th>name</th> <th>age</th> <th>height</th>\\n        
                 </tr>\\n    </thead>\\n    <tbody>\\n        
                 <tr>\\n            <td>abc </td> <td>12  </td> <td>5.5   </td>\\n        </tr>\\n        
                 <tr>\\n            <td>xyz </td> <td>14  </td> <td>6     </td>\\n        </tr>\\n        
                 <tr>\\n            <td>uvw </td> <td>20  </td> <td>5.9   </td>\\n        </tr>\\n    
-                </tbody>\\n</table>
+                </tbody>\\n</table>'
 
                 2. Simple table being converted to HTML with max_rows passed in
 
