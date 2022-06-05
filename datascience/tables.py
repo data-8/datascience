@@ -5439,6 +5439,7 @@ class Table(collections.abc.MutableMapping):
                         axis.set_xlabel(x_unit, fontsize=16)
                     plt.legend(hist_names, loc=2, bbox_to_anchor=(1.05, 1))
                     type(self).plots.append(axis)
+                    plt.show()
                 else:
                     _, axes = plt.subplots(n, 1, figsize=(width, height * n))
                     if 'bins' in vargs:
@@ -5466,6 +5467,7 @@ class Table(collections.abc.MutableMapping):
                             axis.scatter(values_for_hist, np.zeros_like(values_for_hist), marker="|",
                                          color="black", s=100, zorder=10)
                         type(self).plots.append(axis)
+                    plt.show()
 
         draw_hist(values_dict)
 
