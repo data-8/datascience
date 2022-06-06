@@ -16,7 +16,7 @@ jobs:
       with:
         activate-environment: datascience
         environment-file: linux_environment.yml
-        python-version: 3.6
+        python-version: '3.10'
         auto-activate-base: true
 
     - name: Add conda to system path
