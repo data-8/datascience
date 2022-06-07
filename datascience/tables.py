@@ -996,7 +996,7 @@ class Table(collections.abc.MutableMapping):
             # Coerce a single value to a sequence
             if not _is_non_string_iterable(values):
                 values = [values] * max(self.num_rows, 1)
-            values = np.array(tuple(values))
+            values = np.array(tuple(values), dtype=object)
 
         if self.num_rows != 0 and len(values) != self.num_rows:
             raise ValueError('Column length mismatch. New column does not have '
