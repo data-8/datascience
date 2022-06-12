@@ -53,6 +53,8 @@ jobs:
       run: |
         source activate datascience
         python -m pip install -r docs/requirements.txt
+        python -m pip uninstall pandoc
+        conda install pandoc
         git config --global user.name "GitHub Actions"
         git config --global user.email "github_actions@github.com"
         echo "-- building docs --"
