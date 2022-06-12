@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with: 
         token: ${{ secrets.PAT }}
 
@@ -57,8 +57,8 @@ jobs:
         python -m pip install -r docs/requirements.txt
         python -m pip uninstall pandoc
         conda install pandoc
-        git config --global user.name "GitHub Actions"
-        git config --global user.email "github_actions@github.com"
+        git config --global user.name github-actions
+        git config --global user.email github-actions@github.com
         echo "-- building docs --"
         make docs
         echo "-- pushing docs --"
