@@ -5804,7 +5804,7 @@ def _vertical_x(axis, ticks=None, max_width=5):
     if ticks is None:
         ticks = axis.get_xticks()
     if (np.array(ticks) == np.rint(ticks)).all():
-        ticks = np.rint(ticks).astype(np.int)
+        ticks = np.rint(ticks).astype(np.int64)
     if max([len(str(tick)) for tick in ticks]) > max_width:
         axis.set_xticklabels(ticks, rotation='vertical')
 
