@@ -53,6 +53,9 @@ jobs:
       run: |
         git config --global user.name "GitHub Actions"
         git config --global user.email "github_actions@github.com"
+        echo "-- building docs --"
+        make docs
+        echo "-- pushing docs --"
         rm -rf doc_build
         git clone --quiet --branch=gh-pages $GITHUB_SERVER_URL/$GITHUB_REPOSITORY doc_build
         cp -r docs/_build/html/* doc_build
