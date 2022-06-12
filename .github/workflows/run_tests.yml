@@ -9,6 +9,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with: 
+        token: ${{ secrets.PAT }}
 
     # Note that miniconda is installed by default in environments
     - name: Set up conda environment
