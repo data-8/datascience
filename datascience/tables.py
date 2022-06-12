@@ -32,6 +32,10 @@ go, make_subplots = None, None
 
 _INTERACTIVE_PLOTS = False
 
+# Set numpy printoptions to legacy to get around error terms, as described in
+# https://github.com/data-8/datascience/issues/491
+np.set_printoptions(legacy='1.13')
+
 class Table(collections.abc.MutableMapping):
     """A sequence of string-labeled columns."""
     plots = collections.deque(maxlen=10)
@@ -2877,13 +2881,14 @@ class Table(collections.abc.MutableMapping):
                 uvw  | 20   | 5.9
 
                 >>> table_as_html = table.as_html()
-                <table border="1" class="dataframe">\\n    <thead>\\n        <tr>\\n            
+                >>> table_as_html
+                '<table border="1" class="dataframe">\\n    <thead>\\n        <tr>\\n            
                 <th>name</th> <th>age</th> <th>height</th>\\n        
                 </tr>\\n    </thead>\\n    <tbody>\\n        
                 <tr>\\n            <td>abc </td> <td>12  </td> <td>5.5   </td>\\n        </tr>\\n        
                 <tr>\\n            <td>xyz </td> <td>14  </td> <td>6     </td>\\n        </tr>\\n        
                 <tr>\\n            <td>uvw </td> <td>20  </td> <td>5.9   </td>\\n        </tr>\\n    
-                </tbody>\\n</table>
+                </tbody>\\n</table>'
 
                 2. Simple table being converted to HTML with max_rows passed in
 
@@ -3724,11 +3729,11 @@ class Table(collections.abc.MutableMapping):
         chairs    | 6     | 10
         tables    | 1     | 20
         desks     | 2     | 30
-        >>> furniture_table.barh('Furniture') # doctest: +SKIP
+        >>> t.barh('Furniture') # doctest: +SKIP
         <bar graph with furniture as categories and bars for count and price>
-        >>> furniture_table.barh('Furniture', 'Price') # doctest: +SKIP
+        >>> t.barh('Furniture', 'Price') # doctest: +SKIP
         <bar graph with furniture as categories and bars for price>
-        >>> furniture_table.barh('Furniture', make_array(1, 2)) # doctest: +SKIP
+        >>> t.barh('Furniture', make_array(1, 2)) # doctest: +SKIP
         <bar graph with furniture as categories and bars for count and price>
         """
         global _INTERACTIVE_PLOTS
@@ -4626,7 +4631,7 @@ class Table(collections.abc.MutableMapping):
             type(self).plots.append(axis)
         else:
             fig, axes = plt.subplots(n, 1, figsize=(width, height*n))
-            if not isinstance(axes, collections.Iterable):
+            if not isinstance(axes, collections.abc.Iterable):
                 axes=[axes]
             for axis, y_label, color in zip(axes, y_labels, colors):
                 draw(axis, y_label, color)
@@ -5393,79 +5398,83 @@ class Table(collections.abc.MutableMapping):
                     right_end = max([max(self.column(k)) for k in self.labels if np.issubdtype(self.column(k).dtype, np.number)])
 
         def draw_hist(values_dict):
-            with np.printoptions(legacy='1.13'):
-                # This code is factored as a function for clarity only.
-                n = len(values_dict)
-                colors = [rgb_color + (self.default_alpha,) for rgb_color in
-                    itertools.islice(itertools.cycle(self.chart_colors), n)]
-                hist_names = list(values_dict.keys())
-                values = [v[0] for v in values_dict.values()]
-                weights = [v[1] for v in values_dict.values() if len(v) > 1]
-                if n > len(weights) > 0:
-                    raise ValueError("Weights were provided for some columns, but not "
-                                     " all, and that's not supported.")
-                if rug and overlay and n > 1:
-                    warnings.warn("Cannot plot overlaid rug plots; rug=True ignored", UserWarning)
-                if vargs['density']:
-                    y_label = 'Percent per ' + (unit if unit else 'unit')
-                    percentage = plt.FuncFormatter(lambda x, _: "{:g}".format(100*x))
-                else:
-                    y_label = 'Count'
+            # Check if np.printoptions is set to legacy. Throw UserWarning if not
+            if np.get_printoptions()['legacy'] != '1.13':
+                warnings.warn("We've detected you're not using the '1.13' legacy setting for `np.printoptions`. "
+                    "This may cause excessive error terms in your plots. We recommend solving this by running the "
+                    "following code: `np.set_printoptions(legacy='1.13')`", UserWarning)
+            # This code is factored as a function for clarity only.
+            n = len(values_dict)
+            colors = [rgb_color + (self.default_alpha,) for rgb_color in
+                itertools.islice(itertools.cycle(self.chart_colors), n)]
+            hist_names = list(values_dict.keys())
+            values = [v[0] for v in values_dict.values()]
+            weights = [v[1] for v in values_dict.values() if len(v) > 1]
+            if n > len(weights) > 0:
+                raise ValueError("Weights were provided for some columns, but not "
+                                 " all, and that's not supported.")
+            if rug and overlay and n > 1:
+                warnings.warn("Cannot plot overlaid rug plots; rug=True ignored", UserWarning)
+            if vargs['density']:
+                y_label = 'Percent per ' + (unit if unit else 'unit')
+                percentage = plt.FuncFormatter(lambda x, _: "{:g}".format(100*x))
+            else:
+                y_label = 'Count'
 
-                if overlay and n > 1:
-                    # Reverse because legend prints bottom-to-top
-                    values = values[::-1]
-                    weights = weights[::-1]
-                    colors = list(colors)[::-1]
-                    if len(weights) == n:
-                        vargs['weights'] = weights
-                    if not side_by_side:
+            if overlay and n > 1:
+                # Reverse because legend prints bottom-to-top
+                values = values[::-1]
+                weights = weights[::-1]
+                colors = list(colors)[::-1]
+                if len(weights) == n:
+                    vargs['weights'] = weights
+                if not side_by_side:
+                    vargs.setdefault('histtype', 'stepfilled')
+                figure = plt.figure(figsize=(width, height))
+                plt.hist(values, color=colors, **vargs)
+                # if rug:
+                #     plt.scatter(values, np.zeros_like(values), marker="|", color=colors)
+                axis = figure.get_axes()[0]
+                _vertical_x(axis)
+                axis.set_ylabel(y_label)
+                if vargs['density']:
+                    axis.yaxis.set_major_formatter(percentage)
+                x_unit = ' (' + unit + ')' if unit else ''
+                if group is not None and len(self.labels) == 2:
+                    #There's a grouping in place but we're only plotting one column's values
+                    label_not_grouped = [l for l in self.labels if l != group][0]
+                    axis.set_xlabel(label_not_grouped + x_unit, fontsize=16)
+                else:
+                    axis.set_xlabel(x_unit, fontsize=16)
+                plt.legend(hist_names, loc=2, bbox_to_anchor=(1.05, 1))
+                type(self).plots.append(axis)
+            else:
+                _, axes = plt.subplots(n, 1, figsize=(width, height * n))
+                if 'bins' in vargs:
+                    bins = vargs['bins']
+                    if isinstance(bins, numbers.Integral) and bins > 76 or hasattr(bins, '__len__') and len(bins) > 76:
+                        # Use stepfilled when there are too many bins
                         vargs.setdefault('histtype', 'stepfilled')
-                    figure = plt.figure(figsize=(width, height))
-                    plt.hist(values, color=colors, **vargs)
-                    # if rug:
-                    #     plt.scatter(values, np.zeros_like(values), marker="|", color=colors)
-                    axis = figure.get_axes()[0]
-                    _vertical_x(axis)
+                if n == 1:
+                    axes = [axes]
+                for i, (axis, hist_name, values_for_hist, color) in enumerate(zip(axes, hist_names, values, colors)):
                     axis.set_ylabel(y_label)
                     if vargs['density']:
                         axis.yaxis.set_major_formatter(percentage)
                     x_unit = ' (' + unit + ')' if unit else ''
-                    if group is not None and len(self.labels) == 2:
-                        #There's a grouping in place but we're only plotting one column's values
-                        label_not_grouped = [l for l in self.labels if l != group][0]
-                        axis.set_xlabel(label_not_grouped + x_unit, fontsize=16)
-                    else:
-                        axis.set_xlabel(x_unit, fontsize=16)
-                    plt.legend(hist_names, loc=2, bbox_to_anchor=(1.05, 1))
+                    if len(weights) == n:
+                        vargs['weights'] = weights[i]
+                    axis.set_xlabel(hist_name + x_unit, fontsize=16)
+                    heights, bins, patches = axis.hist(values_for_hist, color=color, **vargs)
+                    if left_end is not None and right_end is not None:
+                        x_shade, height_shade, width_shade = _compute_shading(heights, bins.copy(), left_end, right_end)
+                        axis.bar(x_shade, height_shade, width=width_shade,
+                                 color=self.chart_colors[1], align="edge")
+                    _vertical_x(axis)
+                    if rug:
+                        axis.scatter(values_for_hist, np.zeros_like(values_for_hist), marker="|",
+                                     color="black", s=100, zorder=10)
                     type(self).plots.append(axis)
-                else:
-                    _, axes = plt.subplots(n, 1, figsize=(width, height * n))
-                    if 'bins' in vargs:
-                        bins = vargs['bins']
-                        if isinstance(bins, numbers.Integral) and bins > 76 or hasattr(bins, '__len__') and len(bins) > 76:
-                            # Use stepfilled when there are too many bins
-                            vargs.setdefault('histtype', 'stepfilled')
-                    if n == 1:
-                        axes = [axes]
-                    for i, (axis, hist_name, values_for_hist, color) in enumerate(zip(axes, hist_names, values, colors)):
-                        axis.set_ylabel(y_label)
-                        if vargs['density']:
-                            axis.yaxis.set_major_formatter(percentage)
-                        x_unit = ' (' + unit + ')' if unit else ''
-                        if len(weights) == n:
-                            vargs['weights'] = weights[i]
-                        axis.set_xlabel(hist_name + x_unit, fontsize=16)
-                        heights, bins, patches = axis.hist(values_for_hist, color=color, **vargs)
-                        if left_end is not None and right_end is not None:
-                            x_shade, height_shade, width_shade = _compute_shading(heights, bins.copy(), left_end, right_end)
-                            axis.bar(x_shade, height_shade, width=width_shade,
-                                     color=self.chart_colors[1], align="edge")
-                        _vertical_x(axis)
-                        if rug:
-                            axis.scatter(values_for_hist, np.zeros_like(values_for_hist), marker="|",
-                                         color="black", s=100, zorder=10)
-                        type(self).plots.append(axis)
 
         draw_hist(values_dict)
 
