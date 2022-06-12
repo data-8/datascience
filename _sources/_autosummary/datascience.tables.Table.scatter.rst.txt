@@ -1,4 +1,4 @@
-datascience.tables.Table.scatter
+﻿datascience.tables.Table.scatter
 ================================
 
 .. currentmodule:: datascience.tables

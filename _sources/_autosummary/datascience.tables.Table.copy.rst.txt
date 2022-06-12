@@ -1,4 +1,4 @@
-datascience.tables.Table.copy
+﻿datascience.tables.Table.copy
 =============================
 
 .. currentmodule:: datascience.tables

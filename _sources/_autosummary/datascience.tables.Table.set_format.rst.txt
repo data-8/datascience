@@ -1,4 +1,4 @@
-datascience.tables.Table.set\_format
+﻿datascience.tables.Table.set\_format
 ====================================
 
 .. currentmodule:: datascience.tables

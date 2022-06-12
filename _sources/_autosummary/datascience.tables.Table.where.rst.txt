@@ -1,4 +1,4 @@
-datascience.tables.Table.where
+﻿datascience.tables.Table.where
 ==============================
 
 .. currentmodule:: datascience.tables

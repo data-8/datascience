@@ -1,4 +1,4 @@
-datascience.tables.Table.drop
+﻿datascience.tables.Table.drop
 =============================
 
 .. currentmodule:: datascience.tables

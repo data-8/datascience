@@ -4,7 +4,7 @@
  *
  * Sphinx stylesheet -- classic theme.
  *
- * :copyright: Copyright 2007-2020 by the Sphinx team, see AUTHORS.
+ * :copyright: Copyright 2007-2022 by the Sphinx team, see AUTHORS.
  * :license: BSD, see LICENSE for details.
  *
  */
@@ -28,6 +28,7 @@ body {
 }
 
 div.document {
+    display: flex;
     background-color: #1c4e63;
 }
 
@@ -205,7 +206,7 @@ div.seealso {
     border: 1px solid #ff6;
 }
 
-div.topic {
+div.topic, aside.topic {
     background-color: #eee;
 }
 

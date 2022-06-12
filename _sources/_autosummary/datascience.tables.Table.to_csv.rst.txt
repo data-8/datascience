@@ -1,4 +1,4 @@
-datascience.tables.Table.to\_csv
+﻿datascience.tables.Table.to\_csv
 ================================
 
 .. currentmodule:: datascience.tables

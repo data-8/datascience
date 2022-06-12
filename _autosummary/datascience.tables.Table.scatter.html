@@ -1,23 +1,25 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>datascience.tables.Table.scatter &#8212; datascience 0.15.7 documentation</title>
-    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>datascience.tables.Table.scatter &#8212; datascience 0.17.2 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="datascience.tables.Table.boxplot" href="datascience.tables.Table.boxplot.html" />
+    <link rel="next" title="datascience.tables.Table.scatter3d" href="datascience.tables.Table.scatter3d.html" />
     <link rel="prev" title="datascience.tables.Table.hist_of_counts" href="datascience.tables.Table.hist_of_counts.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -30,12 +32,12 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="datascience.tables.Table.boxplot.html" title="datascience.tables.Table.boxplot"
+          <a href="datascience.tables.Table.scatter3d.html" title="datascience.tables.Table.scatter3d"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="datascience.tables.Table.hist_of_counts.html" title="datascience.tables.Table.hist_of_counts"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.15.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.17.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" accesskey="U">Tables (<code class="docutils literal notranslate"><span class="pre">datascience.tables</span></code>)</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">datascience.tables.Table.scatter</a></li> 
       </ul>
@@ -46,38 +48,41 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="datascience-tables-table-scatter">
-<h1>datascience.tables.Table.scatter<a class="headerlink" href="#datascience-tables-table-scatter" title="Permalink to this headline">¶</a></h1>
+  <section id="datascience-tables-table-scatter">
+<h1>datascience.tables.Table.scatter<a class="headerlink" href="#datascience-tables-table-scatter" title="Permalink to this heading">¶</a></h1>
 <dl class="py method">
-<dt id="datascience.tables.Table.scatter">
-<code class="sig-prename descclassname">Table.</code><code class="sig-name descname">scatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">column_for_x</span></em>, <em class="sig-param"><span class="n">select</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">overlay</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">fit_line</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">group</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">labels</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">sizes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">width</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">height</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">s</span><span class="o">=</span><span class="default_value">20</span></em>, <em class="sig-param"><span class="n">colors</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">vargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.scatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.scatter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates scatterplots, optionally adding a line of best fit.</p>
+<dt class="sig sig-object py" id="datascience.tables.Table.scatter">
+<span class="sig-prename descclassname"><span class="pre">Table.</span></span><span class="sig-name descname"><span class="pre">scatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_for_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fit_line</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sizes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">vargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.scatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.tables.Table.scatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates scatterplots, optionally adding a line of best fit. Redirects to <code class="docutils literal notranslate"><span class="pre">Table#iscatter</span></code>
+if interactive plots are enabled with <code class="docutils literal notranslate"><span class="pre">Table#interactive_plots</span></code></p>
 <dl>
-<dt>Args:</dt><dd><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">column_for_x</span></code> (<code class="docutils literal notranslate"><span class="pre">str</span></code>): The column to use for the x-axis values</dt><dd><p>and label of the scatter plots.</p>
+<dt>args:</dt><dd><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">column_for_x</span></code> (<code class="docutils literal notranslate"><span class="pre">str</span></code>): the column to use for the x-axis values</dt><dd><p>and label of the scatter plots.</p>
 </dd>
 </dl>
 </dd>
-<dt>Kwargs:</dt><dd><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">overlay</span></code> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>): If true, creates a chart with one color</dt><dd><p>per data column; if False, each plot will be displayed separately.</p>
+<dt>kwargs:</dt><dd><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">overlay</span></code> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>): if true, creates a chart with one color</dt><dd><p>per data column; if false, each plot will be displayed separately.</p>
 </dd>
 </dl>
 <p><code class="docutils literal notranslate"><span class="pre">fit_line</span></code> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>): draw a line of best fit for each set of points.</p>
 <dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">vargs</span></code>: Additional arguments that get passed into <cite>plt.scatter</cite>.</dt><dd><p>See <a class="reference external" href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.scatter">http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.scatter</a>
-for additional arguments that can be passed into vargs. These
+<dt><code class="docutils literal notranslate"><span class="pre">vargs</span></code>: additional arguments that get passed into <cite>plt.scatter</cite>.</dt><dd><p>see <a class="reference external" href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.scatter">http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.scatter</a>
+for additional arguments that can be passed into vargs. these
 include: <cite>marker</cite> and <cite>norm</cite>, to name a couple.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">group</span></code>: A column of categories to be used for coloring dots per </dt><dd><p>each category grouping.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">group</span></code>: a column of categories to be used for coloring dots per</dt><dd><p>each category grouping.</p>
 </dd>
 </dl>
-<p><code class="docutils literal notranslate"><span class="pre">labels</span></code>: A column of text labels to annotate dots.</p>
-<p><code class="docutils literal notranslate"><span class="pre">sizes</span></code>:  A column of values to set the relative areas of dots.</p>
+<p><code class="docutils literal notranslate"><span class="pre">labels</span></code>: a column of text labels to annotate dots.</p>
+<p><code class="docutils literal notranslate"><span class="pre">sizes</span></code>:  a column of values to set the relative areas of dots.</p>
 <dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">s</span></code>: Size of dots. If sizes is also provided, then dots will be</dt><dd><p>in the range 0 to 2 * s.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">s</span></code>: size of dots. if sizes is also provided, then dots will be</dt><dd><p>in the range 0 to 2 * s.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">colors</span></code>: (deprecated) A synonym for <code class="docutils literal notranslate"><span class="pre">group</span></code>. Retained</dt><dd><p>temporarily for backwards compatibility. This argument
 will be removed in future releases.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">show</span></code> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>): whether to show the figure if using interactive plots; if false, </dt><dd><p>the figure is returned instead</p>
 </dd>
 </dl>
 </dd>
@@ -115,7 +120,7 @@ all other columns in self as y (or for the columns designated by
 </div>
 </dd></dl>
 
-</div>
+</section>
 
 
             <div class="clearer"></div>
@@ -124,12 +129,16 @@ all other columns in self as y (or for the columns designated by
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="datascience.tables.Table.hist_of_counts.html"
-                        title="previous chapter">datascience.tables.Table.hist_of_counts</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="datascience.tables.Table.boxplot.html"
-                        title="next chapter">datascience.tables.Table.boxplot</a></p>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="datascience.tables.Table.hist_of_counts.html"
+                          title="previous chapter">datascience.tables.Table.hist_of_counts</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="datascience.tables.Table.scatter3d.html"
+                          title="next chapter">datascience.tables.Table.scatter3d</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -141,12 +150,12 @@ all other columns in self as y (or for the columns designated by
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -161,19 +170,19 @@ all other columns in self as y (or for the columns designated by
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="datascience.tables.Table.boxplot.html" title="datascience.tables.Table.boxplot"
+          <a href="datascience.tables.Table.scatter3d.html" title="datascience.tables.Table.scatter3d"
              >next</a> |</li>
         <li class="right" >
           <a href="datascience.tables.Table.hist_of_counts.html" title="datascience.tables.Table.hist_of_counts"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.15.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.17.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" >Tables (<code class="docutils literal notranslate"><span class="pre">datascience.tables</span></code>)</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">datascience.tables.Table.scatter</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.0.1.
     </div>
   </body>
 </html>

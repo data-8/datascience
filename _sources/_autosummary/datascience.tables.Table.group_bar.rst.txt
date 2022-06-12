@@ -1,4 +1,4 @@
-datascience.tables.Table.group\_bar
+﻿datascience.tables.Table.group\_bar
 ===================================
 
 .. currentmodule:: datascience.tables

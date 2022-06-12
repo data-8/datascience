@@ -1,4 +1,4 @@
-datascience.tables.Table.shuffle
+﻿datascience.tables.Table.shuffle
 ================================
 
 .. currentmodule:: datascience.tables

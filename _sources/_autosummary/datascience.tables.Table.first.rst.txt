@@ -1,4 +1,4 @@
-datascience.tables.Table.first
+﻿datascience.tables.Table.first
 ==============================
 
 .. currentmodule:: datascience.tables

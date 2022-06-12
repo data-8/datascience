@@ -1,4 +1,4 @@
-datascience.tables.Table.index\_by
+﻿datascience.tables.Table.index\_by
 ==================================
 
 .. currentmodule:: datascience.tables

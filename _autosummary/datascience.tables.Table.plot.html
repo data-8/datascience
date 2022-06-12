@@ -1,19 +1,21 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>datascience.tables.Table.plot &#8212; datascience 0.15.7 documentation</title>
-    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>datascience.tables.Table.plot &#8212; datascience 0.17.2 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -35,7 +37,7 @@
         <li class="right" >
           <a href="datascience.tables.Table.to_csv.html" title="datascience.tables.Table.to_csv"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.15.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.17.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" accesskey="U">Tables (<code class="docutils literal notranslate"><span class="pre">datascience.tables</span></code>)</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">datascience.tables.Table.plot</a></li> 
       </ul>
@@ -46,17 +48,20 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="datascience-tables-table-plot">
-<h1>datascience.tables.Table.plot<a class="headerlink" href="#datascience-tables-table-plot" title="Permalink to this headline">¶</a></h1>
+  <section id="datascience-tables-table-plot">
+<h1>datascience.tables.Table.plot<a class="headerlink" href="#datascience-tables-table-plot" title="Permalink to this heading">¶</a></h1>
 <dl class="py method">
-<dt id="datascience.tables.Table.plot">
-<code class="sig-prename descclassname">Table.</code><code class="sig-name descname">plot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">column_for_xticks</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">select</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">overlay</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">width</span><span class="o">=</span><span class="default_value">6</span></em>, <em class="sig-param"><span class="n">height</span><span class="o">=</span><span class="default_value">4</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">vargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot line charts for the table.</p>
+<dt class="sig sig-object py" id="datascience.tables.Table.plot">
+<span class="sig-prename descclassname"><span class="pre">Table.</span></span><span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_for_xticks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">vargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.tables.Table.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot line charts for the table. Redirects to <code class="docutils literal notranslate"><span class="pre">Table#iplot</span></code> for plotly charts if interactive
+plots are enabled with <code class="docutils literal notranslate"><span class="pre">Table#interactive_plots</span></code></p>
 <dl class="simple">
 <dt>Args:</dt><dd><p>column_for_xticks (<code class="docutils literal notranslate"><span class="pre">str/array</span></code>): A column containing x-axis labels</p>
 </dd>
 <dt>Kwargs:</dt><dd><dl class="simple">
 <dt>overlay (bool): create a chart with one color per data column;</dt><dd><p>if False, each plot will be displayed separately.</p>
+</dd>
+<dt>show (bool): whether to show the figure if using interactive plots; if false, the figure </dt><dd><p>is returned instead</p>
 </dd>
 <dt>vargs: Additional arguments that get passed into <cite>plt.plot</cite>.</dt><dd><p>See <a class="reference external" href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot">http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot</a>
 for additional arguments that can be passed into vargs.</p>
@@ -93,7 +98,7 @@ other columns in self (or for the columns designated by <cite>select</cite>).</p
 </div>
 </dd></dl>
 
-</div>
+</section>
 
 
             <div class="clearer"></div>
@@ -102,12 +107,16 @@ other columns in self (or for the columns designated by <cite>select</cite>).</p
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="datascience.tables.Table.to_csv.html"
-                        title="previous chapter">datascience.tables.Table.to_csv</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="datascience.tables.Table.bar.html"
-                        title="next chapter">datascience.tables.Table.bar</a></p>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="datascience.tables.Table.to_csv.html"
+                          title="previous chapter">datascience.tables.Table.to_csv</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="datascience.tables.Table.bar.html"
+                          title="next chapter">datascience.tables.Table.bar</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -119,12 +128,12 @@ other columns in self (or for the columns designated by <cite>select</cite>).</p
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -144,14 +153,14 @@ other columns in self (or for the columns designated by <cite>select</cite>).</p
         <li class="right" >
           <a href="datascience.tables.Table.to_csv.html" title="datascience.tables.Table.to_csv"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.15.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.17.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" >Tables (<code class="docutils literal notranslate"><span class="pre">datascience.tables</span></code>)</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">datascience.tables.Table.plot</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.0.1.
     </div>
   </body>
 </html>

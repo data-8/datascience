@@ -1,4 +1,4 @@
-datascience.tables.Table.sample\_from\_distribution
+﻿datascience.tables.Table.sample\_from\_distribution
 ===================================================
 
 .. currentmodule:: datascience.tables

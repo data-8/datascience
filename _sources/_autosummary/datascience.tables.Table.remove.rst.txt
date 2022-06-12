@@ -1,4 +1,4 @@
-datascience.tables.Table.remove
+﻿datascience.tables.Table.remove
 ===============================
 
 .. currentmodule:: datascience.tables

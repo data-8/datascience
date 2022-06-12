@@ -1,19 +1,21 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>datascience.tables.Table.hist &#8212; datascience 0.15.7 documentation</title>
-    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>datascience.tables.Table.hist &#8212; datascience 0.17.2 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -35,7 +37,7 @@
         <li class="right" >
           <a href="datascience.tables.Table.pivot_hist.html" title="datascience.tables.Table.pivot_hist"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.15.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.17.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" accesskey="U">Tables (<code class="docutils literal notranslate"><span class="pre">datascience.tables</span></code>)</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">datascience.tables.Table.hist</a></li> 
       </ul>
@@ -46,13 +48,14 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="datascience-tables-table-hist">
-<h1>datascience.tables.Table.hist<a class="headerlink" href="#datascience-tables-table-hist" title="Permalink to this headline">¶</a></h1>
+  <section id="datascience-tables-table-hist">
+<h1>datascience.tables.Table.hist<a class="headerlink" href="#datascience-tables-table-hist" title="Permalink to this heading">¶</a></h1>
 <dl class="py method">
-<dt id="datascience.tables.Table.hist">
-<code class="sig-prename descclassname">Table.</code><code class="sig-name descname">hist</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">columns</span></em>, <em class="sig-param"><span class="n">overlay</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">bins</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">bin_column</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">unit</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">counts</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">group</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">side_by_side</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">left_end</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">right_end</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">width</span><span class="o">=</span><span class="default_value">6</span></em>, <em class="sig-param"><span class="n">height</span><span class="o">=</span><span class="default_value">4</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">vargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.hist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.hist" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="datascience.tables.Table.hist">
+<span class="sig-prename descclassname"><span class="pre">Table.</span></span><span class="sig-name descname"><span class="pre">hist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bin_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">counts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">side_by_side</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">left_end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">vargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.hist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.tables.Table.hist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots one histogram for each column in columns. If no column is
-specified, plot all columns.</p>
+specified, plot all columns. If interactive plots are enabled via <code class="docutils literal notranslate"><span class="pre">Table#interactive_plots</span></code>,
+redirects plotting to plotly with <code class="docutils literal notranslate"><span class="pre">Table#ihist</span></code>.</p>
 <dl>
 <dt>Kwargs:</dt><dd><dl class="simple">
 <dt>overlay (bool): If True, plots 1 chart with all the histograms</dt><dd><p>overlaid on top of each other (instead of the default behavior
@@ -81,10 +84,21 @@ grouping is done.</p>
 plotting multiple histograms, either by passing several columns
 or by using the group option.</p>
 </dd>
-<dt>left_end (int or float) and right_end (int or float): (Not supported </dt><dd><p>for overlayed histograms) The left and right edges of the shading of 
-the histogram. If only one of these is None, then that property 
-will be treated as the extreme edge of the histogram. If both are 
+<dt>left_end (int or float) and right_end (int or float): (Not supported</dt><dd><p>for overlayed histograms) The left and right edges of the shading of
+the histogram. If only one of these is None, then that property
+will be treated as the extreme edge of the histogram. If both are
 left None, then no shading will occur.</p>
+</dd>
+<dt>density (boolean): If True, will plot a density distribution of the data.</dt><dd><p>Otherwise plots the counts.</p>
+</dd>
+<dt>shade_split (string, {“whole”, “new”, “split”}): If left_end or</dt><dd><p>right_end are specified, shade_split determines how a bin is split
+that the end falls between two bin endpoints. If shade_split = “whole”,
+the entire bin will be shaded. If shade_split = “new”, then a new bin
+will be created and data split appropriately. If shade_split = “split”,
+the data will first be placed into the original bins, and then separated
+into two bins with equal height.</p>
+</dd>
+<dt>show (bool): whether to show the figure for interactive plots; if false, the figure is </dt><dd><p>returned instead</p>
 </dd>
 <dt>vargs: Additional arguments that get passed into :func:plt.hist.</dt><dd><p>See <a class="reference external" href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.hist">http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.hist</a>
 for additional arguments that can be passed into vargs. These
@@ -124,7 +138,7 @@ include: <cite>range</cite>, <cite>normed</cite>/<cite>density</cite>, <cite>cum
 </div>
 </dd></dl>
 
-</div>
+</section>
 
 
             <div class="clearer"></div>
@@ -133,12 +147,16 @@ include: <cite>range</cite>, <cite>normed</cite>/<cite>density</cite>, <cite>cum
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="datascience.tables.Table.pivot_hist.html"
-                        title="previous chapter">datascience.tables.Table.pivot_hist</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="datascience.tables.Table.hist_of_counts.html"
-                        title="next chapter">datascience.tables.Table.hist_of_counts</a></p>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="datascience.tables.Table.pivot_hist.html"
+                          title="previous chapter">datascience.tables.Table.pivot_hist</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="datascience.tables.Table.hist_of_counts.html"
+                          title="next chapter">datascience.tables.Table.hist_of_counts</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -150,12 +168,12 @@ include: <cite>range</cite>, <cite>normed</cite>/<cite>density</cite>, <cite>cum
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -175,14 +193,14 @@ include: <cite>range</cite>, <cite>normed</cite>/<cite>density</cite>, <cite>cum
         <li class="right" >
           <a href="datascience.tables.Table.pivot_hist.html" title="datascience.tables.Table.pivot_hist"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.15.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.17.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" >Tables (<code class="docutils literal notranslate"><span class="pre">datascience.tables</span></code>)</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">datascience.tables.Table.hist</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.0.1.
     </div>
   </body>
 </html>

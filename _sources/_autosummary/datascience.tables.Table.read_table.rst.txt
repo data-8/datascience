@@ -1,4 +1,4 @@
-datascience.tables.Table.read\_table
+﻿datascience.tables.Table.read\_table
 ====================================
 
 .. currentmodule:: datascience.tables

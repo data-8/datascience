@@ -1,4 +1,4 @@
-datascience.tables.Table.join
+﻿datascience.tables.Table.join
 =============================
 
 .. currentmodule:: datascience.tables

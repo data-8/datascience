@@ -1,4 +1,4 @@
-datascience.tables.Table.apply
+﻿datascience.tables.Table.apply
 ==============================
 
 .. currentmodule:: datascience.tables

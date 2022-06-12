@@ -1,0 +1,6 @@
+﻿datascience.tables.Table.interactive\_plots
+===========================================
+
+.. currentmodule:: datascience.tables
+
+.. automethod:: Table.interactive_plots

@@ -1,4 +1,4 @@
-datascience.tables.Table.percentile
+﻿datascience.tables.Table.percentile
 ===================================
 
 .. currentmodule:: datascience.tables

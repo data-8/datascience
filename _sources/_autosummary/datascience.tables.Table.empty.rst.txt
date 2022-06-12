@@ -1,4 +1,4 @@
-datascience.tables.Table.empty
+﻿datascience.tables.Table.empty
 ==============================
 
 .. currentmodule:: datascience.tables

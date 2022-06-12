@@ -1,0 +1,6 @@
+﻿datascience.tables.Table.scatter3d
+==================================
+
+.. currentmodule:: datascience.tables
+
+.. automethod:: Table.scatter3d

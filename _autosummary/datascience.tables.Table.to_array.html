@@ -1,19 +1,21 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>datascience.tables.Table.to_array &#8212; datascience 0.15.7 documentation</title>
-    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>datascience.tables.Table.to_array &#8212; datascience 0.17.2 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -35,7 +37,7 @@
         <li class="right" >
           <a href="datascience.tables.Table.index_by.html" title="datascience.tables.Table.index_by"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.15.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.17.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" accesskey="U">Tables (<code class="docutils literal notranslate"><span class="pre">datascience.tables</span></code>)</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">datascience.tables.Table.to_array</a></li> 
       </ul>
@@ -46,15 +48,49 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="datascience-tables-table-to-array">
-<h1>datascience.tables.Table.to_array<a class="headerlink" href="#datascience-tables-table-to-array" title="Permalink to this headline">¶</a></h1>
+  <section id="datascience-tables-table-to-array">
+<h1>datascience.tables.Table.to_array<a class="headerlink" href="#datascience-tables-table-to-array" title="Permalink to this heading">¶</a></h1>
 <dl class="py method">
-<dt id="datascience.tables.Table.to_array">
-<code class="sig-prename descclassname">Table.</code><code class="sig-name descname">to_array</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.to_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.to_array" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="datascience.tables.Table.to_array">
+<span class="sig-prename descclassname"><span class="pre">Table.</span></span><span class="sig-name descname"><span class="pre">to_array</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.to_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.tables.Table.to_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert the table to a structured NumPy array.</p>
+<p>The resulting array contains a sequence of rows from the table.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>None</p>
+</dd>
+<dt>Returns:</dt><dd><p>arr: a NumPy array</p>
+</dd>
+</dl>
+<p>The following is an example of calling to_array()
+&gt;&gt;&gt; t = Table().with_columns([
+… ‘letter’, [‘a’,’b’,’c’,’z’],
+… ‘count’, [9,3,3,1],
+… ‘points’, [1,2,2,10],
+… ])</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span>
+<span class="go">letter | count | points</span>
+<span class="go">a      | 9     | 1</span>
+<span class="go">b      | 3     | 2</span>
+<span class="go">c      | 3     | 2</span>
+<span class="go">z      | 1     | 10</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">example</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">to_array</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">example</span>
+<span class="go">array([(&#39;a&#39;, 9,  1), (&#39;b&#39;, 3,  2), (&#39;c&#39;, 3,  2), (&#39;z&#39;, 1, 10)],</span>
+<span class="go">dtype=[(&#39;letter&#39;, &#39;&lt;U1&#39;), (&#39;count&#39;, &#39;&lt;i8&#39;), (&#39;points&#39;, &#39;&lt;i8&#39;)])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">example</span><span class="p">[</span><span class="s1">&#39;letter&#39;</span><span class="p">]</span>
+<span class="go">array([&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;z&#39;],</span>
+<span class="go">dtype=&#39;&lt;U1&#39;)</span>
+</pre></div>
+</div>
 </dd></dl>
 
-</div>
+</section>
 
 
             <div class="clearer"></div>
@@ -63,12 +99,16 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="datascience.tables.Table.index_by.html"
-                        title="previous chapter">datascience.tables.Table.index_by</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="datascience.tables.Table.to_df.html"
-                        title="next chapter">datascience.tables.Table.to_df</a></p>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="datascience.tables.Table.index_by.html"
+                          title="previous chapter">datascience.tables.Table.index_by</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="datascience.tables.Table.to_df.html"
+                          title="next chapter">datascience.tables.Table.to_df</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -80,12 +120,12 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -105,14 +145,14 @@
         <li class="right" >
           <a href="datascience.tables.Table.index_by.html" title="datascience.tables.Table.index_by"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.15.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.17.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" >Tables (<code class="docutils literal notranslate"><span class="pre">datascience.tables</span></code>)</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">datascience.tables.Table.to_array</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.0.1.
     </div>
   </body>
 </html>

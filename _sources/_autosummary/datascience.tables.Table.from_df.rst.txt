@@ -1,4 +1,4 @@
-datascience.tables.Table.from\_df
+﻿datascience.tables.Table.from\_df
 =================================
 
 .. currentmodule:: datascience.tables

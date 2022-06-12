@@ -1,6 +1,6 @@
-datascience.tables.Table.values
+﻿datascience.tables.Table.values
 ===============================
 
 .. currentmodule:: datascience.tables
 
-.. automethod:: Table.values
+.. autoproperty:: Table.values

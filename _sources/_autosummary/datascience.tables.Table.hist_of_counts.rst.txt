@@ -1,4 +1,4 @@
-datascience.tables.Table.hist\_of\_counts
+﻿datascience.tables.Table.hist\_of\_counts
 =========================================
 
 .. currentmodule:: datascience.tables

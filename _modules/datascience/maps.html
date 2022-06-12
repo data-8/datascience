@@ -1,19 +1,20 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>datascience.maps &#8212; datascience 0.15.7 documentation</title>
-    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>datascience.maps &#8212; datascience 0.17.2 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css" />
     
-    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -27,7 +28,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.15.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.17.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">datascience.maps</a></li> 
       </ul>
@@ -41,14 +42,18 @@
   <h1>Source code for datascience.maps</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Draw maps using folium.&quot;&quot;&quot;</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Map&#39;</span><span class="p">,</span> <span class="s1">&#39;Marker&#39;</span><span class="p">,</span> <span class="s1">&#39;Circle&#39;</span><span class="p">,</span> <span class="s1">&#39;Region&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Map&#39;</span><span class="p">,</span> <span class="s1">&#39;Marker&#39;</span><span class="p">,</span> <span class="s1">&#39;Circle&#39;</span><span class="p">,</span> <span class="s1">&#39;Region&#39;</span><span class="p">,</span> <span class="s1">&#39;get_coordinates&#39;</span><span class="p">]</span>
 
 
 <span class="kn">import</span> <span class="nn">IPython.display</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">import</span> <span class="nn">folium</span>
-<span class="kn">from</span> <span class="nn">folium.plugins</span> <span class="kn">import</span> <span class="n">MarkerCluster</span>
+<span class="kn">from</span> <span class="nn">folium.plugins</span> <span class="kn">import</span> <span class="n">MarkerCluster</span><span class="p">,</span> <span class="n">BeautifyIcon</span>
 <span class="kn">import</span> <span class="nn">pandas</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
+<span class="kn">import</span> <span class="nn">pkg_resources</span>
+<span class="kn">import</span> <span class="nn">branca.colormap</span> <span class="k">as</span> <span class="nn">cm</span>
 
 <span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">import</span> <span class="nn">collections</span>
@@ -57,8 +62,10 @@
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">from</span> <span class="nn">.tables</span> <span class="kn">import</span> <span class="n">Table</span>
+<span class="kn">from</span> <span class="nn">.predicates</span> <span class="kn">import</span> <span class="n">are</span>
 
 <span class="n">_number</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>
 
@@ -151,17 +158,79 @@
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_features</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_set_folium_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">index_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;index_map&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">cluster_labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;cluster_labels&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_folium_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_map</span><span class="p">()</span>
-        <span class="k">if</span> <span class="s1">&#39;clustered_marker&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="p">[</span><span class="s1">&#39;clustered_marker&#39;</span><span class="p">]:</span>
-            <span class="n">marker_cluster</span> <span class="o">=</span> <span class="n">MarkerCluster</span><span class="p">()</span><span class="o">.</span><span class="n">add_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_folium_map</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;clustered_marker&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="k">def</span> <span class="nf">customize_marker_cluster</span><span class="p">(</span><span class="n">color</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+                <span class="c1"># Returns string for icon_create_function</span>
+                <span class="n">hexcolor</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">to_hex</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+                <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">                    function(cluster) </span><span class="se">{{</span><span class="s2"> </span>
+<span class="s2">                        return L.divIcon(</span><span class="se">{{</span><span class="s2"> </span>
+<span class="s2">                            html: `&lt;div</span>
+<span class="s2">                              style=&#39;</span>
+<span class="s2">                                opacity: 0.85; </span>
+<span class="s2">                                background-color: </span><span class="si">{</span><span class="n">hexcolor</span><span class="si">}</span><span class="s2">; </span>
+<span class="s2">                                border: solid 2px rgba(66,135,245,1);</span>
+<span class="s2">                                border-radius: 50%;</span>
+<span class="s2">                                height: 40px;&#39;</span>
+<span class="s2">                              onmouseover=&quot;document.getElementById(&#39;</span><span class="si">{</span><span class="n">hexcolor</span><span class="si">}</span><span class="s2">&#39;).style.visibility=&#39;visible&#39;&quot;</span>
+<span class="s2">                              onmouseout=&quot;document.getElementById(&#39;</span><span class="si">{</span><span class="n">hexcolor</span><span class="si">}</span><span class="s2">&#39;).style.visibility=&#39;hidden&#39;&quot;&gt;</span>
+<span class="s2">                              &lt;div id=&quot;</span><span class="si">{</span><span class="n">hexcolor</span><span class="si">}</span><span class="s2">&quot; </span>
+<span class="s2">                                style=&#39;</span>
+<span class="s2">                                  visibility: hidden;</span>
+<span class="s2">                                  font-size: 12px; </span>
+<span class="s2">                                  background-color: white; </span>
+<span class="s2">                                  color: </span><span class="si">{</span><span class="n">hexcolor</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                                  text-align: center; </span>
+<span class="s2">                                  padding: 6% 6%;</span>
+<span class="s2">                                  position: absolute; </span>
+<span class="s2">                                  z-index: 1;</span>
+<span class="s2">                                  top: 120%; </span>
+<span class="s2">                                  left: 50%; </span>
+<span class="s2">                                  margin-left: -20px;</span>
+<span class="s2">                                  &#39;&gt;</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">&lt;/div&gt;</span>
+<span class="s2">                            &lt;/div&gt;`, </span>
+<span class="s2">                            iconSize: [40, 40],</span>
+<span class="s2">                            className: &#39;dummy&#39;</span>
+<span class="s2">                        </span><span class="se">}}</span><span class="s2">);</span>
+<span class="s2">                    </span><span class="se">}}</span><span class="s2"></span>
+<span class="s2">                &quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="n">index_map</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">chart_colors</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mi">30</span><span class="o">/</span><span class="mi">256</span><span class="p">,</span> <span class="mi">66</span><span class="o">/</span><span class="mi">256</span><span class="p">),</span>
+                    <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mi">200</span><span class="o">/</span><span class="mi">256</span><span class="p">,</span> <span class="mi">44</span><span class="o">/</span><span class="mi">256</span><span class="p">),</span>
+                    <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mi">150</span><span class="o">/</span><span class="mi">256</span><span class="p">,</span> <span class="mi">207</span><span class="o">/</span><span class="mi">256</span><span class="p">),</span>
+                    <span class="p">(</span><span class="mi">30</span><span class="o">/</span><span class="mi">256</span><span class="p">,</span> <span class="mi">100</span><span class="o">/</span><span class="mi">256</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+                    <span class="p">(</span><span class="mi">172</span><span class="o">/</span><span class="mi">256</span><span class="p">,</span> <span class="mi">60</span><span class="o">/</span><span class="mi">256</span><span class="p">,</span> <span class="mi">72</span><span class="o">/</span><span class="mi">256</span><span class="p">),</span>
+                <span class="p">)</span>
+                <span class="n">chart_colors</span> <span class="o">+=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">tuple</span><span class="p">((</span><span class="n">x</span><span class="o">+</span><span class="mf">0.7</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">chart_colors</span><span class="p">)</span>
+                <span class="n">colors</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">islice</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">(</span><span class="n">chart_colors</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">cluster_labels</span><span class="p">)))</span>
+                <span class="n">marker_cluster</span> <span class="o">=</span> <span class="p">[</span><span class="n">MarkerCluster</span><span class="p">(</span><span class="n">icon_create_function</span> <span class="o">=</span> <span class="n">customize_marker_cluster</span><span class="p">(</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">label</span><span class="p">))</span><span class="o">.</span><span class="n">add_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_folium_map</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cluster_labels</span><span class="p">)]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">marker_cluster</span> <span class="o">=</span> <span class="n">MarkerCluster</span><span class="p">()</span><span class="o">.</span><span class="n">add_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_folium_map</span><span class="p">)</span>
             <span class="n">clustered</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">clustered</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_features</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">clustered</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">Marker</span><span class="p">):</span>
-                <span class="n">feature</span><span class="o">.</span><span class="n">draw_on</span><span class="p">(</span><span class="n">marker_cluster</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">feature</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_features</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">Circle</span><span class="p">):</span>
+                <span class="n">feature</span><span class="o">.</span><span class="n">draw_on</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_folium_map</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;radius_in_meters&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">clustered</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">Marker</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">marker_cluster</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                    <span class="n">feature</span><span class="o">.</span><span class="n">draw_on</span><span class="p">(</span><span class="n">marker_cluster</span><span class="p">[</span><span class="n">index_map</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">feature</span><span class="o">.</span><span class="n">draw_on</span><span class="p">(</span><span class="n">marker_cluster</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">feature</span><span class="o">.</span><span class="n">draw_on</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_folium_map</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;colorbar_scale&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">colorbar_scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="p">[</span><span class="s2">&quot;colorbar_scale&quot;</span><span class="p">]</span>
+            <span class="n">include_color_scale_outliers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;include_color_scale_outliers&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="n">scale_colors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;#340597&quot;</span><span class="p">,</span> <span class="s2">&quot;#7008a5&quot;</span><span class="p">,</span> <span class="s2">&quot;#a32494&quot;</span><span class="p">,</span> <span class="s2">&quot;#cf5073&quot;</span><span class="p">,</span> <span class="s2">&quot;#ee7c4c&quot;</span><span class="p">,</span> <span class="s2">&quot;#f69344&quot;</span><span class="p">,</span> <span class="s2">&quot;#fcc22d&quot;</span><span class="p">,</span> <span class="s2">&quot;#f4e82d&quot;</span><span class="p">,</span> <span class="s2">&quot;#f4e82d&quot;</span><span class="p">]</span>
+            <span class="n">vmin</span> <span class="o">=</span> <span class="n">colorbar_scale</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">vmax</span> <span class="o">=</span> <span class="n">colorbar_scale</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">colormap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">LinearColormap</span><span class="p">(</span><span class="n">colors</span> <span class="o">=</span> <span class="n">scale_colors</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="n">colorbar_scale</span><span class="p">,</span> <span class="n">caption</span> <span class="o">=</span> <span class="s2">&quot;*Legend above may exclude outliers.&quot;</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">include_color_scale_outliers</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">vmin</span> <span class="o">=</span> <span class="n">colorbar_scale</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">colorbar_scale</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_folium_map</span><span class="o">.</span><span class="n">add_child</span><span class="p">(</span><span class="n">colormap</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_create_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_height</span><span class="p">}</span>
@@ -336,7 +405,7 @@
             <span class="k">if</span> <span class="s1">&#39;feature&#39;</span> <span class="ow">in</span> <span class="n">feature</span><span class="p">:</span>
                 <span class="n">feature</span> <span class="o">=</span> <span class="n">feature</span><span class="p">[</span><span class="s1">&#39;feature&#39;</span><span class="p">]</span>
 
-            <span class="c1"># if marker table e.g. table with columns: latitudes,longitudes,popup,color,radius</span>
+            <span class="c1"># if marker table e.g. table with columns: latitudes,longitudes,popup,color,area</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">feature</span> <span class="o">=</span> <span class="n">Circle</span><span class="o">.</span><span class="n">map_table</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
 
@@ -449,7 +518,10 @@
 <span class="sd">    color -- The color of the marker. You can use:</span>
 <span class="sd">    [‘red’, ‘blue’, ‘green’, ‘purple’, ‘orange’, ‘darkred’,</span>
 <span class="sd">    ’lightred’, ‘beige’, ‘darkblue’, ‘darkgreen’, ‘cadetblue’, ‘darkpurple’, </span>
-<span class="sd">    ‘white’, ‘pink’, ‘lightblue’, ‘lightgreen’, ‘gray’, ‘black’, ‘lightgray’]</span>
+<span class="sd">    ‘white’, ‘pink’, ‘lightblue’, ‘lightgreen’, ‘gray’, ‘black’, ‘lightgray’] </span>
+<span class="sd">    to use standard folium icons. If a hex color code is provided, </span>
+<span class="sd">    (color must start with &#39;#&#39;), a folium.plugin.BeautifyIcon will</span>
+<span class="sd">    be used instead. </span>
 <span class="sd">    </span>
 <span class="sd">    Defaults from Folium:</span>
 
@@ -478,6 +550,10 @@
             <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="n">color</span><span class="p">,</span>
             <span class="o">**</span><span class="n">kwargs</span>
         <span class="p">}</span>
+        
+        <span class="c1"># setting default icon to be empty; this is overwritten by .update()</span>
+        <span class="c1"># on the next line if &#39;marker_icon&#39; is present in kwargs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="p">[</span><span class="s2">&quot;marker_icon&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;sign-blank&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -495,7 +571,20 @@
         <span class="n">icon_args</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="o">&amp;</span> <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="s1">&#39;marker_icon&#39;</span><span class="p">,</span> <span class="s1">&#39;clustered_marker&#39;</span><span class="p">,</span> <span class="s1">&#39;icon_angle&#39;</span><span class="p">,</span> <span class="s1">&#39;popup_width&#39;</span><span class="p">}}</span>
         <span class="k">if</span> <span class="s1">&#39;marker_icon&#39;</span> <span class="ow">in</span> <span class="n">icon_args</span><span class="p">:</span>
             <span class="n">icon_args</span><span class="p">[</span><span class="s1">&#39;icon&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">icon_args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;marker_icon&#39;</span><span class="p">)</span>
-        <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;icon&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">folium</span><span class="o">.</span><span class="n">Icon</span><span class="p">(</span><span class="o">**</span><span class="n">icon_args</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;color&#39;</span> <span class="ow">in</span> <span class="n">icon_args</span> <span class="ow">and</span> <span class="n">icon_args</span><span class="p">[</span><span class="s1">&#39;color&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;#&#39;</span><span class="p">:</span>
+            <span class="c1"># Checks if color provided is a hex code instead; if it is, uses BeautifyIcon to create markers. </span>
+            <span class="c1"># If statement does not check to see if color is an empty string.</span>
+            <span class="n">icon_args</span><span class="p">[</span><span class="s1">&#39;background_color&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">icon_args</span><span class="p">[</span><span class="s1">&#39;border_color&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">icon_args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">icon_args</span><span class="p">[</span><span class="s1">&#39;background_color&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">icon_args</span><span class="p">[</span><span class="s1">&#39;background_color&#39;</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="n">icon_args</span><span class="p">[</span><span class="s1">&#39;background_color&#39;</span><span class="p">][</span><span class="mi">5</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;f&#39;</span><span class="p">:</span>
+                <span class="n">icon_args</span><span class="p">[</span><span class="s1">&#39;text_color&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;gray&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">icon_args</span><span class="p">[</span><span class="s1">&#39;text_color&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;white&#39;</span>
+            <span class="n">icon_args</span><span class="p">[</span><span class="s1">&#39;icon_shape&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;marker&#39;</span>
+            <span class="k">if</span> <span class="s1">&#39;icon&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">icon_args</span><span class="p">:</span>
+                <span class="n">icon_args</span><span class="p">[</span><span class="s1">&#39;icon&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;circle&#39;</span>
+            <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;icon&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">BeautifyIcon</span><span class="p">(</span><span class="o">**</span><span class="n">icon_args</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;icon&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">folium</span><span class="o">.</span><span class="n">Icon</span><span class="p">(</span><span class="o">**</span><span class="n">icon_args</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">attrs</span>
 
 <div class="viewcode-block" id="Marker.geojson"><a class="viewcode-back" href="../../maps.html#datascience.maps.Marker.geojson">[docs]</a>    <span class="k">def</span> <span class="nf">geojson</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_id</span><span class="p">):</span>
@@ -528,13 +617,28 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Marker.map"><a class="viewcode-back" href="../../maps.html#datascience.maps.Marker.map">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">latitudes</span><span class="p">,</span> <span class="n">longitudes</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">areas</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">other_attrs</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">clustered_marker</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">latitudes</span><span class="p">,</span> <span class="n">longitudes</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">areas</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">other_attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clustered_marker</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return markers from columns of coordinates, labels, &amp; colors.</span>
 
 <span class="sd">        The areas column is not applicable to markers, but sets circle areas.</span>
 
 <span class="sd">        Arguments: (TODO) document all options</span>
-<span class="sd">        </span>
+
+<span class="sd">        index_map: list of integers, default None (when not applicable)</span>
+<span class="sd">           list of indices that maps each marker to a corresponding label at the index in cluster_labels (only applicable when multiple marker clusters are being used)</span>
+
+<span class="sd">        cluster_labels: list of strings, default None (when not applicable)</span>
+<span class="sd">            list of labels used for each cluster of markers (only applicable when multiple marker clusters are being used)</span>
+
+<span class="sd">        colorbar_scale: list of floats, default None (when not applicable)</span>
+<span class="sd">            list of cutoffs used to indicate where the bins are for each color (only applicable when colorscale gradient is being used)</span>
+
+<span class="sd">        include_color_scale_outliers: boolean, default None (when not applicable)</span>
+<span class="sd">            boolean of whether or not outliers are included in the colorscale gradient for markers (only applicable when colorscale gradient is being used)</span>
+
+<span class="sd">        radius_in_meters: boolean, default False</span>
+<span class="sd">            boolean of whether or not Circles should have their radii specified in meters, scales with map zoom</span>
+
 <span class="sd">        clustered_marker: boolean, default False</span>
 <span class="sd">            boolean of whether or not you want the marker clustered with other markers</span>
 
@@ -545,8 +649,21 @@
         <span class="k">assert</span> <span class="n">latitudes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="k">assert</span> <span class="n">longitudes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">latitudes</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">longitudes</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="n">areas</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;_has_radius&#39;</span><span class="p">),</span> <span class="s2">&quot;A &quot;</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot; has no radius&quot;</span>
+        <span class="k">assert</span> <span class="n">areas</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;_has_area&#39;</span><span class="p">),</span> <span class="s2">&quot;A &quot;</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot; has no area&quot;</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="p">[</span><span class="n">latitudes</span><span class="p">,</span> <span class="n">longitudes</span><span class="p">]</span>
+        <span class="c1"># Variables passed into class Map kwargs instead of markers kwargs</span>
+        <span class="n">map_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;index_map&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;index_map&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="s1">&#39;cluster_labels&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;cluster_labels&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="s1">&#39;colorbar_scale&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;colorbar_scale&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="s1">&#39;include_color_scale_outliers&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;include_color_scale_outliers&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="s1">&#39;radius_in_meters&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;radius_in_meters&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="c1"># index_map = kwargs.pop(&quot;index_map&quot;, None)</span>
+        <span class="c1"># cluster_labels = kwargs.pop(&quot;cluster_labels&quot;, None)</span>
+        <span class="c1"># colorbar_scale = kwargs.pop(&quot;colorbar_scale&quot;, None)</span>
+        <span class="c1"># include_color_scale_outliers = kwargs.pop(&quot;include_color_scale_outliers&quot;, None)</span>
+        <span class="c1"># radius_in_meters = kwargs.pop(&quot;radius_in_meters&quot;, False)</span>
         <span class="k">if</span> <span class="n">labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">latitudes</span><span class="p">)</span>
             <span class="n">inputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
@@ -557,7 +674,7 @@
             <span class="n">inputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">colors</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">areas</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">areas</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">latitudes</span><span class="p">)</span>
-            <span class="n">inputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">areas</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+            <span class="n">inputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">areas</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">other_attrs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">other_attrs_processed</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">latitudes</span><span class="p">)):</span>
@@ -569,22 +686,34 @@
                 <span class="n">dic</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">other_attrs_processed</span> <span class="o">=</span> <span class="p">[]</span>
-
+        
         <span class="k">if</span> <span class="n">other_attrs_processed</span><span class="p">:</span>
             <span class="n">ms</span> <span class="o">=</span> <span class="p">[</span><span class="bp">cls</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">other_attrs_processed</span><span class="p">[</span><span class="n">row_num</span><span class="p">])</span> <span class="k">for</span> <span class="n">row_num</span><span class="p">,</span> <span class="n">args</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">))]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ms</span> <span class="o">=</span> <span class="p">[</span><span class="bp">cls</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">row_num</span><span class="p">,</span> <span class="n">args</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">))]</span>
-        <span class="k">return</span> <span class="n">Map</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">clustered_marker</span><span class="o">=</span><span class="n">clustered_marker</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Map</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">clustered_marker</span><span class="o">=</span><span class="n">clustered_marker</span><span class="p">,</span> <span class="o">**</span><span class="n">map_kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Marker.map_table"><a class="viewcode-back" href="../../maps.html#datascience.maps.Marker.map_table">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">map_table</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">clustered_marker</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return markers from the colums of a table.</span>
+    <span class="k">def</span> <span class="nf">map_table</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">clustered_marker</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">include_color_scale_outliers</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">radius_in_meters</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return markers from the columns of a table.</span>
 <span class="sd">        </span>
 <span class="sd">        The first two columns of the table must be the latitudes and longitudes</span>
-<span class="sd">        (in that order), followed by &#39;labels&#39;, &#39;colors&#39;, and/or &#39;areas&#39; (if applicable)</span>
+<span class="sd">        (in that order), followed by &#39;labels&#39;, &#39;colors&#39;, &#39;color_scale&#39;, &#39;radius_scale&#39;, &#39;cluster_by&#39;, &#39;area_scale&#39;, and/or &#39;areas&#39; (if applicable)</span>
 <span class="sd">        in any order with columns explicitly stating what property they are representing.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ``cls``: Type of marker being drawn on the map {Marker, Circle}.</span>
+<span class="sd">            </span>
+<span class="sd">            ``table``: Table of data to be made into markers. The first two columns of the table must be the latitudes and longitudes (in that order), followed by &#39;labels&#39;, &#39;colors&#39;, &#39;cluster_by&#39;, &#39;color_scale&#39;, &#39;radius_scale&#39;, &#39;area_scale&#39;, and/or &#39;areas&#39; (if applicable) in any order with columns explicitly stating what property they are representing. Additional columns for marker-specific attributes such as &#39;marker_icon&#39; for the Marker class can be included as well.</span>
+
+<span class="sd">            ``clustered_marker``: Boolean indicating if markers should be clustered with folium.plugins.MarkerCluster.</span>
+
+<span class="sd">            ``include_color_scale_outliers``: Boolean indicating if outliers should be included in the color scale gradient or not. </span>
+
+<span class="sd">            ``radius_in_meters``: Boolean indicating if circle markers should be drawn to map scale or zoom scale.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">lab</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">areas</span><span class="p">,</span> <span class="n">other_attrs</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">{}</span>
+        <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">lab</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">areas</span><span class="p">,</span> <span class="n">colorbar_scale</span><span class="p">,</span> <span class="n">index_map</span><span class="p">,</span> <span class="n">cluster_labels</span><span class="p">,</span> <span class="n">other_attrs</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">{}</span>
+        <span class="n">excluded</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;color_scale&quot;</span><span class="p">,</span> <span class="s2">&quot;cluster_by&quot;</span><span class="p">,</span> <span class="s2">&quot;radius_scale&quot;</span><span class="p">,</span> <span class="s2">&quot;area_scale&quot;</span><span class="p">]</span>
 
         <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">labels</span><span class="p">):</span>
             <span class="n">this_col</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
@@ -598,20 +727,79 @@
                 <span class="n">color</span> <span class="o">=</span> <span class="n">this_col</span>
             <span class="k">elif</span> <span class="n">col</span> <span class="o">==</span> <span class="s2">&quot;areas&quot;</span><span class="p">:</span>
                 <span class="n">areas</span> <span class="o">=</span> <span class="n">this_col</span>
-            <span class="k">else</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">excluded</span><span class="p">:</span>
                 <span class="n">other_attrs</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">this_col</span>
+
+        <span class="k">if</span> <span class="s2">&quot;cluster_by&quot;</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">labels</span><span class="p">:</span>
+            <span class="n">clustered_marker</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">cluster_column</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;cluster_by&quot;</span><span class="p">)</span>
+            <span class="n">cluster_labels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">cluster_column</span><span class="p">))</span>
+            <span class="n">index_name</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">labels</span><span class="p">)</span> <span class="c1"># Ensure column name doesn&#39;t already exist in table</span>
+            <span class="n">index_name</span> <span class="o">+=</span> <span class="s2">&quot; &quot;</span>
+            <span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span><span class="n">index_name</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">num_rows</span><span class="p">))</span>
+            <span class="n">index_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">table</span><span class="o">.</span><span class="n">num_rows</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cluster_labels</span><span class="p">):</span>
+                <span class="n">index_map</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s2">&quot;cluster_by&quot;</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">index_name</span><span class="p">))]</span> <span class="o">=</span> <span class="n">i</span>
+        
+        <span class="k">if</span> <span class="s2">&quot;radius_scale&quot;</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">labels</span><span class="p">:</span>
+            <span class="n">radius_column</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;radius_scale&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+            <span class="n">rmin</span><span class="p">,</span> <span class="n">rmax</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;radius_min&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;radius_max&quot;</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+            <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">radius_column</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">radius_column</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <span class="n">scale_fn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="p">(</span><span class="n">v</span> <span class="o">-</span> <span class="n">vmin</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">vmax</span> <span class="o">-</span> <span class="n">vmin</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">rmax</span> <span class="o">-</span> <span class="n">rmin</span><span class="p">)</span> <span class="o">+</span> <span class="n">rmin</span>
+            <span class="n">radii</span> <span class="o">=</span> <span class="n">scale_fn</span><span class="p">(</span><span class="n">radius_column</span><span class="p">)</span>
+            <span class="n">other_attrs</span><span class="p">[</span><span class="s2">&quot;radius&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">radii</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="s2">&quot;area_scale&quot;</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">labels</span><span class="p">:</span> <span class="c1"># takes precedence over radius_scale</span>
+            <span class="n">area_column</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;area_scale&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+            <span class="n">amin</span><span class="p">,</span> <span class="n">amax</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;area_min&quot;</span><span class="p">,</span> <span class="mi">80</span><span class="p">),</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;area_max&quot;</span><span class="p">,</span> <span class="mi">8000</span><span class="p">)</span>
+            <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">area_column</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">area_column</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <span class="n">scale_fn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="p">(</span><span class="n">v</span> <span class="o">-</span> <span class="n">vmin</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">vmax</span> <span class="o">-</span> <span class="n">vmin</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">amax</span> <span class="o">-</span> <span class="n">amin</span><span class="p">)</span> <span class="o">+</span> <span class="n">amin</span>
+            <span class="n">areas</span> <span class="o">=</span> <span class="n">scale_fn</span><span class="p">(</span><span class="n">area_column</span><span class="p">)</span>
+            <span class="n">radii</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">areas</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>   <span class="c1"># convert area into radius using A = pi * r^2</span>
+            <span class="n">other_attrs</span><span class="p">[</span><span class="s2">&quot;radius&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">radii</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="s1">&#39;color_scale&#39;</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">labels</span><span class="p">:</span>
+            <span class="n">vmin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;color_scale&quot;</span><span class="p">))</span>
+            <span class="n">vmax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;color_scale&quot;</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">include_color_scale_outliers</span><span class="p">:</span>
+                <span class="n">outlier_min_bound</span> <span class="o">=</span> <span class="n">vmin</span>
+                <span class="n">outlier_max_bound</span> <span class="o">=</span> <span class="n">vmax</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">q1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;color_scale&quot;</span><span class="p">),</span> <span class="mi">25</span><span class="p">)</span>
+                <span class="n">q3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;color_scale&quot;</span><span class="p">),</span> <span class="mi">75</span><span class="p">)</span>
+                <span class="n">IQR</span> <span class="o">=</span> <span class="n">q3</span> <span class="o">-</span> <span class="n">q1</span>
+                <span class="n">outlier_min_bound</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">q1</span> <span class="o">-</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="n">IQR</span><span class="p">)</span>
+                <span class="n">outlier_max_bound</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">vmax</span><span class="p">,</span> <span class="n">q3</span> <span class="o">+</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="n">IQR</span><span class="p">)</span>
+            <span class="n">colorbar_scale</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">outlier_min_bound</span><span class="p">,</span> <span class="n">outlier_max_bound</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
+            <span class="n">scale_colors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;#340597&quot;</span><span class="p">,</span> <span class="s2">&quot;#7008a5&quot;</span><span class="p">,</span> <span class="s2">&quot;#a32494&quot;</span><span class="p">,</span> <span class="s2">&quot;#cf5073&quot;</span><span class="p">,</span> <span class="s2">&quot;#ee7c4c&quot;</span><span class="p">,</span> <span class="s2">&quot;#f69344&quot;</span><span class="p">,</span> <span class="s2">&quot;#fcc22d&quot;</span><span class="p">,</span> <span class="s2">&quot;#f4e82d&quot;</span><span class="p">,</span> <span class="s2">&quot;#f4e82d&quot;</span><span class="p">]</span>
+            <span class="k">def</span> <span class="nf">interpolate_color</span><span class="p">(</span><span class="n">colors</span><span class="p">,</span> <span class="n">cutoffs</span><span class="p">,</span> <span class="n">datapoint</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cutoff</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cutoffs</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">cutoff</span> <span class="o">&gt;=</span> <span class="n">datapoint</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">colors</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">colors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">return</span> <span class="n">colors</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">table</span><span class="o">.</span><span class="n">num_rows</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">datapoint</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s1">&#39;color_scale&#39;</span><span class="p">)):</span> 
+                <span class="n">color</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">interpolate_color</span><span class="p">(</span><span class="n">scale_colors</span><span class="p">,</span> <span class="n">colorbar_scale</span><span class="p">,</span> <span class="n">datapoint</span><span class="p">)</span>
+            <span class="n">colorbar_scale</span> <span class="o">=</span> <span class="p">[</span><span class="n">vmin</span><span class="p">]</span> <span class="o">+</span> <span class="n">colorbar_scale</span> <span class="o">+</span> <span class="p">[</span><span class="n">vmax</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">other_attrs</span><span class="p">:</span>
             <span class="n">other_attrs</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">latitudes</span><span class="o">=</span><span class="n">lat</span><span class="p">,</span> <span class="n">longitudes</span><span class="o">=</span><span class="n">lon</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">lab</span><span class="p">,</span>
-            <span class="n">colors</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">areas</span><span class="o">=</span><span class="n">areas</span><span class="p">,</span> <span class="n">other_attrs</span><span class="o">=</span><span class="n">other_attrs</span><span class="p">,</span> 
-            <span class="n">clustered_marker</span><span class="o">=</span><span class="n">clustered_marker</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+            <span class="n">latitudes</span><span class="o">=</span><span class="n">lat</span><span class="p">,</span> <span class="n">longitudes</span><span class="o">=</span><span class="n">lon</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">lab</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">areas</span><span class="o">=</span><span class="n">areas</span><span class="p">,</span> 
+            <span class="n">colorbar_scale</span><span class="o">=</span><span class="n">colorbar_scale</span><span class="p">,</span> <span class="n">other_attrs</span><span class="o">=</span><span class="n">other_attrs</span><span class="p">,</span> <span class="n">clustered_marker</span><span class="o">=</span><span class="n">clustered_marker</span><span class="p">,</span> 
+            <span class="n">index_map</span><span class="o">=</span><span class="n">index_map</span><span class="p">,</span> <span class="n">include_color_scale_outliers</span><span class="o">=</span><span class="n">include_color_scale_outliers</span><span class="p">,</span> 
+            <span class="n">radius_in_meters</span><span class="o">=</span><span class="n">radius_in_meters</span><span class="p">,</span> <span class="n">cluster_labels</span><span class="o">=</span><span class="n">cluster_labels</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span></div></div>
 
 <div class="viewcode-block" id="Circle"><a class="viewcode-back" href="../../maps.html#datascience.maps.Circle">[docs]</a><span class="k">class</span> <span class="nc">Circle</span><span class="p">(</span><span class="n">Marker</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A marker displayed with Folium&#39;s circle_marker method.</span>
+    <span class="sd">&quot;&quot;&quot;A marker displayed with either Folium&#39;s circle_marker or circle methods.</span>
+
+<span class="sd">    The ``circle_marker`` method draws circles that stay the same size regardless of map zoom, </span>
+<span class="sd">    whereas the circle method draws circles that have a fixed radius in meters. To toggle </span>
+<span class="sd">    between them, use the ``radius_in_meters`` flag in the draw_on function. </span>
 
 <span class="sd">    popup -- text that pops up when marker is clicked</span>
 <span class="sd">    color -- fill color</span>
-<span class="sd">    radius -- pixel radius of the circle</span>
+<span class="sd">    area -- pixel-squared area of the circle</span>
 
 <span class="sd">    Defaults from Folium:</span>
 
@@ -619,23 +807,37 @@
 <span class="sd">        Circle fill opacity</span>
 
 <span class="sd">    More options can be passed into kwargs by following the attributes</span>
-<span class="sd">    listed in `https://leafletjs.com/reference-1.4.0.html#circlemarker`.</span>
+<span class="sd">    listed in `https://leafletjs.com/reference-1.4.0.html#circlemarker` or </span>
+<span class="sd">    `https://leafletjs.com/reference-1.4.0.html#circle`.</span>
 
-<span class="sd">    For example, to draw three circles::</span>
+<span class="sd">    For example, to draw three circles with circle_marker:</span>
+
+<span class="sd">    .. code-block:: python</span>
 
 <span class="sd">        t = Table().with_columns([</span>
 <span class="sd">                &#39;lat&#39;, [37.8, 38, 37.9],</span>
 <span class="sd">                &#39;lon&#39;, [-122, -122.1, -121.9],</span>
 <span class="sd">                &#39;label&#39;, [&#39;one&#39;, &#39;two&#39;, &#39;three&#39;],</span>
 <span class="sd">                &#39;color&#39;, [&#39;red&#39;, &#39;green&#39;, &#39;blue&#39;],</span>
-<span class="sd">                &#39;radius&#39;, [3000, 4000, 5000],</span>
+<span class="sd">                &#39;area&#39;, [3000, 4000, 5000],</span>
 <span class="sd">            ])</span>
 <span class="sd">        Circle.map_table(t)</span>
+
+<span class="sd">    To draw three circles with the circle methods, replace the last line with:</span>
+
+<span class="sd">    .. code-block:: python</span>
+<span class="sd">    </span>
+<span class="sd">        Circle.map_table(t, radius_in_meters=True)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">_has_radius</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">_has_area</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">popup</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">popup</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">area</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># Add support for transitioning radius to area</span>
+        <span class="n">radius</span> <span class="o">=</span> <span class="p">(</span><span class="n">area</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span>
+        <span class="k">if</span> <span class="s1">&#39;radius&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;The &#39;radius&#39; argument is deprecated. Please use &#39;area&#39; instead.&quot;</span><span class="p">,</span> <span class="ne">FutureWarning</span><span class="p">)</span>
+            <span class="n">radius</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;radius&#39;</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">popup</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -648,8 +850,11 @@
             <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;color&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;line_color&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">attrs</span>
 
-<div class="viewcode-block" id="Circle.draw_on"><a class="viewcode-back" href="../../maps.html#datascience.maps.Circle.draw_on">[docs]</a>    <span class="k">def</span> <span class="nf">draw_on</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folium_map</span><span class="p">):</span>
-        <span class="n">folium</span><span class="o">.</span><span class="n">CircleMarker</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_folium_kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">add_to</span><span class="p">(</span><span class="n">folium_map</span><span class="p">)</span></div></div>
+<div class="viewcode-block" id="Circle.draw_on"><a class="viewcode-back" href="../../maps.html#datascience.maps.Circle.draw_on">[docs]</a>    <span class="k">def</span> <span class="nf">draw_on</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folium_map</span><span class="p">,</span> <span class="n">radius_in_meters</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">radius_in_meters</span><span class="p">:</span>
+            <span class="n">folium</span><span class="o">.</span><span class="n">Circle</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_folium_kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">add_to</span><span class="p">(</span><span class="n">folium_map</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">folium</span><span class="o">.</span><span class="n">CircleMarker</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_folium_kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">add_to</span><span class="p">(</span><span class="n">folium_map</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="Region"><a class="viewcode-back" href="../../maps.html#datascience.maps.Region">[docs]</a><span class="k">class</span> <span class="nc">Region</span><span class="p">(</span><span class="n">_MapFeature</span><span class="p">):</span>
@@ -742,6 +947,82 @@
         <span class="k">return</span> <span class="p">[(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">lat_lon</span> <span class="k">for</span> <span class="n">sub</span> <span class="ow">in</span> <span class="n">s</span> <span class="k">for</span> <span class="n">lat_lon</span> <span class="ow">in</span> <span class="n">_lat_lons_from_geojson</span><span class="p">(</span><span class="n">sub</span><span class="p">)]</span>
+
+
+<div class="viewcode-block" id="get_coordinates"><a class="viewcode-back" href="../../maps.html#datascience.maps.get_coordinates">[docs]</a><span class="k">def</span> <span class="nf">get_coordinates</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">replace_columns</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">remove_nans</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds latitude and longitude coordinates to table based on other location identifiers. Must be in the United States.</span>
+
+<span class="sd">    Takes table with columns &quot;zip code&quot; or &quot;city&quot; and/or &quot;county&quot; and &quot;state&quot; in column names and </span>
+<span class="sd">    adds the columns &quot;lat&quot; and &quot;lon&quot;. If a county is not found inside the dataset,</span>
+<span class="sd">    that row&#39;s latitude and longitude coordinates are replaced with np.nans. The &#39;replace_columns&#39; flag</span>
+<span class="sd">    indicates if the &quot;city&quot;, &quot;county&quot;, &quot;state&quot;, and &quot;zip code&quot; columns should be removed afterwards.</span>
+<span class="sd">    The &#39;remove_nans&#39; flag indicates if rows with nan latitudes and longitudes should be removed. Robust to </span>
+<span class="sd">    capitalization in city and county names. If a row&#39;s location with multiple zip codes is specified, the latitude and longitude </span>
+<span class="sd">    pair assigned to the row will correspond to the smallest zip code.</span>
+
+<span class="sd">    Dataset was acquired on July 2, 2020 from https://docs.gaslamp.media/download-zip-code-latitude-longitude-city-state-county-csv. </span>
+<span class="sd">    Found in geocode_datasets/geocode_states.csv. Modified column names and made city/county columns all in lowercase. </span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        table: A table with counties that need to mapped to coordinates</span>
+<span class="sd">        replace_columns: A boolean that indicates if &quot;county&quot;, &quot;city&quot;, &quot;state&quot;, and &quot;zip code&quot; columns should be removed </span>
+<span class="sd">        remove_nans: A boolean that indicates if columns with invalid longitudes and latitudes should be removed</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Table with latitude and longitude coordinates </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="s2">&quot;zip code&quot;</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">labels</span> <span class="ow">or</span> <span class="p">((</span><span class="s2">&quot;city&quot;</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">labels</span> <span class="ow">or</span> <span class="s2">&quot;county&quot;</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">labels</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">&quot;state&quot;</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">labels</span><span class="p">)</span>
+    <span class="n">ref</span> <span class="o">=</span> <span class="n">Table</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="s2">&quot;geodata/geocode_states.csv&quot;</span><span class="p">))</span>
+
+    <span class="n">index_name</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">labels</span><span class="p">)</span> <span class="c1"># Ensures that index can&#39;t possibly be one of the preexisting columns</span>
+    <span class="n">index_name</span> <span class="o">+=</span> <span class="s2">&quot; &quot;</span>
+    
+    <span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span><span class="n">index_name</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">num_rows</span><span class="p">))</span>
+    <span class="n">lat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]</span> <span class="o">*</span> <span class="n">table</span><span class="o">.</span><span class="n">num_rows</span><span class="p">)</span>
+    <span class="n">lon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]</span> <span class="o">*</span> <span class="n">table</span><span class="o">.</span><span class="n">num_rows</span><span class="p">)</span>
+    <span class="n">unassigned</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">num_rows</span><span class="p">))</span> 
+    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">unassigned</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">unassigned</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;zip code&quot;</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">labels</span><span class="p">:</span>
+            <span class="n">select</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s2">&quot;zip code&quot;</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;zip code&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">index_name</span><span class="p">)</span>
+            <span class="n">unassigned</span> <span class="o">-=</span> <span class="nb">set</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">ref_lat</span><span class="p">,</span> <span class="n">ref_lon</span> <span class="o">=</span> <span class="n">ref</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s2">&quot;zip&quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;zip code&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;lat&quot;</span><span class="p">,</span> <span class="s2">&quot;lon&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">lat</span><span class="p">[</span><span class="n">select</span><span class="p">]</span> <span class="o">=</span> <span class="n">ref_lat</span>
+                <span class="n">lon</span><span class="p">[</span><span class="n">select</span><span class="p">]</span> <span class="o">=</span> <span class="n">ref_lon</span>
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">state_select</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s2">&quot;state&quot;</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;state&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">index_name</span><span class="p">)</span>
+            <span class="n">county_select</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s2">&quot;county&quot;</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;county&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">index_name</span><span class="p">)</span> <span class="k">if</span> <span class="s2">&quot;county&quot;</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">labels</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">num_rows</span><span class="p">)</span>
+            <span class="n">city_select</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s2">&quot;city&quot;</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;city&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">index_name</span><span class="p">)</span> <span class="k">if</span> <span class="s2">&quot;city&quot;</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">labels</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">num_rows</span><span class="p">)</span>
+            <span class="n">select</span> <span class="o">=</span> <span class="nb">set</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">state_select</span><span class="p">),</span> <span class="nb">set</span><span class="p">(</span><span class="n">county_select</span><span class="p">),</span> <span class="nb">set</span><span class="p">(</span><span class="n">city_select</span><span class="p">))</span>
+            <span class="n">unassigned</span> <span class="o">-=</span> <span class="n">select</span>
+            <span class="n">select</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">matched_ref</span> <span class="o">=</span> <span class="n">ref</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s2">&quot;state&quot;</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;state&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+                <span class="k">if</span> <span class="s2">&quot;county&quot;</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">labels</span><span class="p">:</span>
+                    <span class="n">matched_ref</span> <span class="o">=</span> <span class="n">matched_ref</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s2">&quot;county&quot;</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;county&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+                <span class="k">if</span> <span class="s2">&quot;city&quot;</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">labels</span><span class="p">:</span>
+                    <span class="n">matched_ref</span> <span class="o">=</span> <span class="n">matched_ref</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s2">&quot;city&quot;</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;city&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+                <span class="n">ref_lat</span><span class="p">,</span> <span class="n">ref_lon</span> <span class="o">=</span> <span class="n">matched_ref</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;lat&quot;</span><span class="p">,</span> <span class="s2">&quot;lon&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">lat</span><span class="p">[</span><span class="n">select</span><span class="p">]</span> <span class="o">=</span> <span class="n">ref_lat</span>
+                <span class="n">lon</span><span class="p">[</span><span class="n">select</span><span class="p">]</span> <span class="o">=</span> <span class="n">ref_lon</span>
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="k">pass</span>
+    <span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span><span class="s2">&quot;lat&quot;</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="s2">&quot;lon&quot;</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
+    <span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">index_name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">replace_columns</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;county&quot;</span><span class="p">,</span> <span class="s2">&quot;city&quot;</span><span class="p">,</span> <span class="s2">&quot;zip code&quot;</span><span class="p">,</span> <span class="s2">&quot;state&quot;</span><span class="p">]:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">pass</span>
+    <span class="k">if</span> <span class="n">remove_nans</span><span class="p">:</span> 
+        <span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s2">&quot;lat&quot;</span><span class="p">,</span> <span class="n">are</span><span class="o">.</span><span class="n">below</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)))</span> <span class="c1"># NaNs are not considered to be smaller than infinity</span>
+    <span class="k">return</span> <span class="n">table</span></div>
 </pre></div>
 
             <div class="clearer"></div>
@@ -754,12 +1035,12 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -773,14 +1054,14 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.15.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.17.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">datascience.maps</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.0.1.
     </div>
   </body>
 </html>

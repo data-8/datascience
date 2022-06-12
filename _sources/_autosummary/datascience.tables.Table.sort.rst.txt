@@ -1,4 +1,4 @@
-datascience.tables.Table.sort
+﻿datascience.tables.Table.sort
 =============================
 
 .. currentmodule:: datascience.tables

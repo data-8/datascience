@@ -1,19 +1,21 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Utility Functions (datascience.util) &#8212; datascience 0.15.7 documentation</title>
-    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Utility Functions (datascience.util) &#8212; datascience 0.17.2 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -31,7 +33,7 @@
         <li class="right" >
           <a href="formats.html" title="Formats (datascience.formats)"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.15.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.17.2 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Utility Functions (<code class="docutils literal notranslate"><span class="pre">datascience.util</span></code>)</a></li> 
       </ul>
     </div>  
@@ -41,12 +43,12 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-datascience.util">
-<span id="utility-functions-datascience-util"></span><h1>Utility Functions (<code class="docutils literal notranslate"><span class="pre">datascience.util</span></code>)<a class="headerlink" href="#module-datascience.util" title="Permalink to this headline">¶</a></h1>
+  <section id="module-datascience.util">
+<span id="utility-functions-datascience-util"></span><h1>Utility Functions (<code class="docutils literal notranslate"><span class="pre">datascience.util</span></code>)<a class="headerlink" href="#module-datascience.util" title="Permalink to this heading">¶</a></h1>
 <p>Utility functions</p>
 <dl class="py function">
-<dt id="datascience.util.make_array">
-<code class="sig-prename descclassname">datascience.util.</code><code class="sig-name descname">make_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">elements</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#make_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.util.make_array" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="datascience.util.make_array">
+<span class="sig-prename descclassname"><span class="pre">datascience.util.</span></span><span class="sig-name descname"><span class="pre">make_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">elements</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#make_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.util.make_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns an array containing all the arguments passed to this function.
 A simple way to make an array with a few elements.</p>
 <p>As with any array, all arguments should have the same type.</p>
@@ -64,8 +66,8 @@ A simple way to make an array with a few elements.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="datascience.util.minimize">
-<code class="sig-prename descclassname">datascience.util.</code><code class="sig-name descname">minimize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">start</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">smooth</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">log</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">array</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">vargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#minimize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.util.minimize" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="datascience.util.minimize">
+<span class="sig-prename descclassname"><span class="pre">datascience.util.</span></span><span class="sig-name descname"><span class="pre">minimize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">array</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">vargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#minimize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.util.minimize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Minimize a function f of one or more arguments.</p>
 <dl>
 <dt>Args:</dt><dd><p>f: A function that takes numbers and returns a number</p>
@@ -83,8 +85,8 @@ A simple way to make an array with a few elements.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="datascience.util.percentile">
-<code class="sig-prename descclassname">datascience.util.</code><code class="sig-name descname">percentile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p</span></em>, <em class="sig-param"><span class="n">arr</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#percentile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.util.percentile" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="datascience.util.percentile">
+<span class="sig-prename descclassname"><span class="pre">datascience.util.</span></span><span class="sig-name descname"><span class="pre">percentile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#percentile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.util.percentile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the pth percentile of the input array (the value that is at
 least as great as p% of the values in the array).</p>
 <p>If arr is not provided, percentile returns itself curried with p</p>
@@ -102,8 +104,8 @@ least as great as p% of the values in the array).</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="datascience.util.plot_cdf_area">
-<code class="sig-prename descclassname">datascience.util.</code><code class="sig-name descname">plot_cdf_area</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rbound</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">lbound</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mean</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">sd</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#datascience.util.plot_cdf_area" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="datascience.util.plot_cdf_area">
+<span class="sig-prename descclassname"><span class="pre">datascience.util.</span></span><span class="sig-name descname"><span class="pre">plot_cdf_area</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rbound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lbound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#datascience.util.plot_cdf_area" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots a normal curve with specified parameters and area below curve shaded
 between <code class="docutils literal notranslate"><span class="pre">lbound</span></code> and <code class="docutils literal notranslate"><span class="pre">rbound</span></code>.</p>
 <dl>
@@ -116,8 +118,8 @@ between <code class="docutils literal notranslate"><span class="pre">lbound</spa
 </dd></dl>
 
 <dl class="py function">
-<dt id="datascience.util.plot_normal_cdf">
-<code class="sig-prename descclassname">datascience.util.</code><code class="sig-name descname">plot_normal_cdf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rbound</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">lbound</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mean</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">sd</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#plot_normal_cdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.util.plot_normal_cdf" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="datascience.util.plot_normal_cdf">
+<span class="sig-prename descclassname"><span class="pre">datascience.util.</span></span><span class="sig-name descname"><span class="pre">plot_normal_cdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rbound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lbound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#plot_normal_cdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.util.plot_normal_cdf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots a normal curve with specified parameters and area below curve shaded
 between <code class="docutils literal notranslate"><span class="pre">lbound</span></code> and <code class="docutils literal notranslate"><span class="pre">rbound</span></code>.</p>
 <dl>
@@ -130,8 +132,8 @@ between <code class="docutils literal notranslate"><span class="pre">lbound</spa
 </dd></dl>
 
 <dl class="py function">
-<dt id="datascience.util.proportions_from_distribution">
-<code class="sig-prename descclassname">datascience.util.</code><code class="sig-name descname">proportions_from_distribution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">table</span></em>, <em class="sig-param"><span class="n">label</span></em>, <em class="sig-param"><span class="n">sample_size</span></em>, <em class="sig-param"><span class="n">column_name</span><span class="o">=</span><span class="default_value">'Random Sample'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#proportions_from_distribution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.util.proportions_from_distribution" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="datascience.util.proportions_from_distribution">
+<span class="sig-prename descclassname"><span class="pre">datascience.util.</span></span><span class="sig-name descname"><span class="pre">proportions_from_distribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Random</span> <span class="pre">Sample'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#proportions_from_distribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.util.proportions_from_distribution" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a column named <code class="docutils literal notranslate"><span class="pre">column_name</span></code> containing the proportions of a random
 draw using the distribution in <code class="docutils literal notranslate"><span class="pre">label</span></code>.</p>
 <p>This method uses <code class="docutils literal notranslate"><span class="pre">np.random.multinomial</span></code> to draw <code class="docutils literal notranslate"><span class="pre">sample_size</span></code> samples
@@ -161,8 +163,8 @@ sampled proportions. The proportions will sum to 1.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="datascience.util.sample_proportions">
-<code class="sig-prename descclassname">datascience.util.</code><code class="sig-name descname">sample_proportions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sample_size</span></em>, <em class="sig-param"><span class="n">probabilities</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#sample_proportions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.util.sample_proportions" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="datascience.util.sample_proportions">
+<span class="sig-prename descclassname"><span class="pre">datascience.util.</span></span><span class="sig-name descname"><span class="pre">sample_proportions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">probabilities</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#sample_proportions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.util.sample_proportions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the proportion of random draws for each outcome in a distribution.</p>
 <p>This function is similar to np.random.multinomial, but returns proportions
 instead of counts.</p>
@@ -176,8 +178,8 @@ instead of counts.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="datascience.util.table_apply">
-<code class="sig-prename descclassname">datascience.util.</code><code class="sig-name descname">table_apply</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">table</span></em>, <em class="sig-param"><span class="n">func</span></em>, <em class="sig-param"><span class="n">subset</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#table_apply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.util.table_apply" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="datascience.util.table_apply">
+<span class="sig-prename descclassname"><span class="pre">datascience.util.</span></span><span class="sig-name descname"><span class="pre">table_apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#table_apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.util.table_apply" title="Permalink to this definition">¶</a></dt>
 <dd><p>Applies a function to each column and returns a Table.</p>
 <dl>
 <dt>Args:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">table</span></code>: The table to apply your function to.</p>
@@ -193,7 +195,7 @@ shape == shape(table), or shape (1, table.shape[1])</p>
 </dl>
 </dd></dl>
 
-</div>
+</section>
 
 
             <div class="clearer"></div>
@@ -202,9 +204,11 @@ shape == shape(table), or shape (1, table.shape[1])</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="formats.html"
-                        title="previous chapter">Formats (<code class="docutils literal notranslate"><span class="pre">datascience.formats</span></code>)</a></p>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="formats.html"
+                          title="previous chapter">Formats (<code class="docutils literal notranslate"><span class="pre">datascience.formats</span></code>)</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -216,12 +220,12 @@ shape == shape(table), or shape (1, table.shape[1])</p>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -238,13 +242,13 @@ shape == shape(table), or shape (1, table.shape[1])</p>
         <li class="right" >
           <a href="formats.html" title="Formats (datascience.formats)"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.15.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.17.2 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Utility Functions (<code class="docutils literal notranslate"><span class="pre">datascience.util</span></code>)</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.0.1.
     </div>
   </body>
 </html>

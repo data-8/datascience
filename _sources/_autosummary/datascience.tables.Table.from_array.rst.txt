@@ -1,4 +1,4 @@
-datascience.tables.Table.from\_array
+﻿datascience.tables.Table.from\_array
 ====================================
 
 .. currentmodule:: datascience.tables

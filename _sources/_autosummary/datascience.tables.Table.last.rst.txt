@@ -1,4 +1,4 @@
-datascience.tables.Table.last
+﻿datascience.tables.Table.last
 =============================
 
 .. currentmodule:: datascience.tables

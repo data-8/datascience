@@ -1,4 +1,4 @@
-datascience.tables.Table.split
+﻿datascience.tables.Table.split
 ==============================
 
 .. currentmodule:: datascience.tables

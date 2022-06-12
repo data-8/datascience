@@ -1,0 +1,6 @@
+﻿datascience.tables.Table.static\_plots
+======================================
+
+.. currentmodule:: datascience.tables
+
+.. automethod:: Table.static_plots

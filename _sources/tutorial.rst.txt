@@ -60,11 +60,11 @@ columns.
 
 .. ipython:: python
 
-    t = Table().with_columns([
+    t = Table().with_columns(
         'letter', ['a', 'b', 'c', 'z'],
         'count',  [  9,   3,   3,   1],
         'points', [  1,   2,   2,  10],
-    ])
+    )
 
     print(t)
 
@@ -217,12 +217,13 @@ Operate on table data with :meth:`~datascience.tables.Table.sort`,
     t.select(['count', 'points']).group('count', collect=sum)
 
 .. ipython:: python
+    :okwarning:
 
-    other_table = Table().with_columns([
+    other_table = Table().with_columns(
         'mar_status',  ['married', 'married', 'partner', 'partner', 'married'],
         'empl_status', ['Working as paid', 'Working as paid', 'Not working',
                         'Not working', 'Not working'],
-        'count',       [1, 1, 1, 1, 1]])
+        'count',       [1, 1, 1, 1, 1])
     other_table
 
     other_table.pivot('mar_status', 'empl_status', 'count', collect=sum)
@@ -234,9 +235,9 @@ We'll start with some data drawn at random from two normal distributions:
 
 .. ipython:: python
 
-    normal_data = Table().with_columns([
+    normal_data = Table().with_columns(
         'data1', np.random.normal(loc = 1, scale = 2, size = 100),
-        'data2', np.random.normal(loc = 4, scale = 3, size = 100)])
+        'data2', np.random.normal(loc = 4, scale = 3, size = 100))
 
     normal_data
 

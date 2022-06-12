@@ -1,4 +1,4 @@
-datascience.tables.Table.relabel
+﻿datascience.tables.Table.relabel
 ================================
 
 .. currentmodule:: datascience.tables

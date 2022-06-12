@@ -1,19 +1,21 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>datascience.tables.Table.stats &#8212; datascience 0.15.7 documentation</title>
-    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>datascience.tables.Table.stats &#8212; datascience 0.17.2 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -35,7 +37,7 @@
         <li class="right" >
           <a href="datascience.tables.Table.join.html" title="datascience.tables.Table.join"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.15.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.17.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" accesskey="U">Tables (<code class="docutils literal notranslate"><span class="pre">datascience.tables</span></code>)</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">datascience.tables.Table.stats</a></li> 
       </ul>
@@ -46,15 +48,71 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="datascience-tables-table-stats">
-<h1>datascience.tables.Table.stats<a class="headerlink" href="#datascience-tables-table-stats" title="Permalink to this headline">¶</a></h1>
+  <section id="datascience-tables-table-stats">
+<h1>datascience.tables.Table.stats<a class="headerlink" href="#datascience-tables-table-stats" title="Permalink to this heading">¶</a></h1>
 <dl class="py method">
-<dt id="datascience.tables.Table.stats">
-<code class="sig-prename descclassname">Table.</code><code class="sig-name descname">stats</code><span class="sig-paren">(</span><em class="sig-param">ops=(&lt;built-in function min&gt;</em>, <em class="sig-param">&lt;built-in function max&gt;</em>, <em class="sig-param">&lt;function median&gt;</em>, <em class="sig-param">&lt;built-in function sum&gt;)</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.stats" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="datascience.tables.Table.stats">
+<span class="sig-prename descclassname"><span class="pre">Table.</span></span><span class="sig-name descname"><span class="pre">stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ops=(&lt;built-in</span> <span class="pre">function</span> <span class="pre">min&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;built-in</span> <span class="pre">function</span> <span class="pre">max&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;function</span> <span class="pre">median&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;built-in</span> <span class="pre">function</span> <span class="pre">sum&gt;)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.tables.Table.stats" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute statistics for each column and place them in a table.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">ops</span></code> – A tuple of stat functions to use to compute stats.</p>
+</dd>
+<dt>Returns:</dt><dd><p>A <code class="docutils literal notranslate"><span class="pre">Table</span></code> with a prepended statistic column with the name of the
+fucntion’s as the values and the calculated stats values per column.</p>
+</dd>
+</dl>
+<p>By default stats calculates the minimum, maximum, np.median, and sum of each
+column.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">17</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">stats</span><span class="p">()</span>
+<span class="go">statistic | A    | B    | C</span>
+<span class="go">min       | 0    | 10   | 2</span>
+<span class="go">max       | 6    | 20   | 18</span>
+<span class="go">median    | 4.5  | 17   | 11</span>
+<span class="go">sum       | 15   | 64   | 42</span>
+</pre></div>
+</div>
+<p>Note, stats are calculated even on non-numeric columns which may lead to
+unexpected behavior or in more severe cases errors. This is why it may be best
+to eliminate non-numeric columns from the table before running stats.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">17</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">,</span> <span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="s2">&quot;baz&quot;</span><span class="p">,</span> <span class="s2">&quot;baz&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">stats</span><span class="p">()</span>
+<span class="go">statistic | B    | C</span>
+<span class="go">min       | 10   | bar</span>
+<span class="go">max       | 20   | foo</span>
+<span class="go">median    | 17   |</span>
+<span class="go">sum       | 64   |</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">stats</span><span class="p">()</span>
+<span class="go">statistic | B</span>
+<span class="go">min       | 10</span>
+<span class="go">max       | 20</span>
+<span class="go">median    | 17</span>
+<span class="go">sum       | 64</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">ops</span></code> can also be overridden to calculate custom stats.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">17</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">weighted_average</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">1.25</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">stats</span><span class="p">(</span><span class="n">ops</span><span class="o">=</span><span class="p">(</span><span class="n">weighted_average</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">))</span>
+<span class="go">statistic        | A       | B       | C</span>
+<span class="go">weighted_average | 5.13333 | 15.1333 | 8.6</span>
+<span class="go">mean             | 3.75    | 16      | 10.5</span>
+<span class="go">median           | 4.5     | 17      | 11</span>
+<span class="go">std              | 2.27761 | 3.67423 | 5.85235</span>
+</pre></div>
+</div>
 </dd></dl>
 
-</div>
+</section>
 
 
             <div class="clearer"></div>
@@ -63,12 +121,16 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="datascience.tables.Table.join.html"
-                        title="previous chapter">datascience.tables.Table.join</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="datascience.tables.Table.percentile.html"
-                        title="next chapter">datascience.tables.Table.percentile</a></p>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="datascience.tables.Table.join.html"
+                          title="previous chapter">datascience.tables.Table.join</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="datascience.tables.Table.percentile.html"
+                          title="next chapter">datascience.tables.Table.percentile</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -80,12 +142,12 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -105,14 +167,14 @@
         <li class="right" >
           <a href="datascience.tables.Table.join.html" title="datascience.tables.Table.join"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.15.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.17.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" >Tables (<code class="docutils literal notranslate"><span class="pre">datascience.tables</span></code>)</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">datascience.tables.Table.stats</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.0.1.
     </div>
   </body>
 </html>

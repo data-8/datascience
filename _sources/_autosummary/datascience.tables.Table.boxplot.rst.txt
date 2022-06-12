@@ -1,4 +1,4 @@
-datascience.tables.Table.boxplot
+﻿datascience.tables.Table.boxplot
 ================================
 
 .. currentmodule:: datascience.tables

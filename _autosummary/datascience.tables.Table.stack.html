@@ -1,19 +1,21 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>datascience.tables.Table.stack &#8212; datascience 0.15.7 documentation</title>
-    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>datascience.tables.Table.stack &#8212; datascience 0.17.2 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
     
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -35,7 +37,7 @@
         <li class="right" >
           <a href="datascience.tables.Table.pivot.html" title="datascience.tables.Table.pivot"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.15.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.17.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" accesskey="U">Tables (<code class="docutils literal notranslate"><span class="pre">datascience.tables</span></code>)</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">datascience.tables.Table.stack</a></li> 
       </ul>
@@ -46,16 +48,85 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="datascience-tables-table-stack">
-<h1>datascience.tables.Table.stack<a class="headerlink" href="#datascience-tables-table-stack" title="Permalink to this headline">¶</a></h1>
+  <section id="datascience-tables-table-stack">
+<h1>datascience.tables.Table.stack<a class="headerlink" href="#datascience-tables-table-stack" title="Permalink to this heading">¶</a></h1>
 <dl class="py method">
-<dt id="datascience.tables.Table.stack">
-<code class="sig-prename descclassname">Table.</code><code class="sig-name descname">stack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">labels</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.stack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#datascience.tables.Table.stack" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="datascience.tables.Table.stack">
+<span class="sig-prename descclassname"><span class="pre">Table.</span></span><span class="sig-name descname"><span class="pre">stack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.stack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.tables.Table.stack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Takes k original columns and returns two columns, with col. 1 of
 all column names and col. 2 of all associated data.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">key</span></code>: Name of a column from table which is the basis for stacking </dt><dd><p>values from the table.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">labels</span></code>: List of column names which must be included in the stacked</dt><dd><p>representation of the table. If no value is supplied for this argument,
+then the function considers all columns from the original table.</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>A table whose first column consists of stacked values from column passed in
+<code class="docutils literal notranslate"><span class="pre">key</span></code>. The second column of this returned table consists of the column names
+passed in <code class="docutils literal notranslate"><span class="pre">labels</span></code>, whereas the final column consists of the data values
+corresponding to the respective values in the first and second columns of the
+new table.</p>
+</dd>
+</dl>
+<p>Examples:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="o">.</span><span class="n">from_records</span><span class="p">([</span>
+<span class="gp">... </span>  <span class="p">{</span>
+<span class="gp">... </span>   <span class="s1">&#39;column1&#39;</span><span class="p">:</span><span class="s1">&#39;data1&#39;</span><span class="p">,</span>
+<span class="gp">... </span>   <span class="s1">&#39;column2&#39;</span><span class="p">:</span><span class="mi">86</span><span class="p">,</span>
+<span class="gp">... </span>   <span class="s1">&#39;column3&#39;</span><span class="p">:</span><span class="s1">&#39;b&#39;</span><span class="p">,</span>
+<span class="gp">... </span>   <span class="s1">&#39;column4&#39;</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span>
+<span class="gp">... </span>  <span class="p">},</span>
+<span class="gp">... </span>  <span class="p">{</span>
+<span class="gp">... </span>   <span class="s1">&#39;column1&#39;</span><span class="p">:</span><span class="s1">&#39;data2&#39;</span><span class="p">,</span>
+<span class="gp">... </span>   <span class="s1">&#39;column2&#39;</span><span class="p">:</span><span class="mi">51</span><span class="p">,</span>
+<span class="gp">... </span>   <span class="s1">&#39;column3&#39;</span><span class="p">:</span><span class="s1">&#39;c&#39;</span><span class="p">,</span>
+<span class="gp">... </span>   <span class="s1">&#39;column4&#39;</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span>
+<span class="gp">... </span>  <span class="p">},</span>
+<span class="gp">... </span>  <span class="p">{</span>
+<span class="gp">... </span>   <span class="s1">&#39;column1&#39;</span><span class="p">:</span><span class="s1">&#39;data3&#39;</span><span class="p">,</span>
+<span class="gp">... </span>   <span class="s1">&#39;column2&#39;</span><span class="p">:</span><span class="mi">32</span><span class="p">,</span>
+<span class="gp">... </span>   <span class="s1">&#39;column3&#39;</span><span class="p">:</span><span class="s1">&#39;a&#39;</span><span class="p">,</span>
+<span class="gp">... </span>   <span class="s1">&#39;column4&#39;</span><span class="p">:</span><span class="mi">6</span><span class="p">,</span>
+<span class="gp">... </span>  <span class="p">}</span>
+<span class="gp">... </span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span>
+<span class="go">column1 | column2 | column3 | column4</span>
+<span class="go">data1   | 86      | b       | 5</span>
+<span class="go">data2   | 51      | c       | 3</span>
+<span class="go">data3   | 32      | a       | 6</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="s1">&#39;column2&#39;</span><span class="p">)</span>
+<span class="go">column2 | column  | value</span>
+<span class="go">86      | column1 | data1</span>
+<span class="go">86      | column3 | b</span>
+<span class="go">86      | column4 | 5</span>
+<span class="go">51      | column1 | data2</span>
+<span class="go">51      | column3 | c</span>
+<span class="go">51      | column4 | 3</span>
+<span class="go">32      | column1 | data3</span>
+<span class="go">32      | column3 | a</span>
+<span class="go">32      | column4 | 6</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="s1">&#39;column2&#39;</span><span class="p">,</span><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;column4&#39;</span><span class="p">,</span><span class="s1">&#39;column1&#39;</span><span class="p">])</span>
+<span class="go">column2 | column  | value</span>
+<span class="go">86      | column1 | data1</span>
+<span class="go">86      | column4 | 5</span>
+<span class="go">51      | column1 | data2</span>
+<span class="go">51      | column4 | 3</span>
+<span class="go">32      | column1 | data3</span>
+<span class="go">32      | column4 | 6</span>
+</pre></div>
+</div>
 </dd></dl>
 
-</div>
+</section>
 
 
             <div class="clearer"></div>
@@ -64,12 +135,16 @@ all column names and col. 2 of all associated data.</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="datascience.tables.Table.pivot.html"
-                        title="previous chapter">datascience.tables.Table.pivot</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="datascience.tables.Table.join.html"
-                        title="next chapter">datascience.tables.Table.join</a></p>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="datascience.tables.Table.pivot.html"
+                          title="previous chapter">datascience.tables.Table.pivot</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="datascience.tables.Table.join.html"
+                          title="next chapter">datascience.tables.Table.join</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -81,12 +156,12 @@ all column names and col. 2 of all associated data.</p>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -106,14 +181,14 @@ all column names and col. 2 of all associated data.</p>
         <li class="right" >
           <a href="datascience.tables.Table.pivot.html" title="datascience.tables.Table.pivot"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.15.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">datascience 0.17.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tables.html" >Tables (<code class="docutils literal notranslate"><span class="pre">datascience.tables</span></code>)</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">datascience.tables.Table.stack</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.0.1.
     </div>
   </body>
 </html>
