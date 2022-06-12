@@ -51,6 +51,7 @@ jobs:
     - name: Push docs
       if: github.ref_name == 'master' && github.event_name == 'push'
       run: |
+        python -m pip install -r docs/requirements.txt
         git config --global user.name "GitHub Actions"
         git config --global user.email "github_actions@github.com"
         echo "-- building docs --"
