@@ -69,7 +69,9 @@ jobs:
         echo "-- get status --"
         git status
         echo "-- try to push --"
-        git push
+        echo "${{github.actor}}"
+        echo "${{github.token}}"
+        git push "https://${{github.actor}}:${{github.token}}@github.com/${{github.repository}}.git"
 
         rm -rf doc_build
 
