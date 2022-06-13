@@ -592,7 +592,7 @@
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">fn</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">column_or_columns</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> \
-                    <span class="n">_is_non_string_iterable</span><span class="p">(</span><span class="n">column_or_columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                    <span class="n">_util</span><span class="o">.</span><span class="n">is_non_string_iterable</span><span class="p">(</span><span class="n">column_or_columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
                    <span class="s2">&quot;column lists are deprecated; pass each as an argument&quot;</span><span class="p">,</span> <span class="ne">FutureWarning</span><span class="p">)</span>
                 <span class="n">column_or_columns</span> <span class="o">=</span> <span class="n">column_or_columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -1040,9 +1040,14 @@
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
             <span class="c1"># Coerce a single value to a sequence</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_non_string_iterable</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">_util</span><span class="o">.</span><span class="n">is_non_string_iterable</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
                 <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">values</span><span class="p">]</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_rows</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">values</span><span class="p">))</span>
+
+            <span class="c1"># Manually cast `values` as an object due to this: https://github.com/data-8/datascience/issues/458</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">_util</span><span class="o">.</span><span class="n">is_non_string_iterable</span><span class="p">(</span><span class="n">el</span><span class="p">)</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">values</span><span class="p">):</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">values</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">values</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_rows</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_rows</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Column length mismatch. New column does not have &#39;</span>
@@ -1605,7 +1610,7 @@
 <span class="sd">        Round       |           | 13         | 4.05</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Assume that a call to group with a list of labels is a call to groups</span>
-        <span class="k">if</span> <span class="n">_is_non_string_iterable</span><span class="p">(</span><span class="n">column_or_label</span><span class="p">)</span> <span class="ow">and</span> \
+        <span class="k">if</span> <span class="n">_util</span><span class="o">.</span><span class="n">is_non_string_iterable</span><span class="p">(</span><span class="n">column_or_label</span><span class="p">)</span> <span class="ow">and</span> \
                 <span class="nb">len</span><span class="p">(</span><span class="n">column_or_label</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_rows</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">(</span><span class="n">column_or_label</span><span class="p">,</span> <span class="n">collect</span><span class="p">)</span>
 
@@ -1689,7 +1694,7 @@
 <span class="sd">        Red   | Round       | 11         | 3.05</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Assume that a call to groups with one label is a call to group</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_non_string_iterable</span><span class="p">(</span><span class="n">labels</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_util</span><span class="o">.</span><span class="n">is_non_string_iterable</span><span class="p">(</span><span class="n">labels</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">collect</span><span class="o">=</span><span class="n">collect</span><span class="p">)</span>
 
         <span class="n">collect</span> <span class="o">=</span> <span class="n">_zero_on_type_error</span><span class="p">(</span><span class="n">collect</span><span class="p">)</span>
@@ -2084,7 +2089,7 @@
             <span class="n">other_label</span> <span class="o">=</span> <span class="n">column_label</span>
 
         <span class="c1"># checking to see if joining on multiple columns</span>
-        <span class="k">if</span> <span class="n">_is_non_string_iterable</span><span class="p">(</span><span class="n">column_label</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">_util</span><span class="o">.</span><span class="n">is_non_string_iterable</span><span class="p">(</span><span class="n">column_label</span><span class="p">):</span>
             <span class="c1"># then we are going to be joining multiple labels</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_multiple_join</span><span class="p">(</span><span class="n">column_label</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">other_label</span><span class="p">)</span>
 
@@ -5776,7 +5781,7 @@
 <span class="sd">    zero -- value used when no rows match a particular partial</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_non_string_iterable</span><span class="p">(</span><span class="n">partials</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_util</span><span class="o">.</span><span class="n">is_non_string_iterable</span><span class="p">(</span><span class="n">partials</span><span class="p">):</span>
         <span class="c1"># Convert partials to tuple for comparison against row slice later</span>
         <span class="n">partials</span> <span class="o">=</span> <span class="p">[(</span><span class="n">partial</span><span class="p">,)</span> <span class="k">for</span> <span class="n">partial</span> <span class="ow">in</span> <span class="n">partials</span><span class="p">]</span>
 
@@ -5795,7 +5800,7 @@
 
 <span class="k">def</span> <span class="nf">_as_labels</span><span class="p">(</span><span class="n">column_or_columns</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return a list of labels for a label or labels.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_non_string_iterable</span><span class="p">(</span><span class="n">column_or_columns</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_util</span><span class="o">.</span><span class="n">is_non_string_iterable</span><span class="p">(</span><span class="n">column_or_columns</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">column_or_columns</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">column_or_columns</span>
@@ -5805,7 +5810,7 @@
 <span class="sd">    of labels.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">label_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">[]</span>
-    <span class="k">elif</span> <span class="ow">not</span> <span class="n">_is_non_string_iterable</span><span class="p">(</span><span class="n">label_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="n">_util</span><span class="o">.</span><span class="n">is_non_string_iterable</span><span class="p">(</span><span class="n">label_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
         <span class="c1"># Assume everything is a label.  If not, it&#39;ll be caught later.</span>
         <span class="k">return</span> <span class="n">label_list</span>
     <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">label_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -5829,17 +5834,6 @@
         <span class="k">return</span> <span class="n">label</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">collect</span><span class="o">.</span><span class="vm">__name__</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">label</span>
-
-
-<span class="k">def</span> <span class="nf">_is_non_string_iterable</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Whether a value is iterable.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="k">return</span> <span class="kc">False</span>
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>
-        <span class="k">return</span> <span class="kc">True</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Sequence</span><span class="p">):</span>
-        <span class="k">return</span> <span class="kc">True</span>
-    <span class="k">return</span> <span class="kc">False</span>
 
 <span class="k">def</span> <span class="nf">_vertical_x</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">ticks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_width</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Switch labels to vertical if they are long.&quot;&quot;&quot;</span>
