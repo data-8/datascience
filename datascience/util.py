@@ -2,7 +2,7 @@
 
 __all__ = ['make_array', 'percentile', 'plot_cdf_area', 'plot_normal_cdf',
            'table_apply', 'proportions_from_distribution',
-           'sample_proportions', 'minimize']
+           'sample_proportions', 'minimize', 'is_non_string_iterable']
 
 import numpy as np
 import pandas as pd
@@ -13,6 +13,7 @@ from scipy import stats
 from scipy import optimize
 import functools
 import math
+import collections
 
 # Change matplotlib formatting. TODO incorporate into a style?
 plt.rcParams["patch.force_edgecolor"] = True
@@ -37,6 +38,11 @@ def make_array(*elements):
         # Specifically added for Windows machines where the default 
         # integer is int32 - see GH issue #339.
         return np.array(elements, dtype="int64")
+
+    # Manually cast `elements` as an object due to this: https://github.com/data-8/datascience/issues/458
+    if any(is_non_string_iterable(el) for el in elements):
+        return np.array(elements, dtype=object)
+
     return np.array(elements)
 
 
@@ -241,3 +247,13 @@ def minimize(f, start=None, smooth=False, log=None, array=False, **vargs):
         return result.x.item(0)
     else:
         return result.x
+
+def is_non_string_iterable(value):
+    """Whether a value is iterable."""
+    if isinstance(value, str):
+        return False
+    if hasattr(value, '__iter__'):
+        return True
+    if isinstance(value, collections.abc.Sequence):
+        return True
+    return False
