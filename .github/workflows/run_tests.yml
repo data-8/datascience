@@ -1,4 +1,4 @@
-name: Running Test Suite on Pushes
+name: tests
 
 # We run the test suite on every push
 on: [push]
