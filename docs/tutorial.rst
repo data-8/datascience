@@ -217,6 +217,7 @@ Operate on table data with :meth:`~datascience.tables.Table.sort`,
     t.select(['count', 'points']).group('count', collect=sum)
 
 .. ipython:: python
+    :okwarning:
 
     other_table = Table().with_columns(
         'mar_status',  ['married', 'married', 'partner', 'partner', 'married'],

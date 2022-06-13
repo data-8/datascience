@@ -4,8 +4,11 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-### v0.17.3
+### v0.17.4
 * Changes maps.Circle's default line color from blue to the fill color, if it is defined.
+
+### v0.17.3
+* Remove many deprecation warnings.
 
 ### v0.17.2
 
