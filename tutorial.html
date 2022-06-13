@@ -451,17 +451,17 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 
 <span class="gp">In [47]: </span><span class="n">normal_data</span>
 <span class="gh">Out[47]: </span><span class="go"></span>
-<span class="go">data1    | data2</span>
-<span class="go">0.840397 | 3.21516</span>
-<span class="go">0.529432 | 2.93458</span>
-<span class="go">0.207761 | -2.81847</span>
-<span class="go">0.131724 | 4.72783</span>
-<span class="go">-5.07004 | 1.53942</span>
-<span class="go">2.23318  | 0.0370164</span>
-<span class="go">1.1449   | 2.57755</span>
-<span class="go">-4.01966 | -2.61833</span>
-<span class="go">-2.138   | 2.63152</span>
-<span class="go">4.50261  | 3.11513</span>
+<span class="go">data1     | data2</span>
+<span class="go">2.04224   | 0.79147</span>
+<span class="go">5.16723   | 4.04236</span>
+<span class="go">-0.353071 | 5.08345</span>
+<span class="go">2.66539   | 6.39025</span>
+<span class="go">3.84033   | 3.52596</span>
+<span class="go">-1.07107  | 0.660321</span>
+<span class="go">0.812718  | 6.11398</span>
+<span class="go">2.99973   | 8.76801</span>
+<span class="go">2.18892   | 4.37827</span>
+<span class="go">1.35088   | 4.68118</span>
 <span class="go">... (90 rows omitted)</span>
 </pre></div>
 </div>
@@ -513,17 +513,17 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 converting to a pandas dataframe with <a class="reference internal" href="_autosummary/datascience.tables.Table.to_df.html#datascience.tables.Table.to_df" title="datascience.tables.Table.to_df"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_df()</span></code></a>:</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [56]: </span><span class="n">normal_data</span>
 <span class="gh">Out[56]: </span><span class="go"></span>
-<span class="go">data1    | data2</span>
-<span class="go">0.840397 | 3.21516</span>
-<span class="go">0.529432 | 2.93458</span>
-<span class="go">0.207761 | -2.81847</span>
-<span class="go">0.131724 | 4.72783</span>
-<span class="go">-5.07004 | 1.53942</span>
-<span class="go">2.23318  | 0.0370164</span>
-<span class="go">1.1449   | 2.57755</span>
-<span class="go">-4.01966 | -2.61833</span>
-<span class="go">-2.138   | 2.63152</span>
-<span class="go">4.50261  | 3.11513</span>
+<span class="go">data1     | data2</span>
+<span class="go">2.04224   | 0.79147</span>
+<span class="go">5.16723   | 4.04236</span>
+<span class="go">-0.353071 | 5.08345</span>
+<span class="go">2.66539   | 6.39025</span>
+<span class="go">3.84033   | 3.52596</span>
+<span class="go">-1.07107  | 0.660321</span>
+<span class="go">0.812718  | 6.11398</span>
+<span class="go">2.99973   | 8.76801</span>
+<span class="go">2.18892   | 4.37827</span>
+<span class="go">1.35088   | 4.68118</span>
 <span class="go">... (90 rows omitted)</span>
 
 <span class="go"># index = False prevents row numbers from appearing in the resulting CSV</span>
@@ -637,8 +637,8 @@ non-smokers.</p>
 
 <span class="gp">In [73]: </span><span class="n">bootstrapped_diff_means</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
 <span class="gh">Out[73]: </span><span class="go"></span>
-<span class="go">array([ 1.26979905, -1.7506315 , -0.39318677,  0.7775523 ,  0.66978991,</span>
-<span class="go">        0.12059661, -0.21372397,  0.67392172, -1.18188217,  0.38576717])</span>
+<span class="go">array([ 3.43775919, -0.25543215, -0.27125249,  0.03367613,  0.66157807,</span>
+<span class="go">        0.05764432,  0.80635617,  0.42565321,  1.11940826, -0.12032543])</span>
 
 <span class="gp">In [74]: </span><span class="n">num_diffs_greater</span> <span class="o">=</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">bootstrapped_diff_means</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">observed_diff</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
