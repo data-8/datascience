@@ -452,16 +452,16 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 <span class="gp">In [47]: </span><span class="n">normal_data</span>
 <span class="gh">Out[47]: </span><span class="go"></span>
 <span class="go">data1     | data2</span>
-<span class="go">6.19721   | -0.676019</span>
-<span class="go">-0.558535 | 0.619605</span>
-<span class="go">-2.18715  | 4.74542</span>
-<span class="go">0.376431  | 2.34101</span>
-<span class="go">2.50952   | 7.01132</span>
-<span class="go">-1.13479  | 7.37711</span>
-<span class="go">1.94584   | 2.45652</span>
-<span class="go">1.81466   | 3.14623</span>
-<span class="go">-0.231163 | 3.33727</span>
-<span class="go">2.53457   | 5.63675</span>
+<span class="go">-0.824097 | 1.57236</span>
+<span class="go">2.37656   | 7.95418</span>
+<span class="go">1.65343   | 5.31364</span>
+<span class="go">6.31922   | 4.69429</span>
+<span class="go">3.0298    | 8.51503</span>
+<span class="go">1.94488   | -1.10941</span>
+<span class="go">-0.179279 | 6.29364</span>
+<span class="go">-0.469291 | 6.23858</span>
+<span class="go">2.60758   | 3.1192</span>
+<span class="go">1.58141   | 5.28973</span>
 <span class="go">... (90 rows omitted)</span>
 </pre></div>
 </div>
@@ -514,16 +514,16 @@ converting to a pandas dataframe with <a class="reference internal" href="_autos
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [56]: </span><span class="n">normal_data</span>
 <span class="gh">Out[56]: </span><span class="go"></span>
 <span class="go">data1     | data2</span>
-<span class="go">6.19721   | -0.676019</span>
-<span class="go">-0.558535 | 0.619605</span>
-<span class="go">-2.18715  | 4.74542</span>
-<span class="go">0.376431  | 2.34101</span>
-<span class="go">2.50952   | 7.01132</span>
-<span class="go">-1.13479  | 7.37711</span>
-<span class="go">1.94584   | 2.45652</span>
-<span class="go">1.81466   | 3.14623</span>
-<span class="go">-0.231163 | 3.33727</span>
-<span class="go">2.53457   | 5.63675</span>
+<span class="go">-0.824097 | 1.57236</span>
+<span class="go">2.37656   | 7.95418</span>
+<span class="go">1.65343   | 5.31364</span>
+<span class="go">6.31922   | 4.69429</span>
+<span class="go">3.0298    | 8.51503</span>
+<span class="go">1.94488   | -1.10941</span>
+<span class="go">-0.179279 | 6.29364</span>
+<span class="go">-0.469291 | 6.23858</span>
+<span class="go">2.60758   | 3.1192</span>
+<span class="go">1.58141   | 5.28973</span>
 <span class="go">... (90 rows omitted)</span>
 
 <span class="go"># index = False prevents row numbers from appearing in the resulting CSV</span>
@@ -637,8 +637,8 @@ non-smokers.</p>
 
 <span class="gp">In [73]: </span><span class="n">bootstrapped_diff_means</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
 <span class="gh">Out[73]: </span><span class="go"></span>
-<span class="go">array([ 0.70974907,  0.3078599 ,  0.49114676, -1.7234639 , -1.59282417,</span>
-<span class="go">       -2.26197114, -0.13719091,  0.49995582, -1.17991377,  0.7024666 ])</span>
+<span class="go">array([-1.12004814,  1.32588022, -0.25308286,  1.07386078,  2.26027393,</span>
+<span class="go">       -0.57735119,  0.02523881,  2.56610144, -0.84374971,  0.06960403])</span>
 
 <span class="gp">In [74]: </span><span class="n">num_diffs_greater</span> <span class="o">=</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">bootstrapped_diff_means</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">observed_diff</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
@@ -731,7 +731,7 @@ non-smokers.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.0.1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.0.2.
     </div>
   </body>
 </html>
