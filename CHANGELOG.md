@@ -4,16 +4,35 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.17.5
+* Eliminated deprecation warnings involved arrays containing arrays/sequences.
+
+### v0.17.4
+* Changes maps.Circle's default line color from blue to the fill color, if it is defined.
+
+### v0.17.3
+* Remove many deprecation warnings.
+
+### v0.17.2
+
+* Remove test requirements from being installed all the time.
+  [Issue 523](https://github.com/data-8/datascience/issues/523)
+
+### v0.17.1
+
+* Remove sphinx & nbsphinx from requirements.txt, as it is not needed during runtime
+  - [Issue 523](https://github.com/data-8/datascience/issues/523)
+
 ### v0.17.0
 * Includes additional plotly-based plotting methods `Table#iplot`, `Table#ibar`, `Table#ibarh`, `Table#igroup_bar`, `Table#igroup_barh`, `Table#iscatter`, `Table#ihist`, and `Table#iscatter3d`
 * New static methods `Table#interactive_plots` and `Table#static_plots` that redirect `Table#plot` to `Table#iplot`, `Table#barh` to `Table#ibarh`, etc. with same arguments
 * New method `Table#scatter3d` that is a wrapper for `Table#iscatter3d` but _does not_ implement a matplotlib plot and raises a `RuntimeError` if called when interactive plots are not enabled
 * New plotly-charts.ipynb notebook demonstrating how to work with the interactive function added to the testing directory
-* Enables markers to be shaded with hex colors using Folium's BeautifyIcon plugin 
+* Enables markers to be shaded with hex colors using Folium's BeautifyIcon plugin
 * Changed default marker's default icon from 'info-circle' to no icon
 * Added additional keyword column names to `map_table` including 'color_scale', 'area_scale', and 'cluster_by'
 * New options 'color_scale' and 'area_scale' draw color gradients for markers and area gradients for circles based on column values
-* New 'cluster_by' option groups column by value and assigns a cluster marker to each group 
+* New 'cluster_by' option groups column by value and assigns a cluster marker to each group
 * Includes geocoding function `get_coordinates` that assigns latitude and longitude coordinates for U.S. locations by city, state, county, and zip code
 * Updated Maps.ipynb notebook to showcase new changes made to mapping
 * Data 8-friendly `datascience` reference notebook added to documentation using nbsphinx
@@ -85,7 +104,7 @@ converting from a Pandas dataframe.
 * Changes default formatting of numbers in printed output to 12345 instead of 12,345.
 
 ### v0.13.1
-* Allows for the following notations ("floating arguments") to be used with 
+* Allows for the following notations ("floating arguments") to be used with
 `Table#take` and `Table#exclude`: ex.`t.take(0, 1, 2, 3)` and `t.exclude(0, 2, 4)`.
 
 ### v0.13.0
@@ -129,7 +148,7 @@ converting from a Pandas dataframe.
 * Allow NumPy arrays to be appended into tables.
 
 ### v0.10.14
-* Added optional formatters to "Table.with_column", "Table.with_columns", and "Table.append_column".  
+* Added optional formatters to "Table.with_column", "Table.with_columns", and "Table.append_column".
 
 ### v0.10.13
 * Warning added for comparing iterables using predicates incorrectly.

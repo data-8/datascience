@@ -32,6 +32,10 @@ go, make_subplots = None, None
 
 _INTERACTIVE_PLOTS = False
 
+# Set numpy printoptions to legacy to get around error terms, as described in
+# https://github.com/data-8/datascience/issues/491
+np.set_printoptions(legacy='1.13')
+
 class Table(collections.abc.MutableMapping):
     """A sequence of string-labeled columns."""
     plots = collections.deque(maxlen=10)
@@ -546,7 +550,7 @@ class Table(collections.abc.MutableMapping):
             return np.array([fn(row) for row in self.rows])
         else:
             if len(column_or_columns) == 1 and \
-                    _is_non_string_iterable(column_or_columns[0]):
+                    _util.is_non_string_iterable(column_or_columns[0]):
                 warnings.warn(
                    "column lists are deprecated; pass each as an argument", FutureWarning)
                 column_or_columns = column_or_columns[0]
@@ -994,9 +998,14 @@ class Table(collections.abc.MutableMapping):
 
         if not isinstance(values, np.ndarray):
             # Coerce a single value to a sequence
-            if not _is_non_string_iterable(values):
+            if not _util.is_non_string_iterable(values):
                 values = [values] * max(self.num_rows, 1)
-            values = np.array(tuple(values))
+
+            # Manually cast `values` as an object due to this: https://github.com/data-8/datascience/issues/458
+            if any(_util.is_non_string_iterable(el) for el in values):
+                values = np.array(tuple(values), dtype=object)
+            else:
+                values = np.array(tuple(values))
 
         if self.num_rows != 0 and len(values) != self.num_rows:
             raise ValueError('Column length mismatch. New column does not have '
@@ -1559,7 +1568,7 @@ class Table(collections.abc.MutableMapping):
         Round       |           | 13         | 4.05
         """
         # Assume that a call to group with a list of labels is a call to groups
-        if _is_non_string_iterable(column_or_label) and \
+        if _util.is_non_string_iterable(column_or_label) and \
                 len(column_or_label) != self._num_rows:
             return self.groups(column_or_label, collect)
 
@@ -1643,7 +1652,7 @@ class Table(collections.abc.MutableMapping):
         Red   | Round       | 11         | 3.05
         """
         # Assume that a call to groups with one label is a call to group
-        if not _is_non_string_iterable(labels):
+        if not _util.is_non_string_iterable(labels):
             return self.group(labels, collect=collect)
 
         collect = _zero_on_type_error(collect)
@@ -2038,7 +2047,7 @@ class Table(collections.abc.MutableMapping):
             other_label = column_label
 
         # checking to see if joining on multiple columns
-        if _is_non_string_iterable(column_label):
+        if _util.is_non_string_iterable(column_label):
             # then we are going to be joining multiple labels
             return self._multiple_join(column_label, other, other_label)
 
@@ -2877,13 +2886,14 @@ class Table(collections.abc.MutableMapping):
                 uvw  | 20   | 5.9
 
                 >>> table_as_html = table.as_html()
-                <table border="1" class="dataframe">\\n    <thead>\\n        <tr>\\n            
+                >>> table_as_html
+                '<table border="1" class="dataframe">\\n    <thead>\\n        <tr>\\n            
                 <th>name</th> <th>age</th> <th>height</th>\\n        
                 </tr>\\n    </thead>\\n    <tbody>\\n        
                 <tr>\\n            <td>abc </td> <td>12  </td> <td>5.5   </td>\\n        </tr>\\n        
                 <tr>\\n            <td>xyz </td> <td>14  </td> <td>6     </td>\\n        </tr>\\n        
                 <tr>\\n            <td>uvw </td> <td>20  </td> <td>5.9   </td>\\n        </tr>\\n    
-                </tbody>\\n</table>
+                </tbody>\\n</table>'
 
                 2. Simple table being converted to HTML with max_rows passed in
 
@@ -3724,11 +3734,11 @@ class Table(collections.abc.MutableMapping):
         chairs    | 6     | 10
         tables    | 1     | 20
         desks     | 2     | 30
-        >>> furniture_table.barh('Furniture') # doctest: +SKIP
+        >>> t.barh('Furniture') # doctest: +SKIP
         <bar graph with furniture as categories and bars for count and price>
-        >>> furniture_table.barh('Furniture', 'Price') # doctest: +SKIP
+        >>> t.barh('Furniture', 'Price') # doctest: +SKIP
         <bar graph with furniture as categories and bars for price>
-        >>> furniture_table.barh('Furniture', make_array(1, 2)) # doctest: +SKIP
+        >>> t.barh('Furniture', make_array(1, 2)) # doctest: +SKIP
         <bar graph with furniture as categories and bars for count and price>
         """
         global _INTERACTIVE_PLOTS
@@ -4626,7 +4636,7 @@ class Table(collections.abc.MutableMapping):
             type(self).plots.append(axis)
         else:
             fig, axes = plt.subplots(n, 1, figsize=(width, height*n))
-            if not isinstance(axes, collections.Iterable):
+            if not isinstance(axes, collections.abc.Iterable):
                 axes=[axes]
             for axis, y_label, color in zip(axes, y_labels, colors):
                 draw(axis, y_label, color)
@@ -5393,79 +5403,83 @@ class Table(collections.abc.MutableMapping):
                     right_end = max([max(self.column(k)) for k in self.labels if np.issubdtype(self.column(k).dtype, np.number)])
 
         def draw_hist(values_dict):
-            with np.printoptions(legacy='1.13'):
-                # This code is factored as a function for clarity only.
-                n = len(values_dict)
-                colors = [rgb_color + (self.default_alpha,) for rgb_color in
-                    itertools.islice(itertools.cycle(self.chart_colors), n)]
-                hist_names = list(values_dict.keys())
-                values = [v[0] for v in values_dict.values()]
-                weights = [v[1] for v in values_dict.values() if len(v) > 1]
-                if n > len(weights) > 0:
-                    raise ValueError("Weights were provided for some columns, but not "
-                                     " all, and that's not supported.")
-                if rug and overlay and n > 1:
-                    warnings.warn("Cannot plot overlaid rug plots; rug=True ignored", UserWarning)
-                if vargs['density']:
-                    y_label = 'Percent per ' + (unit if unit else 'unit')
-                    percentage = plt.FuncFormatter(lambda x, _: "{:g}".format(100*x))
-                else:
-                    y_label = 'Count'
+            # Check if np.printoptions is set to legacy. Throw UserWarning if not
+            if np.get_printoptions()['legacy'] != '1.13':
+                warnings.warn("We've detected you're not using the '1.13' legacy setting for `np.printoptions`. "
+                    "This may cause excessive error terms in your plots. We recommend solving this by running the "
+                    "following code: `np.set_printoptions(legacy='1.13')`", UserWarning)
+            # This code is factored as a function for clarity only.
+            n = len(values_dict)
+            colors = [rgb_color + (self.default_alpha,) for rgb_color in
+                itertools.islice(itertools.cycle(self.chart_colors), n)]
+            hist_names = list(values_dict.keys())
+            values = [v[0] for v in values_dict.values()]
+            weights = [v[1] for v in values_dict.values() if len(v) > 1]
+            if n > len(weights) > 0:
+                raise ValueError("Weights were provided for some columns, but not "
+                                 " all, and that's not supported.")
+            if rug and overlay and n > 1:
+                warnings.warn("Cannot plot overlaid rug plots; rug=True ignored", UserWarning)
+            if vargs['density']:
+                y_label = 'Percent per ' + (unit if unit else 'unit')
+                percentage = plt.FuncFormatter(lambda x, _: "{:g}".format(100*x))
+            else:
+                y_label = 'Count'
 
-                if overlay and n > 1:
-                    # Reverse because legend prints bottom-to-top
-                    values = values[::-1]
-                    weights = weights[::-1]
-                    colors = list(colors)[::-1]
-                    if len(weights) == n:
-                        vargs['weights'] = weights
-                    if not side_by_side:
+            if overlay and n > 1:
+                # Reverse because legend prints bottom-to-top
+                values = values[::-1]
+                weights = weights[::-1]
+                colors = list(colors)[::-1]
+                if len(weights) == n:
+                    vargs['weights'] = weights
+                if not side_by_side:
+                    vargs.setdefault('histtype', 'stepfilled')
+                figure = plt.figure(figsize=(width, height))
+                plt.hist(values, color=colors, **vargs)
+                # if rug:
+                #     plt.scatter(values, np.zeros_like(values), marker="|", color=colors)
+                axis = figure.get_axes()[0]
+                _vertical_x(axis)
+                axis.set_ylabel(y_label)
+                if vargs['density']:
+                    axis.yaxis.set_major_formatter(percentage)
+                x_unit = ' (' + unit + ')' if unit else ''
+                if group is not None and len(self.labels) == 2:
+                    #There's a grouping in place but we're only plotting one column's values
+                    label_not_grouped = [l for l in self.labels if l != group][0]
+                    axis.set_xlabel(label_not_grouped + x_unit, fontsize=16)
+                else:
+                    axis.set_xlabel(x_unit, fontsize=16)
+                plt.legend(hist_names, loc=2, bbox_to_anchor=(1.05, 1))
+                type(self).plots.append(axis)
+            else:
+                _, axes = plt.subplots(n, 1, figsize=(width, height * n))
+                if 'bins' in vargs:
+                    bins = vargs['bins']
+                    if isinstance(bins, numbers.Integral) and bins > 76 or hasattr(bins, '__len__') and len(bins) > 76:
+                        # Use stepfilled when there are too many bins
                         vargs.setdefault('histtype', 'stepfilled')
-                    figure = plt.figure(figsize=(width, height))
-                    plt.hist(values, color=colors, **vargs)
-                    # if rug:
-                    #     plt.scatter(values, np.zeros_like(values), marker="|", color=colors)
-                    axis = figure.get_axes()[0]
-                    _vertical_x(axis)
+                if n == 1:
+                    axes = [axes]
+                for i, (axis, hist_name, values_for_hist, color) in enumerate(zip(axes, hist_names, values, colors)):
                     axis.set_ylabel(y_label)
                     if vargs['density']:
                         axis.yaxis.set_major_formatter(percentage)
                     x_unit = ' (' + unit + ')' if unit else ''
-                    if group is not None and len(self.labels) == 2:
-                        #There's a grouping in place but we're only plotting one column's values
-                        label_not_grouped = [l for l in self.labels if l != group][0]
-                        axis.set_xlabel(label_not_grouped + x_unit, fontsize=16)
-                    else:
-                        axis.set_xlabel(x_unit, fontsize=16)
-                    plt.legend(hist_names, loc=2, bbox_to_anchor=(1.05, 1))
+                    if len(weights) == n:
+                        vargs['weights'] = weights[i]
+                    axis.set_xlabel(hist_name + x_unit, fontsize=16)
+                    heights, bins, patches = axis.hist(values_for_hist, color=color, **vargs)
+                    if left_end is not None and right_end is not None:
+                        x_shade, height_shade, width_shade = _compute_shading(heights, bins.copy(), left_end, right_end)
+                        axis.bar(x_shade, height_shade, width=width_shade,
+                                 color=self.chart_colors[1], align="edge")
+                    _vertical_x(axis)
+                    if rug:
+                        axis.scatter(values_for_hist, np.zeros_like(values_for_hist), marker="|",
+                                     color="black", s=100, zorder=10)
                     type(self).plots.append(axis)
-                else:
-                    _, axes = plt.subplots(n, 1, figsize=(width, height * n))
-                    if 'bins' in vargs:
-                        bins = vargs['bins']
-                        if isinstance(bins, numbers.Integral) and bins > 76 or hasattr(bins, '__len__') and len(bins) > 76:
-                            # Use stepfilled when there are too many bins
-                            vargs.setdefault('histtype', 'stepfilled')
-                    if n == 1:
-                        axes = [axes]
-                    for i, (axis, hist_name, values_for_hist, color) in enumerate(zip(axes, hist_names, values, colors)):
-                        axis.set_ylabel(y_label)
-                        if vargs['density']:
-                            axis.yaxis.set_major_formatter(percentage)
-                        x_unit = ' (' + unit + ')' if unit else ''
-                        if len(weights) == n:
-                            vargs['weights'] = weights[i]
-                        axis.set_xlabel(hist_name + x_unit, fontsize=16)
-                        heights, bins, patches = axis.hist(values_for_hist, color=color, **vargs)
-                        if left_end is not None and right_end is not None:
-                            x_shade, height_shade, width_shade = _compute_shading(heights, bins.copy(), left_end, right_end)
-                            axis.bar(x_shade, height_shade, width=width_shade,
-                                     color=self.chart_colors[1], align="edge")
-                        _vertical_x(axis)
-                        if rug:
-                            axis.scatter(values_for_hist, np.zeros_like(values_for_hist), marker="|",
-                                         color="black", s=100, zorder=10)
-                        type(self).plots.append(axis)
 
         draw_hist(values_dict)
 
@@ -5725,7 +5739,7 @@ def _fill_with_zeros(partials, rows, zero=None):
     zero -- value used when no rows match a particular partial
     """
     assert len(rows) > 0
-    if not _is_non_string_iterable(partials):
+    if not _util.is_non_string_iterable(partials):
         # Convert partials to tuple for comparison against row slice later
         partials = [(partial,) for partial in partials]
 
@@ -5744,7 +5758,7 @@ def _fill_with_zeros(partials, rows, zero=None):
 
 def _as_labels(column_or_columns):
     """Return a list of labels for a label or labels."""
-    if not _is_non_string_iterable(column_or_columns):
+    if not _util.is_non_string_iterable(column_or_columns):
         return [column_or_columns]
     else:
         return column_or_columns
@@ -5754,7 +5768,7 @@ def _varargs_labels_as_list(label_list):
     of labels."""
     if len(label_list) == 0:
         return []
-    elif not _is_non_string_iterable(label_list[0]):
+    elif not _util.is_non_string_iterable(label_list[0]):
         # Assume everything is a label.  If not, it'll be caught later.
         return label_list
     elif len(label_list) == 1:
@@ -5779,23 +5793,12 @@ def _collected_label(collect, label):
     else:
         return label
 
-
-def _is_non_string_iterable(value):
-    """Whether a value is iterable."""
-    if isinstance(value, str):
-        return False
-    if hasattr(value, '__iter__'):
-        return True
-    if isinstance(value, collections.abc.Sequence):
-        return True
-    return False
-
 def _vertical_x(axis, ticks=None, max_width=5):
     """Switch labels to vertical if they are long."""
     if ticks is None:
         ticks = axis.get_xticks()
     if (np.array(ticks) == np.rint(ticks)).all():
-        ticks = np.rint(ticks).astype(np.int)
+        ticks = np.rint(ticks).astype(np.int64)
     if max([len(str(tick)) for tick in ticks]) > max_width:
         axis.set_xticklabels(ticks, rotation='vertical')
 
