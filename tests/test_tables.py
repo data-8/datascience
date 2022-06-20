@@ -141,7 +141,22 @@ def test_column(table):
     t = table
     assert_array_equal(t.column('letter'), np.array(['a', 'b', 'c', 'z']))
     assert_array_equal(t.column(1), np.array([9, 3, 3, 1]))
+    with pytest.raises(ValueError):
+        t.column(-1)
+    with pytest.raises(ValueError):
+        t.column('abc')
 
+def test_values():
+    t1 = Table().with_columns({
+        'row1': ['a', 'b', 'c'],
+        'row2': ['d', 'e', 'f'],
+    })
+    assert_array_equal(t1.values, np.array(t1.columns, None).T)
+    t2 = Table().with_columns({
+        'row1': ['x', 'y', 'z'],
+        'row2': [1, 2, 3],
+    })
+    assert_array_equal(t2.values, np.array(t2.columns, object).T)
 
 def test_basic_points(table):
     t = table
@@ -1130,6 +1145,13 @@ def test_remove_num_rows(table):
     table.remove(0)
     assert table.num_rows + 1 == num_rows_before
 
+def test_remove_column_type(table):
+    original_col = table.column("count")
+    assert type(original_col) == np.ndarray
+    table.remove(0)
+    assert type(table.column("count")) == type(original_col)
+
+
 
 ##########
 # Create #
@@ -1878,4 +1900,4 @@ def test_read_table():
     assert isinstance(Table().read_table("tests/us-unemployment.csv"), Table)
     assert isinstance(Table().read_table("tests/us-unemployment-copy"), Table)
     assert isinstance(Table().read_table("tests/us-unemployment.txt"), Table)
-    assert isinstance(Table().read_table("https://raw.githubusercontent.com/data-8/textbook/gh-pages/data/deflategate.csv"), Table)
+    assert isinstance(Table().read_table("https://raw.githubusercontent.com/data-8/textbook/main/assets/data/deflategate.csv"), Table)

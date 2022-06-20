@@ -58,7 +58,7 @@ class Formatter:
             return str(value)
 
     def convert_column(self, values):
-        """Convert each value using the the convert_value method."""
+        """Convert each value using the convert_value method."""
         return list(map(self.convert_value, values))
 
     @staticmethod

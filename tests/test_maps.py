@@ -1,6 +1,7 @@
 import doctest
 import json
 import pytest
+from collections import OrderedDict
 
 import datascience as ds
 from datascience import maps
@@ -54,6 +55,27 @@ def test_map_marker_and_region(states):
     ds.Map([region]).show()
     ds.Map([marker, region]).show()
 
+def test_map_property_features(states):
+    feature_list = states.features
+    assert isinstance(feature_list, list)
+    assert isinstance(feature_list[0], OrderedDict)
+    assert feature_list[0]['id'] == 'AL'
+    assert feature_list[0]['name'] == 'Alabama'
+    assert isinstance(feature_list[0]['feature'], maps.Region)
+    tt = [list(i.keys()) == ['id', 'feature', 'name'] for i in feature_list]
+    assert all(tt)
+
+def test_map_copy(states):
+    """Tests that copy returns a copy of the current map"""
+    
+    map1 = states
+    map2 = map1.copy()
+
+    # Compare geojsons of the two map objects
+    assert map1.geojson() == map2.geojson() 
+    # Assert that map1 and map2 not the same object
+    # and copy is returning a true copy
+    assert map1 is not map2
 
 ##########
 # ds.Marker #
