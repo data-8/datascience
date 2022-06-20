@@ -7,6 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### v0.17.5
 * Eliminated deprecation warnings involved arrays containing arrays/sequences.
 * Changed the column type of a table after a remove operation back to a NumPy array, as written in the documentation.
+* Fixed a few bugs in `Map#overlay` and added further testing for that function as well.
 
 ### v0.17.4
 * Changes maps.Circle's default line color from blue to the fill color, if it is defined.
