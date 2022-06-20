@@ -95,10 +95,13 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         self._width = width
         self._height = height
         self._attrs.update(kwargs)
+        self._set_folium_map()
 
     def copy(self):
         """
         Copies the current Map into a new one and returns it.
+        Note: This only copies rendering attributes. The underlying map is NOT deep-copied.
+        This is as a result of no functionality in Folium. Ref: https://github.com/python-visualization/folium/issues/1207
         """
 
         m = Map(features=self._features, width=self._width,
@@ -360,7 +363,7 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         result = self.copy()
         if type(feature) == Table:
             # if table of features e.g. Table.from_records(taz_map.features)
-            if 'feature' in feature:
+            if 'feature' in feature.labels:
                 feature = feature['feature']
 
             # if marker table e.g. table with columns: latitudes,longitudes,popup,color,area
