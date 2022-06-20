@@ -2803,7 +2803,39 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">as_html</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_str_rows</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Table.show"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.show.html#datascience.tables.Table.show">[docs]</a>    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_rows</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Display the table.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Display the table.</span>
+<span class="sd">	</span>
+<span class="sd">    	Args:</span>
+<span class="sd">    	    ``max_rows``: Maximum number of rows to be output by the function</span>
+<span class="sd">    	</span>
+<span class="sd">    	Returns:</span>
+<span class="sd">    	    A subset of the Table with number of rows specified in ``max_rows``.</span>
+<span class="sd">    	    First ``max_rows`` number of rows are displayed. If no value is passed</span>
+<span class="sd">    	    for ``max_rows``, then the entire Table is returned.</span>
+<span class="sd">    	    </span>
+<span class="sd">    	Examples:</span>
+
+<span class="sd">        &gt;&gt;&gt; t = Table().with_columns(</span>
+<span class="sd">        ...    &quot;column1&quot;, make_array(&quot;data1&quot;, &quot;data2&quot;, &quot;data3&quot;),</span>
+<span class="sd">        ...    &quot;column2&quot;, make_array(86, 51, 32),</span>
+<span class="sd">        ...    &quot;column3&quot;, make_array(&quot;b&quot;, &quot;c&quot;, &quot;a&quot;),</span>
+<span class="sd">        ...    &quot;column4&quot;, make_array(5, 3, 6)</span>
+<span class="sd">        ... )</span>
+
+<span class="sd">            </span>
+<span class="sd">        &gt;&gt;&gt; t</span>
+<span class="sd">        column1 | column2 | column3 | column4</span>
+<span class="sd">        data1   | 86      | b       | 5</span>
+<span class="sd">        data2   | 51      | c       | 3</span>
+<span class="sd">        data3   | 32      | a       | 6</span>
+<span class="sd">    	</span>
+<span class="sd">    	&gt;&gt;&gt; t.show()</span>
+<span class="sd">    	&lt;IPython.core.display.HTML object&gt;</span>
+<span class="sd">    	</span>
+<span class="sd">    	&gt;&gt;&gt; t.show(max_rows=2)</span>
+<span class="sd">    	&lt;IPython.core.display.HTML object&gt;</span>
+<span class="sd">    	</span>
+<span class="sd">    	&quot;&quot;&quot;</span>
         <span class="n">IPython</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">display</span><span class="p">(</span><span class="n">IPython</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">HTML</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">as_html</span><span class="p">(</span><span class="n">max_rows</span><span class="p">)))</span></div>
 
     <span class="n">max_str_rows</span> <span class="o">=</span> <span class="mi">10</span>
@@ -2953,8 +2985,6 @@
 <span class="sd">                &lt;tr&gt;\\n            &lt;td&gt;abc &lt;/td&gt; &lt;td&gt;12  &lt;/td&gt; &lt;td&gt;5.5   &lt;/td&gt;\\n        &lt;/tr&gt;\\n        </span>
 <span class="sd">                &lt;tr&gt;\\n            &lt;td&gt;xyz &lt;/td&gt; &lt;td&gt;14  &lt;/td&gt; &lt;td&gt;6     &lt;/td&gt;\\n        &lt;/tr&gt;\\n    </span>
 <span class="sd">                &lt;/tbody&gt;\\n&lt;/table&gt;\\n&lt;p&gt;... (1 rows omitted)&lt;/p&gt;&#39;</span>
-
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">max_rows</span> <span class="ow">or</span> <span class="n">max_rows</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_rows</span><span class="p">:</span>
             <span class="n">max_rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_rows</span>
@@ -2985,7 +3015,39 @@
 
 <div class="viewcode-block" id="Table.index_by"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.index_by.html#datascience.tables.Table.index_by">[docs]</a>    <span class="k">def</span> <span class="nf">index_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_or_label</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a dict keyed by values in a column that contains lists of</span>
-<span class="sd">        rows corresponding to each value.</span>
+<span class="sd">            rows corresponding to each value.</span>
+<span class="sd">    	</span>
+<span class="sd">    	Args:</span>
+<span class="sd">    	    ``columns_or_labels``: Name or label of a column of the Table,</span>
+<span class="sd">    	    values of which are keys in the returned dict.</span>
+<span class="sd">    	</span>
+<span class="sd">    	Returns:</span>
+<span class="sd">    	    A dictionary with values from the column specified in the argument</span>
+<span class="sd">    	    ``columns_or_labels`` as keys. The corresponding data is a list of</span>
+<span class="sd">    	    Row of values from the rest of the columns of the Table.</span>
+<span class="sd">    	    </span>
+<span class="sd">    	Examples:</span>
+<span class="sd">    	</span>
+<span class="sd">    	&gt;&gt;&gt; t = Table().with_columns(</span>
+<span class="sd">        ...    &quot;column1&quot;, make_array(&quot;data1&quot;, &quot;data2&quot;, &quot;data3&quot;, &quot;data4&quot;),</span>
+<span class="sd">        ...    &quot;column2&quot;, make_array(86, 51, 32, 91),</span>
+<span class="sd">        ...    &quot;column3&quot;, make_array(&quot;b&quot;, &quot;c&quot;, &quot;a&quot;, &quot;a&quot;),</span>
+<span class="sd">        ...    &quot;column4&quot;, make_array(5, 3, 6, 9)</span>
+<span class="sd">        ... )</span>
+<span class="sd">            </span>
+<span class="sd">        &gt;&gt;&gt; t</span>
+<span class="sd">        column1 | column2 | column3 | column4</span>
+<span class="sd">        data1   | 86      | b       | 5</span>
+<span class="sd">        data2   | 51      | c       | 3</span>
+<span class="sd">        data3   | 32      | a       | 6</span>
+<span class="sd">        data4   | 91      | a       | 9</span>
+<span class="sd">    	</span>
+<span class="sd">    	&gt;&gt;&gt; t.index_by(&#39;column2&#39;)</span>
+<span class="sd">    	{86: [Row(column1=&#39;data1&#39;, column2=86, column3=&#39;b&#39;, column4=5)], 51: [Row(column1=&#39;data2&#39;, column2=51, column3=&#39;c&#39;, column4=3)], 32: [Row(column1=&#39;data3&#39;, column2=32, column3=&#39;a&#39;, column4=6)], 91: [Row(column1=&#39;data4&#39;, column2=91, column3=&#39;a&#39;, column4=9)]}</span>
+<span class="sd">    	</span>
+<span class="sd">    	&gt;&gt;&gt; t.index_by(&#39;column3&#39;)</span>
+<span class="sd">    	{&#39;b&#39;: [Row(column1=&#39;data1&#39;, column2=86, column3=&#39;b&#39;, column4=5)], &#39;c&#39;: [Row(column1=&#39;data2&#39;, column2=51, column3=&#39;c&#39;, column4=3)], &#39;a&#39;: [Row(column1=&#39;data3&#39;, column2=32, column3=&#39;a&#39;, column4=6), Row(column1=&#39;data4&#39;, column2=91, column3=&#39;a&#39;, column4=9)]}</span>
+<span class="sd">    	    </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">column</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_column</span><span class="p">(</span><span class="n">column_or_label</span><span class="p">)</span>
         <span class="n">index</span> <span class="o">=</span> <span class="p">{}</span>

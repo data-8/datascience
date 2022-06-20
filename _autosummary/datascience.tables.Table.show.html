@@ -54,6 +54,38 @@
 <dt class="sig sig-object py" id="datascience.tables.Table.show">
 <span class="sig-prename descclassname"><span class="pre">Table.</span></span><span class="sig-name descname"><span class="pre">show</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_rows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.show"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.tables.Table.show" title="Permalink to this definition">¶</a></dt>
 <dd><p>Display the table.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">max_rows</span></code>: Maximum number of rows to be output by the function</p>
+</dd>
+<dt>Returns:</dt><dd><p>A subset of the Table with number of rows specified in <code class="docutils literal notranslate"><span class="pre">max_rows</span></code>.
+First <code class="docutils literal notranslate"><span class="pre">max_rows</span></code> number of rows are displayed. If no value is passed
+for <code class="docutils literal notranslate"><span class="pre">max_rows</span></code>, then the entire Table is returned.</p>
+</dd>
+</dl>
+<p>Examples:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
+<span class="gp">... </span>   <span class="s2">&quot;column1&quot;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="s2">&quot;data1&quot;</span><span class="p">,</span> <span class="s2">&quot;data2&quot;</span><span class="p">,</span> <span class="s2">&quot;data3&quot;</span><span class="p">),</span>
+<span class="gp">... </span>   <span class="s2">&quot;column2&quot;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">86</span><span class="p">,</span> <span class="mi">51</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span>
+<span class="gp">... </span>   <span class="s2">&quot;column3&quot;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">),</span>
+<span class="gp">... </span>   <span class="s2">&quot;column4&quot;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span>
+<span class="go">column1 | column2 | column3 | column4</span>
+<span class="go">data1   | 86      | b       | 5</span>
+<span class="go">data2   | 51      | c       | 3</span>
+<span class="go">data3   | 32      | a       | 6</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="go">&lt;IPython.core.display.HTML object&gt;</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">max_rows</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">&lt;IPython.core.display.HTML object&gt;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>

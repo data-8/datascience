@@ -53,8 +53,42 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="datascience.tables.Table.index_by">
 <span class="sig-prename descclassname"><span class="pre">Table.</span></span><span class="sig-name descname"><span class="pre">index_by</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_or_label</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/datascience/tables.html#Table.index_by"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.tables.Table.index_by" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a dict keyed by values in a column that contains lists of
-rows corresponding to each value.</p>
+<dd><dl class="simple">
+<dt>Return a dict keyed by values in a column that contains lists of</dt><dd><p>rows corresponding to each value.</p>
+</dd>
+<dt>Args:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">columns_or_labels</span></code>: Name or label of a column of the Table,
+values of which are keys in the returned dict.</p>
+</dd>
+<dt>Returns:</dt><dd><p>A dictionary with values from the column specified in the argument
+<code class="docutils literal notranslate"><span class="pre">columns_or_labels</span></code> as keys. The corresponding data is a list of
+Row of values from the rest of the columns of the Table.</p>
+</dd>
+</dl>
+<p>Examples:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
+<span class="gp">... </span>   <span class="s2">&quot;column1&quot;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="s2">&quot;data1&quot;</span><span class="p">,</span> <span class="s2">&quot;data2&quot;</span><span class="p">,</span> <span class="s2">&quot;data3&quot;</span><span class="p">,</span> <span class="s2">&quot;data4&quot;</span><span class="p">),</span>
+<span class="gp">... </span>   <span class="s2">&quot;column2&quot;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">86</span><span class="p">,</span> <span class="mi">51</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">91</span><span class="p">),</span>
+<span class="gp">... </span>   <span class="s2">&quot;column3&quot;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">),</span>
+<span class="gp">... </span>   <span class="s2">&quot;column4&quot;</span><span class="p">,</span> <span class="n">make_array</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span>
+<span class="go">column1 | column2 | column3 | column4</span>
+<span class="go">data1   | 86      | b       | 5</span>
+<span class="go">data2   | 51      | c       | 3</span>
+<span class="go">data3   | 32      | a       | 6</span>
+<span class="go">data4   | 91      | a       | 9</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">index_by</span><span class="p">(</span><span class="s1">&#39;column2&#39;</span><span class="p">)</span>
+<span class="go">{86: [Row(column1=&#39;data1&#39;, column2=86, column3=&#39;b&#39;, column4=5)], 51: [Row(column1=&#39;data2&#39;, column2=51, column3=&#39;c&#39;, column4=3)], 32: [Row(column1=&#39;data3&#39;, column2=32, column3=&#39;a&#39;, column4=6)], 91: [Row(column1=&#39;data4&#39;, column2=91, column3=&#39;a&#39;, column4=9)]}</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">index_by</span><span class="p">(</span><span class="s1">&#39;column3&#39;</span><span class="p">)</span>
+<span class="go">{&#39;b&#39;: [Row(column1=&#39;data1&#39;, column2=86, column3=&#39;b&#39;, column4=5)], &#39;c&#39;: [Row(column1=&#39;data2&#39;, column2=51, column3=&#39;c&#39;, column4=3)], &#39;a&#39;: [Row(column1=&#39;data3&#39;, column2=32, column3=&#39;a&#39;, column4=6), Row(column1=&#39;data4&#39;, column2=91, column3=&#39;a&#39;, column4=9)]}</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>
