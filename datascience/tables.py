@@ -27,10 +27,14 @@ import datascience.util as _util
 from datascience.util import make_array
 import datascience.predicates as _predicates
 
-# intitializing go and make_subplots as globals set to None
+# initializing go and make_subplots as globals set to None
 go, make_subplots = None, None
 
 _INTERACTIVE_PLOTS = False
+
+# Set numpy printoptions to legacy to get around error terms, as described in
+# https://github.com/data-8/datascience/issues/491
+np.set_printoptions(legacy='1.13')
 
 class Table(collections.abc.MutableMapping):
     """A sequence of string-labeled columns."""
@@ -243,7 +247,7 @@ class Table(collections.abc.MutableMapping):
 
            Args:
  
-               arr -- A structured numpy array
+               arr -- A structured NumPy array
 
            Returns:
 
@@ -507,7 +511,7 @@ class Table(collections.abc.MutableMapping):
         Raises:
             ``ValueError`` -- if  ``column_label`` is not an existing
                 column in the table.
-            ``TypeError`` -- if insufficent number of ``column_label`` passed
+            ``TypeError`` -- if insufficient number of ``column_label`` passed
                 to ``fn``.
 
         Returns:
@@ -546,7 +550,7 @@ class Table(collections.abc.MutableMapping):
             return np.array([fn(row) for row in self.rows])
         else:
             if len(column_or_columns) == 1 and \
-                    _is_non_string_iterable(column_or_columns[0]):
+                    _util.is_non_string_iterable(column_or_columns[0]):
                 warnings.warn(
                    "column lists are deprecated; pass each as an argument", FutureWarning)
                 column_or_columns = column_or_columns[0]
@@ -994,9 +998,14 @@ class Table(collections.abc.MutableMapping):
 
         if not isinstance(values, np.ndarray):
             # Coerce a single value to a sequence
-            if not _is_non_string_iterable(values):
+            if not _util.is_non_string_iterable(values):
                 values = [values] * max(self.num_rows, 1)
-            values = np.array(tuple(values))
+
+            # Manually cast `values` as an object due to this: https://github.com/data-8/datascience/issues/458
+            if any(_util.is_non_string_iterable(el) for el in values):
+                values = np.array(tuple(values), dtype=object)
+            else:
+                values = np.array(tuple(values))
 
         if self.num_rows != 0 and len(values) != self.num_rows:
             raise ValueError('Column length mismatch. New column does not have '
@@ -1115,7 +1124,7 @@ class Table(collections.abc.MutableMapping):
         else:
             rows_remove = row_or_row_indices
         for col in self._columns:
-            self._columns[col] = [elem for i, elem in enumerate(self[col]) if i not in rows_remove]
+            self._columns[col] = np.array([elem for i, elem in enumerate(self[col]) if i not in rows_remove])
         self._num_rows -= len(rows_remove)
         return self
 
@@ -1169,7 +1178,7 @@ class Table(collections.abc.MutableMapping):
         2    | ['foo', 'bar']
         3    | ['foo']
 
-        By contrast, when a shallow copy is performed, a new object is contructed and
+        By contrast, when a shallow copy is performed, a new object is constructed and
         references are inserted into it to the objects found in the original. Note in
         the following example how the update to original_table  occurs in both
         table_shallow_copy and original_table because table_shallow_copy contains
@@ -1499,7 +1508,7 @@ class Table(collections.abc.MutableMapping):
                 # 1. Reverse the original array.
                 # 2. Sort the array in ascending order.
                 # 3. Invert the array indices via: len - 1 - indice.
-                # 4. Reverse the array so that it is in decending order.
+                # 4. Reverse the array so that it is in descending order.
                 column = column[::-1]
                 row_numbers = np.argsort(column, axis=0, kind='mergesort')
                 row_numbers = len(row_numbers) - 1 - row_numbers
@@ -1559,7 +1568,7 @@ class Table(collections.abc.MutableMapping):
         Round       |           | 13         | 4.05
         """
         # Assume that a call to group with a list of labels is a call to groups
-        if _is_non_string_iterable(column_or_label) and \
+        if _util.is_non_string_iterable(column_or_label) and \
                 len(column_or_label) != self._num_rows:
             return self.groups(column_or_label, collect)
 
@@ -1643,7 +1652,7 @@ class Table(collections.abc.MutableMapping):
         Red   | Round       | 11         | 3.05
         """
         # Assume that a call to groups with one label is a call to group
-        if not _is_non_string_iterable(labels):
+        if not _util.is_non_string_iterable(labels):
             return self.group(labels, collect=collect)
 
         collect = _zero_on_type_error(collect)
@@ -2038,7 +2047,7 @@ class Table(collections.abc.MutableMapping):
             other_label = column_label
 
         # checking to see if joining on multiple columns
-        if _is_non_string_iterable(column_label):
+        if _util.is_non_string_iterable(column_label):
             # then we are going to be joining multiple labels
             return self._multiple_join(column_label, other, other_label)
 
@@ -2752,7 +2761,39 @@ class Table(collections.abc.MutableMapping):
         return self.as_html(self.max_str_rows)
 
     def show(self, max_rows=0):
-        """Display the table."""
+        """Display the table.
+	
+    	Args:
+    	    ``max_rows``: Maximum number of rows to be output by the function
+    	
+    	Returns:
+    	    A subset of the Table with number of rows specified in ``max_rows``.
+    	    First ``max_rows`` number of rows are displayed. If no value is passed
+    	    for ``max_rows``, then the entire Table is returned.
+    	    
+    	Examples:
+
+        >>> t = Table().with_columns(
+        ...    "column1", make_array("data1", "data2", "data3"),
+        ...    "column2", make_array(86, 51, 32),
+        ...    "column3", make_array("b", "c", "a"),
+        ...    "column4", make_array(5, 3, 6)
+        ... )
+
+            
+        >>> t
+        column1 | column2 | column3 | column4
+        data1   | 86      | b       | 5
+        data2   | 51      | c       | 3
+        data3   | 32      | a       | 6
+    	
+    	>>> t.show()
+    	<IPython.core.display.HTML object>
+    	
+    	>>> t.show(max_rows=2)
+    	<IPython.core.display.HTML object>
+    	
+    	"""
         IPython.display.display(IPython.display.HTML(self.as_html(max_rows)))
 
     max_str_rows = 10
@@ -2792,9 +2833,10 @@ class Table(collections.abc.MutableMapping):
                 The table is just converted to a string with columns seperated by the seperator(argument- default(' | ')) and rows seperated by '\\n'
                 
                 Few examples of the as_text() method are as follows: 
-                1.
-                >>> table = Table().with_columns({'name': ['abc', 'xyz', 'uvw'], 'age': [12,14,20],'height': [5.5,6.0,5.9],})
 
+                1.
+
+                >>> table = Table().with_columns({'name': ['abc', 'xyz', 'uvw'], 'age': [12,14,20],'height': [5.5,6.0,5.9],})
                 >>> table
                 name | age  | height
                 abc  | 12   | 5.5
@@ -2802,7 +2844,6 @@ class Table(collections.abc.MutableMapping):
                 uvw  | 20   | 5.9
 
                 >>> table_astext = table.as_text()
-
                 >>> table_astext
                 'name | age  | height\\nabc  | 12   | 5.5\\nxyz  | 14   | 6\\nuvw  | 20   | 5.9'
 
@@ -2813,8 +2854,8 @@ class Table(collections.abc.MutableMapping):
                 <class 'str'>
                  
                 2.
-                >>> sizes = Table(['size', 'count']).with_rows([     ['small', 50],     ['medium', 100],     ['big', 50], ])
 
+                >>> sizes = Table(['size', 'count']).with_rows([     ['small', 50],     ['medium', 100],     ['big', 50], ])
                 >>> sizes
                 size   | count
                 small  | 50
@@ -2822,19 +2863,18 @@ class Table(collections.abc.MutableMapping):
                 big    | 50
 
                 >>> sizes_astext = sizes.as_text()
-
                 >>> sizes_astext
                 'size   | count\\nsmall  | 50\\nmedium | 100\\nbig    | 50'
 
                 3. 
-                >>> sizes_astext = sizes.as_text(1)
 
+                >>> sizes_astext = sizes.as_text(1)
                 >>> sizes_astext
                 'size  | count\\nsmall | 50\\n... (2 rows omitted)'
 
                 4.
-                >>> sizes_astext = sizes.as_text(2, ' - ')
 
+                >>> sizes_astext = sizes.as_text(2, ' - ')
                 >>> sizes_astext
                 'size   - count\\nsmall  - 50\\nmedium - 100\\n... (1 rows omitted)'
 
@@ -2853,7 +2893,57 @@ class Table(collections.abc.MutableMapping):
         return '\n'.join([line.rstrip() for line in lines])
 
     def as_html(self, max_rows=0):
-        """Format table as HTML."""
+        """Format table as HTML
+            
+            Args:   
+                max_rows(int) The maximum number of rows to be present in the converted string of table. (Optional Argument)
+                
+            Returns:
+                String representing the HTML form of the table
+                
+                The table is converted to the html format of the table which can be used on a website to represent the table.
+                
+                Few examples of the as_html() method are as follows. 
+                - These examples seem difficult for us to observe and understand since they are in html format, 
+                they are useful when you want to display the table on webpages
+                
+                1. Simple table being converted to HTML
+
+                >>> table = Table().with_columns({'name': ['abc', 'xyz', 'uvw'], 'age': [12,14,20],'height': [5.5,6.0,5.9],})
+
+                >>> table
+                name | age  | height
+                abc  | 12   | 5.5
+                xyz  | 14   | 6
+                uvw  | 20   | 5.9
+
+                >>> table_as_html = table.as_html()
+                >>> table_as_html
+                '<table border="1" class="dataframe">\\n    <thead>\\n        <tr>\\n            
+                <th>name</th> <th>age</th> <th>height</th>\\n        
+                </tr>\\n    </thead>\\n    <tbody>\\n        
+                <tr>\\n            <td>abc </td> <td>12  </td> <td>5.5   </td>\\n        </tr>\\n        
+                <tr>\\n            <td>xyz </td> <td>14  </td> <td>6     </td>\\n        </tr>\\n        
+                <tr>\\n            <td>uvw </td> <td>20  </td> <td>5.9   </td>\\n        </tr>\\n    
+                </tbody>\\n</table>'
+
+                2. Simple table being converted to HTML with max_rows passed in
+
+                >>> table
+                name | age  | height
+                abc  | 12   | 5.5
+                xyz  | 14   | 6
+                uvw  | 20   | 5.9
+
+                >>> table_as_html_2 = table.as_html(max_rows = 2)
+                >>> table_as_html_2
+                '<table border="1" class="dataframe">\\n    <thead>\\n        <tr>\\n            
+                <th>name</th> <th>age</th> <th>height</th>\\n        
+                </tr>\\n    </thead>\\n    <tbody>\\n        
+                <tr>\\n            <td>abc </td> <td>12  </td> <td>5.5   </td>\\n        </tr>\\n        
+                <tr>\\n            <td>xyz </td> <td>14  </td> <td>6     </td>\\n        </tr>\\n    
+                </tbody>\\n</table>\\n<p>... (1 rows omitted)</p>'
+        """
         if not max_rows or max_rows > self.num_rows:
             max_rows = self.num_rows
         omitted = max(0, self.num_rows - max_rows)
@@ -2883,7 +2973,39 @@ class Table(collections.abc.MutableMapping):
 
     def index_by(self, column_or_label):
         """Return a dict keyed by values in a column that contains lists of
-        rows corresponding to each value.
+            rows corresponding to each value.
+    	
+    	Args:
+    	    ``columns_or_labels``: Name or label of a column of the Table,
+    	    values of which are keys in the returned dict.
+    	
+    	Returns:
+    	    A dictionary with values from the column specified in the argument
+    	    ``columns_or_labels`` as keys. The corresponding data is a list of
+    	    Row of values from the rest of the columns of the Table.
+    	    
+    	Examples:
+    	
+    	>>> t = Table().with_columns(
+        ...    "column1", make_array("data1", "data2", "data3", "data4"),
+        ...    "column2", make_array(86, 51, 32, 91),
+        ...    "column3", make_array("b", "c", "a", "a"),
+        ...    "column4", make_array(5, 3, 6, 9)
+        ... )
+            
+        >>> t
+        column1 | column2 | column3 | column4
+        data1   | 86      | b       | 5
+        data2   | 51      | c       | 3
+        data3   | 32      | a       | 6
+        data4   | 91      | a       | 9
+    	
+    	>>> t.index_by('column2')
+    	{86: [Row(column1='data1', column2=86, column3='b', column4=5)], 51: [Row(column1='data2', column2=51, column3='c', column4=3)], 32: [Row(column1='data3', column2=32, column3='a', column4=6)], 91: [Row(column1='data4', column2=91, column3='a', column4=9)]}
+    	
+    	>>> t.index_by('column3')
+    	{'b': [Row(column1='data1', column2=86, column3='b', column4=5)], 'c': [Row(column1='data2', column2=51, column3='c', column4=3)], 'a': [Row(column1='data3', column2=32, column3='a', column4=6), Row(column1='data4', column2=91, column3='a', column4=9)]}
+    	    
         """
         column = self._get_column(column_or_label)
         index = {}
@@ -3316,7 +3438,159 @@ class Table(collections.abc.MutableMapping):
         else:
             return fig
 
-    def bar(self, column_for_categories=None, select=None, overlay=True, width=6, height=4, **vargs):
+    def _ibar(self, orientation, column_for_categories=None, select=None, overlay=True, width=None, height=None, show=True, **vargs):
+        """Plot interactive bar charts for the table using plotly.
+
+        Args:
+            orientation (str): either 'h' to produce a horizontal bar chart or 'v' to produce a
+                vertical bar chart.
+
+        Kwargs:
+            column_for_categories (str): A column containing y-axis categories
+                used to create buckets for bar chart.
+
+            overlay (bool): create a chart with one color per data column;
+                if False, each will be displayed separately.
+
+            width (int): the width (in pixels) of the plot area
+
+            height (int): the height (in pixels) of the plot area
+
+            show (bool): whether to show the figure; if false, the figure is returned instead
+
+            vargs (dict): additional kwargs passed to ``plotly.graph_objects.Figure.update_layout``
+
+        Raises:
+            ValueError -- Every selected except column for ``column_for_categories``
+                must be numerical.
+
+        Returns:
+            Bar graph with buckets specified by ``column_for_categories``.
+            Each plot is labeled using the values in ``column_for_categories``
+            and one plot is produced for every other column (or for the columns
+            designated by ``select``).
+        """
+        assert orientation in ('h', 'v'), "orientation must be in ('h', 'v')"
+        horizontal = orientation == 'h'
+
+        if go is None or make_subplots is None:
+            self._import_plotly()
+
+        def make_unique_labels(labels):
+        # Since Plotly bar charts don't allow duplicate labels, this function
+        # takes in a list of labels and pads duplicates with a unique amount of
+        # zero width white space.
+            unique_labels = list(set(labels))
+            if len(unique_labels) != len(labels):
+                space_count = dict(zip(unique_labels, [0] * len(unique_labels)))
+                updated_labels = [''] * len(labels)
+                for i in range(len(labels)):
+                    updated_labels[i] = ''.join(['\u200c' * space_count[labels[i]], str(labels[i]), '  '])
+                    space_count[labels[i]] += 1
+                return updated_labels
+            labels = ["".join([str(label), '  ']) for label in labels]
+            return labels
+
+        ticks, labels = self._split_column_and_labels(column_for_categories)
+        ticks = ticks[::-1] if horizontal else ticks
+        ticks_unique = make_unique_labels(ticks)
+        if select is not None:
+            labels = self._as_labels(select)
+        col_label = self._as_label(column_for_categories)
+
+        colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors), len(labels)))
+
+        bar_width = 20
+        margin = 5
+
+        if overlay:
+            height = max(len(ticks) * (margin + bar_width * len(labels)), 500)
+        else:
+            subplot_height = max(len(ticks) * (margin + bar_width), 500)
+            height = subplot_height * len(labels)
+
+        if overlay:
+            fig = go.Figure()
+
+            if width:
+                fig.update_layout(width = width)
+            if height:
+                fig.update_layout(height = height)
+
+            for i in range(len(labels)):
+                if horizontal:
+                    x = np.flip(self.column(labels[i]))
+                    y = ticks_unique
+                    hovertemplate = '(%{x}, %{customdata})'
+                else:
+                    x = ticks_unique
+                    y = self.column(labels[i])
+                    hovertemplate = '(%{customdata}, %{y})'
+
+                fig.add_trace(go.Bar(
+                    x = x,
+                    y = y,
+                    name = labels[i],
+                    orientation = orientation,
+                    marker_color = colors[i],
+                    customdata = ticks,
+                    hovertemplate = hovertemplate,
+                    opacity = 0.7
+                ))
+
+            if horizontal:
+                fig.update_xaxes(title_text = labels[0] if len(labels) == 1 else None)
+                fig.update_yaxes(title_text = col_label, type = 'category', dtick = 1, showticklabels = True)
+            else:
+                fig.update_xaxes(title_text = col_label, type = 'category', dtick = 1, showticklabels = True)
+                fig.update_yaxes(title_text = labels[0] if len(labels) == 1 else None)
+
+        else:
+            fig = make_subplots(rows = len(labels), cols = 1, vertical_spacing = 0.1, row_heights = [subplot_height] * len(labels))
+
+            if width:
+                fig.update_layout(width = width)
+            if height:
+                fig.update_layout(height = height)
+
+            for i in range(len(labels)):
+                if horizontal:
+                    x = np.flip(self.column(labels[i]))
+                    y = ticks_unique
+                    hovertemplate = '(%{x}, %{customdata})'
+                else:
+                    x = ticks_unique
+                    y = self.column(labels[i])
+                    hovertemplate = '(%{customdata}, %{y})'
+
+                fig.append_trace(go.Bar(
+                    x = x,
+                    y = y,
+                    name = labels[i],
+                    orientation = orientation,
+                    customdata = ticks,
+                    hovertemplate = hovertemplate,
+                    marker_color = colors[i],
+                    opacity = 0.7
+                ), row = i + 1, col = 1)
+
+                if horizontal:
+                    fig.update_yaxes(title_text = col_label, type = 'category', dtick = 1, showticklabels = True)
+                    fig.update_xaxes(title_text = labels[i], row = i + 1, col = 1)
+                else:
+                    fig.update_yaxes(title_text = labels[i], row = i + 1, col = 1)
+                    fig.update_xaxes(title_text = col_label, type = 'category', dtick = 1, showticklabels = True)
+
+            fig.update_layout(showlegend=False)
+
+        fig.update_layout(**vargs)
+
+        if show:
+            fig.show()
+        else:
+            return fig
+
+    def bar(self, column_for_categories=None, select=None, overlay=True, width=None, height=None, **vargs):
         """Plot bar charts for the table.
 
         Each plot is labeled using the values in `column_for_categories` and
@@ -3336,6 +3610,21 @@ class Table(collections.abc.MutableMapping):
                 See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.bar
                 for additional arguments that can be passed into vargs.
         """
+        global _INTERACTIVE_PLOTS
+        if _INTERACTIVE_PLOTS:
+            show = vargs.pop('show', True)
+            return self.ibar(
+                    column_for_categories=column_for_categories,
+                    select=select,
+                    overlay=overlay,
+                    width=width,
+                    height=height,
+                    show=show,
+                    **vargs)
+
+        width = 6 if width is None else width
+        height = 4 if height is None else height
+
         options = self.default_options.copy()
 
         # Matplotlib tries to center the labels, but we already handle that
@@ -3359,6 +3648,60 @@ class Table(collections.abc.MutableMapping):
 
         self._visualize(column_for_categories, labels, xticks, overlay, draw, annotate, width=width, height=height)
 
+    def ibar(self, column_for_categories=None, select=None, overlay=True, width=None, height=None, show=True, **vargs):
+        """Plot interactive bar charts for the table using plotly.
+
+        Kwargs:
+            column_for_categories (str): A column containing y-axis categories
+                used to create buckets for bar chart.
+
+            overlay (bool): create a chart with one color per data column;
+                if False, each will be displayed separately.
+
+            width (int): the width (in pixels) of the plot area
+
+            height (int): the height (in pixels) of the plot area
+
+            show (bool): whether to show the figure; if false, the figure is returned instead
+
+            vargs (dict): additional kwargs passed to ``plotly.graph_objects.Figure.update_layout``
+
+        Raises:
+            ValueError -- Every selected except column for ``column_for_categories``
+                must be numerical.
+
+        Returns:
+            Bar graph with buckets specified by ``column_for_categories``.
+            Each plot is labeled using the values in ``column_for_categories``
+            and one plot is produced for every other column (or for the columns
+            designated by ``select``).
+
+        >>> t = Table().with_columns(
+        ...     'Furniture', make_array('chairs', 'tables', 'desks'),
+        ...     'Count', make_array(6, 1, 2),
+        ...     'Price', make_array(10, 20, 30)
+        ...     )
+        >>> t
+        Furniture | Count | Price
+        chairs    | 6     | 10
+        tables    | 1     | 20
+        desks     | 2     | 30
+        >>> furniture_table.ibar('Furniture') # doctest: +SKIP
+        <plotly bar graph with furniture as categories and bars for count and price>
+        >>> furniture_table.ibar('Furniture', 'Price') # doctest: +SKIP
+        <plotly bar graph with furniture as categories and bars for price>
+        >>> furniture_table.ibar('Furniture', make_array(1, 2)) # doctest: +SKIP
+        <plotly bar graph with furniture as categories and bars for count and price>
+        """
+        return self._ibar(
+                'v',
+                column_for_categories=column_for_categories,
+                select=select,
+                overlay=overlay,
+                width=width,
+                height=height,
+                show=show,
+                **vargs)
 
     def group_bar(self, column_label, **vargs):
         """Plot a bar chart for the table.
@@ -3387,6 +3730,34 @@ class Table(collections.abc.MutableMapping):
                 for additional arguments that can be passed into vargs.
         """
         self.group(column_label).bar(column_label, **vargs)
+
+    def igroup_bar(self, column_label, **vargs):
+        """Plot an interactive bar chart for the table.
+
+        The values of the specified column are grouped and counted, and one
+        bar is produced for each group.
+
+        Note: This differs from ``ibar`` in that there is no need to specify
+        bar heights; the height of a category's bar is the number of copies
+        of that category in the given column.  This method behaves more like
+        ``hist`` in that regard, while ``bar`` behaves more like ``plot`` or
+        ``scatter`` (which require the height of each point to be specified).
+
+        Args:
+            ``column_label`` (str or int): The name or index of a column
+
+        Kwargs:
+            overlay (bool): create a chart with one color per data column;
+                if False, each will be displayed separately.
+
+            width (float): The width of the plot, in inches
+            height (float): The height of the plot, in inches
+
+            vargs: Additional arguments that get passed into `plt.bar`.
+                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.bar
+                for additional arguments that can be passed into vargs.
+        """
+        self.group(column_label).ibar(column_label, **vargs)
 
     def barh(self, column_for_categories=None, select=None, overlay=True, width=None, **vargs):
         """Plot horizontal bar charts for the table. Redirects to ``Table#ibarh`` if interactive plots
@@ -3425,18 +3796,23 @@ class Table(collections.abc.MutableMapping):
         chairs    | 6     | 10
         tables    | 1     | 20
         desks     | 2     | 30
-        >>> furniture_table.barh('Furniture') # doctest: +SKIP
+        >>> t.barh('Furniture') # doctest: +SKIP
         <bar graph with furniture as categories and bars for count and price>
-        >>> furniture_table.barh('Furniture', 'Price') # doctest: +SKIP
+        >>> t.barh('Furniture', 'Price') # doctest: +SKIP
         <bar graph with furniture as categories and bars for price>
-        >>> furniture_table.barh('Furniture', make_array(1, 2)) # doctest: +SKIP
+        >>> t.barh('Furniture', make_array(1, 2)) # doctest: +SKIP
         <bar graph with furniture as categories and bars for count and price>
         """
         global _INTERACTIVE_PLOTS
         if _INTERACTIVE_PLOTS:
-            # If width not specified, default width originally set to 6,
-            # Multiply by 96 assuming 96 dpi
-            return self.ibarh(column_for_categories, select, overlay, width, **vargs)
+            show = vargs.pop('show', True)
+            return self.ibarh(
+                    column_for_categories=column_for_categories,
+                    select=select,
+                    overlay=overlay,
+                    width=width,
+                    show=show,
+                    **vargs)
 
         options = self.default_options.copy()
         # Matplotlib tries to center the labels, but we already handle that
@@ -3485,11 +3861,10 @@ class Table(collections.abc.MutableMapping):
     def ibarh(self, column_for_categories=None, select=None, overlay=True, width=None, show=True, **vargs):
         """Plot interactive horizontal bar charts for the table using plotly.
 
-        Args:
-            ``column_for_categories`` (``str``): A column containing y-axis categories
+        Kwargs:
+            column_for_categories (str): A column containing y-axis categories
                 used to create buckets for bar chart.
 
-        Kwargs:
             overlay (bool): create a chart with one color per data column;
                 if False, each will be displayed separately.
 
@@ -3528,107 +3903,14 @@ class Table(collections.abc.MutableMapping):
         >>> furniture_table.ibarh('Furniture', make_array(1, 2)) # doctest: +SKIP
         <plotly bar graph with furniture as categories and bars for count and price>
         """
-        if go is None or make_subplots is None:
-            self._import_plotly()
-
-        yticks, labels = self._split_column_and_labels(column_for_categories)
-
-        # reverse yticks so they're in same order as barh
-        yticks = yticks[::-1]
-
-        if select is not None:
-            labels = self._as_labels(select)
-
-        ylabel = self._as_label(column_for_categories)
-
-        def make_unique_labels(labels):
-        # Since Plotly bar charts don't allow duplicate labels, this function
-        # takes in a list of labels and pads duplicates with a unique amount of
-        # zero width white space.
-            unique_labels = list(set(labels))
-            if len(unique_labels) != len(labels):
-                space_count = dict(zip(unique_labels, [0] * len(unique_labels)))
-                updated_labels = [''] * len(labels)
-                for i in range(len(labels)):
-                    updated_labels[i] = ''.join(['\u200c' * space_count[labels[i]], str(labels[i]), '  '])
-                    space_count[labels[i]] += 1
-                return updated_labels
-            labels = ["".join([str(label), '  ']) for label in labels]
-            return labels
-
-        yticks_unique = make_unique_labels(yticks)
-
-        colors = list(itertools.islice(itertools.cycle(self.plotly_chart_colors), len(labels)))
-
-        bar_width = 20
-        margin = 5
-
-        if overlay:
-            height = max(len(yticks) * (margin + bar_width * len(labels)), 500)
-
-        else:
-            subplot_heights = [max(len(yticks) * (margin + bar_width), 500)] * len(labels)
-            height = subplot_heights[0] * len(labels)
-
-        if overlay:
-            fig = go.Figure()
-
-            if width:
-                fig.update_layout(width = width)
-
-            if height:
-                fig.update_layout(height = height)
-
-            for i in range(len(labels)):
-                fig.add_trace(go.Bar(
-                    x = np.flip(self.column(labels[i])), # flipping so this matches the order of yticks
-                    y = yticks_unique,
-                    name = labels[i],
-                    orientation = 'h',
-                    marker_color = colors[i],
-                    customdata = yticks,
-                    hovertemplate = '(%{x}, %{customdata})',
-                    opacity = 0.7
-                ))
-
-            fig.update_xaxes(title_text = labels[0] if len(labels) == 1 else None)
-            fig.update_yaxes(title_text = ylabel, type = 'category', dtick = 1, showticklabels = True)
-
-            if len(labels) == 1:
-                fig.update_xaxes(title_text = labels[0])
-
-        else:
-            fig = make_subplots(rows = len(labels), cols = 1, vertical_spacing = 0.1, row_heights = subplot_heights)
-
-            if width:
-                fig.update_layout(width = width)
-
-            if height:
-                fig.update_layout(height = height)
-
-            for i in range(len(labels)):
-                fig.append_trace(go.Bar(
-                    x = np.flip(self.column(labels[i])), # flipping so this matches the order of yticks
-                    y = yticks_unique,
-                    name = labels[i],
-                    orientation = 'h',
-                    customdata = yticks,
-                    hovertemplate = '(%{x}, %{customdata})',
-                    marker_color = colors[i],
-                    opacity = 0.7
-                ), row = i + 1, col = 1)
-
-                fig.update_yaxes(title_text = ylabel, type = 'category', dtick = 1, showticklabels = True)
-                fig.update_xaxes(title_text = labels[i], row = i + 1, col = 1)
-
-            fig.update_layout(showlegend=False)
-
-        fig.update_layout(**vargs)
-
-        if show:
-            fig.show()
-        else:
-            return fig
+        return self._ibar(
+                'h',
+                column_for_categories=column_for_categories,
+                select=select,
+                overlay=overlay,
+                width=width,
+                show=show,
+                **vargs)
 
     def group_barh(self, column_label, **vargs):
         """Plot a horizontal bar chart for the table.
@@ -3658,6 +3940,35 @@ class Table(collections.abc.MutableMapping):
                 for additional arguments that can be passed into vargs.
         """
         self.group(column_label).barh(column_label, **vargs)
+
+    def igroup_barh(self, column_label, **vargs):
+        """Plot an interactive horizontal bar chart for the table.
+
+        The values of the specified column are grouped and counted, and one
+        bar is produced for each group.
+
+        Note: This differs from ``ibarh`` in that there is no need to specify
+        bar heights; the size of a category's bar is the number of copies
+        of that category in the given column.  This method behaves more like
+        ``hist`` in that regard, while ``barh`` behaves more like ``plot`` or
+        ``scatter`` (which require the second coordinate of each point to be
+        specified in another column).
+
+        Args:
+            ``column_label`` (str or int): The name or index of a column
+
+        Kwargs:
+            overlay (bool): create a chart with one color per data column;
+                if False, each will be displayed separately.
+
+            width (float): The width of the plot, in inches
+            height (float): The height of the plot, in inches
+
+            vargs: Additional arguments that get passed into `plt.bar`.
+                See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.bar
+                for additional arguments that can be passed into vargs.
+        """
+        self.group(column_label).ibarh(column_label, **vargs)
 
     def scatter(self, column_for_x, select=None, overlay=True, fit_line=False,
         group=None, labels=None, sizes=None, width=None, height=None, s=20, **vargs):
@@ -4387,7 +4698,7 @@ class Table(collections.abc.MutableMapping):
             type(self).plots.append(axis)
         else:
             fig, axes = plt.subplots(n, 1, figsize=(width, height*n))
-            if not isinstance(axes, collections.Iterable):
+            if not isinstance(axes, collections.abc.Iterable):
                 axes=[axes]
             for axis, y_label, color in zip(axes, y_labels, colors):
                 draw(axis, y_label, color)
@@ -5154,79 +5465,83 @@ class Table(collections.abc.MutableMapping):
                     right_end = max([max(self.column(k)) for k in self.labels if np.issubdtype(self.column(k).dtype, np.number)])
 
         def draw_hist(values_dict):
-            with np.printoptions(legacy='1.13'):
-                # This code is factored as a function for clarity only.
-                n = len(values_dict)
-                colors = [rgb_color + (self.default_alpha,) for rgb_color in
-                    itertools.islice(itertools.cycle(self.chart_colors), n)]
-                hist_names = list(values_dict.keys())
-                values = [v[0] for v in values_dict.values()]
-                weights = [v[1] for v in values_dict.values() if len(v) > 1]
-                if n > len(weights) > 0:
-                    raise ValueError("Weights were provided for some columns, but not "
-                                     " all, and that's not supported.")
-                if rug and overlay and n > 1:
-                    warnings.warn("Cannot plot overlaid rug plots; rug=True ignored", UserWarning)
-                if vargs['density']:
-                    y_label = 'Percent per ' + (unit if unit else 'unit')
-                    percentage = plt.FuncFormatter(lambda x, _: "{:g}".format(100*x))
-                else:
-                    y_label = 'Count'
+            # Check if np.printoptions is set to legacy. Throw UserWarning if not
+            if np.get_printoptions()['legacy'] != '1.13':
+                warnings.warn("We've detected you're not using the '1.13' legacy setting for `np.printoptions`. "
+                    "This may cause excessive error terms in your plots. We recommend solving this by running the "
+                    "following code: `np.set_printoptions(legacy='1.13')`", UserWarning)
+            # This code is factored as a function for clarity only.
+            n = len(values_dict)
+            colors = [rgb_color + (self.default_alpha,) for rgb_color in
+                itertools.islice(itertools.cycle(self.chart_colors), n)]
+            hist_names = list(values_dict.keys())
+            values = [v[0] for v in values_dict.values()]
+            weights = [v[1] for v in values_dict.values() if len(v) > 1]
+            if n > len(weights) > 0:
+                raise ValueError("Weights were provided for some columns, but not "
+                                 " all, and that's not supported.")
+            if rug and overlay and n > 1:
+                warnings.warn("Cannot plot overlaid rug plots; rug=True ignored", UserWarning)
+            if vargs['density']:
+                y_label = 'Percent per ' + (unit if unit else 'unit')
+                percentage = plt.FuncFormatter(lambda x, _: "{:g}".format(100*x))
+            else:
+                y_label = 'Count'
 
-                if overlay and n > 1:
-                    # Reverse because legend prints bottom-to-top
-                    values = values[::-1]
-                    weights = weights[::-1]
-                    colors = list(colors)[::-1]
-                    if len(weights) == n:
-                        vargs['weights'] = weights
-                    if not side_by_side:
+            if overlay and n > 1:
+                # Reverse because legend prints bottom-to-top
+                values = values[::-1]
+                weights = weights[::-1]
+                colors = list(colors)[::-1]
+                if len(weights) == n:
+                    vargs['weights'] = weights
+                if not side_by_side:
+                    vargs.setdefault('histtype', 'stepfilled')
+                figure = plt.figure(figsize=(width, height))
+                plt.hist(values, color=colors, **vargs)
+                # if rug:
+                #     plt.scatter(values, np.zeros_like(values), marker="|", color=colors)
+                axis = figure.get_axes()[0]
+                _vertical_x(axis)
+                axis.set_ylabel(y_label)
+                if vargs['density']:
+                    axis.yaxis.set_major_formatter(percentage)
+                x_unit = ' (' + unit + ')' if unit else ''
+                if group is not None and len(self.labels) == 2:
+                    #There's a grouping in place but we're only plotting one column's values
+                    label_not_grouped = [l for l in self.labels if l != group][0]
+                    axis.set_xlabel(label_not_grouped + x_unit, fontsize=16)
+                else:
+                    axis.set_xlabel(x_unit, fontsize=16)
+                plt.legend(hist_names, loc=2, bbox_to_anchor=(1.05, 1))
+                type(self).plots.append(axis)
+            else:
+                _, axes = plt.subplots(n, 1, figsize=(width, height * n))
+                if 'bins' in vargs:
+                    bins = vargs['bins']
+                    if isinstance(bins, numbers.Integral) and bins > 76 or hasattr(bins, '__len__') and len(bins) > 76:
+                        # Use stepfilled when there are too many bins
                         vargs.setdefault('histtype', 'stepfilled')
-                    figure = plt.figure(figsize=(width, height))
-                    plt.hist(values, color=colors, **vargs)
-                    # if rug:
-                    #     plt.scatter(values, np.zeros_like(values), marker="|", color=colors)
-                    axis = figure.get_axes()[0]
-                    _vertical_x(axis)
+                if n == 1:
+                    axes = [axes]
+                for i, (axis, hist_name, values_for_hist, color) in enumerate(zip(axes, hist_names, values, colors)):
                     axis.set_ylabel(y_label)
                     if vargs['density']:
                         axis.yaxis.set_major_formatter(percentage)
                     x_unit = ' (' + unit + ')' if unit else ''
-                    if group is not None and len(self.labels) == 2:
-                        #There's a grouping in place but we're only plotting one column's values
-                        label_not_grouped = [l for l in self.labels if l != group][0]
-                        axis.set_xlabel(label_not_grouped + x_unit, fontsize=16)
-                    else:
-                        axis.set_xlabel(x_unit, fontsize=16)
-                    plt.legend(hist_names, loc=2, bbox_to_anchor=(1.05, 1))
+                    if len(weights) == n:
+                        vargs['weights'] = weights[i]
+                    axis.set_xlabel(hist_name + x_unit, fontsize=16)
+                    heights, bins, patches = axis.hist(values_for_hist, color=color, **vargs)
+                    if left_end is not None and right_end is not None:
+                        x_shade, height_shade, width_shade = _compute_shading(heights, bins.copy(), left_end, right_end)
+                        axis.bar(x_shade, height_shade, width=width_shade,
+                                 color=self.chart_colors[1], align="edge")
+                    _vertical_x(axis)
+                    if rug:
+                        axis.scatter(values_for_hist, np.zeros_like(values_for_hist), marker="|",
+                                     color="black", s=100, zorder=10)
                     type(self).plots.append(axis)
-                else:
-                    _, axes = plt.subplots(n, 1, figsize=(width, height * n))
-                    if 'bins' in vargs:
-                        bins = vargs['bins']
-                        if isinstance(bins, numbers.Integral) and bins > 76 or hasattr(bins, '__len__') and len(bins) > 76:
-                            # Use stepfilled when there are too many bins
-                            vargs.setdefault('histtype', 'stepfilled')
-                    if n == 1:
-                        axes = [axes]
-                    for i, (axis, hist_name, values_for_hist, color) in enumerate(zip(axes, hist_names, values, colors)):
-                        axis.set_ylabel(y_label)
-                        if vargs['density']:
-                            axis.yaxis.set_major_formatter(percentage)
-                        x_unit = ' (' + unit + ')' if unit else ''
-                        if len(weights) == n:
-                            vargs['weights'] = weights[i]
-                        axis.set_xlabel(hist_name + x_unit, fontsize=16)
-                        heights, bins, patches = axis.hist(values_for_hist, color=color, **vargs)
-                        if left_end is not None and right_end is not None:
-                            x_shade, height_shade, width_shade = _compute_shading(heights, bins.copy(), left_end, right_end)
-                            axis.bar(x_shade, height_shade, width=width_shade,
-                                     color=self.chart_colors[1], align="edge")
-                        _vertical_x(axis)
-                        if rug:
-                            axis.scatter(values_for_hist, np.zeros_like(values_for_hist), marker="|",
-                                         color="black", s=100, zorder=10)
-                        type(self).plots.append(axis)
 
         draw_hist(values_dict)
 
@@ -5486,7 +5801,7 @@ def _fill_with_zeros(partials, rows, zero=None):
     zero -- value used when no rows match a particular partial
     """
     assert len(rows) > 0
-    if not _is_non_string_iterable(partials):
+    if not _util.is_non_string_iterable(partials):
         # Convert partials to tuple for comparison against row slice later
         partials = [(partial,) for partial in partials]
 
@@ -5505,7 +5820,7 @@ def _fill_with_zeros(partials, rows, zero=None):
 
 def _as_labels(column_or_columns):
     """Return a list of labels for a label or labels."""
-    if not _is_non_string_iterable(column_or_columns):
+    if not _util.is_non_string_iterable(column_or_columns):
         return [column_or_columns]
     else:
         return column_or_columns
@@ -5515,7 +5830,7 @@ def _varargs_labels_as_list(label_list):
     of labels."""
     if len(label_list) == 0:
         return []
-    elif not _is_non_string_iterable(label_list[0]):
+    elif not _util.is_non_string_iterable(label_list[0]):
         # Assume everything is a label.  If not, it'll be caught later.
         return label_list
     elif len(label_list) == 1:
@@ -5540,23 +5855,12 @@ def _collected_label(collect, label):
     else:
         return label
 
-
-def _is_non_string_iterable(value):
-    """Whether a value is iterable."""
-    if isinstance(value, str):
-        return False
-    if hasattr(value, '__iter__'):
-        return True
-    if isinstance(value, collections.abc.Sequence):
-        return True
-    return False
-
 def _vertical_x(axis, ticks=None, max_width=5):
     """Switch labels to vertical if they are long."""
     if ticks is None:
         ticks = axis.get_xticks()
     if (np.array(ticks) == np.rint(ticks)).all():
-        ticks = np.rint(ticks).astype(np.int)
+        ticks = np.rint(ticks).astype(np.int64)
     if max([len(str(tick)) for tick in ticks]) > max_width:
         axis.set_xticklabels(ticks, rotation='vertical')
 

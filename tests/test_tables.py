@@ -1145,6 +1145,13 @@ def test_remove_num_rows(table):
     table.remove(0)
     assert table.num_rows + 1 == num_rows_before
 
+def test_remove_column_type(table):
+    original_col = table.column("count")
+    assert type(original_col) == np.ndarray
+    table.remove(0)
+    assert type(table.column("count")) == type(original_col)
+
+
 
 ##########
 # Create #
@@ -1893,4 +1900,4 @@ def test_read_table():
     assert isinstance(Table().read_table("tests/us-unemployment.csv"), Table)
     assert isinstance(Table().read_table("tests/us-unemployment-copy"), Table)
     assert isinstance(Table().read_table("tests/us-unemployment.txt"), Table)
-    assert isinstance(Table().read_table("https://raw.githubusercontent.com/data-8/textbook/gh-pages/data/deflategate.csv"), Table)
+    assert isinstance(Table().read_table("https://raw.githubusercontent.com/data-8/textbook/main/assets/data/deflategate.csv"), Table)

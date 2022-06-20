@@ -47,7 +47,7 @@ setup(
     name = 'datascience',
     packages = ['datascience'],
     version = version,
-    install_requires = install_requires + tests_requires,
+    install_requires = install_requires,
     tests_require = tests_requires,
     cmdclass = {'test': PyTest},
     description = 'A Jupyter notebook Python library for introductory data science',

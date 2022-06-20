@@ -14,10 +14,10 @@ help:
 	@echo "  deploy_docs to deploy the docs to Github Pages"
 
 install:
-	python setup.py develop
+	python3 setup.py develop
 
 test:
-	python setup.py test
+	python3 tests.py
 
 docs:
 	cd $(DOCS_DIR) ; make html
@@ -27,16 +27,3 @@ clean_docs:
 
 serve_docs:
 	cd $(DOCS_DIR)/_build/html ; python -m http.server
-
-deploy_docs:
-	rm -rf doc_build
-
-	git clone --quiet --branch=gh-pages $(GH_REMOTE) doc_build
-	cp -r docs/_build/html/* doc_build
-
-	cd doc_build && \
-		git add -A && \
-		git commit -m "$(DEPLOY_DOCS_MESSAGE)" && \
-		git push -f $(GH_REMOTE) gh-pages
-
-	rm -rf doc_build
