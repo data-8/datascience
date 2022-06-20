@@ -2761,7 +2761,39 @@ class Table(collections.abc.MutableMapping):
         return self.as_html(self.max_str_rows)
 
     def show(self, max_rows=0):
-        """Display the table."""
+        """Display the table.
+	
+    	Args:
+    	    ``max_rows``: Maximum number of rows to be output by the function
+    	
+    	Returns:
+    	    A subset of the Table with number of rows specified in ``max_rows``.
+    	    First ``max_rows`` number of rows are displayed. If no value is passed
+    	    for ``max_rows``, then the entire Table is returned.
+    	    
+    	Examples:
+
+        >>> t = Table().with_columns(
+        ...    "column1", make_array("data1", "data2", "data3"),
+        ...    "column2", make_array(86, 51, 32),
+        ...    "column3", make_array("b", "c", "a"),
+        ...    "column4", make_array(5, 3, 6)
+        ... )
+
+            
+        >>> t
+        column1 | column2 | column3 | column4
+        data1   | 86      | b       | 5
+        data2   | 51      | c       | 3
+        data3   | 32      | a       | 6
+    	
+    	>>> t.show()
+    	<IPython.core.display.HTML object>
+    	
+    	>>> t.show(max_rows=2)
+    	<IPython.core.display.HTML object>
+    	
+    	"""
         IPython.display.display(IPython.display.HTML(self.as_html(max_rows)))
 
     max_str_rows = 10
@@ -2911,8 +2943,6 @@ class Table(collections.abc.MutableMapping):
                 <tr>\\n            <td>abc </td> <td>12  </td> <td>5.5   </td>\\n        </tr>\\n        
                 <tr>\\n            <td>xyz </td> <td>14  </td> <td>6     </td>\\n        </tr>\\n    
                 </tbody>\\n</table>\\n<p>... (1 rows omitted)</p>'
-
-
         """
         if not max_rows or max_rows > self.num_rows:
             max_rows = self.num_rows
@@ -2943,7 +2973,39 @@ class Table(collections.abc.MutableMapping):
 
     def index_by(self, column_or_label):
         """Return a dict keyed by values in a column that contains lists of
-        rows corresponding to each value.
+            rows corresponding to each value.
+    	
+    	Args:
+    	    ``columns_or_labels``: Name or label of a column of the Table,
+    	    values of which are keys in the returned dict.
+    	
+    	Returns:
+    	    A dictionary with values from the column specified in the argument
+    	    ``columns_or_labels`` as keys. The corresponding data is a list of
+    	    Row of values from the rest of the columns of the Table.
+    	    
+    	Examples:
+    	
+    	>>> t = Table().with_columns(
+        ...    "column1", make_array("data1", "data2", "data3", "data4"),
+        ...    "column2", make_array(86, 51, 32, 91),
+        ...    "column3", make_array("b", "c", "a", "a"),
+        ...    "column4", make_array(5, 3, 6, 9)
+        ... )
+            
+        >>> t
+        column1 | column2 | column3 | column4
+        data1   | 86      | b       | 5
+        data2   | 51      | c       | 3
+        data3   | 32      | a       | 6
+        data4   | 91      | a       | 9
+    	
+    	>>> t.index_by('column2')
+    	{86: [Row(column1='data1', column2=86, column3='b', column4=5)], 51: [Row(column1='data2', column2=51, column3='c', column4=3)], 32: [Row(column1='data3', column2=32, column3='a', column4=6)], 91: [Row(column1='data4', column2=91, column3='a', column4=9)]}
+    	
+    	>>> t.index_by('column3')
+    	{'b': [Row(column1='data1', column2=86, column3='b', column4=5)], 'c': [Row(column1='data2', column2=51, column3='c', column4=3)], 'a': [Row(column1='data3', column2=32, column3='a', column4=6), Row(column1='data4', column2=91, column3='a', column4=9)]}
+    	    
         """
         column = self._get_column(column_or_label)
         index = {}
