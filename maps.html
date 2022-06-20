@@ -129,7 +129,9 @@ order-of-magnitude integer. Ex: 270 rounds to 200, 5600 to 6000.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="datascience.maps.Map.copy">
 <span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Map.copy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Copies the current Map into a new one and returns it.</p>
+<dd><p>Copies the current Map into a new one and returns it.
+Note: This only copies rendering attributes. The underlying map is NOT deep-copied.
+This is as a result of no functionality in Folium. Ref: <a class="reference external" href="https://github.com/python-visualization/folium/issues/1207">https://github.com/python-visualization/folium/issues/1207</a></p>
 </dd></dl>
 
 <dl class="py property">

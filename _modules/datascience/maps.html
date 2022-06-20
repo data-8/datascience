@@ -137,10 +137,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_width</span> <span class="o">=</span> <span class="n">width</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_height</span> <span class="o">=</span> <span class="n">height</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_folium_map</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Map.copy"><a class="viewcode-back" href="../../maps.html#datascience.maps.Map.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Copies the current Map into a new one and returns it.</span>
+<span class="sd">        Note: This only copies rendering attributes. The underlying map is NOT deep-copied.</span>
+<span class="sd">        This is as a result of no functionality in Folium. Ref: https://github.com/python-visualization/folium/issues/1207</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">m</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_features</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">,</span>
@@ -402,7 +405,7 @@
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span> <span class="o">==</span> <span class="n">Table</span><span class="p">:</span>
             <span class="c1"># if table of features e.g. Table.from_records(taz_map.features)</span>
-            <span class="k">if</span> <span class="s1">&#39;feature&#39;</span> <span class="ow">in</span> <span class="n">feature</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;feature&#39;</span> <span class="ow">in</span> <span class="n">feature</span><span class="o">.</span><span class="n">labels</span><span class="p">:</span>
                 <span class="n">feature</span> <span class="o">=</span> <span class="n">feature</span><span class="p">[</span><span class="s1">&#39;feature&#39;</span><span class="p">]</span>
 
             <span class="c1"># if marker table e.g. table with columns: latitudes,longitudes,popup,color,area</span>
