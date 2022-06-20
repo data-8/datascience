@@ -1124,7 +1124,7 @@ class Table(collections.abc.MutableMapping):
         else:
             rows_remove = row_or_row_indices
         for col in self._columns:
-            self._columns[col] = [elem for i, elem in enumerate(self[col]) if i not in rows_remove]
+            self._columns[col] = np.array([elem for i, elem in enumerate(self[col]) if i not in rows_remove])
         self._num_rows -= len(rows_remove)
         return self
 
