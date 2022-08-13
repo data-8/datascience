@@ -5781,11 +5781,25 @@ class Table(collections.abc.MutableMapping):
             })
             >>> td.Table().Rows(t).__len__()
             4
-            
+
             """
             return self._table.num_rows
 
         def __repr__(self):
+            """
+            Returns the printable representation of the given table as string.
+            Uses the standard repr() function.
+
+            >>>   t = td.Table().with_columns({
+                    'letter': ['a', 'b', 'c', 'z'],
+                    'count':  [  9,   3,   3,   1],
+                    'points': [  1,   2,   2,  10],
+                })
+
+            >>> td.Table().Rows(t).__repr__()
+            'Rows(letter | count | points\na      | 9     | 1\nb      | 3     | 2\nc      | 3     | 2\nz      | 1     | 10)'
+            
+            """
             return '{0}({1})'.format(type(self).__name__, repr(self._table))
 
 
