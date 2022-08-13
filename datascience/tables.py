@@ -5725,6 +5725,24 @@ class Table(collections.abc.MutableMapping):
             self._labels = None
 
         def __getitem__(self, i):
+            """
+            Access the i-th row of a given table.
+
+            args:
+            i- index of the Row that needs to be accessed.
+
+            returns:
+            Returns a Row object containing the i-th row of the given table
+
+            >>> t = td.Table().with_columns({
+                'letter': ['a', 'b', 'c', 'z'],
+                'count':  [  9,   3,   3,   1],
+                'points': [  1,   2,   2,  10],
+            })
+
+            >>> td.Table().Rows(t).__getitem__(0)
+            Row(letter='a', count=9, points=1)
+            """
             if isinstance(i, slice):
                 return (self[j] for j in range(*i.indices(len(self))))
 
