@@ -5719,14 +5719,32 @@ class Table(collections.abc.MutableMapping):
             return collections.OrderedDict(zip(self._table.labels, self))
 
     class Rows(collections.abc.Sequence):
-        """An iterable view over the rows in a table."""
+        """
+        An iterable row-styled view of the table object that is passed as an argument.
+
+        args:
+        table- accepts a table object of class Table()
+
+        >>>  t = td.Table().with_columns({
+             'letter': ['a', 'b', 'c', 'z'],
+             'count':  [  9,   3,   3,   1],
+             'points': [  1,   2,   2,  10],
+        })
+
+        >>> td.Table().Rows(t)
+        Rows(letter | count | points
+        a      | 9     | 1
+        b      | 3     | 2
+        c      | 3     | 2
+        z      | 1     | 10)
+        """
         def __init__(self, table):
             self._table = table
             self._labels = None
 
         def __getitem__(self, i):
             """
-            Access the i-th row of a given table.
+            Access the i-th row of the given table.
 
             args:
             i- index of the Row that needs to be accessed.
@@ -5753,6 +5771,18 @@ class Table(collections.abc.MutableMapping):
             return self._row(c[i] for c in self._table._columns.values())
 
         def __len__(self):
+            """
+            Returns the no.of rows in the table.
+
+            >>>  t = td.Table().with_columns({
+             'letter': ['a', 'b', 'c', 'z'],
+             'count':  [  9,   3,   3,   1],
+             'points': [  1,   2,   2,  10],
+            })
+            >>> td.Table().Rows(t).__len__()
+            4
+            
+            """
             return self._table.num_rows
 
         def __repr__(self):
