@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.17.6
+* Add pythonic aliases for comparison predicates.
+
 ### v0.17.5
 * Eliminated deprecation warnings involved arrays containing arrays/sequences.
 * Changed the column type of a table after a remove operation back to a NumPy array, as written in the documentation.
