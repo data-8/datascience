@@ -127,10 +127,6 @@ class are:
         return _combinable(lambda x: x >= y or _equal_or_float_equal(x, y))
 
     @staticmethod
-    def greater_than_or_equal_to(y):
-        return are.above_or_equal_to(y)
-
-    @staticmethod
     def below_or_equal_to(y):
         """Less than or equal to y."""
         check_iterable(y)
@@ -229,6 +225,14 @@ class are:
     def greater_than(y):
         """Greater than y."""
         return are.above(y)
+
+    @staticmethod
+    def greater_than_or_equal_to(y):
+        return are.above_or_equal_to(y)
+
+    @staticmethod
+    def less_than_or_equal_to(y):
+        return are.below_or_equal_to(y)
 
     @staticmethod
     def not_greater_than_or_equal_to(y):
