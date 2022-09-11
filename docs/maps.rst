@@ -56,6 +56,7 @@ Accessing Values
     
     
 Mutation
+
 .. autosummary::
     :toctree: _autosummary
     
@@ -65,6 +66,7 @@ Mutation
     Map.color
     
 Transformation
+
 .. autosummary::
     :toctree: _autosummary
     
@@ -77,6 +79,7 @@ The Marker class instantiates a marker that is displayed with _FoliumWrapper's s
 
 
 Creation
+
 .. autosummary::
     :toctree: _autosummary
     
@@ -84,6 +87,7 @@ Creation
     Marker.copy
     
 Mutation
+
 .. autosummary::
     :toctree: _autosummary
     
@@ -94,6 +98,7 @@ Mutation
     Marker.map_table
     
 Accessing Values
+
 .. autosummary::
     :toctree: _autosummary
     
@@ -104,6 +109,7 @@ Accessing Values
 Used to display a GeoJSON feature when using Folium's geo_json method. 
 
 Creation 
+
 .. autosummary::
     :toctree: _autosummary
     
@@ -111,6 +117,7 @@ Creation
     Region.copy
     
 Mutation
+
 .. autosummary::
     :toctree: _autosummary
     
@@ -120,6 +127,7 @@ Mutation
     
     
 Accessing values
+
 .. autosummary::
     :toctree: _autosummary
     
