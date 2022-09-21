@@ -3,8 +3,8 @@ from setuptools import setup
 from setuptools.command.test import test as TestCommand
 
 
-if sys.version_info < (3, 0):
-    raise ValueError('This package requires python >= 3.0')
+if sys.version_info < (3, 6):
+    raise ValueError('This package requires python >= 3.6')
 
 with open('requirements.txt') as fid:
     install_requires = [l.strip() for l in fid.readlines() if l]
@@ -47,6 +47,7 @@ setup(
     name = 'datascience',
     packages = ['datascience'],
     version = version,
+    python_requires='>=3.6',
     install_requires = install_requires,
     tests_require = tests_requires,
     cmdclass = {'test': PyTest},
