@@ -5702,8 +5702,7 @@ class Table(collections.abc.MutableMapping):
             self._table = table
             self._labels = None
 
-        def 
-	item__(self, i):
+        def item__(self, i):
             if isinstance(i, slice):
                 return (self[j] for j in range(*i.indices(len(self))))
 
