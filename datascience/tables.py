@@ -295,14 +295,6 @@ class Table(collections.abc.MutableMapping):
     def __iter__(self):
         return iter(self.labels)
 
-    def __getattr__(self, attr):
-        """Throw an error if a attempting to call a method that doesn't apply to tables.
-
-        E.g., t.item() on a Table will throw "t object has no attribute item".
-        """
-	msg = "'{0}' object has no attribute '{1}'".format(type(self).__name__, attr)
-	raise AttributeError(msg)
-
     ####################
     # Accessing Values #
     ####################
@@ -5710,7 +5702,8 @@ class Table(collections.abc.MutableMapping):
             self._table = table
             self._labels = None
 
-        def __getitem__(self, i):
+        def 
+	item__(self, i):
             if isinstance(i, slice):
                 return (self[j] for j in range(*i.indices(len(self))))
 
