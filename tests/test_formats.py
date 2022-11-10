@@ -27,6 +27,14 @@ def test_default_format():
     assert_equal(fmt('hello'), 'hello')
     assert_equal(fmt((1, 2)), '(1, 2)')
 
+def test_default_format_column():
+    fmtc = ds.default_formatter.format_column
+
+    description_list = ["A data scientist is someone who creates programming code and combines it with statistical knowledge to create insights from data."]
+    pad = fmtc("Carreers", description_list)
+    assert_equal(pad(description_list[0]), "A data scientist is someone who creates programming code ...")
+
+
 
 def test_number_format():
     for fmt in [ds.NumberFormatter(2), ds.NumberFormatter]:
@@ -82,6 +90,9 @@ def test_date_format():
     t.set_format('time', ds.DateFormatter("%Y-%m-%d %H:%M:%S.%f"))
     assert isinstance(t['time'][0], float)
 
+    formatter = formats.DateFormatter()
+    assert_equal(formatter.format_value(1666264489.9004), "2022-10-20 08:14:49.900400")
+
 
 def test_percent_formatter():
     vs = [0.1, 0.11111, 0.199999, 10]
@@ -106,3 +117,20 @@ def test_distribution_formatter():
     30.00%
     38.33%
     """)
+
+    counts = [0, 0, 0, 0]
+    t = ds.Table().with_column('count', counts)
+    t.set_format('count', ds.DistributionFormatter)
+    assert_equal(t, """
+    count
+    0.00%
+    0.00%
+    0.00%
+    0.00%
+    """)
+
+def test_empty_init():
+    formatter = formats.Formatter(1, 10, "...")
+    assert_equal(formatter.min_width, 1)
+    assert_equal(formatter.max_width, 10)
+    assert_equal(formatter.etc, "...")
