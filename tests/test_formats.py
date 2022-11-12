@@ -40,7 +40,7 @@ def test_default_format():
         'this is a very long string with spaces and more than 60 characters, but who is counting?')  # edge case
 
     # randomize truncation test
-    test_cases = 1000000
+    test_cases = 10000
 
     for i in range(test_cases):
         # generate a random floating point number
@@ -133,9 +133,9 @@ def test_number_format():
 
 
 def test_currency_format():
-    # edge cases: 0, one non-zero digit: 6, five digits: 16,257, 2 decimal places: 16,257.55
+    # edge cases: 0, one non-zero digit: 6, five digits: -16,257, 2 decimal places: -16,257.55
     # duplicate values: 0 and 60
-    vs = ['$0', '$0', '$6', '$60', '$60', '$162.5', '$1,625', '$16,257.55']
+    vs = ['$0', '$0', '$6', '$60', '$60', '$162.5', '$1,625', '$-16,257.55']
     t = ds.Table().with_columns('num', vs, 'str', vs)
     t.set_format('num', ds.CurrencyFormatter('$', int_to_float=True))
     # check that table was created correctly
@@ -148,11 +148,12 @@ def test_currency_format():
     $60.00    | $60
     $162.50   | $162.5
     $1,625.00 | $1,625
-    $16,257.55| $16,257.55
+    $-16,257.55| $-16,257.55
     """)
     # sort via num -> sorts numerically
     assert_equal(t.sort('num'), """
     num       | str
+    $-16,257.55| $-16,257.55
     $0.00     | $0
     $0.00     | $0
     $6.00     | $6
@@ -160,22 +161,20 @@ def test_currency_format():
     $60.00    | $60
     $162.50   | $162.5
     $1,625.00 | $1,625
-    $16,257.55| $16,257.55
     """)
     # sort via num with DISTINCT values-> sorts numerically
     assert_equal(t.sort('num', distinct=True), """
     num       | str
+    $-16,257.55| $-16,257.55
     $0.00     | $0
     $6.00     | $6
     $60.00    | $60
     $162.50   | $162.5
     $1,625.00 | $1,625
-    $16,257.55| $16,257.55
     """)
     # sort via num DESCENDING -> sorts numerically
     assert_equal(t.sort('num', descending=True), """
     num       | str
-    $16,257.55| $16,257.55
     $1,625.00 | $1,625
     $162.50   | $162.5
     $60.00    | $60
@@ -183,14 +182,15 @@ def test_currency_format():
     $6.00     | $6
     $0.00     | $0
     $0.00     | $0
+    $-16,257.55| $-16,257.55
     """)
     # sort via str -> sorts alphabetically
     assert_equal(t.sort('str'), """
     num       | str
+    $-16,257.55| $-16,257.55
     $0.00     | $0
     $0.00     | $0
     $1,625.00 | $1,625
-    $16,257.55| $16,257.55
     $162.50   | $162.5
     $6.00     | $6
     $60.00    | $60
@@ -201,7 +201,7 @@ def test_currency_format():
 def test_currency_format_int():
     # edge cases: 0, 10, 100, 999, 1000, 10000, 1000000
     # all rows >10 in the table are omitted in the assert_equal comparison, so we can't test a larger table
-    t = ds.Table().with_column('money', [0, 1, 2, 3, 10, 100, 999, 1000, 10000, 1000000])
+    t = ds.Table().with_column('money', [0, 1, 2, 3, 10, 100, -999, 1000, 10000, -1000000])
     t.set_format(['money'], ds.CurrencyFormatter)
     assert_equal(t, """
     money
@@ -211,10 +211,10 @@ def test_currency_format_int():
     $3
     $10
     $100
-    $999
+    $-999
     $1,000
     $10,000
-    $1,000,000
+    $-1,000,000
     """)
 
 
@@ -227,7 +227,7 @@ def test_date_format():
 
 def test_percent_formatter():
     # edge cases: 0.0, 0.499, 0.4994, 0.4995, 0.4999, 1.0
-    vs = [0.0, 0.1, 0.11111, 0.199999, 0.499, 0.4994, 0.4995, 0.4999, 1.0, 10]
+    vs = [0.0, 0.1, 0.11111, 0.199999, 0.499, 0.4994, 0.4995, -0.4999, 1.0, 10]
     t = ds.Table().with_column('percent', vs)
     t.set_format('percent', ds.PercentFormatter(1))
     assert_equal(t, """
@@ -239,7 +239,7 @@ def test_percent_formatter():
     49.9%
     49.9%
     50.0%
-    50.0%
+    -50.0%
     100.0%
     1000.0%
     """)
