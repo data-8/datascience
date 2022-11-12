@@ -39,10 +39,11 @@ def test_default_format():
         fmt('this is a very long string with spaces and more than 60 characters, but who is counting?'),
         'this is a very long string with spaces and more than 60 characters, but who is counting?')  # edge case
 
-    # randomize truncation test
-    test_cases = 10000
+    # randomize floating point number rounding test
+    test_cases = 1000000
 
     for i in range(test_cases):
+
         # generate a random floating point number
         num = random.uniform(-999999999999.9, 999999999999.9)
 
@@ -119,8 +120,8 @@ def test_default_format():
 def test_number_format():
     for fmt in [ds.NumberFormatter(2), ds.NumberFormatter]:
         # edge cases: 0, 1000000
-        us = ['0', '1,000', '12,000', '1,000,000']
-        vs = ['0', '1,000', '12,000.346', '1,000,000']
+        us = ['0', '1,000', '12,000', '1,000,000', '1,000,000,000']
+        vs = ['0', '1,000', '12,000.346', '1,000,000', '1,000,000,000']
         t = ds.Table().with_columns('u', us, 'v', vs)
         t.set_format(['u', 'v'], fmt)
         assert_equal(t, """
@@ -129,6 +130,7 @@ def test_number_format():
         1,000  | 1,000.00
         12,000 | 12,000.35
         1,000,000 | 1,000,000.00
+        1,000,000,000 | 1,000,000,000.00
         """)
 
 
@@ -199,7 +201,7 @@ def test_currency_format():
 
 
 def test_currency_format_int():
-    # edge cases: 0, 10, 100, 999, 1000, 10000, 1000000
+    # edge cases: 0, 10, 100, -999, 1000, 10000, -1000000
     # all rows >10 in the table are omitted in the assert_equal comparison, so we can't test a larger table
     t = ds.Table().with_column('money', [0, 1, 2, 3, 10, 100, -999, 1000, 10000, -1000000])
     t.set_format(['money'], ds.CurrencyFormatter)
@@ -226,7 +228,7 @@ def test_date_format():
 
 
 def test_percent_formatter():
-    # edge cases: 0.0, 0.499, 0.4994, 0.4995, 0.4999, 1.0
+    # edge cases: 0.0, 0.499, 0.4994, 0.4995, -0.4999, 1.0
     vs = [0.0, 0.1, 0.11111, 0.199999, 0.499, 0.4994, 0.4995, -0.4999, 1.0, 10]
     t = ds.Table().with_column('percent', vs)
     t.set_format('percent', ds.PercentFormatter(1))
