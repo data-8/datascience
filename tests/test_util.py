@@ -96,3 +96,10 @@ def test_proportions_from_distribution():
     uniform = u.column(1)
     assert len(uniform) == 50 and _round_eq(1, sum(uniform))
     assert [x in (0, 0.5, 1) for x in ds.sample_proportions(2, ds.make_array(.2, .3, .5))]
+
+def test_is_non_string_iterable():
+    assert ds.is_non_string_iterable([1, 2, 3])
+    assert ds.is_non_string_iterable((1, 2, 3))
+    assert ds.is_non_string_iterable(np.array([1, 2, 3]))
+    assert not ds.is_non_string_iterable(1)
+    assert not ds.is_non_string_iterable("foo")
