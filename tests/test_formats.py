@@ -3,6 +3,8 @@ import re
 import datascience as ds
 from datascience import formats
 import random
+import datetime
+import time
 
 
 def assert_equal(string1, string2):
@@ -36,8 +38,10 @@ def test_default_format():
     assert_equal(fmt((1, 2)), '(1, 2)')
     assert_equal(fmt((1, 2, 3, 4, 5, 6, 7)), '(1, 2, 3, 4, 5, 6, 7)')  # edge case
     assert_equal(
-        fmt('this is a very long string with spaces and more than 60 characters, but who is counting?'),
-        'this is a very long string with spaces and more than 60 characters, but who is counting?')  # edge case
+        fmt('this is a very long string with spaces and more than 60 characters, and some special characters '
+            '!@#$%^&*()_+{}|:"<>?,./;[]\=-'),
+        'this is a very long string with spaces and more than 60 characters, and some special characters '
+            '!@#$%^&*()_+{}|:"<>?,./;[]\=-')  # edge case
 
     # randomize floating point number rounding test
     test_cases = 1000000
@@ -52,11 +56,11 @@ def test_default_format():
 
         neg_flag = False
 
-        # check for negative
+        # check for negative - we will use this flag to reassign negative values after calculations have been made
         if num_str[:1] == "-":
             neg_flag = True
             num_str = num_str[1:]
-            num = num * -1  # need num to be positive for some of the calculations below
+            num = num * -1
 
         # split string before and after the decimal point
         # returns an array with 2 elements -> integer part at 0 and decimal part at 1
@@ -116,21 +120,22 @@ def test_default_format():
         assert_equal(fmt(num), rand_result)
 
 
-
 def test_number_format():
     for fmt in [ds.NumberFormatter(2), ds.NumberFormatter]:
-        # edge cases: 0, 1000000
-        us = ['0', '1,000', '12,000', '1,000,000', '1,000,000,000']
-        vs = ['0', '1,000', '12,000.346', '1,000,000', '1,000,000,000']
+        # edge cases: negatives, 0, and large numbers
+        us = ['-1', '0', '1,000', '12,000', '1,000,000', '-1,000,000,000', '1,000,000,000,000,000']
+        vs = ['-1', '0', '1,000', '12,000.346', '1,000,000', '-1,000,000,000', '1,000,000,000,000,000']
         t = ds.Table().with_columns('u', us, 'v', vs)
         t.set_format(['u', 'v'], fmt)
         assert_equal(t, """
         u      | v
+        -1     | -1.00
         0      | 0.00
         1,000  | 1,000.00
         12,000 | 12,000.35
         1,000,000 | 1,000,000.00
-        1,000,000,000 | 1,000,000,000.00
+        -1,000,000,000 | -1,000,000,000.00
+        1,000,000,000,000,000 | 1,000,000,000,000,000.00
         """)
 
 
@@ -225,6 +230,23 @@ def test_date_format():
     t = ds.Table().with_column('time', vs)
     t.set_format('time', ds.DateFormatter("%Y-%m-%d %H:%M:%S.%f"))
     assert isinstance(t['time'][0], float)
+
+    # generate random dates to test
+    test_cases = 1000000
+
+    for i in range(test_cases):
+        # generate random timestamp between 17:00 on the Epoch and current date
+        # note: Windows does not support Unix time before the Epoch, start time could be modified on
+        # other OSes to test further
+        rand_unix_ts = random.uniform(86408, float(time.time()))
+
+        # format unix timestamp to date time format
+        rand_date = datetime.datetime.fromtimestamp(rand_unix_ts).strftime("%Y-%m-%d %H:%M:%S.%f")
+
+        # test rand_date with DateFormatter
+        table = ds.Table().with_column('time', rand_date)
+        table.set_format('time', ds.DateFormatter("%Y-%m-%d %H:%M:%S.%f"))
+        assert isinstance(t['time'][0], float)
 
 
 def test_percent_formatter():
