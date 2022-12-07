@@ -2,6 +2,7 @@ import doctest
 import json
 import pytest
 from collections import OrderedDict
+import numpy as np
 
 import datascience as ds
 from datascience import maps
@@ -44,6 +45,10 @@ def test_setup_map():
     }
     ds.Map(**kwargs).show()
 
+def test_map_feature_casting():
+    """ Tests that a map is succesfully created when features is a numpy array """
+    assert isinstance(np.array([]), np.ndarray)
+    ds.Map(features=np.array([])).show()
 
 def test_map_marker_and_region(states):
     """ Tests that a Map can contain a Marker and/or Region. """
