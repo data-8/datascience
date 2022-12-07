@@ -17,6 +17,11 @@ def test_doctests():
 
 
 def test_default_format():
+    fmt = ds.Formatter(min_width=1, max_width=2, etc=3)
+    assert_equal(fmt.min_width,1)
+    assert_equal(fmt.max_width, 2)
+    assert_equal(fmt.etc, 3)
+
     fmt = ds.default_formatter.format_value
     assert_equal(fmt(1.23456789), '1.23457')
     assert_equal(fmt(123456789), '123456789')
@@ -82,6 +87,8 @@ def test_date_format():
     t.set_format('time', ds.DateFormatter("%Y-%m-%d %H:%M:%S.%f"))
     assert isinstance(t['time'][0], float)
 
+    fmt = ds.DateFormatter("%Y-%m-%d").format_value
+    assert_equal(fmt(0), "1970-01-01")
 
 def test_percent_formatter():
     vs = [0.1, 0.11111, 0.199999, 10]
@@ -106,3 +113,4 @@ def test_distribution_formatter():
     30.00%
     38.33%
     """)
+    
