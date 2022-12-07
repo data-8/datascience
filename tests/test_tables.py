@@ -1157,6 +1157,9 @@ def test_remove_column_type(table):
 # Create #
 ##########
 
+def test_empty_labels_none():
+    with pytest.raises(ValueError):
+        t = Table().empty(['letter', 'count', 'points'])
 
 def test_empty():
     t = Table(['letter', 'count', 'points'])
@@ -1209,6 +1212,10 @@ def test_from_records():
     c      | 3     | 2
     z      | 1     | 10
     """)
+    
+def test_from_records_none():
+    t = Table.from_records(None)
+    assert_equal(t, '')
 
 
 @pytest.mark.filterwarnings('ignore::FutureWarning')
@@ -1226,6 +1233,10 @@ def test_from_columns_dict():
     c      | 3     | 2
     z      | 1     | 10
     """)
+    
+def test_column_labels():
+    with pytest.warns(FutureWarning):
+        t = Table().column_labels
 
 
 #############
