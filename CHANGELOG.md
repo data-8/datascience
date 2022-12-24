@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### v0.17.6
-* Removed deprecated function allowing calling non-Table attributes on a Table. Will now throw an AttributeError.
+* Removed a deprecated function which allowed calling non-table attributes on a table.
 
 ### v0.17.5
 * Eliminated deprecation warnings involved arrays containing arrays/sequences.
