@@ -295,28 +295,6 @@ class Table(collections.abc.MutableMapping):
     def __iter__(self):
         return iter(self.labels)
 
-    # Deprecated
-    def __getattr__(self, attr):
-        """Return a method that applies to all columns or a table of attributes. [Deprecated]
-
-        E.g., t.sum() on a Table will return a table with the sum of each column.
-        """
-        if self.columns and all(hasattr(c, attr) for c in self.columns):
-            warnings.warn("Implicit column method lookup is deprecated.", FutureWarning)
-            attrs = [getattr(c, attr) for c in self.columns]
-            if all(callable(attr) for attr in attrs):
-                @functools.wraps(attrs[0])
-                def method(*args, **vargs):
-                    """Create a table from the results of calling attrs."""
-                    columns = [attr(*args, **vargs) for attr in attrs]
-                    return self._with_columns(columns)
-                return method
-            else:
-                return self._with_columns([[attr] for attr in attrs])
-        else:
-            msg = "'{0}' object has no attribute '{1}'".format(type(self).__name__, attr)
-            raise AttributeError(msg)
-
     ####################
     # Accessing Values #
     ####################
