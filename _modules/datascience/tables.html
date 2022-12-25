@@ -113,26 +113,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">exclude</span> <span class="o">=</span> <span class="n">_RowExcluder</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
     <span class="c1"># Deprecated</span>
-<div class="viewcode-block" id="Table.empty"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.empty.html#datascience.tables.Table.empty">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">empty</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Creates an empty table. Column labels are optional. [Deprecated]</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            ``labels`` (None or list): If ``None``, a table with 0</span>
-<span class="sd">                columns is created.</span>
-<span class="sd">                If a list, each element is a column label in a table with</span>
-<span class="sd">                0 rows.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            A new instance of ``Table``.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Table.empty(labels) is deprecated. Use Table(labels)&quot;</span><span class="p">,</span> <span class="ne">FutureWarning</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">labels</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">cls</span><span class="p">()</span>
-        <span class="n">values</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">]</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span></div>
-
-    <span class="c1"># Deprecated</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_rows</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create a table from a sequence of rows (fixed-length sequences). [Deprecated]&quot;&quot;&quot;</span>
