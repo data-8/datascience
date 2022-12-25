@@ -124,6 +124,14 @@ def test_circle_map():
     ds.Circle.map(lats, lons).show()
     ds.Circle.map(lats, lons, labels).show()
 
+def test_marker_copy():
+    lat, lon = 51, 52
+    a = ds.Marker(lat, lon)
+    b = a.copy()
+    b_lat_lon = b.lat_lon
+    assert lat == b_lat_lon[0]
+    assert lon == b_lat_lon[1]
+
 
 ##########
 # Region #
