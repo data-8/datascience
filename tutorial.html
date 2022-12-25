@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Start Here: datascience Tutorial &#8212; datascience 0.17.5 documentation</title>
+    <title>Start Here: datascience Tutorial &#8212; datascience 0.17.6 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -15,6 +15,7 @@
     <script src="_static/underscore.js"></script>
     <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
@@ -37,7 +38,7 @@
         <li class="right" >
           <a href="index.html" title="Welcome to datascience’s documentation!"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.17.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.17.6 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Start Here: <code class="docutils literal notranslate"><span class="pre">datascience</span></code> Tutorial</a></li> 
       </ul>
     </div>  
@@ -451,17 +452,17 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 
 <span class="gp">In [47]: </span><span class="n">normal_data</span>
 <span class="gh">Out[47]: </span><span class="go"></span>
-<span class="go">data1      | data2</span>
-<span class="go">-3.30508   | 3.75332</span>
-<span class="go">0.485475   | 5.68841</span>
-<span class="go">1.86974    | 5.41236</span>
-<span class="go">3.49666    | 7.02132</span>
-<span class="go">1.64712    | 0.527265</span>
-<span class="go">0.00139756 | 3.48055</span>
-<span class="go">-0.720963  | 1.38556</span>
-<span class="go">3.68707    | 3.98287</span>
-<span class="go">-3.90266   | 5.31745</span>
-<span class="go">1.61503    | 6.61051</span>
+<span class="go">data1     | data2</span>
+<span class="go">-0.265277 | 0.743584</span>
+<span class="go">0.627128  | 4.19712</span>
+<span class="go">0.299357  | 1.06813</span>
+<span class="go">1.78426   | 5.93954</span>
+<span class="go">3.47772   | 3.13239</span>
+<span class="go">4.13761   | 1.82554</span>
+<span class="go">3.29902   | -0.240096</span>
+<span class="go">4.59853   | 10.9535</span>
+<span class="go">0.537771  | 6.8398</span>
+<span class="go">1.56398   | 5.12715</span>
 <span class="go">... (90 rows omitted)</span>
 </pre></div>
 </div>
@@ -513,17 +514,17 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 converting to a pandas dataframe with <a class="reference internal" href="_autosummary/datascience.tables.Table.to_df.html#datascience.tables.Table.to_df" title="datascience.tables.Table.to_df"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_df()</span></code></a>:</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [56]: </span><span class="n">normal_data</span>
 <span class="gh">Out[56]: </span><span class="go"></span>
-<span class="go">data1      | data2</span>
-<span class="go">-3.30508   | 3.75332</span>
-<span class="go">0.485475   | 5.68841</span>
-<span class="go">1.86974    | 5.41236</span>
-<span class="go">3.49666    | 7.02132</span>
-<span class="go">1.64712    | 0.527265</span>
-<span class="go">0.00139756 | 3.48055</span>
-<span class="go">-0.720963  | 1.38556</span>
-<span class="go">3.68707    | 3.98287</span>
-<span class="go">-3.90266   | 5.31745</span>
-<span class="go">1.61503    | 6.61051</span>
+<span class="go">data1     | data2</span>
+<span class="go">-0.265277 | 0.743584</span>
+<span class="go">0.627128  | 4.19712</span>
+<span class="go">0.299357  | 1.06813</span>
+<span class="go">1.78426   | 5.93954</span>
+<span class="go">3.47772   | 3.13239</span>
+<span class="go">4.13761   | 1.82554</span>
+<span class="go">3.29902   | -0.240096</span>
+<span class="go">4.59853   | 10.9535</span>
+<span class="go">0.537771  | 6.8398</span>
+<span class="go">1.56398   | 5.12715</span>
 <span class="go">... (90 rows omitted)</span>
 
 <span class="go"># index = False prevents row numbers from appearing in the resulting CSV</span>
@@ -637,8 +638,8 @@ non-smokers.</p>
 
 <span class="gp">In [73]: </span><span class="n">bootstrapped_diff_means</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
 <span class="gh">Out[73]: </span><span class="go"></span>
-<span class="go">array([ 0.54007648, -0.87075887, -0.26083154,  0.5609001 ,  0.47061261,</span>
-<span class="go">       -0.01908375,  0.82179259, -1.38049271, -1.38914941, -0.16891387])</span>
+<span class="go">array([-0.14014047, -0.27908344,  0.55709432,  0.26428996,  0.01088411,</span>
+<span class="go">       -1.30540396, -0.06003017, -0.10237518,  0.29668327, -0.18167497])</span>
 
 <span class="gp">In [74]: </span><span class="n">num_diffs_greater</span> <span class="o">=</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">bootstrapped_diff_means</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">observed_diff</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
@@ -725,13 +726,13 @@ non-smokers.</p>
         <li class="right" >
           <a href="index.html" title="Welcome to datascience’s documentation!"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.17.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.17.6 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Start Here: <code class="docutils literal notranslate"><span class="pre">datascience</span></code> Tutorial</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.0.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
     </div>
   </body>
 </html>

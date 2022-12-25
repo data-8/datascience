@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Predicates (datascience.predicates) &#8212; datascience 0.17.5 documentation</title>
+    <title>Predicates (datascience.predicates) &#8212; datascience 0.17.6 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -15,6 +15,7 @@
     <script src="_static/underscore.js"></script>
     <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
@@ -37,7 +38,7 @@
         <li class="right" >
           <a href="maps.html" title="Maps (datascience.maps)"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.17.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.17.6 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Predicates (<code class="docutils literal notranslate"><span class="pre">datascience.predicates</span></code>)</a></li> 
       </ul>
     </div>  
@@ -275,6 +276,38 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Predicates (<code class="docutils literal notranslate"><span class="pre">datascience.predicates</span></code>)</a><ul>
+<li><a class="reference internal" href="#datascience.predicates.are"><code class="docutils literal notranslate"><span class="pre">are</span></code></a><ul>
+<li><a class="reference internal" href="#datascience.predicates.are.above"><code class="docutils literal notranslate"><span class="pre">are.above()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.predicates.are.above_or_equal_to"><code class="docutils literal notranslate"><span class="pre">are.above_or_equal_to()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.predicates.are.below"><code class="docutils literal notranslate"><span class="pre">are.below()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.predicates.are.below_or_equal_to"><code class="docutils literal notranslate"><span class="pre">are.below_or_equal_to()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.predicates.are.between"><code class="docutils literal notranslate"><span class="pre">are.between()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.predicates.are.between_or_equal_to"><code class="docutils literal notranslate"><span class="pre">are.between_or_equal_to()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.predicates.are.contained_in"><code class="docutils literal notranslate"><span class="pre">are.contained_in()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.predicates.are.containing"><code class="docutils literal notranslate"><span class="pre">are.containing()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.predicates.are.equal_to"><code class="docutils literal notranslate"><span class="pre">are.equal_to()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.predicates.are.not_above"><code class="docutils literal notranslate"><span class="pre">are.not_above()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.predicates.are.not_above_or_equal_to"><code class="docutils literal notranslate"><span class="pre">are.not_above_or_equal_to()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.predicates.are.not_below"><code class="docutils literal notranslate"><span class="pre">are.not_below()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.predicates.are.not_below_or_equal_to"><code class="docutils literal notranslate"><span class="pre">are.not_below_or_equal_to()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.predicates.are.not_between"><code class="docutils literal notranslate"><span class="pre">are.not_between()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.predicates.are.not_between_or_equal_to"><code class="docutils literal notranslate"><span class="pre">are.not_between_or_equal_to()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.predicates.are.not_contained_in"><code class="docutils literal notranslate"><span class="pre">are.not_contained_in()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.predicates.are.not_containing"><code class="docutils literal notranslate"><span class="pre">are.not_containing()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.predicates.are.not_equal_to"><code class="docutils literal notranslate"><span class="pre">are.not_equal_to()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.predicates.are.not_strictly_between"><code class="docutils literal notranslate"><span class="pre">are.not_strictly_between()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.predicates.are.strictly_between"><code class="docutils literal notranslate"><span class="pre">are.strictly_between()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
     <h4>Previous topic</h4>
     <p class="topless"><a href="maps.html"
                           title="previous chapter">Maps (<code class="docutils literal notranslate"><span class="pre">datascience.maps</span></code>)</a></p>
@@ -320,13 +353,13 @@
         <li class="right" >
           <a href="maps.html" title="Maps (datascience.maps)"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.17.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.17.6 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Predicates (<code class="docutils literal notranslate"><span class="pre">datascience.predicates</span></code>)</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.0.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
     </div>
   </body>
 </html>

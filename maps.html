@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Maps (datascience.maps) &#8212; datascience 0.17.5 documentation</title>
+    <title>Maps (datascience.maps) &#8212; datascience 0.17.6 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -15,6 +15,7 @@
     <script src="_static/underscore.js"></script>
     <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
@@ -37,7 +38,7 @@
         <li class="right" >
           <a href="_autosummary/datascience.tables.Table.static_plots.html" title="datascience.tables.Table.static_plots"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.17.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.17.6 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Maps (<code class="docutils literal notranslate"><span class="pre">datascience.maps</span></code>)</a></li> 
       </ul>
     </div>  
@@ -374,6 +375,51 @@ remove_nans: A boolean that indicates if columns with invalid longitudes and lat
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Maps (<code class="docutils literal notranslate"><span class="pre">datascience.maps</span></code>)</a><ul>
+<li><a class="reference internal" href="#datascience.maps.Circle"><code class="docutils literal notranslate"><span class="pre">Circle</span></code></a><ul>
+<li><a class="reference internal" href="#datascience.maps.Circle.draw_on"><code class="docutils literal notranslate"><span class="pre">Circle.draw_on()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#datascience.maps.Map"><code class="docutils literal notranslate"><span class="pre">Map</span></code></a><ul>
+<li><a class="reference internal" href="#datascience.maps.Map.color"><code class="docutils literal notranslate"><span class="pre">Map.color()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.maps.Map.copy"><code class="docutils literal notranslate"><span class="pre">Map.copy()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.maps.Map.features"><code class="docutils literal notranslate"><span class="pre">Map.features</span></code></a></li>
+<li><a class="reference internal" href="#datascience.maps.Map.format"><code class="docutils literal notranslate"><span class="pre">Map.format()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.maps.Map.geojson"><code class="docutils literal notranslate"><span class="pre">Map.geojson()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.maps.Map.overlay"><code class="docutils literal notranslate"><span class="pre">Map.overlay()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.maps.Map.read_geojson"><code class="docutils literal notranslate"><span class="pre">Map.read_geojson()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#datascience.maps.Marker"><code class="docutils literal notranslate"><span class="pre">Marker</span></code></a><ul>
+<li><a class="reference internal" href="#datascience.maps.Marker.copy"><code class="docutils literal notranslate"><span class="pre">Marker.copy()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.maps.Marker.draw_on"><code class="docutils literal notranslate"><span class="pre">Marker.draw_on()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.maps.Marker.format"><code class="docutils literal notranslate"><span class="pre">Marker.format()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.maps.Marker.geojson"><code class="docutils literal notranslate"><span class="pre">Marker.geojson()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.maps.Marker.lat_lons"><code class="docutils literal notranslate"><span class="pre">Marker.lat_lons</span></code></a></li>
+<li><a class="reference internal" href="#datascience.maps.Marker.map"><code class="docutils literal notranslate"><span class="pre">Marker.map()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.maps.Marker.map_table"><code class="docutils literal notranslate"><span class="pre">Marker.map_table()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#datascience.maps.Region"><code class="docutils literal notranslate"><span class="pre">Region</span></code></a><ul>
+<li><a class="reference internal" href="#datascience.maps.Region.copy"><code class="docutils literal notranslate"><span class="pre">Region.copy()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.maps.Region.draw_on"><code class="docutils literal notranslate"><span class="pre">Region.draw_on()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.maps.Region.format"><code class="docutils literal notranslate"><span class="pre">Region.format()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.maps.Region.geojson"><code class="docutils literal notranslate"><span class="pre">Region.geojson()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.maps.Region.lat_lons"><code class="docutils literal notranslate"><span class="pre">Region.lat_lons</span></code></a></li>
+<li><a class="reference internal" href="#datascience.maps.Region.polygons"><code class="docutils literal notranslate"><span class="pre">Region.polygons</span></code></a></li>
+<li><a class="reference internal" href="#datascience.maps.Region.properties"><code class="docutils literal notranslate"><span class="pre">Region.properties</span></code></a></li>
+<li><a class="reference internal" href="#datascience.maps.Region.type"><code class="docutils literal notranslate"><span class="pre">Region.type</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#datascience.maps.get_coordinates"><code class="docutils literal notranslate"><span class="pre">get_coordinates()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
     <h4>Previous topic</h4>
     <p class="topless"><a href="_autosummary/datascience.tables.Table.static_plots.html"
                           title="previous chapter">datascience.tables.Table.static_plots</a></p>
@@ -419,13 +465,13 @@ remove_nans: A boolean that indicates if columns with invalid longitudes and lat
         <li class="right" >
           <a href="_autosummary/datascience.tables.Table.static_plots.html" title="datascience.tables.Table.static_plots"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.17.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.17.6 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Maps (<code class="docutils literal notranslate"><span class="pre">datascience.maps</span></code>)</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.0.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
     </div>
   </body>
 </html>

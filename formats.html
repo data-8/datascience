@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Formats (datascience.formats) &#8212; datascience 0.17.5 documentation</title>
+    <title>Formats (datascience.formats) &#8212; datascience 0.17.6 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -15,6 +15,7 @@
     <script src="_static/underscore.js"></script>
     <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
@@ -37,7 +38,7 @@
         <li class="right" >
           <a href="predicates.html" title="Predicates (datascience.predicates)"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.17.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.17.6 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Formats (<code class="docutils literal notranslate"><span class="pre">datascience.formats</span></code>)</a></li> 
       </ul>
     </div>  
@@ -191,6 +192,49 @@ formatter is representing.</p>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Formats (<code class="docutils literal notranslate"><span class="pre">datascience.formats</span></code>)</a><ul>
+<li><a class="reference internal" href="#datascience.formats.CurrencyFormatter"><code class="docutils literal notranslate"><span class="pre">CurrencyFormatter</span></code></a><ul>
+<li><a class="reference internal" href="#datascience.formats.CurrencyFormatter.convert_value"><code class="docutils literal notranslate"><span class="pre">CurrencyFormatter.convert_value()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.formats.CurrencyFormatter.format_value"><code class="docutils literal notranslate"><span class="pre">CurrencyFormatter.format_value()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#datascience.formats.DateFormatter"><code class="docutils literal notranslate"><span class="pre">DateFormatter</span></code></a><ul>
+<li><a class="reference internal" href="#datascience.formats.DateFormatter.convert_value"><code class="docutils literal notranslate"><span class="pre">DateFormatter.convert_value()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.formats.DateFormatter.format_value"><code class="docutils literal notranslate"><span class="pre">DateFormatter.format_value()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#datascience.formats.DistributionFormatter"><code class="docutils literal notranslate"><span class="pre">DistributionFormatter</span></code></a><ul>
+<li><a class="reference internal" href="#datascience.formats.DistributionFormatter.convert_column"><code class="docutils literal notranslate"><span class="pre">DistributionFormatter.convert_column()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#datascience.formats.Formatter"><code class="docutils literal notranslate"><span class="pre">Formatter</span></code></a><ul>
+<li><a class="reference internal" href="#datascience.formats.Formatter.convert_column"><code class="docutils literal notranslate"><span class="pre">Formatter.convert_column()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.formats.Formatter.convert_value"><code class="docutils literal notranslate"><span class="pre">Formatter.convert_value()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.formats.Formatter.converts_values"><code class="docutils literal notranslate"><span class="pre">Formatter.converts_values</span></code></a></li>
+<li><a class="reference internal" href="#datascience.formats.Formatter.etc"><code class="docutils literal notranslate"><span class="pre">Formatter.etc</span></code></a></li>
+<li><a class="reference internal" href="#datascience.formats.Formatter.format_column"><code class="docutils literal notranslate"><span class="pre">Formatter.format_column()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.formats.Formatter.format_value"><code class="docutils literal notranslate"><span class="pre">Formatter.format_value()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.formats.Formatter.max_width"><code class="docutils literal notranslate"><span class="pre">Formatter.max_width</span></code></a></li>
+<li><a class="reference internal" href="#datascience.formats.Formatter.min_width"><code class="docutils literal notranslate"><span class="pre">Formatter.min_width</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#datascience.formats.NumberFormatter"><code class="docutils literal notranslate"><span class="pre">NumberFormatter</span></code></a><ul>
+<li><a class="reference internal" href="#datascience.formats.NumberFormatter.convert_value"><code class="docutils literal notranslate"><span class="pre">NumberFormatter.convert_value()</span></code></a></li>
+<li><a class="reference internal" href="#datascience.formats.NumberFormatter.format_value"><code class="docutils literal notranslate"><span class="pre">NumberFormatter.format_value()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#datascience.formats.PercentFormatter"><code class="docutils literal notranslate"><span class="pre">PercentFormatter</span></code></a><ul>
+<li><a class="reference internal" href="#datascience.formats.PercentFormatter.format_value"><code class="docutils literal notranslate"><span class="pre">PercentFormatter.format_value()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
     <h4>Previous topic</h4>
     <p class="topless"><a href="predicates.html"
                           title="previous chapter">Predicates (<code class="docutils literal notranslate"><span class="pre">datascience.predicates</span></code>)</a></p>
@@ -236,13 +280,13 @@ formatter is representing.</p>
         <li class="right" >
           <a href="predicates.html" title="Predicates (datascience.predicates)"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.17.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.17.6 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Formats (<code class="docutils literal notranslate"><span class="pre">datascience.formats</span></code>)</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.0.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
     </div>
   </body>
 </html>
