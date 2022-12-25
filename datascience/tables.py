@@ -71,26 +71,6 @@ class Table(collections.abc.MutableMapping):
 
     # Deprecated
     @classmethod
-    def empty(cls, labels=None):
-        """Creates an empty table. Column labels are optional. [Deprecated]
-
-        Args:
-            ``labels`` (None or list): If ``None``, a table with 0
-                columns is created.
-                If a list, each element is a column label in a table with
-                0 rows.
-
-        Returns:
-            A new instance of ``Table``.
-        """
-        warnings.warn("Table.empty(labels) is deprecated. Use Table(labels)", FutureWarning)
-        if labels is None:
-            return cls()
-        values = [[] for label in labels]
-        return cls(values, labels)
-
-    # Deprecated
-    @classmethod
     def from_rows(cls, rows, labels):
         """Create a table from a sequence of rows (fixed-length sequences). [Deprecated]"""
         warnings.warn("Table.from_rows is deprecated. Use Table(labels).with_rows(...)", FutureWarning)
