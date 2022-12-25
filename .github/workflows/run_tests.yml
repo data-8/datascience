@@ -1,7 +1,7 @@
 name: tests
 
 # We run the test suite on every push
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build-linux:
