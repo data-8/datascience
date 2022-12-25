@@ -523,7 +523,7 @@ class Marker(_MapFeature):
 
     def copy(self):
         """Return a deep copy"""
-        return type(self)(self.lat_lon[:], **self._attrs)
+        return type(self)(self.lat_lon[0], self.lat_lon[1], **self._attrs)
 
     @property
     def _folium_kwargs(self):
