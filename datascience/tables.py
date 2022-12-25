@@ -3620,7 +3620,8 @@ class Table(collections.abc.MutableMapping):
             axis.bar(index-0.5, self[label], 1.0, color=color, **options)
 
         def annotate(axis, ticks):
-            if (ticks is not None) :
+            if (ticks is not None):
+                axis.set_xticks(axis.get_xticks())
                 tick_labels = [ticks[int(l)] if 0<=l<len(ticks) else '' for l in axis.get_xticks()]
                 axis.set_xticklabels(tick_labels, stretch='ultra-condensed')
 
@@ -5840,6 +5841,7 @@ def _vertical_x(axis, ticks=None, max_width=5):
     if (np.array(ticks) == np.rint(ticks)).all():
         ticks = np.rint(ticks).astype(np.int64)
     if max([len(str(tick)) for tick in ticks]) > max_width:
+        axis.set_xticks(ticks)
         axis.set_xticklabels(ticks, rotation='vertical')
 
 ###################
