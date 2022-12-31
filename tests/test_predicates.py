@@ -63,6 +63,46 @@ def test_between_or_equal_to():
     ps = [p(x) for x in range(1, 6)]
     assert ps == [False, False, True, False, False]
 
+#############
+#  Aliases  #
+#############
+
+def test_greater_than_and_less_than():
+    """Both f and g."""
+    p = are.greater_than(2) & are.less_than(4)
+    ps = [p(x) for x in range(1, 6)]
+    assert ps == [False, False, True, False, False]
+
+def test_greater_than_or_less_than():
+    """Either f or g."""
+    p = are.greater_than(3) | are.less_than(2)
+    ps = [p(x) for x in range(1, 6)]
+    assert ps == [True, False, False, True, True]
+
+def test_greater_than():
+    """Greater than y."""
+    p = are.greater_than(3)
+    ps = [p(x) for x in range(1, 6)]
+    assert ps == [False, False, False, True, True]
+
+def test_less_than():
+    """Less than y."""
+    p = are.not_less_than(4)
+    ps = [p(x) for x in range(1, 6)]
+    assert ps == [False, False, False, True, True]
+
+def test_greater_than_or_equal_to():
+    """Greater than or equal to y."""
+    p = are.greater_than_or_equal_to(4)
+    ps = [p(x) for x in range(1, 6)]
+    assert ps == [False, False, False, True, True]
+
+def test_less_than_or_equal_to():
+    """Less than or equal to y."""
+    p = are.not_less_than_or_equal_to(3)
+    ps = [p(x) for x in range(1, 6)]
+    assert ps == [False, False, False, True, True]
+
 
 ############
 # Doctests #
