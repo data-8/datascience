@@ -5636,12 +5636,19 @@ class Table(collections.abc.MutableMapping):
         93    | 94
         >>> table.boxplot() # doctest: +SKIP
         <boxplot of test1 and boxplot of test2 side-by-side on the same figure>
+        >>> table2 = Table().with_columns(
+        ...     'numeric_col', make_array(1, 2, 3, 4),
+        ...     'alpha_col', make_array('a', 'b', 'c', 'd'))
+        >>> table2.boxplot()
+        Traceback (most recent call last):
+            ...
+        ValueError: The column 'alpha_col' contains non-numerical values. A boxplot cannot be drawn for this table.
         """
         # Check for non-numerical values and raise a ValueError if any found
         for col in self:
             if any(isinstance(cell, np.flexible) for cell in self[col]):
                 raise ValueError("The column '{0}' contains non-numerical "
-                    "values. A histogram cannot be drawn for this table."
+                    "values. A boxplot cannot be drawn for this table."
                     .format(col))
 
         columns = self._columns.copy()
