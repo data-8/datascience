@@ -2307,16 +2307,17 @@ class Table(collections.abc.MutableMapping):
         ...     ['medium', 100],
         ...     ['big', 50],
         ... ])
-        >>> sizes.sample_from_distribution('count', 1000) # doctest: +SKIP
+        >>> np.random.seed(99)
+        >>> sizes.sample_from_distribution('count', 1000)
         size   | count | count sample
-        small  | 50    | 239
-        medium | 100   | 496
-        big    | 50    | 265
-        >>> sizes.sample_from_distribution('count', 1000, True) # doctest: +SKIP
+        small  | 50    | 228
+        medium | 100   | 508
+        big    | 50    | 264
+        >>> sizes.sample_from_distribution('count', 1000, True)
         size   | count | count sample
-        small  | 50    | 0.24
-        medium | 100   | 0.51
-        big    | 50    | 0.25
+        small  | 50    | 0.261
+        medium | 100   | 0.491
+        big    | 50    | 0.248
         """
         dist = self._get_column(distribution)
         total = sum(dist)
