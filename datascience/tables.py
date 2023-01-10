@@ -71,26 +71,6 @@ class Table(collections.abc.MutableMapping):
 
     # Deprecated
     @classmethod
-    def empty(cls, labels=None):
-        """Creates an empty table. Column labels are optional. [Deprecated]
-
-        Args:
-            ``labels`` (None or list): If ``None``, a table with 0
-                columns is created.
-                If a list, each element is a column label in a table with
-                0 rows.
-
-        Returns:
-            A new instance of ``Table``.
-        """
-        warnings.warn("Table.empty(labels) is deprecated. Use Table(labels)", FutureWarning)
-        if labels is None:
-            return cls()
-        values = [[] for label in labels]
-        return cls(values, labels)
-
-    # Deprecated
-    @classmethod
     def from_rows(cls, rows, labels):
         """Create a table from a sequence of rows (fixed-length sequences). [Deprecated]"""
         warnings.warn("Table.from_rows is deprecated. Use Table(labels).with_rows(...)", FutureWarning)
@@ -294,28 +274,6 @@ class Table(collections.abc.MutableMapping):
 
     def __iter__(self):
         return iter(self.labels)
-
-    # Deprecated
-    def __getattr__(self, attr):
-        """Return a method that applies to all columns or a table of attributes. [Deprecated]
-
-        E.g., t.sum() on a Table will return a table with the sum of each column.
-        """
-        if self.columns and all(hasattr(c, attr) for c in self.columns):
-            warnings.warn("Implicit column method lookup is deprecated.", FutureWarning)
-            attrs = [getattr(c, attr) for c in self.columns]
-            if all(callable(attr) for attr in attrs):
-                @functools.wraps(attrs[0])
-                def method(*args, **vargs):
-                    """Create a table from the results of calling attrs."""
-                    columns = [attr(*args, **vargs) for attr in attrs]
-                    return self._with_columns(columns)
-                return method
-            else:
-                return self._with_columns([[attr] for attr in attrs])
-        else:
-            msg = "'{0}' object has no attribute '{1}'".format(type(self).__name__, attr)
-            raise AttributeError(msg)
 
     ####################
     # Accessing Values #
@@ -3642,7 +3600,8 @@ class Table(collections.abc.MutableMapping):
             axis.bar(index-0.5, self[label], 1.0, color=color, **options)
 
         def annotate(axis, ticks):
-            if (ticks is not None) :
+            if (ticks is not None):
+                axis.set_xticks(axis.get_xticks())
                 tick_labels = [ticks[int(l)] if 0<=l<len(ticks) else '' for l in axis.get_xticks()]
                 axis.set_xticklabels(tick_labels, stretch='ultra-condensed')
 
@@ -5924,6 +5883,7 @@ def _vertical_x(axis, ticks=None, max_width=5):
     if (np.array(ticks) == np.rint(ticks)).all():
         ticks = np.rint(ticks).astype(np.int64)
     if max([len(str(tick)) for tick in ticks]) > max_width:
+        axis.set_xticks(ticks)
         axis.set_xticklabels(ticks, rotation='vertical')
 
 ###################
