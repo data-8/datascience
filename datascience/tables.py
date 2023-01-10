@@ -5679,18 +5679,20 @@ class Table(collections.abc.MutableMapping):
 
     class Rows(collections.abc.Sequence):
         """
-        An iterable row-styled view of the table object that is passed as an argument.
+        An iterable view over the rows in a table.
 
         args:
         table- accepts a table object of class Table()
 
-        >>>  t = td.Table().with_columns({
+        >>> t = Table().with_columns({
              'letter': ['a', 'b', 'c', 'z'],
              'count':  [  9,   3,   3,   1],
              'points': [  1,   2,   2,  10],
         })
 
-        >>> td.Table().Rows(t)
+        >>> r = Table.Rows(t)
+            print(r)
+
         Rows(letter | count | points
         a      | 9     | 1
         b      | 3     | 2
@@ -5711,14 +5713,9 @@ class Table(collections.abc.MutableMapping):
             returns:
             Returns a Row object containing the i-th row of the given table
 
-            >>> t = td.Table().with_columns({
-                'letter': ['a', 'b', 'c', 'z'],
-                'count':  [  9,   3,   3,   1],
-                'points': [  1,   2,   2,  10],
-            })
-
-            >>> td.Table().Rows(t).__getitem__(0)
+            >>> r.__getitem__(0)
             Row(letter='a', count=9, points=1)
+
             """
             if isinstance(i, slice):
                 return (self[j] for j in range(*i.indices(len(self))))
@@ -5731,14 +5728,9 @@ class Table(collections.abc.MutableMapping):
 
         def __len__(self):
             """
-            Returns the no.of rows in the table.
+            Returns the number of rows in the table.
 
-            >>>  t = td.Table().with_columns({
-             'letter': ['a', 'b', 'c', 'z'],
-             'count':  [  9,   3,   3,   1],
-             'points': [  1,   2,   2,  10],
-            })
-            >>> td.Table().Rows(t).__len__()
+            >>> len(r)
             4
 
             """
@@ -5749,13 +5741,7 @@ class Table(collections.abc.MutableMapping):
             Returns the printable representation of the given table as string.
             Uses the standard repr() function.
 
-            >>>   t = td.Table().with_columns({
-                    'letter': ['a', 'b', 'c', 'z'],
-                    'count':  [  9,   3,   3,   1],
-                    'points': [  1,   2,   2,  10],
-                })
-
-            >>> td.Table().Rows(t).__repr__()
+            >>> r.__repr__()
             'Rows(letter | count | points\na      | 9     | 1\nb      | 3     | 2\nc      | 3     | 2\nz      | 1     | 10)'
             
             """
