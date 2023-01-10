@@ -5683,7 +5683,8 @@ class Table(collections.abc.MutableMapping):
 
         args:
         table- accepts a table object of class Table()
-
+        
+        >>> from datascience import Table
         >>> t = Table().with_columns({
              'letter': ['a', 'b', 'c', 'z'],
              'count':  [  9,   3,   3,   1],
