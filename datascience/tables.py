@@ -746,9 +746,9 @@ class Table(collections.abc.MutableMapping):
         """
         if inspect.isclass(formatter):
             formatter = formatter()
+        if not hasattr(formatter, 'format_column') and callable(formatter):
+            formatter = _formats.FunctionFormatter(formatter)
         if not hasattr(formatter, 'format_column'):
-            if callable(formatter):
-                formatter = _formats.FunctionFormatter(formatter)
             raise Exception('Expected Formatter or function: ' + str(formatter))
         for label in self._as_labels(column_or_columns):
             if formatter.converts_values:
