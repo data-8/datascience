@@ -5680,25 +5680,28 @@ class Table(collections.abc.MutableMapping):
     class Rows(collections.abc.Sequence):
         """
         An iterable view over the rows in a table.
-
-        args:
-        table- accepts a table object of class Table()
-        
-        >>> from datascience import Table
+       
         >>> t = Table().with_columns({
              'letter': ['a', 'b', 'c', 'z'],
              'count':  [  9,   3,   3,   1],
              'points': [  1,   2,   2,  10],
         })
 
-        >>> r = Table.Rows(t)
-            print(r)
+        >>> rows = Table.Rows(t)
+        >>> rows
 
         Rows(letter | count | points
         a      | 9     | 1
         b      | 3     | 2
         c      | 3     | 2
         z      | 1     | 10)
+
+        Args:
+            table- accepts a table instance of class Table
+        
+        Returns:
+            An instance of Rows class
+
         """
         def __init__(self, table):
             self._table = table
@@ -5708,14 +5711,16 @@ class Table(collections.abc.MutableMapping):
             """
             Access the i-th row of the given table.
 
-            args:
-            i- index of the Row that needs to be accessed.
+            rows[i] is equivalent to rows.__getitem__(i) 
 
-            returns:
-            Returns a Row object containing the i-th row of the given table
-
-            >>> r.__getitem__(0)
+            >>> r[0]
             Row(letter='a', count=9, points=1)
+
+            Args:
+                i- index of the Row that needs to be accessed.
+
+            Returns:
+                Returns a Row instance containing the i-th row of the given table
 
             """
             if isinstance(i, slice):
@@ -5742,7 +5747,9 @@ class Table(collections.abc.MutableMapping):
             Returns the printable representation of the given table as string.
             Uses the standard repr() function.
 
-            >>> r.__repr__()
+            repr(rows) is equivalent to rows.__repr__()
+
+            >>> repr(rows)
             'Rows(letter | count | points\na      | 9     | 1\nb      | 3     | 2\nc      | 3     | 2\nz      | 1     | 10)'
             
             """
