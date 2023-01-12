@@ -5689,7 +5689,6 @@ class Table(collections.abc.MutableMapping):
 
         >>> rows = Table.Rows(t)
         >>> rows
-
         Rows(letter | count | points
         a      | 9     | 1
         b      | 3     | 2
