@@ -5749,7 +5749,11 @@ class Table(collections.abc.MutableMapping):
             repr(rows) is equivalent to rows.__repr__()
 
             >>> repr(rows)
-            'Rows(letter | count | points\na      | 9     | 1\nb      | 3     | 2\nc      | 3     | 2\nz      | 1     | 10)'
+            'Rows(letter | count | points\n
+            a      | 9     | 1\n
+            b      | 3     | 2\n
+            c      | 3     | 2\n
+            z      | 1     | 10)'
             
             """
             return '{0}({1})'.format(type(self).__name__, repr(self._table))
