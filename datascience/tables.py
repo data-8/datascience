@@ -344,13 +344,6 @@ class Table(collections.abc.MutableMapping):
         """
         return tuple(self._columns.keys())
 
-    # Deprecated
-    @property
-    def column_labels(self):
-        """Return a tuple of column labels. [Deprecated]"""
-        warnings.warn("column_labels is deprecated; use labels", FutureWarning)
-        return self.labels
-
     @property
     def num_columns(self):
         """Number of columns."""
