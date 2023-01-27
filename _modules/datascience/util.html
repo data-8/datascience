@@ -10,9 +10,6 @@
     <link rel="stylesheet" type="text/css" href="../../_static/classic.css" />
     
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/jquery.js"></script>
-    <script src="../../_static/underscore.js"></script>
-    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
     <script src="../../_static/sphinx_highlight.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -62,7 +59,7 @@
 <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;patch.force_edgecolor&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="make_array"><a class="viewcode-back" href="../../util.html#datascience.util.make_array">[docs]</a><span class="k">def</span> <span class="nf">make_array</span><span class="p">(</span><span class="o">*</span><span class="n">elements</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Returns an array containing all the arguments passed to this function.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns an array containing all the arguments passed to this function.</span>
 <span class="sd">    A simple way to make an array with a few elements.</span>
 
 <span class="sd">    As with any array, all arguments should have the same type.</span>
@@ -90,7 +87,7 @@
 
 
 <div class="viewcode-block" id="percentile"><a class="viewcode-back" href="../../util.html#datascience.util.percentile">[docs]</a><span class="k">def</span> <span class="nf">percentile</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">arr</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Returns the pth percentile of the input array (the value that is at</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the pth percentile of the input array (the value that is at</span>
 <span class="sd">    least as great as p% of the values in the array).</span>
 
 <span class="sd">    If arr is not provided, percentile returns itself curried with p</span>
@@ -117,7 +114,7 @@
 
 
 <div class="viewcode-block" id="plot_normal_cdf"><a class="viewcode-back" href="../../util.html#datascience.util.plot_normal_cdf">[docs]</a><span class="k">def</span> <span class="nf">plot_normal_cdf</span><span class="p">(</span><span class="n">rbound</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lbound</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sd</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Plots a normal curve with specified parameters and area below curve shaded</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Plots a normal curve with specified parameters and area below curve shaded</span>
 <span class="sd">    between ``lbound`` and ``rbound``.</span>
 
 <span class="sd">    Args:</span>
@@ -162,7 +159,7 @@
 
 
 <div class="viewcode-block" id="sample_proportions"><a class="viewcode-back" href="../../util.html#datascience.util.sample_proportions">[docs]</a><span class="k">def</span> <span class="nf">sample_proportions</span><span class="p">(</span><span class="n">sample_size</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return the proportion of random draws for each outcome in a distribution.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the proportion of random draws for each outcome in a distribution.</span>
 
 <span class="sd">    This function is similar to np.random.multinomial, but returns proportions</span>
 <span class="sd">    instead of counts.</span>
@@ -180,7 +177,7 @@
 
 <div class="viewcode-block" id="proportions_from_distribution"><a class="viewcode-back" href="../../util.html#datascience.util.proportions_from_distribution">[docs]</a><span class="k">def</span> <span class="nf">proportions_from_distribution</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">sample_size</span><span class="p">,</span>
                                   <span class="n">column_name</span><span class="o">=</span><span class="s1">&#39;Random Sample&#39;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Adds a column named ``column_name`` containing the proportions of a random</span>
 <span class="sd">    draw using the distribution in ``label``.</span>
 
@@ -212,7 +209,7 @@
 
 
 <div class="viewcode-block" id="table_apply"><a class="viewcode-back" href="../../util.html#datascience.util.table_apply">[docs]</a><span class="k">def</span> <span class="nf">table_apply</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">subset</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Applies a function to each column and returns a Table.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Applies a function to each column and returns a Table.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        ``table``: The table to apply your function to.</span>
@@ -249,7 +246,7 @@
 
 
 <div class="viewcode-block" id="minimize"><a class="viewcode-back" href="../../util.html#datascience.util.minimize">[docs]</a><span class="k">def</span> <span class="nf">minimize</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">smooth</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">array</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Minimize a function f of one or more arguments.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Minimize a function f of one or more arguments.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        f: A function that takes numbers and returns a number</span>
@@ -292,7 +289,7 @@
         <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">x</span></div>
 
 <div class="viewcode-block" id="is_non_string_iterable"><a class="viewcode-back" href="../../util.html#datascience.util.is_non_string_iterable">[docs]</a><span class="k">def</span> <span class="nf">is_non_string_iterable</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Whether a value is iterable.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Whether a value is iterable.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">False</span>
     <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>
@@ -338,7 +335,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.1.3.
     </div>
   </body>
 </html>

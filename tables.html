@@ -4,16 +4,13 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>Tables (datascience.tables) &#8212; datascience 0.17.6 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -78,10 +75,6 @@ We are actively working on documentation, prioritizing the most complicated
 methods (mostly visualizations).</p>
 <p>Creation</p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/datascience.tables.Table.__init__.html#datascience.tables.Table.__init__" title="datascience.tables.Table.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.__init__</span></code></a>([labels, formatter])</p></td>
 <td><p>Create an empty table with column labels.</p></td>
@@ -105,10 +98,6 @@ methods (mostly visualizations).</p>
 </table>
 <p>Extension (does not modify original table)</p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/datascience.tables.Table.with_column.html#datascience.tables.Table.with_column" title="datascience.tables.Table.with_column"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.with_column</span></code></a>(label, values[, formatter])</p></td>
 <td><p>Return a new table with an additional or replaced column.</p></td>
@@ -129,10 +118,6 @@ methods (mostly visualizations).</p>
 </table>
 <p>Accessing values</p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/datascience.tables.Table.num_columns.html#datascience.tables.Table.num_columns" title="datascience.tables.Table.num_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.num_columns</span></code></a></p></td>
 <td><p>Number of columns.</p></td>
@@ -174,10 +159,6 @@ methods (mostly visualizations).</p>
 </table>
 <p>Mutation (modifies table in place)</p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/datascience.tables.Table.set_format.html#datascience.tables.Table.set_format" title="datascience.tables.Table.set_format"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.set_format</span></code></a>(column_or_columns, formatter)</p></td>
 <td><p>Set the pretty print format of a column(s) and/or convert its values.</p></td>
@@ -204,10 +185,6 @@ methods (mostly visualizations).</p>
 </table>
 <p>Transformation (creates a new table)</p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/datascience.tables.Table.copy.html#datascience.tables.Table.copy" title="datascience.tables.Table.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.copy</span></code></a>(*[, shallow])</p></td>
 <td><p>Return a copy of a table.</p></td>
@@ -291,10 +268,6 @@ methods (mostly visualizations).</p>
 </table>
 <p>Exporting / Displaying</p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/datascience.tables.Table.show.html#datascience.tables.Table.show" title="datascience.tables.Table.show"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.show</span></code></a>([max_rows])</p></td>
 <td><p>Display the table.</p></td>
@@ -321,10 +294,6 @@ methods (mostly visualizations).</p>
 </table>
 <p>Visualizations</p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/datascience.tables.Table.plot.html#datascience.tables.Table.plot" title="datascience.tables.Table.plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Table.plot</span></code></a>([column_for_xticks, select, ...])</p></td>
 <td><p>Plot line charts for the table.</p></td>
@@ -428,7 +397,7 @@ methods (mostly visualizations).</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.1.3.
     </div>
   </body>
 </html>
