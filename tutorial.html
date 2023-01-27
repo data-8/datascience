@@ -449,17 +449,17 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 
 <span class="gp">In [47]: </span><span class="n">normal_data</span>
 <span class="gh">Out[47]: </span>
-<span class="go">data1      | data2</span>
-<span class="go">2.38931    | 6.91965</span>
-<span class="go">-0.636939  | 4.87924</span>
-<span class="go">-0.858345  | 6.73442</span>
-<span class="go">1.28696    | 4.70932</span>
-<span class="go">0.397931   | 7.59928</span>
-<span class="go">-0.621507  | 3.89364</span>
-<span class="go">-0.0930047 | 6.15768</span>
-<span class="go">-0.819644  | 5.3926</span>
-<span class="go">-0.76239   | 7.0115</span>
-<span class="go">1.70733    | 3.31028</span>
+<span class="go">data1     | data2</span>
+<span class="go">1.76278   | 4.74487</span>
+<span class="go">-0.854551 | 4.07432</span>
+<span class="go">-0.364981 | 4.82191</span>
+<span class="go">-2.58374  | 10.8441</span>
+<span class="go">-3.28935  | -0.949626</span>
+<span class="go">4.08293   | 3.23328</span>
+<span class="go">1.31663   | 0.620374</span>
+<span class="go">-0.671784 | 2.82166</span>
+<span class="go">1.88198   | 5.02947</span>
+<span class="go">0.46067   | 1.72779</span>
 <span class="go">... (90 rows omitted)</span>
 </pre></div>
 </div>
@@ -511,17 +511,17 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 converting to a pandas dataframe with <a class="reference internal" href="_autosummary/datascience.tables.Table.to_df.html#datascience.tables.Table.to_df" title="datascience.tables.Table.to_df"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_df()</span></code></a>:</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [56]: </span><span class="n">normal_data</span>
 <span class="gh">Out[56]: </span>
-<span class="go">data1      | data2</span>
-<span class="go">2.38931    | 6.91965</span>
-<span class="go">-0.636939  | 4.87924</span>
-<span class="go">-0.858345  | 6.73442</span>
-<span class="go">1.28696    | 4.70932</span>
-<span class="go">0.397931   | 7.59928</span>
-<span class="go">-0.621507  | 3.89364</span>
-<span class="go">-0.0930047 | 6.15768</span>
-<span class="go">-0.819644  | 5.3926</span>
-<span class="go">-0.76239   | 7.0115</span>
-<span class="go">1.70733    | 3.31028</span>
+<span class="go">data1     | data2</span>
+<span class="go">1.76278   | 4.74487</span>
+<span class="go">-0.854551 | 4.07432</span>
+<span class="go">-0.364981 | 4.82191</span>
+<span class="go">-2.58374  | 10.8441</span>
+<span class="go">-3.28935  | -0.949626</span>
+<span class="go">4.08293   | 3.23328</span>
+<span class="go">1.31663   | 0.620374</span>
+<span class="go">-0.671784 | 2.82166</span>
+<span class="go">1.88198   | 5.02947</span>
+<span class="go">0.46067   | 1.72779</span>
 <span class="go">... (90 rows omitted)</span>
 
 <span class="go"># index = False prevents row numbers from appearing in the resulting CSV</span>
@@ -635,8 +635,8 @@ non-smokers.</p>
 
 <span class="gp">In [73]: </span><span class="n">bootstrapped_diff_means</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
 <span class="gh">Out[73]: </span>
-<span class="go">array([ 0.19764157, -0.57056538, -0.81887045,  0.88806009, -1.12660542,</span>
-<span class="go">       -0.73910142,  0.13822996, -0.98904886, -0.37555342, -2.49530295])</span>
+<span class="go">array([ 2.12908268,  0.66338193,  0.15521428,  0.06719686, -0.80604842,</span>
+<span class="go">       -2.1310907 , -0.32920456, -1.08849277, -0.11274129,  0.5510977 ])</span>
 
 <span class="gp">In [74]: </span><span class="n">num_diffs_greater</span> <span class="o">=</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">bootstrapped_diff_means</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">observed_diff</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 

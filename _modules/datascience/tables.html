@@ -5711,12 +5711,55 @@
             <span class="k">return</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span> <span class="bp">self</span><span class="p">))</span>
 
     <span class="k">class</span> <span class="nc">Rows</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Sequence</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;An iterable view over the rows in a table.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        An iterable view over the rows in a table.</span>
+<span class="sd">       </span>
+<span class="sd">        &gt;&gt;&gt; t = Table().with_columns({</span>
+<span class="sd">        ...     &#39;letter&#39;: [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;z&#39;],</span>
+<span class="sd">        ...     &#39;count&#39;:  [  9,   3,   3,   1],</span>
+<span class="sd">        ...     &#39;points&#39;: [  1,   2,   2,  10],</span>
+<span class="sd">        ... })</span>
+<span class="sd">        &gt;&gt;&gt; rows = Table.Rows(t)</span>
+<span class="sd">        &gt;&gt;&gt; rows</span>
+<span class="sd">        Rows(letter | count | points</span>
+<span class="sd">        a      | 9     | 1</span>
+<span class="sd">        b      | 3     | 2</span>
+<span class="sd">        c      | 3     | 2</span>
+<span class="sd">        z      | 1     | 10)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            table: accepts a table instance of class Table</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            An instance of Rows class</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_table</span> <span class="o">=</span> <span class="n">table</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_labels</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Access the i-th row of the given table.</span>
+
+<span class="sd">            rows[i] is equivalent to rows.__getitem__(i) </span>
+
+<span class="sd">            &gt;&gt;&gt; t = Table().with_columns({</span>
+<span class="sd">            ...     &#39;letter&#39;: [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;z&#39;],</span>
+<span class="sd">            ...     &#39;count&#39;:  [  9,   3,   3,   1],</span>
+<span class="sd">            ...     &#39;points&#39;: [  1,   2,   2,  10],</span>
+<span class="sd">            ... })</span>
+<span class="sd">            &gt;&gt;&gt; rows = Table.Rows(t)</span>
+<span class="sd">            &gt;&gt;&gt; rows[0]</span>
+<span class="sd">            Row(letter=&#39;a&#39;, count=9, points=1)</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                i: index of the Row that needs to be accessed.</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                Returns a Row instance containing the i-th row of the given table</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
                 <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">*</span><span class="n">i</span><span class="o">.</span><span class="n">indices</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))))</span>
 
@@ -5727,9 +5770,38 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_row</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">_columns</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
 
         <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Returns the number of rows in the table.</span>
+
+<span class="sd">            &gt;&gt;&gt; t = Table().with_columns({</span>
+<span class="sd">            ...     &#39;letter&#39;: [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;z&#39;],</span>
+<span class="sd">            ...     &#39;count&#39;:  [  9,   3,   3,   1],</span>
+<span class="sd">            ...     &#39;points&#39;: [  1,   2,   2,  10],</span>
+<span class="sd">            ... })</span>
+<span class="sd">            &gt;&gt;&gt; rows = Table.Rows(t)</span>
+<span class="sd">            &gt;&gt;&gt; len(rows)</span>
+<span class="sd">            4</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">num_rows</span>
 
         <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Returns the printable representation of the given table as string.</span>
+<span class="sd">            Uses the standard repr() function.</span>
+
+<span class="sd">            repr(rows) is equivalent to rows.__repr__()</span>
+
+<span class="sd">            &gt;&gt;&gt; t = Table().with_columns({</span>
+<span class="sd">            ...     &#39;letter&#39;: [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;z&#39;],</span>
+<span class="sd">            ...     &#39;count&#39;:  [  9,   3,   3,   1],</span>
+<span class="sd">            ...     &#39;points&#39;: [  1,   2,   2,  10],</span>
+<span class="sd">            ... })</span>
+<span class="sd">            &gt;&gt;&gt; rows = Table.Rows(t)</span>
+<span class="sd">            &gt;&gt;&gt; repr(rows)</span>
+<span class="sd">            &#39;Rows(letter | count | points\\na      | 9     | 1\\nb      | 3     | 2\\nc      | 3     | 2\\nz      | 1     | 10)&#39;</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
             <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">(</span><span class="si">{1}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">))</span>
 
 
