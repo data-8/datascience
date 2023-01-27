@@ -5682,11 +5682,10 @@ class Table(collections.abc.MutableMapping):
         An iterable view over the rows in a table.
        
         >>> t = Table().with_columns({
-             'letter': ['a', 'b', 'c', 'z'],
-             'count':  [  9,   3,   3,   1],
-             'points': [  1,   2,   2,  10],
-        })
-
+        ...     'letter': ['a', 'b', 'c', 'z'],
+        ...     'count':  [  9,   3,   3,   1],
+        ...     'points': [  1,   2,   2,  10],
+        ... })
         >>> rows = Table.Rows(t)
         >>> rows
         Rows(letter | count | points
@@ -5696,7 +5695,7 @@ class Table(collections.abc.MutableMapping):
         z      | 1     | 10)
 
         Args:
-            table- accepts a table instance of class Table
+            table: accepts a table instance of class Table
         
         Returns:
             An instance of Rows class
@@ -5712,11 +5711,17 @@ class Table(collections.abc.MutableMapping):
 
             rows[i] is equivalent to rows.__getitem__(i) 
 
-            >>> r[0]
+            >>> t = Table().with_columns({
+            ...     'letter': ['a', 'b', 'c', 'z'],
+            ...     'count':  [  9,   3,   3,   1],
+            ...     'points': [  1,   2,   2,  10],
+            ... })
+            >>> rows = Table.Rows(t)
+            >>> rows[0]
             Row(letter='a', count=9, points=1)
 
             Args:
-                i- index of the Row that needs to be accessed.
+                i: index of the Row that needs to be accessed.
 
             Returns:
                 Returns a Row instance containing the i-th row of the given table
@@ -5735,7 +5740,13 @@ class Table(collections.abc.MutableMapping):
             """
             Returns the number of rows in the table.
 
-            >>> len(r)
+            >>> t = Table().with_columns({
+            ...     'letter': ['a', 'b', 'c', 'z'],
+            ...     'count':  [  9,   3,   3,   1],
+            ...     'points': [  1,   2,   2,  10],
+            ... })
+            >>> rows = Table.Rows(t)
+            >>> len(rows)
             4
 
             """
@@ -5748,13 +5759,15 @@ class Table(collections.abc.MutableMapping):
 
             repr(rows) is equivalent to rows.__repr__()
 
+            >>> t = Table().with_columns({
+            ...     'letter': ['a', 'b', 'c', 'z'],
+            ...     'count':  [  9,   3,   3,   1],
+            ...     'points': [  1,   2,   2,  10],
+            ... })
+            >>> rows = Table.Rows(t)
             >>> repr(rows)
-            'Rows(letter | count | points\n
-            a      | 9     | 1\n
-            b      | 3     | 2\n
-            c      | 3     | 2\n
-            z      | 1     | 10)'
-            
+            'Rows(letter | count | points\\na      | 9     | 1\\nb      | 3     | 2\\nc      | 3     | 2\\nz      | 1     | 10)'
+
             """
             return '{0}({1})'.format(type(self).__name__, repr(self._table))
 
