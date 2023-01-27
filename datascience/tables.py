@@ -5671,12 +5671,55 @@ class Table(collections.abc.MutableMapping):
             return collections.OrderedDict(zip(self._table.labels, self))
 
     class Rows(collections.abc.Sequence):
-        """An iterable view over the rows in a table."""
+        """
+        An iterable view over the rows in a table.
+       
+        >>> t = Table().with_columns({
+        ...     'letter': ['a', 'b', 'c', 'z'],
+        ...     'count':  [  9,   3,   3,   1],
+        ...     'points': [  1,   2,   2,  10],
+        ... })
+        >>> rows = Table.Rows(t)
+        >>> rows
+        Rows(letter | count | points
+        a      | 9     | 1
+        b      | 3     | 2
+        c      | 3     | 2
+        z      | 1     | 10)
+
+        Args:
+            table: accepts a table instance of class Table
+        
+        Returns:
+            An instance of Rows class
+
+        """
         def __init__(self, table):
             self._table = table
             self._labels = None
 
         def __getitem__(self, i):
+            """
+            Access the i-th row of the given table.
+
+            rows[i] is equivalent to rows.__getitem__(i) 
+
+            >>> t = Table().with_columns({
+            ...     'letter': ['a', 'b', 'c', 'z'],
+            ...     'count':  [  9,   3,   3,   1],
+            ...     'points': [  1,   2,   2,  10],
+            ... })
+            >>> rows = Table.Rows(t)
+            >>> rows[0]
+            Row(letter='a', count=9, points=1)
+
+            Args:
+                i: index of the Row that needs to be accessed.
+
+            Returns:
+                Returns a Row instance containing the i-th row of the given table
+
+            """
             if isinstance(i, slice):
                 return (self[j] for j in range(*i.indices(len(self))))
 
@@ -5687,9 +5730,38 @@ class Table(collections.abc.MutableMapping):
             return self._row(c[i] for c in self._table._columns.values())
 
         def __len__(self):
+            """
+            Returns the number of rows in the table.
+
+            >>> t = Table().with_columns({
+            ...     'letter': ['a', 'b', 'c', 'z'],
+            ...     'count':  [  9,   3,   3,   1],
+            ...     'points': [  1,   2,   2,  10],
+            ... })
+            >>> rows = Table.Rows(t)
+            >>> len(rows)
+            4
+
+            """
             return self._table.num_rows
 
         def __repr__(self):
+            """
+            Returns the printable representation of the given table as string.
+            Uses the standard repr() function.
+
+            repr(rows) is equivalent to rows.__repr__()
+
+            >>> t = Table().with_columns({
+            ...     'letter': ['a', 'b', 'c', 'z'],
+            ...     'count':  [  9,   3,   3,   1],
+            ...     'points': [  1,   2,   2,  10],
+            ... })
+            >>> rows = Table.Rows(t)
+            >>> repr(rows)
+            'Rows(letter | count | points\\na      | 9     | 1\\nb      | 3     | 2\\nc      | 3     | 2\\nz      | 1     | 10)'
+
+            """
             return '{0}({1})'.format(type(self).__name__, repr(self._table))
 
 
