@@ -288,6 +288,7 @@ class Table(collections.abc.MutableMapping):
             integer value stating number of rows
 
         Example:
+
         >>> t = Table().with_columns({
         ...     'letter': ['a', 'b', 'c', 'z'],
         ...     'count':  [  9,   3,   3,   1],
@@ -307,6 +308,7 @@ class Table(collections.abc.MutableMapping):
             list-like Rows object that contains tuple-like Row objects
 
         Example:
+
         >>> t = Table().with_columns({
         ...     'letter': ['a', 'b', 'c', 'z'],
         ...     'count':  [  9,   3,   3,   1],
@@ -322,7 +324,12 @@ class Table(collections.abc.MutableMapping):
         return self.Rows(self)
 
     def row(self, index):
-        """Return a row."""
+        """
+        Return a row.
+
+        Please see extended docstring at https://github.com/data-8/datascience/blob/614db00e7d22e52683860d2beaa4037bec26cf87/datascience/tables.py#L5673-L5765
+        for how to interact with Rows.
+        """
         return self.rows[index]
 
     @property
@@ -334,6 +341,7 @@ class Table(collections.abc.MutableMapping):
             tuple of labels
 
         Example:
+        
         >>> t = Table().with_columns({
         ...     'letter': ['a', 'b', 'c', 'z'],
         ...     'count':  [  9,   3,   3,   1],
@@ -358,6 +366,7 @@ class Table(collections.abc.MutableMapping):
             tuple of columns
 
         Example:
+
         >>> t = Table().with_columns({
         ...     'letter': ['a', 'b', 'c', 'z'],
         ...     'count':  [  9,   3,   3,   1],
@@ -418,6 +427,23 @@ class Table(collections.abc.MutableMapping):
         If all columns are the same dtype, the resulting array
         will have this dtype. If there are >1 dtypes in columns,
         then the resulting array will have dtype `object`.
+
+        Example:
+
+        >>> tiles = Table().with_columns(
+        ...     'letter', make_array('c', 'd'),
+        ...     'count',  make_array(2, 4),
+        ... )
+        >>> tiles.values
+        array([['c', 2],
+           ['d', 4]], dtype=object)
+        >>> t = Table().with_columns(
+        ...     'col1', make_array(1, 2),
+        ...     'col2', make_array(3, 4),
+        ... )
+        >>> t.values
+        array([[1, 3],
+           [2, 4]])
         """
         dtypes = [col.dtype for col in self.columns]
         if len(set(dtypes)) > 1:
@@ -437,6 +463,7 @@ class Table(collections.abc.MutableMapping):
             integer value specifying the index of the column label
 
         Example:
+
         >>> t = Table().with_columns({
         ...     'letter': ['a', 'b', 'c', 'z'],
         ...     'count':  [  9,   3,   3,   1],
@@ -519,6 +546,7 @@ class Table(collections.abc.MutableMapping):
             zeroth item of column
 
         Example:
+
         >>> t = Table().with_columns({
         ...     'letter': ['a', 'b', 'c', 'z'],
         ...     'count':  [  9,   3,   3,   1],
@@ -540,6 +568,7 @@ class Table(collections.abc.MutableMapping):
             last item of column
 
         Example:
+
         >>> t = Table().with_columns({
         ...     'letter': ['a', 'b', 'c', 'z'],
         ...     'count':  [  9,   3,   3,   1],
@@ -2283,7 +2312,7 @@ class Table(collections.abc.MutableMapping):
 
     def shuffle(self):
         """Return a new table where all the rows are randomly shuffled from the
-        original table..
+        original table.
 
         Returns:
             A new instance of ``Table`` with all ``k`` rows shuffled.
@@ -4674,7 +4703,12 @@ class Table(collections.abc.MutableMapping):
 
     # Deprecated
     def pivot_hist(self, pivot_column_label, value_column_label, overlay=True, width=6, height=4, **vargs):
-        """Draw histograms of each category in a column. (Deprecated)"""
+        """
+        Draw histograms of each category in a column. (Deprecated)
+
+        Recommended: Use hist(value_column_label, group=pivot_column_label), or with side_by_side=True if you really want side-by-side bars.
+
+        """
         warnings.warn("pivot_hist is deprecated; use "
                       "hist(value_column_label, group=pivot_column_label), or "
                       "with side_by_side=True if you really want side-by-side "

@@ -31,18 +31,12 @@ But these are not valid::
 If that syntax is confusing, you can click the method name itself to get to the
 details page for that method. That page will have a more straightforward syntax.
 
-At the time of this writing, most methods only have one or two sentences of
-documentation, so what you see here is all that you'll get for the time being.
-We are actively working on documentation, prioritizing the most complicated
-methods (mostly visualizations).
-
 Creation
 
 .. autosummary::
     :toctree: _autosummary
 
     Table.__init__
-    Table.empty
     Table.from_records
     Table.from_columns_dict
     Table.read_table
