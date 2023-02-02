@@ -2340,16 +2340,17 @@
 <span class="sd">        ...     [&#39;medium&#39;, 100],</span>
 <span class="sd">        ...     [&#39;big&#39;, 50],</span>
 <span class="sd">        ... ])</span>
-<span class="sd">        &gt;&gt;&gt; sizes.sample_from_distribution(&#39;count&#39;, 1000) # doctest: +SKIP</span>
+<span class="sd">        &gt;&gt;&gt; np.random.seed(99)</span>
+<span class="sd">        &gt;&gt;&gt; sizes.sample_from_distribution(&#39;count&#39;, 1000)</span>
 <span class="sd">        size   | count | count sample</span>
-<span class="sd">        small  | 50    | 239</span>
-<span class="sd">        medium | 100   | 496</span>
-<span class="sd">        big    | 50    | 265</span>
-<span class="sd">        &gt;&gt;&gt; sizes.sample_from_distribution(&#39;count&#39;, 1000, True) # doctest: +SKIP</span>
+<span class="sd">        small  | 50    | 228</span>
+<span class="sd">        medium | 100   | 508</span>
+<span class="sd">        big    | 50    | 264</span>
+<span class="sd">        &gt;&gt;&gt; sizes.sample_from_distribution(&#39;count&#39;, 1000, True)</span>
 <span class="sd">        size   | count | count sample</span>
-<span class="sd">        small  | 50    | 0.24</span>
-<span class="sd">        medium | 100   | 0.51</span>
-<span class="sd">        big    | 50    | 0.25</span>
+<span class="sd">        small  | 50    | 0.261</span>
+<span class="sd">        medium | 100   | 0.491</span>
+<span class="sd">        big    | 50    | 0.248</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_column</span><span class="p">(</span><span class="n">distribution</span><span class="p">)</span>
         <span class="n">total</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span>
@@ -5668,12 +5669,19 @@
 <span class="sd">        93    | 94</span>
 <span class="sd">        &gt;&gt;&gt; table.boxplot() # doctest: +SKIP</span>
 <span class="sd">        &lt;boxplot of test1 and boxplot of test2 side-by-side on the same figure&gt;</span>
+<span class="sd">        &gt;&gt;&gt; table2 = Table().with_columns(</span>
+<span class="sd">        ...     &#39;numeric_col&#39;, make_array(1, 2, 3, 4),</span>
+<span class="sd">        ...     &#39;alpha_col&#39;, make_array(&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;d&#39;))</span>
+<span class="sd">        &gt;&gt;&gt; table2.boxplot()</span>
+<span class="sd">        Traceback (most recent call last):</span>
+<span class="sd">            ...</span>
+<span class="sd">        ValueError: The column &#39;alpha_col&#39; contains non-numerical values. A boxplot cannot be drawn for this table.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Check for non-numerical values and raise a ValueError if any found</span>
         <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">flexible</span><span class="p">)</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">[</span><span class="n">col</span><span class="p">]):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The column &#39;</span><span class="si">{0}</span><span class="s2">&#39; contains non-numerical &quot;</span>
-                    <span class="s2">&quot;values. A histogram cannot be drawn for this table.&quot;</span>
+                    <span class="s2">&quot;values. A boxplot cannot be drawn for this table.&quot;</span>
                     <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">col</span><span class="p">))</span>
 
         <span class="n">columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_columns</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>

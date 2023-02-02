@@ -59,16 +59,17 @@ They are replaced by sample counts/proportions in the output.</p>
 <span class="gp">... </span>    <span class="p">[</span><span class="s1">&#39;medium&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
 <span class="gp">... </span>    <span class="p">[</span><span class="s1">&#39;big&#39;</span><span class="p">,</span> <span class="mi">50</span><span class="p">],</span>
 <span class="gp">... </span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sizes</span><span class="o">.</span><span class="n">sample_from_distribution</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">99</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sizes</span><span class="o">.</span><span class="n">sample_from_distribution</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
 <span class="go">size   | count | count sample</span>
-<span class="go">small  | 50    | 239</span>
-<span class="go">medium | 100   | 496</span>
-<span class="go">big    | 50    | 265</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sizes</span><span class="o">.</span><span class="n">sample_from_distribution</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span> 
+<span class="go">small  | 50    | 228</span>
+<span class="go">medium | 100   | 508</span>
+<span class="go">big    | 50    | 264</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sizes</span><span class="o">.</span><span class="n">sample_from_distribution</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 <span class="go">size   | count | count sample</span>
-<span class="go">small  | 50    | 0.24</span>
-<span class="go">medium | 100   | 0.51</span>
-<span class="go">big    | 50    | 0.25</span>
+<span class="go">small  | 50    | 0.261</span>
+<span class="go">medium | 100   | 0.491</span>
+<span class="go">big    | 50    | 0.248</span>
 </pre></div>
 </div>
 </dd></dl>
