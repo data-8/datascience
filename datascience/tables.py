@@ -2300,16 +2300,17 @@ class Table(collections.abc.MutableMapping):
         ...     ['medium', 100],
         ...     ['big', 50],
         ... ])
-        >>> sizes.sample_from_distribution('count', 1000) # doctest: +SKIP
+        >>> np.random.seed(99)
+        >>> sizes.sample_from_distribution('count', 1000)
         size   | count | count sample
-        small  | 50    | 239
-        medium | 100   | 496
-        big    | 50    | 265
-        >>> sizes.sample_from_distribution('count', 1000, True) # doctest: +SKIP
+        small  | 50    | 228
+        medium | 100   | 508
+        big    | 50    | 264
+        >>> sizes.sample_from_distribution('count', 1000, True)
         size   | count | count sample
-        small  | 50    | 0.24
-        medium | 100   | 0.51
-        big    | 50    | 0.25
+        small  | 50    | 0.261
+        medium | 100   | 0.491
+        big    | 50    | 0.248
         """
         dist = self._get_column(distribution)
         total = sum(dist)
@@ -5628,12 +5629,19 @@ class Table(collections.abc.MutableMapping):
         93    | 94
         >>> table.boxplot() # doctest: +SKIP
         <boxplot of test1 and boxplot of test2 side-by-side on the same figure>
+        >>> table2 = Table().with_columns(
+        ...     'numeric_col', make_array(1, 2, 3, 4),
+        ...     'alpha_col', make_array('a', 'b', 'c', 'd'))
+        >>> table2.boxplot()
+        Traceback (most recent call last):
+            ...
+        ValueError: The column 'alpha_col' contains non-numerical values. A boxplot cannot be drawn for this table.
         """
         # Check for non-numerical values and raise a ValueError if any found
         for col in self:
             if any(isinstance(cell, np.flexible) for cell in self[col]):
                 raise ValueError("The column '{0}' contains non-numerical "
-                    "values. A histogram cannot be drawn for this table."
+                    "values. A boxplot cannot be drawn for this table."
                     .format(col))
 
         columns = self._columns.copy()
