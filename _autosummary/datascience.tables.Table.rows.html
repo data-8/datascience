@@ -56,18 +56,20 @@
 <dt>Returns: </dt><dd><p>list-like Rows object that contains tuple-like Row objects</p>
 </dd>
 </dl>
-<p>Example:
-&gt;&gt;&gt; t = Table().with_columns({
-…     ‘letter’: [‘a’, ‘b’, ‘c’, ‘z’],
-…     ‘count’:  [  9,   3,   3,   1],
-…     ‘points’: [  1,   2,   2,  10],
-… })
-&gt;&gt;&gt; t.rows
-Rows(letter | count | points
-a      | 9     | 1
-b      | 3     | 2
-c      | 3     | 2
-z      | 1     | 10)</p>
+<p>Example:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">({</span>
+<span class="gp">... </span>    <span class="s1">&#39;letter&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="s1">&#39;count&#39;</span><span class="p">:</span>  <span class="p">[</span>  <span class="mi">9</span><span class="p">,</span>   <span class="mi">3</span><span class="p">,</span>   <span class="mi">3</span><span class="p">,</span>   <span class="mi">1</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="s1">&#39;points&#39;</span><span class="p">:</span> <span class="p">[</span>  <span class="mi">1</span><span class="p">,</span>   <span class="mi">2</span><span class="p">,</span>   <span class="mi">2</span><span class="p">,</span>  <span class="mi">10</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">rows</span>
+<span class="go">Rows(letter | count | points</span>
+<span class="go">a      | 9     | 1</span>
+<span class="go">b      | 3     | 2</span>
+<span class="go">c      | 3     | 2</span>
+<span class="go">z      | 1     | 10)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>

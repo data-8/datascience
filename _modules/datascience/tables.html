@@ -328,6 +328,7 @@
 <span class="sd">            integer value stating number of rows</span>
 
 <span class="sd">        Example:</span>
+
 <span class="sd">        &gt;&gt;&gt; t = Table().with_columns({</span>
 <span class="sd">        ...     &#39;letter&#39;: [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;z&#39;],</span>
 <span class="sd">        ...     &#39;count&#39;:  [  9,   3,   3,   1],</span>
@@ -347,6 +348,7 @@
 <span class="sd">            list-like Rows object that contains tuple-like Row objects</span>
 
 <span class="sd">        Example:</span>
+
 <span class="sd">        &gt;&gt;&gt; t = Table().with_columns({</span>
 <span class="sd">        ...     &#39;letter&#39;: [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;z&#39;],</span>
 <span class="sd">        ...     &#39;count&#39;:  [  9,   3,   3,   1],</span>
@@ -362,7 +364,12 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Rows</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Table.row"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.row.html#datascience.tables.Table.row">[docs]</a>    <span class="k">def</span> <span class="nf">row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a row.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a row.</span>
+
+<span class="sd">        Please see extended docstring at https://github.com/data-8/datascience/blob/614db00e7d22e52683860d2beaa4037bec26cf87/datascience/tables.py#L5673-L5765</span>
+<span class="sd">        for how to interact with Rows.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">[</span><span class="n">index</span><span class="p">]</span></div>
 
     <span class="nd">@property</span>
@@ -374,6 +381,7 @@
 <span class="sd">            tuple of labels</span>
 
 <span class="sd">        Example:</span>
+<span class="sd">        </span>
 <span class="sd">        &gt;&gt;&gt; t = Table().with_columns({</span>
 <span class="sd">        ...     &#39;letter&#39;: [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;z&#39;],</span>
 <span class="sd">        ...     &#39;count&#39;:  [  9,   3,   3,   1],</span>
@@ -398,6 +406,7 @@
 <span class="sd">            tuple of columns</span>
 
 <span class="sd">        Example:</span>
+
 <span class="sd">        &gt;&gt;&gt; t = Table().with_columns({</span>
 <span class="sd">        ...     &#39;letter&#39;: [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;z&#39;],</span>
 <span class="sd">        ...     &#39;count&#39;:  [  9,   3,   3,   1],</span>
@@ -458,6 +467,23 @@
 <span class="sd">        If all columns are the same dtype, the resulting array</span>
 <span class="sd">        will have this dtype. If there are &gt;1 dtypes in columns,</span>
 <span class="sd">        then the resulting array will have dtype `object`.</span>
+
+<span class="sd">        Example:</span>
+
+<span class="sd">        &gt;&gt;&gt; tiles = Table().with_columns(</span>
+<span class="sd">        ...     &#39;letter&#39;, make_array(&#39;c&#39;, &#39;d&#39;),</span>
+<span class="sd">        ...     &#39;count&#39;,  make_array(2, 4),</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; tiles.values</span>
+<span class="sd">        array([[&#39;c&#39;, 2],</span>
+<span class="sd">           [&#39;d&#39;, 4]], dtype=object)</span>
+<span class="sd">        &gt;&gt;&gt; t = Table().with_columns(</span>
+<span class="sd">        ...     &#39;col1&#39;, make_array(1, 2),</span>
+<span class="sd">        ...     &#39;col2&#39;, make_array(3, 4),</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; t.values</span>
+<span class="sd">        array([[1, 3],</span>
+<span class="sd">           [2, 4]])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">dtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span><span class="o">.</span><span class="n">dtype</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">dtypes</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
@@ -477,6 +503,7 @@
 <span class="sd">            integer value specifying the index of the column label</span>
 
 <span class="sd">        Example:</span>
+
 <span class="sd">        &gt;&gt;&gt; t = Table().with_columns({</span>
 <span class="sd">        ...     &#39;letter&#39;: [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;z&#39;],</span>
 <span class="sd">        ...     &#39;count&#39;:  [  9,   3,   3,   1],</span>
@@ -559,6 +586,7 @@
 <span class="sd">            zeroth item of column</span>
 
 <span class="sd">        Example:</span>
+
 <span class="sd">        &gt;&gt;&gt; t = Table().with_columns({</span>
 <span class="sd">        ...     &#39;letter&#39;: [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;z&#39;],</span>
 <span class="sd">        ...     &#39;count&#39;:  [  9,   3,   3,   1],</span>
@@ -580,6 +608,7 @@
 <span class="sd">            last item of column</span>
 
 <span class="sd">        Example:</span>
+
 <span class="sd">        &gt;&gt;&gt; t = Table().with_columns({</span>
 <span class="sd">        ...     &#39;letter&#39;: [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, &#39;z&#39;],</span>
 <span class="sd">        ...     &#39;count&#39;:  [  9,   3,   3,   1],</span>
@@ -2323,7 +2352,7 @@
 
 <div class="viewcode-block" id="Table.shuffle"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.shuffle.html#datascience.tables.Table.shuffle">[docs]</a>    <span class="k">def</span> <span class="nf">shuffle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a new table where all the rows are randomly shuffled from the</span>
-<span class="sd">        original table..</span>
+<span class="sd">        original table.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            A new instance of ``Table`` with all ``k`` rows shuffled.</span>
@@ -4715,7 +4744,12 @@
 
     <span class="c1"># Deprecated</span>
 <div class="viewcode-block" id="Table.pivot_hist"><a class="viewcode-back" href="../../_autosummary/datascience.tables.Table.pivot_hist.html#datascience.tables.Table.pivot_hist">[docs]</a>    <span class="k">def</span> <span class="nf">pivot_hist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pivot_column_label</span><span class="p">,</span> <span class="n">value_column_label</span><span class="p">,</span> <span class="n">overlay</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="o">**</span><span class="n">vargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Draw histograms of each category in a column. (Deprecated)&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Draw histograms of each category in a column. (Deprecated)</span>
+
+<span class="sd">        Recommended: Use hist(value_column_label, group=pivot_column_label), or with side_by_side=True if you really want side-by-side bars.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;pivot_hist is deprecated; use &quot;</span>
                       <span class="s2">&quot;hist(value_column_label, group=pivot_column_label), or &quot;</span>
                       <span class="s2">&quot;with side_by_side=True if you really want side-by-side &quot;</span>
