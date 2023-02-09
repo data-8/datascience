@@ -1,4 +1,5 @@
 import doctest
+import pytest
 import re
 import datascience as ds
 from datascience import formats
@@ -106,3 +107,11 @@ def test_distribution_formatter():
     30.00%
     38.33%
     """)
+
+
+def test_function_formatter():
+    def _mult_ten(v):
+        return v * 10
+
+    func_formatter = formats.FunctionFormatter(_mult_ten)
+    assert func_formatter.format_value(5) == '50'
