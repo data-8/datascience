@@ -1,6 +1,7 @@
 # name: datascience
 dependencies:
 - appnope
+- bokeh
 - coveralls
 - cycler
 - decorator

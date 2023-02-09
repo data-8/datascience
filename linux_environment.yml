@@ -1,5 +1,6 @@
 name: datascience
 dependencies:
+- bokeh
 - coveralls
 - cycler
 - decorator
