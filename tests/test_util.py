@@ -4,6 +4,7 @@ import datascience as ds
 from datascience import util
 import numpy as np
 import pytest
+from collections.abc import Sequence
 
 def test_doctests():
     results = doctest.testmod(util, optionflags=doctest.NORMALIZE_WHITESPACE)
@@ -107,3 +108,15 @@ def test_is_non_string_iterable():
 
     is_int = 1
     assert ds.is_non_string_iterable(is_int) == False
+
+    class IsSequence(Sequence):
+        """
+        Implementation of Sequence abc without __iter__
+        """
+        def __getitem__(self, index):
+            pass
+        
+        def __len__(self):
+            pass
+    is_sequence = IsSequence()
+    assert ds.is_non_string_iterable(is_sequence) == True
