@@ -1901,3 +1901,9 @@ def test_read_table():
     assert isinstance(Table().read_table("tests/us-unemployment-copy"), Table)
     assert isinstance(Table().read_table("tests/us-unemployment.txt"), Table)
     assert isinstance(Table().read_table("https://raw.githubusercontent.com/data-8/textbook/main/assets/data/deflategate.csv"), Table)
+
+def test_no_records():
+    """Test that Table returns nothing on an empty record"""
+    empty_table = Table()
+    records_empty_table = Table().from_records([])
+    assert empty_table == records_empty_table
