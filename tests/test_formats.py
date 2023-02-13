@@ -1,5 +1,4 @@
 import doctest
-import pytest
 import re
 import datascience as ds
 from datascience import formats
