@@ -9,6 +9,16 @@ def test_both():
     ps = [p(x) for x in range(1, 6)]
     assert ps == [False, False, True, False, False]
 
+def test_tautology():
+    p = are.above(3) | are.below(4)
+    ps = [p(x) for x in range(1, 6)]
+    assert ps == [True, True, True, True, True]
+
+def test_contradiction():
+    p = are.above(3) & are.below(3)
+    ps = [p(x) for x in range(1, 6)]
+    assert ps == [False, False, False, False, False]
+
 def test_either():
     """Either f or g."""
     p = are.above(3) | are.below(2)
