@@ -72,7 +72,7 @@ def test_minimize():
 
 
 def test_minimize_smooth():
-    assert _round_eq(2, ds.minimize(lambda x: (x-2)**2, smooth=True))
+    assert _round_eq(2, ds.minimize(lambda x: (x-2)**2, smooth=True, log=print))
     assert _round_eq([2, 1], list(ds.minimize(lambda x, y: (x-2)**2 + (y-1)**2, smooth=True)))
     assert _round_eq(2, ds.minimize(lambda x: (x-2)**2, 1, smooth=True))
     assert _round_eq([2, 1], list(ds.minimize(lambda x, y: (x-2)**2 + (y-1)**2, [1, 1], smooth=True)))

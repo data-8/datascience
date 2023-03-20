@@ -254,6 +254,4 @@ def is_non_string_iterable(value):
         return False
     if hasattr(value, '__iter__'):
         return True
-    if isinstance(value, collections.abc.Sequence):
-        return True
     return False
