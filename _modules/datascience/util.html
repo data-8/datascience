@@ -294,8 +294,6 @@
         <span class="k">return</span> <span class="kc">False</span>
     <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">True</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Sequence</span><span class="p">):</span>
-        <span class="k">return</span> <span class="kc">True</span>
     <span class="k">return</span> <span class="kc">False</span></div>
 </pre></div>
 
