@@ -249,11 +249,9 @@ def minimize(f, start=None, smooth=False, log=None, array=False, **vargs):
         return result.x
 
 def is_non_string_iterable(value):
-    """Whether a value is iterable."""
+    """Returns a boolean value representing whether a value is iterable."""
     if isinstance(value, str):
         return False
     if hasattr(value, '__iter__'):
-        return True
-    if isinstance(value, collections.abc.Sequence):
         return True
     return False
