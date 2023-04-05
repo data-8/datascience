@@ -211,6 +211,49 @@ class are:
     def not_contained_in(superstring):
         """A string that is not contained within the superstring"""
         return -(are.contained_in(superstring))
+
+    ###############
+    #   Aliases   #
+    ###############
+
+    @staticmethod
+    def less_than(y):
+        """Less than y."""
+        return are.below(y)
+
+    @staticmethod
+    def greater_than(y):
+        """Greater than y."""
+        return are.above(y)
+
+    @staticmethod
+    def greater_than_or_equal_to(y):
+        return are.above_or_equal_to(y)
+
+    @staticmethod
+    def less_than_or_equal_to(y):
+        return are.below_or_equal_to(y)
+
+    @staticmethod
+    def not_greater_than_or_equal_to(y):
+        """Is neither above y nor equal to y"""
+        return are.not_above_or_equal_to(y)
+    
+    @staticmethod
+    def not_less_than_or_equal_to(y):
+        """Is neither below y nor equal to y"""
+        return are.not_below_or_equal_to(y)
+
+    @staticmethod
+    def not_greater_than(y):
+        """Is not above y"""
+        return are.not_above(y)
+    
+    @staticmethod
+    def not_less_than(y):
+        """Is not below y"""
+        return are.not_below(y)
+
 ###############
 # Combination #
 ###############

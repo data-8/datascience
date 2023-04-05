@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.17.7
+* Add pythonic aliases for comparison predicates.
+* Add alias tests to test_predicates.py
+
 ### v0.17.6
 * Removed a deprecated function which allowed calling non-table attributes on a table.
 * Removed a deprecated function which created an empty table.
