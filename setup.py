@@ -1,7 +1,6 @@
 import sys
 from setuptools import setup
 from setuptools.command.test import test as TestCommand
-from datascience.version import __version__
 
 
 if sys.version_info < (3, 6):
@@ -16,6 +15,12 @@ tests_requires = [
     'coveralls',
     'bokeh'
 ]
+
+with open('datascience/version.py') as fid:
+     for line in fid:
+         if line.startswith('__version__'):
+             version = line.strip().split()[-1][1:-1]
+             break
 
 class PyTest(TestCommand):
     user_options = [('pytest-args=', 'a', "Arguments to pass to py.test")]
@@ -41,7 +46,7 @@ setup(
     name = 'datascience',
     packages = ['datascience'],
     python_requires='>=3.6',
-    version = __version__,
+    version = version,
     install_requires = install_requires,
     tests_require = tests_requires,
     cmdclass = {'test': PyTest},
