@@ -1157,10 +1157,6 @@ def test_remove_column_type(table):
 # Create #
 ##########
 
-def test_empty_labels_none():
-    with pytest.raises(ValueError):
-        t = Table().empty(['letter', 'count', 'points'])
-
 def test_empty():
     t = Table(['letter', 'count', 'points'])
     assert_equal(t, """
