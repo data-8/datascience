@@ -2,6 +2,7 @@ import doctest
 import re
 import datascience as ds
 from datascience import formats
+import os
 
 
 def assert_equal(string1, string2):
@@ -93,7 +94,8 @@ def test_date_format():
 
 def test_date_formatter_format_value():
     formatter = formats.DateFormatter()
-    assert_equal(formatter.format_value(1666264489.9004), "2022-10-20 08:14:49.900400")
+    os.environ["TZ"] = "UTC"
+    assert_equal(formatter.format_value(1666264489.9004), "2022-10-20 11:14:49.900400")
 
 
 def test_percent_formatter():
