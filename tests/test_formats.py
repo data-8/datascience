@@ -31,7 +31,7 @@ def test_default_format_column():
     fmtc = ds.default_formatter.format_column
 
     description_list = ["A data scientist is someone who creates programming code and combines it with statistical knowledge to create insights from data."]
-    pad = fmtc("Carreers", description_list)
+    pad = fmtc("Careers", description_list)
     assert_equal(pad(description_list[0]), "A data scientist is someone who creates programming code ...")
 
 
@@ -90,6 +90,8 @@ def test_date_format():
     t.set_format('time', ds.DateFormatter("%Y-%m-%d %H:%M:%S.%f"))
     assert isinstance(t['time'][0], float)
 
+
+def test_date_formatter_format_value():
     formatter = formats.DateFormatter()
     assert_equal(formatter.format_value(1666264489.9004), "2022-10-20 08:14:49.900400")
 

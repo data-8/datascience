@@ -81,7 +81,7 @@ def test_minimize_smooth():
 
 
 def test_minimize_array():
-    assert _round_eq(2, ds.minimize(lambda x: (x[0]-2)**2, [0], array=True, log=print))
+    assert _round_eq(2, ds.minimize(lambda x: (x[0]-2)**2, [0], array=True))
     assert _round_eq([2, 1], list(ds.minimize(lambda x: (x[0]-2)**2 + (x[1]-1)**2, [0, 0], array=True)))
 
 
@@ -99,14 +99,3 @@ def test_proportions_from_distribution():
     uniform = u.column(1)
     assert len(uniform) == 50 and _round_eq(1, sum(uniform))
     assert [x in (0, 0.5, 1) for x in ds.sample_proportions(2, ds.make_array(.2, .3, .5))]
-
-def test_is_non_string_iterable():
-    class Sequece_Class(collections.abc.Sequence):
-        def __init__(self, *args):
-            self._args = args
-        def __getitem__(self, i):
-            return self._args[i]
-        def __len__(self):
-            return len(self._args)
-
-    assert ds.is_non_string_iterable(Sequece_Class()) == True

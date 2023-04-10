@@ -1901,3 +1901,4 @@ def test_read_table():
     assert isinstance(Table().read_table("tests/us-unemployment-copy"), Table)
     assert isinstance(Table().read_table("tests/us-unemployment.txt"), Table)
     assert isinstance(Table().read_table("https://raw.githubusercontent.com/data-8/textbook/main/assets/data/deflategate.csv"), Table)
+    
