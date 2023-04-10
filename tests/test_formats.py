@@ -136,3 +136,10 @@ def test_empty_init():
     assert_equal(formatter.min_width, 1)
     assert_equal(formatter.max_width, 10)
     assert_equal(formatter.etc, "...")
+
+def test_function_formatter():
+    def _mult_ten(v):
+        return v * 10
+
+    func_formatter = formats.FunctionFormatter(_mult_ten)
+    assert func_formatter.format_value(5) == '50'

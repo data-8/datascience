@@ -71,26 +71,6 @@ class Table(collections.abc.MutableMapping):
 
     # Deprecated
     @classmethod
-    def empty(cls, labels=None):
-        """Creates an empty table. Column labels are optional. [Deprecated]
-
-        Args:
-            ``labels`` (None or list): If ``None``, a table with 0
-                columns is created.
-                If a list, each element is a column label in a table with
-                0 rows.
-
-        Returns:
-            A new instance of ``Table``.
-        """
-        warnings.warn("Table.empty(labels) is deprecated. Use Table(labels)", FutureWarning)
-        if labels is None:
-            return cls()
-        values = [[] for label in labels]
-        return cls(values, labels)
-
-    # Deprecated
-    @classmethod
     def from_rows(cls, rows, labels):
         """Create a table from a sequence of rows (fixed-length sequences). [Deprecated]"""
         warnings.warn("Table.from_rows is deprecated. Use Table(labels).with_rows(...)", FutureWarning)
@@ -295,28 +275,6 @@ class Table(collections.abc.MutableMapping):
     def __iter__(self):
         return iter(self.labels)
 
-    # Deprecated
-    def __getattr__(self, attr):
-        """Return a method that applies to all columns or a table of attributes. [Deprecated]
-
-        E.g., t.sum() on a Table will return a table with the sum of each column.
-        """
-        if self.columns and all(hasattr(c, attr) for c in self.columns):
-            warnings.warn("Implicit column method lookup is deprecated.", FutureWarning)
-            attrs = [getattr(c, attr) for c in self.columns]
-            if all(callable(attr) for attr in attrs):
-                @functools.wraps(attrs[0])
-                def method(*args, **vargs):
-                    """Create a table from the results of calling attrs."""
-                    columns = [attr(*args, **vargs) for attr in attrs]
-                    return self._with_columns(columns)
-                return method
-            else:
-                return self._with_columns([[attr] for attr in attrs])
-        else:
-            msg = "'{0}' object has no attribute '{1}'".format(type(self).__name__, attr)
-            raise AttributeError(msg)
-
     ####################
     # Accessing Values #
     ####################
@@ -330,6 +288,7 @@ class Table(collections.abc.MutableMapping):
             integer value stating number of rows
 
         Example:
+
         >>> t = Table().with_columns({
         ...     'letter': ['a', 'b', 'c', 'z'],
         ...     'count':  [  9,   3,   3,   1],
@@ -349,6 +308,7 @@ class Table(collections.abc.MutableMapping):
             list-like Rows object that contains tuple-like Row objects
 
         Example:
+
         >>> t = Table().with_columns({
         ...     'letter': ['a', 'b', 'c', 'z'],
         ...     'count':  [  9,   3,   3,   1],
@@ -364,7 +324,12 @@ class Table(collections.abc.MutableMapping):
         return self.Rows(self)
 
     def row(self, index):
-        """Return a row."""
+        """
+        Return a row.
+
+        Please see extended docstring at https://github.com/data-8/datascience/blob/614db00e7d22e52683860d2beaa4037bec26cf87/datascience/tables.py#L5673-L5765
+        for how to interact with Rows.
+        """
         return self.rows[index]
 
     @property
@@ -376,6 +341,7 @@ class Table(collections.abc.MutableMapping):
             tuple of labels
 
         Example:
+        
         >>> t = Table().with_columns({
         ...     'letter': ['a', 'b', 'c', 'z'],
         ...     'count':  [  9,   3,   3,   1],
@@ -385,13 +351,6 @@ class Table(collections.abc.MutableMapping):
         ('letter', 'count', 'points')
         """
         return tuple(self._columns.keys())
-
-    # Deprecated
-    @property
-    def column_labels(self):
-        """Return a tuple of column labels. [Deprecated]"""
-        warnings.warn("column_labels is deprecated; use labels", FutureWarning)
-        return self.labels
 
     @property
     def num_columns(self):
@@ -407,6 +366,7 @@ class Table(collections.abc.MutableMapping):
             tuple of columns
 
         Example:
+
         >>> t = Table().with_columns({
         ...     'letter': ['a', 'b', 'c', 'z'],
         ...     'count':  [  9,   3,   3,   1],
@@ -467,6 +427,23 @@ class Table(collections.abc.MutableMapping):
         If all columns are the same dtype, the resulting array
         will have this dtype. If there are >1 dtypes in columns,
         then the resulting array will have dtype `object`.
+
+        Example:
+
+        >>> tiles = Table().with_columns(
+        ...     'letter', make_array('c', 'd'),
+        ...     'count',  make_array(2, 4),
+        ... )
+        >>> tiles.values
+        array([['c', 2],
+           ['d', 4]], dtype=object)
+        >>> t = Table().with_columns(
+        ...     'col1', make_array(1, 2),
+        ...     'col2', make_array(3, 4),
+        ... )
+        >>> t.values
+        array([[1, 3],
+           [2, 4]])
         """
         dtypes = [col.dtype for col in self.columns]
         if len(set(dtypes)) > 1:
@@ -486,6 +463,7 @@ class Table(collections.abc.MutableMapping):
             integer value specifying the index of the column label
 
         Example:
+
         >>> t = Table().with_columns({
         ...     'letter': ['a', 'b', 'c', 'z'],
         ...     'count':  [  9,   3,   3,   1],
@@ -568,6 +546,7 @@ class Table(collections.abc.MutableMapping):
             zeroth item of column
 
         Example:
+
         >>> t = Table().with_columns({
         ...     'letter': ['a', 'b', 'c', 'z'],
         ...     'count':  [  9,   3,   3,   1],
@@ -589,6 +568,7 @@ class Table(collections.abc.MutableMapping):
             last item of column
 
         Example:
+
         >>> t = Table().with_columns({
         ...     'letter': ['a', 'b', 'c', 'z'],
         ...     'count':  [  9,   3,   3,   1],
@@ -2332,7 +2312,7 @@ class Table(collections.abc.MutableMapping):
 
     def shuffle(self):
         """Return a new table where all the rows are randomly shuffled from the
-        original table..
+        original table.
 
         Returns:
             A new instance of ``Table`` with all ``k`` rows shuffled.
@@ -2349,16 +2329,17 @@ class Table(collections.abc.MutableMapping):
         ...     ['medium', 100],
         ...     ['big', 50],
         ... ])
-        >>> sizes.sample_from_distribution('count', 1000) # doctest: +SKIP
+        >>> np.random.seed(99)
+        >>> sizes.sample_from_distribution('count', 1000)
         size   | count | count sample
-        small  | 50    | 239
-        medium | 100   | 496
-        big    | 50    | 265
-        >>> sizes.sample_from_distribution('count', 1000, True) # doctest: +SKIP
+        small  | 50    | 228
+        medium | 100   | 508
+        big    | 50    | 264
+        >>> sizes.sample_from_distribution('count', 1000, True)
         size   | count | count sample
-        small  | 50    | 0.24
-        medium | 100   | 0.51
-        big    | 50    | 0.25
+        small  | 50    | 0.261
+        medium | 100   | 0.491
+        big    | 50    | 0.248
         """
         dist = self._get_column(distribution)
         total = sum(dist)
@@ -3642,7 +3623,8 @@ class Table(collections.abc.MutableMapping):
             axis.bar(index-0.5, self[label], 1.0, color=color, **options)
 
         def annotate(axis, ticks):
-            if (ticks is not None) :
+            if (ticks is not None):
+                axis.set_xticks(axis.get_xticks())
                 tick_labels = [ticks[int(l)] if 0<=l<len(ticks) else '' for l in axis.get_xticks()]
                 axis.set_xticklabels(tick_labels, stretch='ultra-condensed')
 
@@ -4722,7 +4704,12 @@ class Table(collections.abc.MutableMapping):
 
     # Deprecated
     def pivot_hist(self, pivot_column_label, value_column_label, overlay=True, width=6, height=4, **vargs):
-        """Draw histograms of each category in a column. (Deprecated)"""
+        """
+        Draw histograms of each category in a column. (Deprecated)
+
+        Recommended: Use hist(value_column_label, group=pivot_column_label), or with side_by_side=True if you really want side-by-side bars.
+
+        """
         warnings.warn("pivot_hist is deprecated; use "
                       "hist(value_column_label, group=pivot_column_label), or "
                       "with side_by_side=True if you really want side-by-side "
@@ -5676,12 +5663,19 @@ class Table(collections.abc.MutableMapping):
         93    | 94
         >>> table.boxplot() # doctest: +SKIP
         <boxplot of test1 and boxplot of test2 side-by-side on the same figure>
+        >>> table2 = Table().with_columns(
+        ...     'numeric_col', make_array(1, 2, 3, 4),
+        ...     'alpha_col', make_array('a', 'b', 'c', 'd'))
+        >>> table2.boxplot()
+        Traceback (most recent call last):
+            ...
+        ValueError: The column 'alpha_col' contains non-numerical values. A boxplot cannot be drawn for this table.
         """
         # Check for non-numerical values and raise a ValueError if any found
         for col in self:
             if any(isinstance(cell, np.flexible) for cell in self[col]):
                 raise ValueError("The column '{0}' contains non-numerical "
-                    "values. A histogram cannot be drawn for this table."
+                    "values. A boxplot cannot be drawn for this table."
                     .format(col))
 
         columns = self._columns.copy()
@@ -5719,12 +5713,55 @@ class Table(collections.abc.MutableMapping):
             return collections.OrderedDict(zip(self._table.labels, self))
 
     class Rows(collections.abc.Sequence):
-        """An iterable view over the rows in a table."""
+        """
+        An iterable view over the rows in a table.
+       
+        >>> t = Table().with_columns({
+        ...     'letter': ['a', 'b', 'c', 'z'],
+        ...     'count':  [  9,   3,   3,   1],
+        ...     'points': [  1,   2,   2,  10],
+        ... })
+        >>> rows = Table.Rows(t)
+        >>> rows
+        Rows(letter | count | points
+        a      | 9     | 1
+        b      | 3     | 2
+        c      | 3     | 2
+        z      | 1     | 10)
+
+        Args:
+            table: accepts a table instance of class Table
+        
+        Returns:
+            An instance of Rows class
+
+        """
         def __init__(self, table):
             self._table = table
             self._labels = None
 
         def __getitem__(self, i):
+            """
+            Access the i-th row of the given table.
+
+            rows[i] is equivalent to rows.__getitem__(i) 
+
+            >>> t = Table().with_columns({
+            ...     'letter': ['a', 'b', 'c', 'z'],
+            ...     'count':  [  9,   3,   3,   1],
+            ...     'points': [  1,   2,   2,  10],
+            ... })
+            >>> rows = Table.Rows(t)
+            >>> rows[0]
+            Row(letter='a', count=9, points=1)
+
+            Args:
+                i: index of the Row that needs to be accessed.
+
+            Returns:
+                Returns a Row instance containing the i-th row of the given table
+
+            """
             if isinstance(i, slice):
                 return (self[j] for j in range(*i.indices(len(self))))
 
@@ -5735,9 +5772,38 @@ class Table(collections.abc.MutableMapping):
             return self._row(c[i] for c in self._table._columns.values())
 
         def __len__(self):
+            """
+            Returns the number of rows in the table.
+
+            >>> t = Table().with_columns({
+            ...     'letter': ['a', 'b', 'c', 'z'],
+            ...     'count':  [  9,   3,   3,   1],
+            ...     'points': [  1,   2,   2,  10],
+            ... })
+            >>> rows = Table.Rows(t)
+            >>> len(rows)
+            4
+
+            """
             return self._table.num_rows
 
         def __repr__(self):
+            """
+            Returns the printable representation of the given table as string.
+            Uses the standard repr() function.
+
+            repr(rows) is equivalent to rows.__repr__()
+
+            >>> t = Table().with_columns({
+            ...     'letter': ['a', 'b', 'c', 'z'],
+            ...     'count':  [  9,   3,   3,   1],
+            ...     'points': [  1,   2,   2,  10],
+            ... })
+            >>> rows = Table.Rows(t)
+            >>> repr(rows)
+            'Rows(letter | count | points\\na      | 9     | 1\\nb      | 3     | 2\\nc      | 3     | 2\\nz      | 1     | 10)'
+
+            """
             return '{0}({1})'.format(type(self).__name__, repr(self._table))
 
 
@@ -5862,6 +5928,7 @@ def _vertical_x(axis, ticks=None, max_width=5):
     if (np.array(ticks) == np.rint(ticks)).all():
         ticks = np.rint(ticks).astype(np.int64)
     if max([len(str(tick)) for tick in ticks]) > max_width:
+        axis.set_xticks(ticks)
         axis.set_xticklabels(ticks, rotation='vertical')
 
 ###################

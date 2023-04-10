@@ -4,7 +4,7 @@ import datascience as ds
 from datascience import util
 import numpy as np
 import pytest
-import collections
+from collections.abc import Sequence
 
 def test_doctests():
     results = doctest.testmod(util, optionflags=doctest.NORMALIZE_WHITESPACE)
@@ -74,7 +74,7 @@ def test_minimize():
 
 
 def test_minimize_smooth():
-    assert _round_eq(2, ds.minimize(lambda x: (x-2)**2, smooth=True))
+    assert _round_eq(2, ds.minimize(lambda x: (x-2)**2, smooth=True, log=print))
     assert _round_eq([2, 1], list(ds.minimize(lambda x, y: (x-2)**2 + (y-1)**2, smooth=True)))
     assert _round_eq(2, ds.minimize(lambda x: (x-2)**2, 1, smooth=True))
     assert _round_eq([2, 1], list(ds.minimize(lambda x, y: (x-2)**2 + (y-1)**2, [1, 1], smooth=True)))
@@ -99,3 +99,26 @@ def test_proportions_from_distribution():
     uniform = u.column(1)
     assert len(uniform) == 50 and _round_eq(1, sum(uniform))
     assert [x in (0, 0.5, 1) for x in ds.sample_proportions(2, ds.make_array(.2, .3, .5))]
+
+
+def test_is_non_string_iterable():
+    is_string = 'hello'
+    assert ds.is_non_string_iterable(is_string) == False
+
+    is_list = [1, 2, 3]
+    assert ds.is_non_string_iterable(is_list) == True
+
+    is_int = 1
+    assert ds.is_non_string_iterable(is_int) == False
+
+    class IsSequence(Sequence):
+        """
+        Implementation of Sequence abc without __iter__
+        """
+        def __getitem__(self, index):
+            pass
+        
+        def __len__(self):
+            pass
+    is_sequence = IsSequence()
+    assert ds.is_non_string_iterable(is_sequence) == True
