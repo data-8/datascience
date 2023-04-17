@@ -2,6 +2,7 @@ import doctest
 import re
 import datascience as ds
 from datascience import formats
+import os
 
 
 def assert_equal(string1, string2):
@@ -26,6 +27,14 @@ def test_default_format():
     assert_equal(fmt(False), 'False')
     assert_equal(fmt('hello'), 'hello')
     assert_equal(fmt((1, 2)), '(1, 2)')
+
+def test_default_format_column():
+    fmtc = ds.default_formatter.format_column
+
+    description_list = ["A data scientist is someone who creates programming code and combines it with statistical knowledge to create insights from data."]
+    pad = fmtc("Careers", description_list)
+    assert_equal(pad(description_list[0]), "A data scientist is someone who creates programming code ...")
+
 
 
 def test_number_format():
@@ -83,6 +92,12 @@ def test_date_format():
     assert isinstance(t['time'][0], float)
 
 
+def test_date_formatter_format_value():
+    formatter = formats.DateFormatter()
+    os.environ["TZ"] = "UTC"
+    assert_equal(formatter.format_value(1666264489.9004), "2022-10-20 11:14:49.900400")
+
+
 def test_percent_formatter():
     vs = [0.1, 0.11111, 0.199999, 10]
     t = ds.Table().with_column('percent', vs)
@@ -107,6 +122,22 @@ def test_distribution_formatter():
     38.33%
     """)
 
+    counts = [0, 0, 0, 0]
+    t = ds.Table().with_column('count', counts)
+    t.set_format('count', ds.DistributionFormatter)
+    assert_equal(t, """
+    count
+    0.00%
+    0.00%
+    0.00%
+    0.00%
+    """)
+
+def test_empty_init():
+    formatter = formats.Formatter(1, 10, "...")
+    assert_equal(formatter.min_width, 1)
+    assert_equal(formatter.max_width, 10)
+    assert_equal(formatter.etc, "...")
 
 def test_function_formatter():
     def _mult_ten(v):

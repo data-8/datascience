@@ -73,6 +73,22 @@ def test_between_or_equal_to():
     ps = [p(x) for x in range(1, 6)]
     assert ps == [False, False, True, False, False]
 
+def test_not_equal_to():
+    """Greater than or equal to y and less than or equal to z."""
+    p = are.not_equal_to(5)
+    ps = [p(x) for x in range(1, 6)]
+    assert ps == [True, True, True, True, False]
+
+def test_not():
+    """Not f."""
+    not_f = predicates._not(lambda x: 2*x)
+    assert not_f(5) == -10
+
+def test_xor():
+    """XOR f and g."""
+    p = are.above(3) ^ are.below(2)
+    ps = [p(x) for x in range(1, 6)]
+    assert ps == [True, False, False, True, True]
 
 ############
 # Doctests #
