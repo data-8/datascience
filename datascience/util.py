@@ -27,7 +27,7 @@ def make_array(*elements):
     Args:
            ``elements`` (variadic): elements 
     Returns:
-           An array of same length as the provided varadic argument ``elements``
+           A NumPy array of same length as the provided varadic argument ``elements``
            
     >>> make_array(0)
     array([0])
@@ -89,7 +89,7 @@ def plot_normal_cdf(rbound=None, lbound=None, mean=0, sd=1):
 
         ``mean`` (numeric): mean/expectation of normal distribution
 
-        ``sd`` (numeric): standard deviation of normal distribution     
+        ``sd`` (numeric): standard deviation of normal distribution
     """
     shade = rbound is not None or lbound is not None
     shade_left = rbound is not None and lbound is not None
@@ -261,3 +261,4 @@ def is_non_string_iterable(value):
     if hasattr(value, '__iter__'):
         return True
     return False
+
