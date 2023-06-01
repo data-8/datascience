@@ -55,6 +55,24 @@ def test_map_marker_and_region(states):
     ds.Map([region]).show()
     ds.Map([marker, region]).show()
 
+    
+
+def test_map_feature_list():
+    """ Tests that feature is converted to list or not """
+    m = ds.Map()
+    
+    # Add a feature to the map
+    feature = maps.Marker(37.7749, -122.4194)
+    m.add_feature(feature)
+    
+    # Get the features list
+    features = m.features
+    
+    # Check that features is a list
+    assert isinstance(features, list)
+    
+    # Check that the list contains the feature we added
+    assert feature in features
 def test_map_property_features(states):
     feature_list = states.features
     assert isinstance(feature_list, list)
