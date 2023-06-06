@@ -16,14 +16,19 @@ import math
 import collections
 
 # Change matplotlib formatting. TODO incorporate into a style?
-plt.rcParams["patch.force_edgecolor"] = True
+plt.rcParams['patch.force_edgecolor'] = True
 
 def make_array(*elements):
     """Returns an array containing all the arguments passed to this function.
     A simple way to make an array with a few elements.
 
     As with any array, all arguments should have the same type.
-
+    
+    Args:
+           ``elements`` (variadic): elements 
+    Returns:
+           A NumPy array of same length as the provided varadic argument ``elements``
+           
     >>> make_array(0)
     array([0])
     >>> make_array(2, 3, 4)
@@ -118,10 +123,10 @@ def plot_normal_cdf(rbound=None, lbound=None, mean=0, sd=1):
 plot_cdf_area = plot_normal_cdf
 
 
-def sample_proportions(sample_size, probabilities):
+def sample_proportions(sample_size: int, probabilities):
     """Return the proportion of random draws for each outcome in a distribution.
 
-    This function is similar to np.random.multinomial, but returns proportions
+    This function is similar to np.random.Generator.multinomial, but returns proportions
     instead of counts.
 
     Args:
@@ -132,7 +137,8 @@ def sample_proportions(sample_size, probabilities):
     Returns:
         An array with the same length as ``probability`` that sums to 1.
     """
-    return np.random.multinomial(sample_size, probabilities) / sample_size
+    rng = np.random.default_rng()
+    return rng.multinomial(sample_size, probabilities) / sample_size
 
 
 def proportions_from_distribution(table, label, sample_size,
@@ -141,7 +147,7 @@ def proportions_from_distribution(table, label, sample_size,
     Adds a column named ``column_name`` containing the proportions of a random
     draw using the distribution in ``label``.
 
-    This method uses ``np.random.multinomial`` to draw ``sample_size`` samples
+    This method uses ``np.random.Generator.multinomial`` to draw ``sample_size`` samples
     from the distribution in ``table.column(label)``, then divides by
     ``sample_size`` to create the resulting column of proportions.
 
@@ -255,3 +261,4 @@ def is_non_string_iterable(value):
     if hasattr(value, '__iter__'):
         return True
     return False
+
