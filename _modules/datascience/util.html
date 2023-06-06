@@ -56,14 +56,19 @@
 <span class="kn">import</span> <span class="nn">collections</span>
 
 <span class="c1"># Change matplotlib formatting. TODO incorporate into a style?</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;patch.force_edgecolor&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;patch.force_edgecolor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="make_array"><a class="viewcode-back" href="../../util.html#datascience.util.make_array">[docs]</a><span class="k">def</span> <span class="nf">make_array</span><span class="p">(</span><span class="o">*</span><span class="n">elements</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns an array containing all the arguments passed to this function.</span>
 <span class="sd">    A simple way to make an array with a few elements.</span>
 
 <span class="sd">    As with any array, all arguments should have the same type.</span>
-
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">           ``elements`` (variadic): elements </span>
+<span class="sd">    Returns:</span>
+<span class="sd">           A NumPy array of same length as the provided varadic argument ``elements``</span>
+<span class="sd">           </span>
 <span class="sd">    &gt;&gt;&gt; make_array(0)</span>
 <span class="sd">    array([0])</span>
 <span class="sd">    &gt;&gt;&gt; make_array(2, 3, 4)</span>
@@ -158,10 +163,10 @@
 <span class="n">plot_cdf_area</span> <span class="o">=</span> <span class="n">plot_normal_cdf</span>
 
 
-<div class="viewcode-block" id="sample_proportions"><a class="viewcode-back" href="../../util.html#datascience.util.sample_proportions">[docs]</a><span class="k">def</span> <span class="nf">sample_proportions</span><span class="p">(</span><span class="n">sample_size</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">):</span>
+<div class="viewcode-block" id="sample_proportions"><a class="viewcode-back" href="../../util.html#datascience.util.sample_proportions">[docs]</a><span class="k">def</span> <span class="nf">sample_proportions</span><span class="p">(</span><span class="n">sample_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the proportion of random draws for each outcome in a distribution.</span>
 
-<span class="sd">    This function is similar to np.random.multinomial, but returns proportions</span>
+<span class="sd">    This function is similar to np.random.Generator.multinomial, but returns proportions</span>
 <span class="sd">    instead of counts.</span>
 
 <span class="sd">    Args:</span>
@@ -172,7 +177,8 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        An array with the same length as ``probability`` that sums to 1.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multinomial</span><span class="p">(</span><span class="n">sample_size</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">)</span> <span class="o">/</span> <span class="n">sample_size</span></div>
+    <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">rng</span><span class="o">.</span><span class="n">multinomial</span><span class="p">(</span><span class="n">sample_size</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">)</span> <span class="o">/</span> <span class="n">sample_size</span></div>
 
 
 <div class="viewcode-block" id="proportions_from_distribution"><a class="viewcode-back" href="../../util.html#datascience.util.proportions_from_distribution">[docs]</a><span class="k">def</span> <span class="nf">proportions_from_distribution</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">sample_size</span><span class="p">,</span>
@@ -181,7 +187,7 @@
 <span class="sd">    Adds a column named ``column_name`` containing the proportions of a random</span>
 <span class="sd">    draw using the distribution in ``label``.</span>
 
-<span class="sd">    This method uses ``np.random.multinomial`` to draw ``sample_size`` samples</span>
+<span class="sd">    This method uses ``np.random.Generator.multinomial`` to draw ``sample_size`` samples</span>
 <span class="sd">    from the distribution in ``table.column(label)``, then divides by</span>
 <span class="sd">    ``sample_size`` to create the resulting column of proportions.</span>
 
@@ -295,6 +301,7 @@
     <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">True</span>
     <span class="k">return</span> <span class="kc">False</span></div>
+
 </pre></div>
 
             <div class="clearer"></div>
@@ -333,7 +340,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.1.3.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
     </div>
   </body>
 </html>

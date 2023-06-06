@@ -56,6 +56,12 @@
 <dd><p>Returns an array containing all the arguments passed to this function.
 A simple way to make an array with a few elements.</p>
 <p>As with any array, all arguments should have the same type.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">elements</span></code> (variadic): elements</p>
+</dd>
+<dt>Returns:</dt><dd><p>A NumPy array of same length as the provided varadic argument <code class="docutils literal notranslate"><span class="pre">elements</span></code></p>
+</dd>
+</dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">make_array</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="go">array([0])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">make_array</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
@@ -140,7 +146,7 @@ between <code class="docutils literal notranslate"><span class="pre">lbound</spa
 <span class="sig-prename descclassname"><span class="pre">datascience.util.</span></span><span class="sig-name descname"><span class="pre">proportions_from_distribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Random</span> <span class="pre">Sample'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#proportions_from_distribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.util.proportions_from_distribution" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a column named <code class="docutils literal notranslate"><span class="pre">column_name</span></code> containing the proportions of a random
 draw using the distribution in <code class="docutils literal notranslate"><span class="pre">label</span></code>.</p>
-<p>This method uses <code class="docutils literal notranslate"><span class="pre">np.random.multinomial</span></code> to draw <code class="docutils literal notranslate"><span class="pre">sample_size</span></code> samples
+<p>This method uses <code class="docutils literal notranslate"><span class="pre">np.random.Generator.multinomial</span></code> to draw <code class="docutils literal notranslate"><span class="pre">sample_size</span></code> samples
 from the distribution in <code class="docutils literal notranslate"><span class="pre">table.column(label)</span></code>, then divides by
 <code class="docutils literal notranslate"><span class="pre">sample_size</span></code> to create the resulting column of proportions.</p>
 <dl>
@@ -168,9 +174,9 @@ sampled proportions. The proportions will sum to 1.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="datascience.util.sample_proportions">
-<span class="sig-prename descclassname"><span class="pre">datascience.util.</span></span><span class="sig-name descname"><span class="pre">sample_proportions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">probabilities</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#sample_proportions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.util.sample_proportions" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">datascience.util.</span></span><span class="sig-name descname"><span class="pre">sample_proportions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">probabilities</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#sample_proportions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.util.sample_proportions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the proportion of random draws for each outcome in a distribution.</p>
-<p>This function is similar to np.random.multinomial, but returns proportions
+<p>This function is similar to np.random.Generator.multinomial, but returns proportions
 instead of counts.</p>
 <dl>
 <dt>Args:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">sample_size</span></code>: The size of the sample to draw from the distribution.</p>
@@ -270,7 +276,7 @@ shape == shape(table), or shape (1, table.shape[1])</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.1.3.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
     </div>
   </body>
 </html>
