@@ -1,4 +1,5 @@
 pytest==7.1.2
+pytest-mock
 coverage
 coveralls
 bokeh

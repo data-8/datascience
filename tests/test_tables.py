@@ -7,7 +7,6 @@ from numpy.testing import assert_array_equal
 from datascience import *
 import pandas as pd
 
-
 #########
 # Utils #
 #########
@@ -571,6 +570,12 @@ def test_join(table, table2):
     c      | 3     | 2      | 6
     z      | 1     | 10     | 10
     """)
+
+def test_set_format_with_no_format_column(mocker, table):
+    MockNumberFormatter = mocker.NonCallableMock(spec=NumberFormatter)
+    del MockNumberFormatter.format_column
+    with pytest.raises(Exception):
+        table.set_format('count', MockNumberFormatter)
 
 def test_join_html(table, table2):
     """Test that join doesn't crash with formatting."""
