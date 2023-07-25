@@ -4055,7 +4055,9 @@ class Table(collections.abc.MutableMapping):
         if select is not None:
             y_labels = self._as_labels(select)
         if len(y_labels) > 1 and group is not None and overlay:
-            warnings.warn("Group and overlay are incompatible in a scatter")
+            # warnings.warn("Group and overlay are incompatible in a scatter")
+            # Warning commented out as fix for issue # 507
+            # When multiple columns are on the y-axis, overlay will be set to False without any unnecessary warnings
             overlay = False
 
         def draw(axis, label, color):
@@ -4189,7 +4191,9 @@ class Table(collections.abc.MutableMapping):
             y_labels = self._as_labels(select)
 
         if len(y_labels) > 1 and group is not None and overlay:
-            warnings.warn("Group and overlay are incompatible in a scatter")
+            # warnings.warn("Group and overlay are incompatible in a scatter")
+            # Warning commented out as fix for issue # 507
+            # When multiple columns are on the y-axis, overlay will be set to False without any unnecessary warnings
             overlay = False
 
         if group is not None and fit_line:
@@ -4513,7 +4517,9 @@ class Table(collections.abc.MutableMapping):
             z_labels = self._as_labels(select)
 
         if len(z_labels) > 1 and group is not None and overlay:
-            warnings.warn("Group and overlay are incompatible in a scatter")
+            #warnings.warn("Group and overlay are incompatible in a scatter")
+            # Warning commented out as fix for issue # 507
+            # When multiple columns are on the z-axis, overlay will be set to False without any unnecessary warnings
             overlay = False
 
         if group is not None and fit_line:
