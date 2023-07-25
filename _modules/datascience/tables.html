@@ -4095,7 +4095,9 @@
         <span class="k">if</span> <span class="n">select</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">y_labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_as_labels</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_labels</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">group</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">overlay</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Group and overlay are incompatible in a scatter&quot;</span><span class="p">)</span>
+            <span class="c1"># warnings.warn(&quot;Group and overlay are incompatible in a scatter&quot;)</span>
+            <span class="c1"># Warning commented out as fix for issue # 507</span>
+            <span class="c1"># When multiple columns are on the y-axis, overlay will be set to False without any unnecessary warnings</span>
             <span class="n">overlay</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
@@ -4229,7 +4231,9 @@
             <span class="n">y_labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_as_labels</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_labels</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">group</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">overlay</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Group and overlay are incompatible in a scatter&quot;</span><span class="p">)</span>
+            <span class="c1"># warnings.warn(&quot;Group and overlay are incompatible in a scatter&quot;)</span>
+            <span class="c1"># Warning commented out as fix for issue # 507</span>
+            <span class="c1"># When multiple columns are on the y-axis, overlay will be set to False without any unnecessary warnings</span>
             <span class="n">overlay</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="k">if</span> <span class="n">group</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">fit_line</span><span class="p">:</span>
@@ -4553,7 +4557,9 @@
             <span class="n">z_labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_as_labels</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">z_labels</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">group</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">overlay</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Group and overlay are incompatible in a scatter&quot;</span><span class="p">)</span>
+            <span class="c1">#warnings.warn(&quot;Group and overlay are incompatible in a scatter&quot;)</span>
+            <span class="c1"># Warning commented out as fix for issue # 507</span>
+            <span class="c1"># When multiple columns are on the z-axis, overlay will be set to False without any unnecessary warnings</span>
             <span class="n">overlay</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="k">if</span> <span class="n">group</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">fit_line</span><span class="p">:</span>
