@@ -6,6 +6,7 @@ import numpy as np
 from numpy.testing import assert_array_equal
 from datascience import *
 import pandas as pd
+from io import BytesIO
 
 
 #########
@@ -1907,6 +1908,13 @@ def test_read_table():
     assert isinstance(Table().read_table("tests/us-unemployment-copy"), Table)
     assert isinstance(Table().read_table("tests/us-unemployment.txt"), Table)
     assert isinstance(Table().read_table("https://raw.githubusercontent.com/data-8/textbook/main/assets/data/deflategate.csv"), Table)
+
+    """Test that Tables reads csv content from a buffer."""
+    buffer = BytesIO()
+    with open('tests/us-unemployment.csv', 'rb') as f:
+        buffer.write(f.read())
+        buffer.seek(0)
+        assert isinstance(Table().read_table(buffer), Table)
 
 def test_no_records():
     """Test that Table returns nothing on an empty record"""
