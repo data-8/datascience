@@ -548,6 +548,11 @@ def test_groups_nans(table5):
     3          | 10     | 1
     """)
 
+def test_groups_with_nonexistent_label(table):
+    t = table.copy()
+    with (pytest.raises(ValueError)):
+        t.groups(['bad_label', 'points'])
+
 def test_join(table, table2):
     """Tests that join works, not destructive"""
     t = table
