@@ -778,7 +778,7 @@ def test_append_row(table):
 def test_append_none(table):
     row = [[], None, "", 0]
     for i in row:
-        table.append(row)
+        table.append(i)
         assert_equal(table, """
                      letter | count | points
                      a      | 9     | 1
