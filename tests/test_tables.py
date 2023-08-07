@@ -780,6 +780,18 @@ def test_append_row(table):
     g      | 2     | 2
     """)
 
+def test_append_none(table):
+    row = [[], None, "", 0]
+    for i in row:
+        table.append(i)
+        assert_equal(table, """
+                     letter | count | points
+                     a      | 9     | 1
+                     b      | 3     | 2
+                     c      | 3     | 2
+                     z      | 1     | 10
+                     """)
+
 def test_append_row_by_array(table):
     row = np.array(['g', 2, 2])
     table.append(row)
