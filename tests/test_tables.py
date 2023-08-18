@@ -1938,3 +1938,26 @@ def test_no_records():
     empty_table = Table()
     records_empty_table = Table().from_records([])
     assert empty_table == records_empty_table
+
+def test_varargs_labels_as_list():
+    """Test for _varargs_labels_as_list"""
+    
+    # Test empty label list should return an empty list
+    label_list = []
+    result = tables._varargs_labels_as_list(label_list)
+    assert result == []
+
+    # Test a single non-iterable label should return the same label
+    label_list = ["label1"]
+    result = tables._varargs_labels_as_list(label_list)
+    assert result == label_list
+
+    # Test a singleton list of labels should return the inner list
+    label_list = [["label1", "label2"]]
+    result = tables._varargs_labels_as_list(label_list)
+    assert result == label_list[0]
+
+    # Test multiple lists of labels should raise a ValueError
+    label_list = [["label1", "label2"], ["label3", "label4"]]
+    with pytest.raises(ValueError):
+        tables._varargs_labels_as_list(label_list)
