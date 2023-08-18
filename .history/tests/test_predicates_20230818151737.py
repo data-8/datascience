@@ -107,19 +107,16 @@ def test_not_containing():
     assert ps == [False, False, False, True, True]
 
 def test_check_iterable_for_list():
-    """Checks if given list is iterable"""
     with pytest.warns(SyntaxWarning):
         input_list = [1, 2, 3]
         predicates.check_iterable(input_list)
 
 def test_check_iterable_for_array():
-    """Checks if given array is iterable"""
     with pytest.warns(SyntaxWarning):
-        input_array = np.array([1, 2, 3])
+        input_array = numpy.array([1, 2, 3])
         predicates.check_iterable(input_array)
 
 def test_check_iterable_for_other_type():
-    """Checks if given object other than list and array is iterable"""
     with warnings.catch_warnings(record=True) as w:
         input_string = "not a list or array"
         predicates.check_iterable(input_string)
