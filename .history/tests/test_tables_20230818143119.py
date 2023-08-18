@@ -1946,5 +1946,5 @@ def test_column_index(table):
 
 def test_num_columns(table):
     """Test that Tables returns right number of columns"""
-    number = table.num_columns
-    assert number == 3
+    index = table.column_index('letter')
+    assert index == 3
