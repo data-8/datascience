@@ -1938,3 +1938,13 @@ def test_no_records():
     empty_table = Table()
     records_empty_table = Table().from_records([])
     assert empty_table == records_empty_table
+
+def test_column_index(table):
+    """Test that Tables returns right index number"""
+    index = table.column_index('letter')
+    assert index == 0
+
+def test_num_columns(table):
+    """Test that Tables returns right number of columns"""
+    number = table.num_columns
+    assert number == 3
