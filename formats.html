@@ -1,18 +1,17 @@
-
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Formats (datascience.formats) &#8212; datascience 0.17.6 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
     
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/documentation_options.js?v=63ccc059"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
@@ -45,16 +44,16 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <section id="module-datascience.formats">
-<span id="formats-datascience-formats"></span><h1>Formats (<code class="docutils literal notranslate"><span class="pre">datascience.formats</span></code>)<a class="headerlink" href="#module-datascience.formats" title="Permalink to this heading">¶</a></h1>
-<p>String formatting for table entries.</p>
+  <section id="formats-datascience-formats">
+<h1>Formats (<code class="docutils literal notranslate"><span class="pre">datascience.formats</span></code>)<a class="headerlink" href="#formats-datascience-formats" title="Link to this heading">¶</a></h1>
+<p id="module-datascience.formats">String formatting for table entries.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="datascience.formats.CurrencyFormatter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">datascience.formats.</span></span><span class="sig-name descname"><span class="pre">CurrencyFormatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'$'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">vargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#CurrencyFormatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.formats.CurrencyFormatter" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">datascience.formats.</span></span><span class="sig-name descname"><span class="pre">CurrencyFormatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'$'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">vargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#CurrencyFormatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.formats.CurrencyFormatter" title="Link to this definition">¶</a></dt>
 <dd><p>Format currency and convert to float.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="datascience.formats.CurrencyFormatter.convert_value">
-<span class="sig-name descname"><span class="pre">convert_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#CurrencyFormatter.convert_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.formats.CurrencyFormatter.convert_value" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">convert_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#CurrencyFormatter.convert_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.formats.CurrencyFormatter.convert_value" title="Link to this definition">¶</a></dt>
 <dd><p>Convert value to float. If value is a string, ensure that the first
 character is the same as symbol ie. the value is in the currency this
 formatter is representing.</p>
@@ -62,7 +61,7 @@ formatter is representing.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="datascience.formats.CurrencyFormatter.format_value">
-<span class="sig-name descname"><span class="pre">format_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#CurrencyFormatter.format_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.formats.CurrencyFormatter.format_value" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">format_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#CurrencyFormatter.format_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.formats.CurrencyFormatter.format_value" title="Link to this definition">¶</a></dt>
 <dd><p>Format currency.</p>
 </dd></dl>
 
@@ -70,17 +69,17 @@ formatter is representing.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="datascience.formats.DateFormatter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">datascience.formats.</span></span><span class="sig-name descname"><span class="pre">DateFormatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'%Y-%m-%d</span> <span class="pre">%H:%M:%S.%f'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">vargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#DateFormatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.formats.DateFormatter" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">datascience.formats.</span></span><span class="sig-name descname"><span class="pre">DateFormatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'%Y-%m-%d</span> <span class="pre">%H:%M:%S.%f'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">vargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#DateFormatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.formats.DateFormatter" title="Link to this definition">¶</a></dt>
 <dd><p>Format date &amp; time and convert to UNIX timestamp.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="datascience.formats.DateFormatter.convert_value">
-<span class="sig-name descname"><span class="pre">convert_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#DateFormatter.convert_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.formats.DateFormatter.convert_value" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">convert_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#DateFormatter.convert_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.formats.DateFormatter.convert_value" title="Link to this definition">¶</a></dt>
 <dd><p>Convert 2015-08-03 to a Unix timestamp int.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="datascience.formats.DateFormatter.format_value">
-<span class="sig-name descname"><span class="pre">format_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#DateFormatter.format_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.formats.DateFormatter.format_value" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">format_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#DateFormatter.format_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.formats.DateFormatter.format_value" title="Link to this definition">¶</a></dt>
 <dd><p>Format timestamp as a string.</p>
 </dd></dl>
 
@@ -88,11 +87,11 @@ formatter is representing.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="datascience.formats.DistributionFormatter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">datascience.formats.</span></span><span class="sig-name descname"><span class="pre">DistributionFormatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">vargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#DistributionFormatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.formats.DistributionFormatter" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">datascience.formats.</span></span><span class="sig-name descname"><span class="pre">DistributionFormatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">vargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#DistributionFormatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.formats.DistributionFormatter" title="Link to this definition">¶</a></dt>
 <dd><p>Normalize a column and format as percentages.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="datascience.formats.DistributionFormatter.convert_column">
-<span class="sig-name descname"><span class="pre">convert_column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#DistributionFormatter.convert_column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.formats.DistributionFormatter.convert_column" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">convert_column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#DistributionFormatter.convert_column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.formats.DistributionFormatter.convert_column" title="Link to this definition">¶</a></dt>
 <dd><p>Normalize values.</p>
 </dd></dl>
 
@@ -100,68 +99,68 @@ formatter is representing.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="datascience.formats.Formatter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">datascience.formats.</span></span><span class="sig-name descname"><span class="pre">Formatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">etc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#Formatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.formats.Formatter" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">datascience.formats.</span></span><span class="sig-name descname"><span class="pre">Formatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">etc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#Formatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.formats.Formatter" title="Link to this definition">¶</a></dt>
 <dd><p>String formatter that truncates long values.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="datascience.formats.Formatter.convert_column">
-<span class="sig-name descname"><span class="pre">convert_column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#Formatter.convert_column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.formats.Formatter.convert_column" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">convert_column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#Formatter.convert_column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.formats.Formatter.convert_column" title="Link to this definition">¶</a></dt>
 <dd><p>Convert each value using the convert_value method.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="datascience.formats.Formatter.convert_value">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">convert_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#Formatter.convert_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.formats.Formatter.convert_value" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">convert_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#Formatter.convert_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.formats.Formatter.convert_value" title="Link to this definition">¶</a></dt>
 <dd><p>Identity conversion (override to convert values).</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="datascience.formats.Formatter.converts_values">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">converts_values</span></span><a class="headerlink" href="#datascience.formats.Formatter.converts_values" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">converts_values</span></span><a class="headerlink" href="#datascience.formats.Formatter.converts_values" title="Link to this definition">¶</a></dt>
 <dd><p>Whether this Formatter also converts values.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="datascience.formats.Formatter.etc">
-<span class="sig-name descname"><span class="pre">etc</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'</span> <span class="pre">...'</span></em><a class="headerlink" href="#datascience.formats.Formatter.etc" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">etc</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'</span> <span class="pre">...'</span></em><a class="headerlink" href="#datascience.formats.Formatter.etc" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="datascience.formats.Formatter.format_column">
-<span class="sig-name descname"><span class="pre">format_column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#Formatter.format_column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.formats.Formatter.format_column" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">format_column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#Formatter.format_column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.formats.Formatter.format_column" title="Link to this definition">¶</a></dt>
 <dd><p>Return a formatting function that pads &amp; truncates values.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="datascience.formats.Formatter.format_value">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">format_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#Formatter.format_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.formats.Formatter.format_value" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">format_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#Formatter.format_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.formats.Formatter.format_value" title="Link to this definition">¶</a></dt>
 <dd><p>Pretty-print an arbitrary value.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="datascience.formats.Formatter.max_width">
-<span class="sig-name descname"><span class="pre">max_width</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">60</span></em><a class="headerlink" href="#datascience.formats.Formatter.max_width" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">max_width</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">60</span></em><a class="headerlink" href="#datascience.formats.Formatter.max_width" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="datascience.formats.Formatter.min_width">
-<span class="sig-name descname"><span class="pre">min_width</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#datascience.formats.Formatter.min_width" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">min_width</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#datascience.formats.Formatter.min_width" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="datascience.formats.NumberFormatter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">datascience.formats.</span></span><span class="sig-name descname"><span class="pre">NumberFormatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_point</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">','</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int_to_float</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">vargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#NumberFormatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.formats.NumberFormatter" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">datascience.formats.</span></span><span class="sig-name descname"><span class="pre">NumberFormatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimal_point</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">','</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int_to_float</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">vargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#NumberFormatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.formats.NumberFormatter" title="Link to this definition">¶</a></dt>
 <dd><p>Format numbers that may have delimiters.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="datascience.formats.NumberFormatter.convert_value">
-<span class="sig-name descname"><span class="pre">convert_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#NumberFormatter.convert_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.formats.NumberFormatter.convert_value" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">convert_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#NumberFormatter.convert_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.formats.NumberFormatter.convert_value" title="Link to this definition">¶</a></dt>
 <dd><p>Convert string 93,000.00 to float 93000.0.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="datascience.formats.NumberFormatter.format_value">
-<span class="sig-name descname"><span class="pre">format_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#NumberFormatter.format_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.formats.NumberFormatter.format_value" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">format_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#NumberFormatter.format_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.formats.NumberFormatter.format_value" title="Link to this definition">¶</a></dt>
 <dd><p>Pretty-print an arbitrary value.</p>
 </dd></dl>
 
@@ -169,11 +168,11 @@ formatter is representing.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="datascience.formats.PercentFormatter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">datascience.formats.</span></span><span class="sig-name descname"><span class="pre">PercentFormatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">vargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#PercentFormatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.formats.PercentFormatter" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">datascience.formats.</span></span><span class="sig-name descname"><span class="pre">PercentFormatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">vargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#PercentFormatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.formats.PercentFormatter" title="Link to this definition">¶</a></dt>
 <dd><p>Format a number as a percentage.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="datascience.formats.PercentFormatter.format_value">
-<span class="sig-name descname"><span class="pre">format_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#PercentFormatter.format_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.formats.PercentFormatter.format_value" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">format_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/formats.html#PercentFormatter.format_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.formats.PercentFormatter.format_value" title="Link to this definition">¶</a></dt>
 <dd><p>Format number as percentage.</p>
 </dd></dl>
 
@@ -282,8 +281,8 @@ formatter is representing.</p>
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.2.
     </div>
   </body>
 </html>

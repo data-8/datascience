@@ -1,19 +1,18 @@
-
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Data 8 datascience Reference &#8212; datascience 0.17.6 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=514cf933" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
     
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/documentation_options.js?v=63ccc059"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -49,12 +48,12 @@
           <div class="body" role="main">
             
   <section id="Data-8-datascience-Reference">
-<h1>Data 8 <code class="docutils literal notranslate"><span class="pre">datascience</span></code> Reference<a class="headerlink" href="#Data-8-datascience-Reference" title="Permalink to this heading">¶</a></h1>
+<h1>Data 8 <code class="docutils literal notranslate"><span class="pre">datascience</span></code> Reference<a class="headerlink" href="#Data-8-datascience-Reference" title="Link to this heading">¶</a></h1>
 <p>This notebook serves as an interactive, Data 8-friendly reference for the <code class="docutils literal notranslate"><span class="pre">datascience</span></code> library.</p>
 <section id="Table-Functions-and-Methods">
-<h2><code class="docutils literal notranslate"><span class="pre">Table</span></code> Functions and Methods<a class="headerlink" href="#Table-Functions-and-Methods" title="Permalink to this heading">¶</a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">Table</span></code> Functions and Methods<a class="headerlink" href="#Table-Functions-and-Methods" title="Link to this heading">¶</a></h2>
 <section id="Table()">
-<h3><code class="docutils literal notranslate"><span class="pre">Table()</span></code><a class="headerlink" href="#Table()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">Table()</span></code><a class="headerlink" href="#Table()" title="Link to this heading">¶</a></h3>
 <p>Create an empty table, usually to extend with data</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
@@ -99,7 +98,7 @@ datascience.tables.Table
 </div>
 </section>
 <section id="Table.read_table()">
-<h3><code class="docutils literal notranslate"><span class="pre">Table.read_table()</span></code><a class="headerlink" href="#Table.read_table()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">Table.read_table()</span></code><a class="headerlink" href="#Table.read_table()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Table</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -161,7 +160,7 @@ datascience.tables.Table
 </div>
 </section>
 <section id="tbl.with_column">
-<h3><code class="docutils literal notranslate"><span class="pre">tbl.with_column</span></code><a class="headerlink" href="#tbl.with_column" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">tbl.with_column</span></code><a class="headerlink" href="#tbl.with_column" title="Link to this heading">¶</a></h3>
 <!-- method signature goes here --><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tbl</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span>
 <span class="n">tbl</span><span class="o">.</span><span class="n">with_column</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
 <span class="n">tbl</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">v1</span><span class="p">,</span> <span class="n">n2</span><span class="p">,</span> <span class="n">v2</span><span class="p">,</span><span class="o">...</span><span class="p">)</span>
@@ -350,7 +349,7 @@ datascience.tables.Table
 </div>
 </section>
 <section id="tbl.column()">
-<h3><code class="docutils literal notranslate"><span class="pre">tbl.column()</span></code><a class="headerlink" href="#tbl.column()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">tbl.column()</span></code><a class="headerlink" href="#tbl.column()" title="Link to this heading">¶</a></h3>
 <!-- method signature goes here --><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tbl</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">column_name_or_index</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -397,7 +396,7 @@ array([&#39;Sugar cookies&#39;, &#39;Chocolate chip&#39;, &#39;Red velvet&#39;, 
 </div>
 </section>
 <section id="tbl.num_rows">
-<h3><code class="docutils literal notranslate"><span class="pre">tbl.num_rows</span></code><a class="headerlink" href="#tbl.num_rows" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">tbl.num_rows</span></code><a class="headerlink" href="#tbl.num_rows" title="Link to this heading">¶</a></h3>
 <p>Computes the number of rows in a table.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
@@ -435,7 +434,7 @@ array([&#39;Sugar cookies&#39;, &#39;Chocolate chip&#39;, &#39;Red velvet&#39;, 
 </div>
 </section>
 <section id="tbl.num_columns">
-<h3><code class="docutils literal notranslate"><span class="pre">tbl.num_columns</span></code><a class="headerlink" href="#tbl.num_columns" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">tbl.num_columns</span></code><a class="headerlink" href="#tbl.num_columns" title="Link to this heading">¶</a></h3>
 <p>Computes the number of columns in a table.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
@@ -473,7 +472,7 @@ array([&#39;Sugar cookies&#39;, &#39;Chocolate chip&#39;, &#39;Red velvet&#39;, 
 </div>
 </section>
 <section id="tbl.labels">
-<h3><code class="docutils literal notranslate"><span class="pre">tbl.labels</span></code><a class="headerlink" href="#tbl.labels" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">tbl.labels</span></code><a class="headerlink" href="#tbl.labels" title="Link to this heading">¶</a></h3>
 <p>Outputs the column labels in a table.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
@@ -521,7 +520,7 @@ array([&#39;Sugar cookies&#39;, &#39;Chocolate chip&#39;, &#39;Red velvet&#39;, 
 </div>
 </section>
 <section id="tbl.select()">
-<h3><code class="docutils literal notranslate"><span class="pre">tbl.select()</span></code><a class="headerlink" href="#tbl.select()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">tbl.select()</span></code><a class="headerlink" href="#tbl.select()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tbl</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">col1</span><span class="p">,</span> <span class="n">col2</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -622,7 +621,7 @@ array([&#39;Sugar cookies&#39;, &#39;Chocolate chip&#39;, &#39;Red velvet&#39;, 
 </div>
 </section>
 <section id="tbl.drop()">
-<h3><code class="docutils literal notranslate"><span class="pre">tbl.drop()</span></code><a class="headerlink" href="#tbl.drop()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">tbl.drop()</span></code><a class="headerlink" href="#tbl.drop()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tbl</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">col1</span><span class="p">,</span> <span class="n">col2</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -775,7 +774,7 @@ array([&#39;Sugar cookies&#39;, &#39;Chocolate chip&#39;, &#39;Red velvet&#39;, 
 </div>
 </section>
 <section id="tbl.relabel()">
-<h3><code class="docutils literal notranslate"><span class="pre">tbl.relabel()</span></code><a class="headerlink" href="#tbl.relabel()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">tbl.relabel()</span></code><a class="headerlink" href="#tbl.relabel()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tbl</span><span class="o">.</span><span class="n">relabel</span><span class="p">(</span><span class="n">old_label</span><span class="p">,</span> <span class="n">new_label</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -934,7 +933,7 @@ array([&#39;Sugar cookies&#39;, &#39;Chocolate chip&#39;, &#39;Red velvet&#39;, 
 </div>
 </section>
 <section id="tbl.show()">
-<h3><code class="docutils literal notranslate"><span class="pre">tbl.show()</span></code><a class="headerlink" href="#tbl.show()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">tbl.show()</span></code><a class="headerlink" href="#tbl.show()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tbl</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -979,7 +978,7 @@ array([&#39;Sugar cookies&#39;, &#39;Chocolate chip&#39;, &#39;Red velvet&#39;, 
 </div>
 </section>
 <section id="tbl.sort()">
-<h3><code class="docutils literal notranslate"><span class="pre">tbl.sort()</span></code><a class="headerlink" href="#tbl.sort()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">tbl.sort()</span></code><a class="headerlink" href="#tbl.sort()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tbl</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">column_name_or_index</span><span class="p">,</span> <span class="n">descending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1140,7 +1139,7 @@ array([&#39;Sugar cookies&#39;, &#39;Chocolate chip&#39;, &#39;Red velvet&#39;, 
 </div>
 </section>
 <section id="tbl.where()">
-<h3><code class="docutils literal notranslate"><span class="pre">tbl.where()</span></code><a class="headerlink" href="#tbl.where()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">tbl.where()</span></code><a class="headerlink" href="#tbl.where()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tbl</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">predicate</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1262,7 +1261,7 @@ array([&#39;Sugar cookies&#39;, &#39;Chocolate chip&#39;, &#39;Red velvet&#39;, 
 </div>
 </section>
 <section id="tbl.take()">
-<h3><code class="docutils literal notranslate"><span class="pre">tbl.take()</span></code><a class="headerlink" href="#tbl.take()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">tbl.take()</span></code><a class="headerlink" href="#tbl.take()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tbl</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">row_index</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1392,7 +1391,7 @@ array([&#39;Sugar cookies&#39;, &#39;Chocolate chip&#39;, &#39;Red velvet&#39;, 
 </section>
 </section>
 <section id="Table-Visualizations">
-<h2><code class="docutils literal notranslate"><span class="pre">Table</span></code> Visualizations<a class="headerlink" href="#Table-Visualizations" title="Permalink to this heading">¶</a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">Table</span></code> Visualizations<a class="headerlink" href="#Table-Visualizations" title="Link to this heading">¶</a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[68]:
 </pre></div>
@@ -1449,7 +1448,7 @@ array([&#39;Sugar cookies&#39;, &#39;Chocolate chip&#39;, &#39;Red velvet&#39;, 
 <p>... (40 rows omitted)</p></div>
 </div>
 <section id="tbl.scatter()">
-<h3><code class="docutils literal notranslate"><span class="pre">tbl.scatter()</span></code><a class="headerlink" href="#tbl.scatter()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">tbl.scatter()</span></code><a class="headerlink" href="#tbl.scatter()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tbl</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x_column</span><span class="p">,</span> <span class="n">y_column</span><span class="p">,</span> <span class="n">fit_line</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1486,7 +1485,7 @@ array([&#39;Sugar cookies&#39;, &#39;Chocolate chip&#39;, &#39;Red velvet&#39;, 
 </div>
 </section>
 <section id="tbl.plot()">
-<h3><code class="docutils literal notranslate"><span class="pre">tbl.plot()</span></code><a class="headerlink" href="#tbl.plot()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">tbl.plot()</span></code><a class="headerlink" href="#tbl.plot()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tbl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_column</span><span class="p">,</span> <span class="n">y_column</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1541,7 +1540,7 @@ array([&#39;Sugar cookies&#39;, &#39;Chocolate chip&#39;, &#39;Red velvet&#39;, 
 </div>
 </section>
 <section id="tbl.barh()">
-<h3><code class="docutils literal notranslate"><span class="pre">tbl.barh()</span></code><a class="headerlink" href="#tbl.barh()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">tbl.barh()</span></code><a class="headerlink" href="#tbl.barh()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tbl</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="n">categories</span><span class="p">)</span>
 <span class="n">tbl</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="n">categories</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
 </pre></div>
@@ -1594,7 +1593,7 @@ array([&#39;Sugar cookies&#39;, &#39;Chocolate chip&#39;, &#39;Red velvet&#39;, 
 </div>
 </section>
 <section id="tbl.hist()">
-<h3><code class="docutils literal notranslate"><span class="pre">tbl.hist()</span></code><a class="headerlink" href="#tbl.hist()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">tbl.hist()</span></code><a class="headerlink" href="#tbl.hist()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tbl</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">column</span><span class="p">)</span>
 <span class="n">tbl</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">bins</span><span class="o">=...</span><span class="p">)</span>
 </pre></div>
@@ -1632,7 +1631,7 @@ array([&#39;Sugar cookies&#39;, &#39;Chocolate chip&#39;, &#39;Red velvet&#39;, 
 </div>
 </section>
 <section id="Table.interactive_plots()">
-<h3><code class="docutils literal notranslate"><span class="pre">Table.interactive_plots()</span></code><a class="headerlink" href="#Table.interactive_plots()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">Table.interactive_plots()</span></code><a class="headerlink" href="#Table.interactive_plots()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Table</span><span class="o">.</span><span class="n">interactive_plots</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -1720,7 +1719,7 @@ if (outputEl) {{
 </div>
 </section>
 <section id="Table.static_plots()">
-<h3><code class="docutils literal notranslate"><span class="pre">Table.static_plots()</span></code><a class="headerlink" href="#Table.static_plots()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">Table.static_plots()</span></code><a class="headerlink" href="#Table.static_plots()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Table</span><span class="o">.</span><span class="n">static_plots</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -1744,9 +1743,9 @@ if (outputEl) {{
 </section>
 </section>
 <section id="Advanced-Table-Functions">
-<h2>Advanced <code class="docutils literal notranslate"><span class="pre">Table</span></code> Functions<a class="headerlink" href="#Advanced-Table-Functions" title="Permalink to this heading">¶</a></h2>
+<h2>Advanced <code class="docutils literal notranslate"><span class="pre">Table</span></code> Functions<a class="headerlink" href="#Advanced-Table-Functions" title="Link to this heading">¶</a></h2>
 <section id="tbl.apply()">
-<h3><code class="docutils literal notranslate"><span class="pre">tbl.apply()</span></code><a class="headerlink" href="#tbl.apply()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">tbl.apply()</span></code><a class="headerlink" href="#tbl.apply()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tbl</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">column</span><span class="p">)</span>
 <span class="n">tbl</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">col1</span><span class="p">,</span> <span class="n">col2</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
 </pre></div>
@@ -1861,7 +1860,7 @@ array([118.82195122,  69.17101449,  73.25081967,  98.65454545,
 </div>
 </section>
 <section id="tbl.group()">
-<h3><code class="docutils literal notranslate"><span class="pre">tbl.group()</span></code><a class="headerlink" href="#tbl.group()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">tbl.group()</span></code><a class="headerlink" href="#tbl.group()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tbl</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">column_or_columns</span><span class="p">)</span>
 <span class="n">tbl</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="n">column_or_columns</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
 </pre></div>
@@ -2085,7 +2084,7 @@ array([118.82195122,  69.17101449,  73.25081967,  98.65454545,
 </div>
 </section>
 <section id="tbl.pivot()">
-<h3><code class="docutils literal notranslate"><span class="pre">tbl.pivot()</span></code><a class="headerlink" href="#tbl.pivot()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">tbl.pivot()</span></code><a class="headerlink" href="#tbl.pivot()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tbl</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="n">col1</span><span class="p">,</span> <span class="n">col2</span><span class="p">)</span>
 <span class="n">tbl</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="n">col1</span><span class="p">,</span> <span class="n">col2</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">collect</span><span class="p">)</span>
 </pre></div>
@@ -2236,7 +2235,7 @@ array([118.82195122,  69.17101449,  73.25081967,  98.65454545,
 </div>
 </section>
 <section id="tbl.join()">
-<h3><code class="docutils literal notranslate"><span class="pre">tbl.join()</span></code><a class="headerlink" href="#tbl.join()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">tbl.join()</span></code><a class="headerlink" href="#tbl.join()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tbl1</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">col1</span><span class="p">,</span> <span class="n">tbl2</span><span class="p">)</span>
 <span class="n">tbl1</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">col1</span><span class="p">,</span> <span class="n">tbl2</span><span class="p">,</span> <span class="n">col2</span><span class="p">)</span>
 </pre></div>
@@ -2365,7 +2364,7 @@ array([118.82195122,  69.17101449,  73.25081967,  98.65454545,
 </div>
 </section>
 <section id="tbl.sample()">
-<h3><code class="docutils literal notranslate"><span class="pre">tbl.sample()</span></code><a class="headerlink" href="#tbl.sample()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">tbl.sample()</span></code><a class="headerlink" href="#tbl.sample()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tbl</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">with_replacement</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -2475,9 +2474,9 @@ array([118.82195122,  69.17101449,  73.25081967,  98.65454545,
 </section>
 </section>
 <section id="String-Methods">
-<h2>String Methods<a class="headerlink" href="#String-Methods" title="Permalink to this heading">¶</a></h2>
+<h2>String Methods<a class="headerlink" href="#String-Methods" title="Link to this heading">¶</a></h2>
 <section id="str.split()">
-<h3><code class="docutils literal notranslate"><span class="pre">str.split()</span></code><a class="headerlink" href="#str.split()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">str.split()</span></code><a class="headerlink" href="#str.split()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">separator</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -2522,7 +2521,7 @@ array([118.82195122,  69.17101449,  73.25081967,  98.65454545,
 </div>
 </section>
 <section id="str.join()">
-<h3><code class="docutils literal notranslate"><span class="pre">str.join()</span></code><a class="headerlink" href="#str.join()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">str.join()</span></code><a class="headerlink" href="#str.join()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">string</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -2566,7 +2565,7 @@ array([118.82195122,  69.17101449,  73.25081967,  98.65454545,
 </div>
 </section>
 <section id="str.replace()">
-<h3><code class="docutils literal notranslate"><span class="pre">str.replace()</span></code><a class="headerlink" href="#str.replace()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">str.replace()</span></code><a class="headerlink" href="#str.replace()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">old_string</span><span class="p">,</span> <span class="n">new_string</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -2627,7 +2626,7 @@ array([118.82195122,  69.17101449,  73.25081967,  98.65454545,
 </section>
 </section>
 <section id="Array-Functions-and-Methods">
-<h2>Array Functions and Methods<a class="headerlink" href="#Array-Functions-and-Methods" title="Permalink to this heading">¶</a></h2>
+<h2>Array Functions and Methods<a class="headerlink" href="#Array-Functions-and-Methods" title="Link to this heading">¶</a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[111]:
 </pre></div>
@@ -2647,7 +2646,7 @@ array([1, 3, 5, 7, 9])
 </pre></div></div>
 </div>
 <section id="max()">
-<h3><code class="docutils literal notranslate"><span class="pre">max()</span></code><a class="headerlink" href="#max()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">max()</span></code><a class="headerlink" href="#max()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">max</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -2671,7 +2670,7 @@ array([1, 3, 5, 7, 9])
 </div>
 </section>
 <section id="min()">
-<h3><code class="docutils literal notranslate"><span class="pre">min()</span></code><a class="headerlink" href="#min()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">min()</span></code><a class="headerlink" href="#min()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">min</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -2695,7 +2694,7 @@ array([1, 3, 5, 7, 9])
 </div>
 </section>
 <section id="sum()">
-<h3><code class="docutils literal notranslate"><span class="pre">sum()</span></code><a class="headerlink" href="#sum()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">sum()</span></code><a class="headerlink" href="#sum()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">sum</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -2736,7 +2735,7 @@ array([1, 3, 5, 7, 9])
 </div>
 </section>
 <section id="abs()">
-<h3><code class="docutils literal notranslate"><span class="pre">abs()</span></code><a class="headerlink" href="#abs()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">abs()</span></code><a class="headerlink" href="#abs()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">abs</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
 <span class="nb">abs</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
 </pre></div>
@@ -2779,7 +2778,7 @@ array([3.  , 1.  , 5.2 , 0.25, 4.9 ])
 </div>
 </section>
 <section id="round(num)">
-<h3><code class="docutils literal notranslate"><span class="pre">round(num)</span></code><a class="headerlink" href="#round(num)" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">round(num)</span></code><a class="headerlink" href="#round(num)" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">round</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
 <span class="nb">round</span><span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
 <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
@@ -2840,7 +2839,7 @@ array([-3. , -1. ,  5.2,  0.2, -4.9])
 </div>
 </section>
 <section id="len()">
-<h3><code class="docutils literal notranslate"><span class="pre">len()</span></code><a class="headerlink" href="#len()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">len()</span></code><a class="headerlink" href="#len()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -2864,7 +2863,7 @@ array([-3. , -1. ,  5.2,  0.2, -4.9])
 </div>
 </section>
 <section id="make_array()">
-<h3><code class="docutils literal notranslate"><span class="pre">make_array()</span></code><a class="headerlink" href="#make_array()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">make_array()</span></code><a class="headerlink" href="#make_array()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">make_array</span><span class="p">(</span><span class="n">val1</span><span class="p">,</span> <span class="n">val2</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -2889,7 +2888,7 @@ array([25, 16,  9,  4,  1])
 </div>
 </section>
 <section id="np.mean">
-<h3><code class="docutils literal notranslate"><span class="pre">np.mean</span></code><a class="headerlink" href="#np.mean" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">np.mean</span></code><a class="headerlink" href="#np.mean" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
 <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
 </pre></div>
@@ -2931,7 +2930,7 @@ array([25, 16,  9,  4,  1])
 </div>
 </section>
 <section id="np.std()">
-<h3><code class="docutils literal notranslate"><span class="pre">np.std()</span></code><a class="headerlink" href="#np.std()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">np.std()</span></code><a class="headerlink" href="#np.std()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -2955,7 +2954,7 @@ array([25, 16,  9,  4,  1])
 </div>
 </section>
 <section id="np.diff()">
-<h3><code class="docutils literal notranslate"><span class="pre">np.diff()</span></code><a class="headerlink" href="#np.diff()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">np.diff()</span></code><a class="headerlink" href="#np.diff()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -2996,7 +2995,7 @@ array([2, 2, 2])
 </div>
 </section>
 <section id="np.sqrt()">
-<h3><code class="docutils literal notranslate"><span class="pre">np.sqrt()</span></code><a class="headerlink" href="#np.sqrt()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">np.sqrt()</span></code><a class="headerlink" href="#np.sqrt()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
 <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
 </pre></div>
@@ -3038,7 +3037,7 @@ array([5., 4., 3., 2., 1.])
 </div>
 </section>
 <section id="np.arange()">
-<h3><code class="docutils literal notranslate"><span class="pre">np.arange()</span></code><a class="headerlink" href="#np.arange()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">np.arange()</span></code><a class="headerlink" href="#np.arange()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">stop</span><span class="p">)</span>
 <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">)</span>
 <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
@@ -3101,7 +3100,7 @@ array([ 0. ,  2.7,  5.4,  8.1, 10.8, 13.5, 16.2, 18.9, 21.6, 24.3, 27. ,
 </div>
 </section>
 <section id="array.item()">
-<h3><code class="docutils literal notranslate"><span class="pre">array.item()</span></code><a class="headerlink" href="#array.item()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">array.item()</span></code><a class="headerlink" href="#array.item()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">array</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -3159,7 +3158,7 @@ array([ 0. ,  2.7,  5.4,  8.1, 10.8, 13.5, 16.2, 18.9, 21.6, 24.3, 27. ,
 </div>
 </section>
 <section id="np.random.choice">
-<h3><code class="docutils literal notranslate"><span class="pre">np.random.choice</span></code><a class="headerlink" href="#np.random.choice" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">np.random.choice</span></code><a class="headerlink" href="#np.random.choice" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
 <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
@@ -3218,7 +3217,7 @@ array([ 98,  22,  12,  56,  24,  54, 100,  52,  28,  88])
 </div>
 </section>
 <section id="np.count_nonzero()">
-<h3><code class="docutils literal notranslate"><span class="pre">np.count_nonzero()</span></code><a class="headerlink" href="#np.count_nonzero()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">np.count_nonzero()</span></code><a class="headerlink" href="#np.count_nonzero()" title="Link to this heading">¶</a></h3>
 <p>Returns the number of nonzero elements in an array. Because <code class="docutils literal notranslate"><span class="pre">False</span></code> values are considered zeros (as integers), this can also give you the number of <code class="docutils literal notranslate"><span class="pre">True</span></code>s in an array of boolean valuea.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[153]:
@@ -3258,7 +3257,7 @@ array([ 98,  22,  12,  56,  24,  54, 100,  52,  28,  88])
 </div>
 </section>
 <section id="np.append()">
-<h3><code class="docutils literal notranslate"><span class="pre">np.append()</span></code><a class="headerlink" href="#np.append()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">np.append()</span></code><a class="headerlink" href="#np.append()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -3299,7 +3298,7 @@ array([  25,   16,    9,    4,    1, 1000])
 </div>
 </section>
 <section id="percentile()">
-<h3><code class="docutils literal notranslate"><span class="pre">percentile()</span></code><a class="headerlink" href="#percentile()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">percentile()</span></code><a class="headerlink" href="#percentile()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">percentile</span><span class="p">(</span><span class="n">percent</span><span class="p">,</span> <span class="n">array</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -3359,10 +3358,10 @@ array([1, 1, 1, 2, 2, 2, 3, 3, 3, 4])
 </section>
 </section>
 <section id="Table.where-Predicates">
-<h2><code class="docutils literal notranslate"><span class="pre">Table.where</span></code> Predicates<a class="headerlink" href="#Table.where-Predicates" title="Permalink to this heading">¶</a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">Table.where</span></code> Predicates<a class="headerlink" href="#Table.where-Predicates" title="Link to this heading">¶</a></h2>
 <p>All of the predicates described below can be negated by preceding the name with <code class="docutils literal notranslate"><span class="pre">not_</span></code>. For example, we can find values <em>not</em> equal to a specific value using <code class="docutils literal notranslate"><span class="pre">are.not_equal_to(value)</span></code>.</p>
 <section id="are.equal_to()">
-<h3><code class="docutils literal notranslate"><span class="pre">are.equal_to()</span></code><a class="headerlink" href="#are.equal_to()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">are.equal_to()</span></code><a class="headerlink" href="#are.equal_to()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tbl</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">are</span><span class="o">.</span><span class="n">equal_to</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -3423,7 +3422,7 @@ array([1, 1, 1, 2, 2, 2, 3, 3, 3, 4])
 </div>
 </section>
 <section id="are.above()">
-<h3><code class="docutils literal notranslate"><span class="pre">are.above()</span></code><a class="headerlink" href="#are.above()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">are.above()</span></code><a class="headerlink" href="#are.above()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tbl</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">are</span><span class="o">.</span><span class="n">above</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -3484,7 +3483,7 @@ array([1, 1, 1, 2, 2, 2, 3, 3, 3, 4])
 </div>
 </section>
 <section id="are.above_or_equal_to()">
-<h3><code class="docutils literal notranslate"><span class="pre">are.above_or_equal_to()</span></code><a class="headerlink" href="#are.above_or_equal_to()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">are.above_or_equal_to()</span></code><a class="headerlink" href="#are.above_or_equal_to()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tbl</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">are</span><span class="o">.</span><span class="n">above_or_equal_to</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -3545,7 +3544,7 @@ array([1, 1, 1, 2, 2, 2, 3, 3, 3, 4])
 </div>
 </section>
 <section id="are.below()">
-<h3><code class="docutils literal notranslate"><span class="pre">are.below()</span></code><a class="headerlink" href="#are.below()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">are.below()</span></code><a class="headerlink" href="#are.below()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tbl</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">are</span><span class="o">.</span><span class="n">below</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -3606,7 +3605,7 @@ array([1, 1, 1, 2, 2, 2, 3, 3, 3, 4])
 </div>
 </section>
 <section id="are.below_or_equal_to()">
-<h3><code class="docutils literal notranslate"><span class="pre">are.below_or_equal_to()</span></code><a class="headerlink" href="#are.below_or_equal_to()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">are.below_or_equal_to()</span></code><a class="headerlink" href="#are.below_or_equal_to()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tbl</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">are</span><span class="o">.</span><span class="n">below_or_equal_to</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -3667,7 +3666,7 @@ array([1, 1, 1, 2, 2, 2, 3, 3, 3, 4])
 </div>
 </section>
 <section id="are.between()">
-<h3><code class="docutils literal notranslate"><span class="pre">are.between()</span></code><a class="headerlink" href="#are.between()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">are.between()</span></code><a class="headerlink" href="#are.between()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tbl</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">are</span><span class="o">.</span><span class="n">between</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -3728,7 +3727,7 @@ array([1, 1, 1, 2, 2, 2, 3, 3, 3, 4])
 </div>
 </section>
 <section id="are.between_or_equal_to()">
-<h3><code class="docutils literal notranslate"><span class="pre">are.between_or_equal_to()</span></code><a class="headerlink" href="#are.between_or_equal_to()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">are.between_or_equal_to()</span></code><a class="headerlink" href="#are.between_or_equal_to()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tbl</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">are</span><span class="o">.</span><span class="n">between_or_equal_to</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -3789,7 +3788,7 @@ array([1, 1, 1, 2, 2, 2, 3, 3, 3, 4])
 </div>
 </section>
 <section id="are.contained_in()">
-<h3><code class="docutils literal notranslate"><span class="pre">are.contained_in()</span></code><a class="headerlink" href="#are.contained_in()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">are.contained_in()</span></code><a class="headerlink" href="#are.contained_in()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tbl</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">are</span><span class="o">.</span><span class="n">contained_in</span><span class="p">(</span><span class="n">string_or_array</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -3904,7 +3903,7 @@ array([1, 1, 1, 2, 2, 2, 3, 3, 3, 4])
 </div>
 </section>
 <section id="are.containing()">
-<h3><code class="docutils literal notranslate"><span class="pre">are.containing()</span></code><a class="headerlink" href="#are.containing()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">are.containing()</span></code><a class="headerlink" href="#are.containing()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tbl</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">are</span><span class="o">.</span><span class="n">containing</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -3965,7 +3964,7 @@ array([1, 1, 1, 2, 2, 2, 3, 3, 3, 4])
 </div>
 </section>
 <section id="are.strictly_between()">
-<h3><code class="docutils literal notranslate"><span class="pre">are.strictly_between()</span></code><a class="headerlink" href="#are.strictly_between()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">are.strictly_between()</span></code><a class="headerlink" href="#are.strictly_between()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tbl</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">are</span><span class="o">.</span><span class="n">strictly_between</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -4027,9 +4026,9 @@ array([1, 1, 1, 2, 2, 2, 3, 3, 3, 4])
 </section>
 </section>
 <section id="Miscellaneous-Functions">
-<h2>Miscellaneous Functions<a class="headerlink" href="#Miscellaneous-Functions" title="Permalink to this heading">¶</a></h2>
+<h2>Miscellaneous Functions<a class="headerlink" href="#Miscellaneous-Functions" title="Link to this heading">¶</a></h2>
 <section id="sample_proportions()">
-<h3><code class="docutils literal notranslate"><span class="pre">sample_proportions()</span></code><a class="headerlink" href="#sample_proportions()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">sample_proportions()</span></code><a class="headerlink" href="#sample_proportions()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sample_proportions</span><span class="p">(</span><span class="n">sample_size</span><span class="p">,</span> <span class="n">model_proportions</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -4053,7 +4052,7 @@ array([0.32, 0.32, 0.36])
 </div>
 </section>
 <section id="minimize()">
-<h3><code class="docutils literal notranslate"><span class="pre">minimize()</span></code><a class="headerlink" href="#minimize()" title="Permalink to this heading">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">minimize()</span></code><a class="headerlink" href="#minimize()" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">minimize</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -4227,8 +4226,8 @@ array([ 5.17585792, -0.58835469])
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.2.
     </div>
   </body>
 </html>

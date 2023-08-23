@@ -1,17 +1,16 @@
-
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>datascience.maps &#8212; datascience 0.17.6 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/classic.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=514cf933" />
     
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/documentation_options.js?v=63ccc059"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -104,7 +103,9 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the _folium_map attribute to a map.&quot;&quot;&quot;</span>
 
 
-<div class="viewcode-block" id="Map"><a class="viewcode-back" href="../../maps.html#datascience.maps.Map">[docs]</a><span class="k">class</span> <span class="nc">Map</span><span class="p">(</span><span class="n">_FoliumWrapper</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Mapping</span><span class="p">):</span>
+<div class="viewcode-block" id="Map">
+<a class="viewcode-back" href="../../maps.html#datascience.maps.Map">[docs]</a>
+<span class="k">class</span> <span class="nc">Map</span><span class="p">(</span><span class="n">_FoliumWrapper</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Mapping</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A map from IDs to features. Keyword args are forwarded to folium.&quot;&quot;&quot;</span>
 
     <span class="n">_mapper</span> <span class="o">=</span> <span class="n">folium</span><span class="o">.</span><span class="n">Map</span>
@@ -137,7 +138,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_folium_map</span><span class="p">()</span>
 
-<div class="viewcode-block" id="Map.copy"><a class="viewcode-back" href="../../maps.html#datascience.maps.Map.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Map.copy">
+<a class="viewcode-back" href="../../maps.html#datascience.maps.Map.copy">[docs]</a>
+    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Copies the current Map into a new one and returns it.</span>
 <span class="sd">        Note: This only copies rendering attributes. The underlying map is NOT deep-copied.</span>
@@ -148,6 +151,7 @@
                    <span class="n">height</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_height</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="p">)</span>
         <span class="n">m</span><span class="o">.</span><span class="n">_folium_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_folium_map</span>
         <span class="k">return</span> <span class="n">m</span></div>
+
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_features</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
@@ -307,21 +311,29 @@
             <span class="n">feature_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">feature_list</span>
 
-<div class="viewcode-block" id="Map.format"><a class="viewcode-back" href="../../maps.html#datascience.maps.Map.format">[docs]</a>    <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Map.format">
+<a class="viewcode-back" href="../../maps.html#datascience.maps.Map.format">[docs]</a>
+    <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply formatting.&quot;&quot;&quot;</span>
         <span class="n">attrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_height</span><span class="p">})</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_features</span><span class="p">,</span> <span class="o">**</span><span class="n">attrs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Map.geojson"><a class="viewcode-back" href="../../maps.html#datascience.maps.Map.geojson">[docs]</a>    <span class="k">def</span> <span class="nf">geojson</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Map.geojson">
+<a class="viewcode-back" href="../../maps.html#datascience.maps.Map.geojson">[docs]</a>
+    <span class="k">def</span> <span class="nf">geojson</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Render features as a FeatureCollection.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;FeatureCollection&quot;</span><span class="p">,</span>
             <span class="s2">&quot;features&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">geojson</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_features</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
         <span class="p">}</span></div>
 
-<div class="viewcode-block" id="Map.color"><a class="viewcode-back" href="../../maps.html#datascience.maps.Map.color">[docs]</a>    <span class="k">def</span> <span class="nf">color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">ids</span><span class="o">=</span><span class="p">(),</span> <span class="n">key_on</span><span class="o">=</span><span class="s1">&#39;feature.id&#39;</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s1">&#39;YlOrBr&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Map.color">
+<a class="viewcode-back" href="../../maps.html#datascience.maps.Map.color">[docs]</a>
+    <span class="k">def</span> <span class="nf">color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">ids</span><span class="o">=</span><span class="p">(),</span> <span class="n">key_on</span><span class="o">=</span><span class="s1">&#39;feature.id&#39;</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s1">&#39;YlOrBr&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Color map features by binning values.</span>
 
 <span class="sd">        values -- a sequence of values or a table of keys and values</span>
@@ -383,7 +395,10 @@
         <span class="n">colored</span><span class="o">.</span><span class="n">_folium_map</span> <span class="o">=</span> <span class="n">m</span>
         <span class="k">return</span> <span class="n">colored</span></div>
 
-<div class="viewcode-block" id="Map.overlay"><a class="viewcode-back" href="../../maps.html#datascience.maps.Map.overlay">[docs]</a>    <span class="k">def</span> <span class="nf">overlay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;Blue&#39;</span><span class="p">,</span> <span class="n">opacity</span><span class="o">=</span><span class="mf">0.6</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Map.overlay">
+<a class="viewcode-back" href="../../maps.html#datascience.maps.Map.overlay">[docs]</a>
+    <span class="k">def</span> <span class="nf">overlay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;Blue&#39;</span><span class="p">,</span> <span class="n">opacity</span><span class="o">=</span><span class="mf">0.6</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overlays ``feature`` on the map. Returns a new Map.</span>
 
@@ -428,7 +443,10 @@
             <span class="n">feature</span><span class="o">.</span><span class="n">draw_on</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">_folium_map</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span></div>
 
-<div class="viewcode-block" id="Map.read_geojson"><a class="viewcode-back" href="../../maps.html#datascience.maps.Map.read_geojson">[docs]</a>    <span class="nd">@classmethod</span>
+
+<div class="viewcode-block" id="Map.read_geojson">
+<a class="viewcode-back" href="../../maps.html#datascience.maps.Map.read_geojson">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">read_geojson</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path_or_json_or_string_or_url</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read a geoJSON string, object, file, or URL. Return a dict of features keyed by ID.&quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="n">path_or_json_or_string_or_url</span>
@@ -456,6 +474,7 @@
         <span class="k">assert</span> <span class="n">data</span><span class="p">,</span> <span class="s1">&#39;MapData accepts a valid geoJSON object, geoJSON string, path to a geoJSON file, or URL&#39;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">_read_geojson_features</span><span class="p">(</span><span class="n">data</span><span class="p">))</span></div>
 
+
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_read_geojson_features</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a dict of features keyed by ID.&quot;&quot;&quot;</span>
@@ -475,6 +494,7 @@
                 <span class="n">value</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">features</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">return</span> <span class="n">features</span></div>
+
 
 
 <span class="k">class</span> <span class="nc">_MapFeature</span><span class="p">(</span><span class="n">_FoliumWrapper</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
@@ -512,7 +532,9 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add feature to Folium map object.&quot;&quot;&quot;</span>
 
 
-<div class="viewcode-block" id="Marker"><a class="viewcode-back" href="../../maps.html#datascience.maps.Marker">[docs]</a><span class="k">class</span> <span class="nc">Marker</span><span class="p">(</span><span class="n">_MapFeature</span><span class="p">):</span>
+<div class="viewcode-block" id="Marker">
+<a class="viewcode-back" href="../../maps.html#datascience.maps.Marker">[docs]</a>
+<span class="k">class</span> <span class="nc">Marker</span><span class="p">(</span><span class="n">_MapFeature</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A marker displayed with Folium&#39;s simple_marker method.</span>
 
 <span class="sd">    popup -- text that pops up when marker is clicked</span>
@@ -561,9 +583,12 @@
     <span class="k">def</span> <span class="nf">lat_lons</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">lat_lon</span><span class="p">]</span>
 
-<div class="viewcode-block" id="Marker.copy"><a class="viewcode-back" href="../../maps.html#datascience.maps.Marker.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Marker.copy">
+<a class="viewcode-back" href="../../maps.html#datascience.maps.Marker.copy">[docs]</a>
+    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a deep copy&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="bp">self</span><span class="o">.</span><span class="n">lat_lon</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">lat_lon</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="p">)</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_folium_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -588,7 +613,9 @@
             <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;icon&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">folium</span><span class="o">.</span><span class="n">Icon</span><span class="p">(</span><span class="o">**</span><span class="n">icon_args</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">attrs</span>
 
-<div class="viewcode-block" id="Marker.geojson"><a class="viewcode-back" href="../../maps.html#datascience.maps.Marker.geojson">[docs]</a>    <span class="k">def</span> <span class="nf">geojson</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_id</span><span class="p">):</span>
+<div class="viewcode-block" id="Marker.geojson">
+<a class="viewcode-back" href="../../maps.html#datascience.maps.Marker.geojson">[docs]</a>
+    <span class="k">def</span> <span class="nf">geojson</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_id</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;GeoJSON representation of the marker as a point.&quot;&quot;&quot;</span>
         <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lat_lon</span>
         <span class="k">return</span> <span class="p">{</span>
@@ -600,15 +627,22 @@
             <span class="p">},</span>
         <span class="p">}</span></div>
 
-<div class="viewcode-block" id="Marker.format"><a class="viewcode-back" href="../../maps.html#datascience.maps.Marker.format">[docs]</a>    <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Marker.format">
+<a class="viewcode-back" href="../../maps.html#datascience.maps.Marker.format">[docs]</a>
+    <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply formatting.&quot;&quot;&quot;</span>
         <span class="n">attrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lat_lon</span>
         <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="o">**</span><span class="n">attrs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Marker.draw_on"><a class="viewcode-back" href="../../maps.html#datascience.maps.Marker.draw_on">[docs]</a>    <span class="k">def</span> <span class="nf">draw_on</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folium_map</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Marker.draw_on">
+<a class="viewcode-back" href="../../maps.html#datascience.maps.Marker.draw_on">[docs]</a>
+    <span class="k">def</span> <span class="nf">draw_on</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folium_map</span><span class="p">):</span>
         <span class="n">folium</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_folium_kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">add_to</span><span class="p">(</span><span class="n">folium_map</span><span class="p">)</span></div>
+
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_convert_point</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
@@ -617,7 +651,9 @@
         <span class="n">popup</span> <span class="o">=</span> <span class="n">feature</span><span class="p">[</span><span class="s1">&#39;properties&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Marker.map"><a class="viewcode-back" href="../../maps.html#datascience.maps.Marker.map">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Marker.map">
+<a class="viewcode-back" href="../../maps.html#datascience.maps.Marker.map">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">latitudes</span><span class="p">,</span> <span class="n">longitudes</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">areas</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">other_attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clustered_marker</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return markers from columns of coordinates, labels, &amp; colors.</span>
 
@@ -694,7 +730,10 @@
             <span class="n">ms</span> <span class="o">=</span> <span class="p">[</span><span class="bp">cls</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">row_num</span><span class="p">,</span> <span class="n">args</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">))]</span>
         <span class="k">return</span> <span class="n">Map</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">clustered_marker</span><span class="o">=</span><span class="n">clustered_marker</span><span class="p">,</span> <span class="o">**</span><span class="n">map_kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Marker.map_table"><a class="viewcode-back" href="../../maps.html#datascience.maps.Marker.map_table">[docs]</a>    <span class="nd">@classmethod</span>
+
+<div class="viewcode-block" id="Marker.map_table">
+<a class="viewcode-back" href="../../maps.html#datascience.maps.Marker.map_table">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">map_table</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">clustered_marker</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">include_color_scale_outliers</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">radius_in_meters</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return markers from the columns of a table.</span>
 <span class="sd">        </span>
@@ -789,9 +828,13 @@
             <span class="n">colorbar_scale</span><span class="o">=</span><span class="n">colorbar_scale</span><span class="p">,</span> <span class="n">other_attrs</span><span class="o">=</span><span class="n">other_attrs</span><span class="p">,</span> <span class="n">clustered_marker</span><span class="o">=</span><span class="n">clustered_marker</span><span class="p">,</span> 
             <span class="n">index_map</span><span class="o">=</span><span class="n">index_map</span><span class="p">,</span> <span class="n">include_color_scale_outliers</span><span class="o">=</span><span class="n">include_color_scale_outliers</span><span class="p">,</span> 
             <span class="n">radius_in_meters</span><span class="o">=</span><span class="n">radius_in_meters</span><span class="p">,</span> <span class="n">cluster_labels</span><span class="o">=</span><span class="n">cluster_labels</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-        <span class="p">)</span></div></div>
+        <span class="p">)</span></div>
+</div>
 
-<div class="viewcode-block" id="Circle"><a class="viewcode-back" href="../../maps.html#datascience.maps.Circle">[docs]</a><span class="k">class</span> <span class="nc">Circle</span><span class="p">(</span><span class="n">Marker</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Circle">
+<a class="viewcode-back" href="../../maps.html#datascience.maps.Circle">[docs]</a>
+<span class="k">class</span> <span class="nc">Circle</span><span class="p">(</span><span class="n">Marker</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A marker displayed with either Folium&#39;s circle_marker or circle methods.</span>
 
 <span class="sd">    The ``circle_marker`` method draws circles that stay the same size regardless of map zoom, </span>
@@ -854,14 +897,20 @@
                 <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;color&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;fill_color&#39;</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">attrs</span>
 
-<div class="viewcode-block" id="Circle.draw_on"><a class="viewcode-back" href="../../maps.html#datascience.maps.Circle.draw_on">[docs]</a>    <span class="k">def</span> <span class="nf">draw_on</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folium_map</span><span class="p">,</span> <span class="n">radius_in_meters</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Circle.draw_on">
+<a class="viewcode-back" href="../../maps.html#datascience.maps.Circle.draw_on">[docs]</a>
+    <span class="k">def</span> <span class="nf">draw_on</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folium_map</span><span class="p">,</span> <span class="n">radius_in_meters</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">radius_in_meters</span><span class="p">:</span>
             <span class="n">folium</span><span class="o">.</span><span class="n">Circle</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_folium_kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">add_to</span><span class="p">(</span><span class="n">folium_map</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">folium</span><span class="o">.</span><span class="n">CircleMarker</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_folium_kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">add_to</span><span class="p">(</span><span class="n">folium_map</span><span class="p">)</span></div></div>
+            <span class="n">folium</span><span class="o">.</span><span class="n">CircleMarker</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_folium_kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">add_to</span><span class="p">(</span><span class="n">folium_map</span><span class="p">)</span></div>
+</div>
 
 
-<div class="viewcode-block" id="Region"><a class="viewcode-back" href="../../maps.html#datascience.maps.Region">[docs]</a><span class="k">class</span> <span class="nc">Region</span><span class="p">(</span><span class="n">_MapFeature</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Region">
+<a class="viewcode-back" href="../../maps.html#datascience.maps.Region">[docs]</a>
+<span class="k">class</span> <span class="nc">Region</span><span class="p">(</span><span class="n">_MapFeature</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A GeoJSON feature displayed with Folium&#39;s geo_json method.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geojson</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -906,9 +955,12 @@
     <span class="k">def</span> <span class="nf">properties</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;properties&#39;</span><span class="p">,</span> <span class="p">{})</span>
 
-<div class="viewcode-block" id="Region.copy"><a class="viewcode-back" href="../../maps.html#datascience.maps.Region.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Region.copy">
+<a class="viewcode-back" href="../../maps.html#datascience.maps.Region.copy">[docs]</a>
+    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a deep copy&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="p">)</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_folium_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -916,7 +968,9 @@
         <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">attrs</span>
 
-<div class="viewcode-block" id="Region.geojson"><a class="viewcode-back" href="../../maps.html#datascience.maps.Region.geojson">[docs]</a>    <span class="k">def</span> <span class="nf">geojson</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_id</span><span class="p">):</span>
+<div class="viewcode-block" id="Region.geojson">
+<a class="viewcode-back" href="../../maps.html#datascience.maps.Region.geojson">[docs]</a>
+    <span class="k">def</span> <span class="nf">geojson</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_id</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return GeoJSON with ID substituted.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">feature_id</span><span class="p">)</span> <span class="o">==</span> <span class="n">feature_id</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span>
@@ -925,20 +979,28 @@
             <span class="n">geo</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">feature_id</span>
             <span class="k">return</span> <span class="n">geo</span></div>
 
-<div class="viewcode-block" id="Region.format"><a class="viewcode-back" href="../../maps.html#datascience.maps.Region.format">[docs]</a>    <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Region.format">
+<a class="viewcode-back" href="../../maps.html#datascience.maps.Region.format">[docs]</a>
+    <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply formatting.&quot;&quot;&quot;</span>
         <span class="n">attrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Region</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span><span class="p">,</span> <span class="o">**</span><span class="n">attrs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Region.draw_on"><a class="viewcode-back" href="../../maps.html#datascience.maps.Region.draw_on">[docs]</a>    <span class="k">def</span> <span class="nf">draw_on</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folium_map</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Region.draw_on">
+<a class="viewcode-back" href="../../maps.html#datascience.maps.Region.draw_on">[docs]</a>
+    <span class="k">def</span> <span class="nf">draw_on</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folium_map</span><span class="p">):</span>
         <span class="n">attrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_folium_kwargs</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">)</span>
         <span class="n">folium</span><span class="o">.</span><span class="n">GeoJson</span><span class="p">(</span>
             <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
             <span class="n">style_function</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">attrs</span><span class="p">,</span>
             <span class="n">name</span><span class="o">=</span><span class="s1">&#39;geojson&#39;</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">add_to</span><span class="p">(</span><span class="n">folium_map</span><span class="p">)</span></div></div>
+        <span class="p">)</span><span class="o">.</span><span class="n">add_to</span><span class="p">(</span><span class="n">folium_map</span><span class="p">)</span></div>
+</div>
+
 
 
 <span class="k">def</span> <span class="nf">_lat_lons_from_geojson</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
@@ -953,7 +1015,9 @@
         <span class="k">return</span> <span class="p">[</span><span class="n">lat_lon</span> <span class="k">for</span> <span class="n">sub</span> <span class="ow">in</span> <span class="n">s</span> <span class="k">for</span> <span class="n">lat_lon</span> <span class="ow">in</span> <span class="n">_lat_lons_from_geojson</span><span class="p">(</span><span class="n">sub</span><span class="p">)]</span>
 
 
-<div class="viewcode-block" id="get_coordinates"><a class="viewcode-back" href="../../maps.html#datascience.maps.get_coordinates">[docs]</a><span class="k">def</span> <span class="nf">get_coordinates</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">replace_columns</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">remove_nans</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="get_coordinates">
+<a class="viewcode-back" href="../../maps.html#datascience.maps.get_coordinates">[docs]</a>
+<span class="k">def</span> <span class="nf">get_coordinates</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">replace_columns</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">remove_nans</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Adds latitude and longitude coordinates to table based on other location identifiers. Must be in the United States.</span>
 
@@ -1027,6 +1091,7 @@
     <span class="k">if</span> <span class="n">remove_nans</span><span class="p">:</span> 
         <span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s2">&quot;lat&quot;</span><span class="p">,</span> <span class="n">are</span><span class="o">.</span><span class="n">below</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)))</span> <span class="c1"># NaNs are not considered to be smaller than infinity</span>
     <span class="k">return</span> <span class="n">table</span></div>
+
 </pre></div>
 
             <div class="clearer"></div>
@@ -1064,8 +1129,8 @@
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.2.
     </div>
   </body>
 </html>

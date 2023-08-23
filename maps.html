@@ -1,18 +1,17 @@
-
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Maps (datascience.maps) &#8212; datascience 0.17.6 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
     
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/documentation_options.js?v=63ccc059"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
@@ -45,12 +44,12 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <section id="module-datascience.maps">
-<span id="maps-datascience-maps"></span><h1>Maps (<code class="docutils literal notranslate"><span class="pre">datascience.maps</span></code>)<a class="headerlink" href="#module-datascience.maps" title="Permalink to this heading">¶</a></h1>
-<p>Draw maps using folium.</p>
+  <section id="maps-datascience-maps">
+<h1>Maps (<code class="docutils literal notranslate"><span class="pre">datascience.maps</span></code>)<a class="headerlink" href="#maps-datascience-maps" title="Link to this heading">¶</a></h1>
+<p id="module-datascience.maps">Draw maps using folium.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="datascience.maps.Circle">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">datascience.maps.</span></span><span class="sig-name descname"><span class="pre">Circle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">popup</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'blue'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">area</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">314.1592653589793</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Circle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Circle" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">datascience.maps.</span></span><span class="sig-name descname"><span class="pre">Circle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">popup</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'blue'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">area</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">314.1592653589793</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Circle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Circle" title="Link to this definition">¶</a></dt>
 <dd><p>A marker displayed with either Folium’s circle_marker or circle methods.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">circle_marker</span></code> method draws circles that stay the same size regardless of map zoom, 
 whereas the circle method draws circles that have a fixed radius in meters. To toggle 
@@ -83,7 +82,7 @@ listed in <cite>https://leafletjs.com/reference-1.4.0.html#circlemarker</cite> o
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="datascience.maps.Circle.draw_on">
-<span class="sig-name descname"><span class="pre">draw_on</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">folium_map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius_in_meters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Circle.draw_on"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Circle.draw_on" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">draw_on</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">folium_map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius_in_meters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Circle.draw_on"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Circle.draw_on" title="Link to this definition">¶</a></dt>
 <dd><p>Add feature to Folium map object.</p>
 </dd></dl>
 
@@ -91,11 +90,11 @@ listed in <cite>https://leafletjs.com/reference-1.4.0.html#circlemarker</cite> o
 
 <dl class="py class">
 <dt class="sig sig-object py" id="datascience.maps.Map">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">datascience.maps.</span></span><span class="sig-name descname"><span class="pre">Map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">features</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">960</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Map" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">datascience.maps.</span></span><span class="sig-name descname"><span class="pre">Map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">features</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">960</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Map" title="Link to this definition">¶</a></dt>
 <dd><p>A map from IDs to features. Keyword args are forwarded to folium.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="datascience.maps.Map.color">
-<span class="sig-name descname"><span class="pre">color</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_on</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'feature.id'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">palette</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'YlOrBr'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map.color"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Map.color" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">color</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_on</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'feature.id'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">palette</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'YlOrBr'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map.color"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Map.color" title="Link to this definition">¶</a></dt>
 <dd><p>Color map features by binning values.</p>
 <p>values – a sequence of values or a table of keys and values
 ids – an ID for each value; if none are provided, indices are used
@@ -126,7 +125,7 @@ order-of-magnitude integer. Ex: 270 rounds to 200, 5600 to 6000.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="datascience.maps.Map.copy">
-<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Map.copy" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Map.copy" title="Link to this definition">¶</a></dt>
 <dd><p>Copies the current Map into a new one and returns it.
 Note: This only copies rendering attributes. The underlying map is NOT deep-copied.
 This is as a result of no functionality in Folium. Ref: <a class="reference external" href="https://github.com/python-visualization/folium/issues/1207">https://github.com/python-visualization/folium/issues/1207</a></p>
@@ -134,24 +133,24 @@ This is as a result of no functionality in Folium. Ref: <a class="reference exte
 
 <dl class="py property">
 <dt class="sig sig-object py" id="datascience.maps.Map.features">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">features</span></span><a class="headerlink" href="#datascience.maps.Map.features" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">features</span></span><a class="headerlink" href="#datascience.maps.Map.features" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="datascience.maps.Map.format">
-<span class="sig-name descname"><span class="pre">format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map.format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Map.format" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map.format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Map.format" title="Link to this definition">¶</a></dt>
 <dd><p>Apply formatting.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="datascience.maps.Map.geojson">
-<span class="sig-name descname"><span class="pre">geojson</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map.geojson"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Map.geojson" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">geojson</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map.geojson"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Map.geojson" title="Link to this definition">¶</a></dt>
 <dd><p>Render features as a FeatureCollection.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="datascience.maps.Map.overlay">
-<span class="sig-name descname"><span class="pre">overlay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">feature</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Blue'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opacity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.6</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map.overlay"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Map.overlay" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">overlay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">feature</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Blue'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opacity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.6</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map.overlay"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Map.overlay" title="Link to this definition">¶</a></dt>
 <dd><p>Overlays <code class="docutils literal notranslate"><span class="pre">feature</span></code> on the map. Returns a new Map.</p>
 <dl>
 <dt>Args:</dt><dd><dl class="simple">
@@ -172,7 +171,7 @@ be overlayed on the Map with specified <code class="docutils literal notranslate
 
 <dl class="py method">
 <dt class="sig sig-object py" id="datascience.maps.Map.read_geojson">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_geojson</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_or_json_or_string_or_url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map.read_geojson"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Map.read_geojson" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_geojson</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_or_json_or_string_or_url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Map.read_geojson"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Map.read_geojson" title="Link to this definition">¶</a></dt>
 <dd><p>Read a geoJSON string, object, file, or URL. Return a dict of features keyed by ID.</p>
 </dd></dl>
 
@@ -180,7 +179,7 @@ be overlayed on the Map with specified <code class="docutils literal notranslate
 
 <dl class="py class">
 <dt class="sig sig-object py" id="datascience.maps.Marker">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">datascience.maps.</span></span><span class="sig-name descname"><span class="pre">Marker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">popup</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'blue'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Marker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Marker" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">datascience.maps.</span></span><span class="sig-name descname"><span class="pre">Marker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">popup</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'blue'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Marker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Marker" title="Link to this definition">¶</a></dt>
 <dd><p>A marker displayed with Folium’s simple_marker method.</p>
 <p>popup – text that pops up when marker is clicked
 color – The color of the marker. You can use:
@@ -208,37 +207,37 @@ into kwargs by using the attributes listed in
 <cite>https://python-visualization.github.io/folium/modules.html#folium.map.Icon</cite>.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="datascience.maps.Marker.copy">
-<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Marker.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Marker.copy" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Marker.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Marker.copy" title="Link to this definition">¶</a></dt>
 <dd><p>Return a deep copy</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="datascience.maps.Marker.draw_on">
-<span class="sig-name descname"><span class="pre">draw_on</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">folium_map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Marker.draw_on"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Marker.draw_on" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">draw_on</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">folium_map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Marker.draw_on"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Marker.draw_on" title="Link to this definition">¶</a></dt>
 <dd><p>Add feature to Folium map object.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="datascience.maps.Marker.format">
-<span class="sig-name descname"><span class="pre">format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Marker.format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Marker.format" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Marker.format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Marker.format" title="Link to this definition">¶</a></dt>
 <dd><p>Apply formatting.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="datascience.maps.Marker.geojson">
-<span class="sig-name descname"><span class="pre">geojson</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">feature_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Marker.geojson"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Marker.geojson" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">geojson</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">feature_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Marker.geojson"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Marker.geojson" title="Link to this definition">¶</a></dt>
 <dd><p>GeoJSON representation of the marker as a point.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="datascience.maps.Marker.lat_lons">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lat_lons</span></span><a class="headerlink" href="#datascience.maps.Marker.lat_lons" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lat_lons</span></span><a class="headerlink" href="#datascience.maps.Marker.lat_lons" title="Link to this definition">¶</a></dt>
 <dd><p>Sequence of lat_lons that describe a map feature (for zooming).</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="datascience.maps.Marker.map">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">latitudes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">longitudes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">areas</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clustered_marker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Marker.map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Marker.map" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">latitudes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">longitudes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">areas</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clustered_marker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Marker.map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Marker.map" title="Link to this definition">¶</a></dt>
 <dd><p>Return markers from columns of coordinates, labels, &amp; colors.</p>
 <p>The areas column is not applicable to markers, but sets circle areas.</p>
 <p>Arguments: (TODO) document all options</p>
@@ -262,7 +261,7 @@ into kwargs by using the attributes listed in
 
 <dl class="py method">
 <dt class="sig sig-object py" id="datascience.maps.Marker.map_table">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">map_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clustered_marker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_color_scale_outliers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius_in_meters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Marker.map_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Marker.map_table" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">map_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clustered_marker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_color_scale_outliers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius_in_meters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Marker.map_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Marker.map_table" title="Link to this definition">¶</a></dt>
 <dd><p>Return markers from the columns of a table.</p>
 <p>The first two columns of the table must be the latitudes and longitudes
 (in that order), followed by ‘labels’, ‘colors’, ‘color_scale’, ‘radius_scale’, ‘cluster_by’, ‘area_scale’, and/or ‘areas’ (if applicable)
@@ -281,41 +280,41 @@ in any order with columns explicitly stating what property they are representing
 
 <dl class="py class">
 <dt class="sig sig-object py" id="datascience.maps.Region">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">datascience.maps.</span></span><span class="sig-name descname"><span class="pre">Region</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geojson</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Region"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Region" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">datascience.maps.</span></span><span class="sig-name descname"><span class="pre">Region</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geojson</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Region"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Region" title="Link to this definition">¶</a></dt>
 <dd><p>A GeoJSON feature displayed with Folium’s geo_json method.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="datascience.maps.Region.copy">
-<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Region.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Region.copy" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Region.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Region.copy" title="Link to this definition">¶</a></dt>
 <dd><p>Return a deep copy</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="datascience.maps.Region.draw_on">
-<span class="sig-name descname"><span class="pre">draw_on</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">folium_map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Region.draw_on"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Region.draw_on" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">draw_on</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">folium_map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Region.draw_on"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Region.draw_on" title="Link to this definition">¶</a></dt>
 <dd><p>Add feature to Folium map object.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="datascience.maps.Region.format">
-<span class="sig-name descname"><span class="pre">format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Region.format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Region.format" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Region.format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Region.format" title="Link to this definition">¶</a></dt>
 <dd><p>Apply formatting.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="datascience.maps.Region.geojson">
-<span class="sig-name descname"><span class="pre">geojson</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">feature_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Region.geojson"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Region.geojson" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">geojson</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">feature_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#Region.geojson"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.Region.geojson" title="Link to this definition">¶</a></dt>
 <dd><p>Return GeoJSON with ID substituted.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="datascience.maps.Region.lat_lons">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lat_lons</span></span><a class="headerlink" href="#datascience.maps.Region.lat_lons" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lat_lons</span></span><a class="headerlink" href="#datascience.maps.Region.lat_lons" title="Link to this definition">¶</a></dt>
 <dd><p>A flat list of (lat, lon) pairs.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="datascience.maps.Region.polygons">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">polygons</span></span><a class="headerlink" href="#datascience.maps.Region.polygons" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">polygons</span></span><a class="headerlink" href="#datascience.maps.Region.polygons" title="Link to this definition">¶</a></dt>
 <dd><p>Return a list of polygons describing the region.</p>
 <ul class="simple">
 <li><p>Each polygon is a list of linear rings, where the first describes the
@@ -328,12 +327,12 @@ the first.</p></li>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="datascience.maps.Region.properties">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">properties</span></span><a class="headerlink" href="#datascience.maps.Region.properties" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">properties</span></span><a class="headerlink" href="#datascience.maps.Region.properties" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="datascience.maps.Region.type">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">type</span></span><a class="headerlink" href="#datascience.maps.Region.type" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">type</span></span><a class="headerlink" href="#datascience.maps.Region.type" title="Link to this definition">¶</a></dt>
 <dd><p>The GEOJSON type of the regions: Polygon or MultiPolygon.</p>
 </dd></dl>
 
@@ -341,7 +340,7 @@ the first.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="datascience.maps.get_coordinates">
-<span class="sig-prename descclassname"><span class="pre">datascience.maps.</span></span><span class="sig-name descname"><span class="pre">get_coordinates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_nans</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#get_coordinates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.get_coordinates" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">datascience.maps.</span></span><span class="sig-name descname"><span class="pre">get_coordinates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_nans</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/maps.html#get_coordinates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.maps.get_coordinates" title="Link to this definition">¶</a></dt>
 <dd><p>Adds latitude and longitude coordinates to table based on other location identifiers. Must be in the United States.</p>
 <p>Takes table with columns “zip code” or “city” and/or “county” and “state” in column names and 
 adds the columns “lat” and “lon”. If a county is not found inside the dataset,
@@ -467,8 +466,8 @@ remove_nans: A boolean that indicates if columns with invalid longitudes and lat
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.2.
     </div>
   </body>
 </html>
