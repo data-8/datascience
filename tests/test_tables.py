@@ -111,6 +111,13 @@ def assert_equal(string1, string2):
     assert purify(string1) == purify(string2), "\n%s\n!=\n%s" % (string1, string2)
 
 
+def assert_not_equal(string1, string2):
+    string1, string2 = str(string1), str(string2)
+    whitespace = re.compile(r'\s')
+    purify = lambda s: whitespace.sub('', s)
+    assert purify(string1) != purify(string2), "\n%s\n!=\n%s" % (string1, string2)
+
+
 ############
 # Doctests #
 ############
@@ -742,6 +749,32 @@ def test_keys_and_values():
     1    | 2
     3    | 4
     """)
+
+
+def test_deep_copy():
+    value = ["foo"]
+    original_table = Table().with_columns(
+            "A", make_array(1, 2, 3),
+            "B", make_array(value, ["foo", "bar"], ["foo"]))
+
+    table_deep_copy = original_table.copy()
+
+    value.append("bar")
+
+    assert_not_equal(original_table, table_deep_copy)
+
+
+def test_shallow_copy():
+    value = ["foo"]
+    original_table = Table().with_columns(
+            "A", make_array(1, 2, 3),
+            "B", make_array(value, ["foo", "bar"], ["foo"]))
+
+    table_shallow_copy = original_table.copy(shallow=True)
+
+    value.append("bar")
+
+    assert_equal(original_table, table_shallow_copy)
 
 
 ##########
