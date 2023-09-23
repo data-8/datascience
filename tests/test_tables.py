@@ -1716,6 +1716,40 @@ def test_shuffle_different_order(table):
             return
     assert False
 
+def test_sample_with_distribution():
+    sizes = Table(['size', 'count']).with_rows([
+        ['small', 50],
+        ['medium', 100],
+        ['big', 50]])
+    
+    np.random.seed(99)
+
+    sampled = sizes.sample_from_distribution('count', 1000)
+    print(sampled)
+    assert_equal(sampled, """
+        size   | count | count sample
+        small  | 50    | 228
+        medium | 100   | 508
+        big    | 50    | 264
+    """)
+
+def test_sample_with_distribution_proportional():
+    sizes = Table(['size', 'count']).with_rows([
+        ['small', 50],
+        ['medium', 100],
+        ['big', 50]])
+    
+    np.random.seed(99)
+
+    sampled = sizes.sample_from_distribution('count', 1000, proportions=True)
+    print(sampled)
+    assert_equal(sampled, """
+            size   | count | count sample
+            small  | 50    | 0.228
+            medium | 100   | 0.508
+            big    | 50    | 0.264
+        """)
+
 def test_split_basic(table):
     """Test that table.split works."""
     table.split(3)
