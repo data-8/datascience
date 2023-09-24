@@ -448,17 +448,17 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 
 <span class="gp">In [47]: </span><span class="n">normal_data</span>
 <span class="gh">Out[47]: </span>
-<span class="go">data1     | data2</span>
-<span class="go">1.28995   | 6.1671</span>
-<span class="go">-0.474645 | 8.80243</span>
-<span class="go">2.95758   | 0.854683</span>
-<span class="go">0.82184   | 1.48677</span>
-<span class="go">2.13884   | -0.793322</span>
-<span class="go">3.97455   | 7.15913</span>
-<span class="go">4.09554   | 4.94995</span>
-<span class="go">0.963868  | 2.70935</span>
-<span class="go">5.8653    | -0.757097</span>
-<span class="go">1.24087   | 7.07856</span>
+<span class="go">data1    | data2</span>
+<span class="go">-2.61605 | 3.53073</span>
+<span class="go">-2.11516 | 10.0666</span>
+<span class="go">1.31596  | 5.2647</span>
+<span class="go">1.5473   | 2.3775</span>
+<span class="go">4.19539  | 3.08725</span>
+<span class="go">2.83492  | 3.9613</span>
+<span class="go">1.7963   | 9.71422</span>
+<span class="go">1.14513  | -1.06214</span>
+<span class="go">2.02723  | 2.55636</span>
+<span class="go">5.30982  | 5.34434</span>
 <span class="go">... (90 rows omitted)</span>
 </pre></div>
 </div>
@@ -510,17 +510,17 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 converting to a pandas dataframe with <a class="reference internal" href="_autosummary/datascience.tables.Table.to_df.html#datascience.tables.Table.to_df" title="datascience.tables.Table.to_df"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_df()</span></code></a>:</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [56]: </span><span class="n">normal_data</span>
 <span class="gh">Out[56]: </span>
-<span class="go">data1     | data2</span>
-<span class="go">1.28995   | 6.1671</span>
-<span class="go">-0.474645 | 8.80243</span>
-<span class="go">2.95758   | 0.854683</span>
-<span class="go">0.82184   | 1.48677</span>
-<span class="go">2.13884   | -0.793322</span>
-<span class="go">3.97455   | 7.15913</span>
-<span class="go">4.09554   | 4.94995</span>
-<span class="go">0.963868  | 2.70935</span>
-<span class="go">5.8653    | -0.757097</span>
-<span class="go">1.24087   | 7.07856</span>
+<span class="go">data1    | data2</span>
+<span class="go">-2.61605 | 3.53073</span>
+<span class="go">-2.11516 | 10.0666</span>
+<span class="go">1.31596  | 5.2647</span>
+<span class="go">1.5473   | 2.3775</span>
+<span class="go">4.19539  | 3.08725</span>
+<span class="go">2.83492  | 3.9613</span>
+<span class="go">1.7963   | 9.71422</span>
+<span class="go">1.14513  | -1.06214</span>
+<span class="go">2.02723  | 2.55636</span>
+<span class="go">5.30982  | 5.34434</span>
 <span class="go">... (90 rows omitted)</span>
 
 <span class="go"># index = False prevents row numbers from appearing in the resulting CSV</span>
@@ -634,8 +634,8 @@ non-smokers.</p>
 
 <span class="gp">In [73]: </span><span class="n">bootstrapped_diff_means</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
 <span class="gh">Out[73]: </span>
-<span class="go">array([ 0.38456968, -1.59612109,  0.89916663,  1.02562884, -0.27088685,</span>
-<span class="go">       -0.19072474,  1.24789067,  1.70028795,  1.85896369, -0.17225955])</span>
+<span class="go">array([-0.10974907,  0.60651157,  0.14368116,  1.71845453,  1.56725627,</span>
+<span class="go">        0.51940217, -1.33765711, -1.52959459, -0.85401527,  1.37100111])</span>
 
 <span class="gp">In [74]: </span><span class="n">num_diffs_greater</span> <span class="o">=</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">bootstrapped_diff_means</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">observed_diff</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
@@ -728,7 +728,7 @@ non-smokers.</p>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>
 </html>
