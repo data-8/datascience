@@ -1587,6 +1587,15 @@ def test_join_conflicting_column_names(table, table4):
     c      | 3     | 2      | 6      | 2       | 2               | Epsilon
     """)
 
+def test_join_no_rows():
+    t1 = Table(['letter'])
+    t2 = Table(['letter'])
+    t2.append(['b'])
+    t3 = t1.join('letter', t2)
+    assert t3 == None
+    t4 = t2.join('letter', t1)
+    assert t4 == None
+    
 def test_percentile(numbers_table):
     assert_equal(numbers_table.percentile(76), """
     count | points
