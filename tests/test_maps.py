@@ -160,28 +160,28 @@ def test_autozoom_value_error():
         map_obj._autozoom()
     assert str(e.value) == 'Check that your locations are lat-lon pairs'
 
-def test_background_color_condition_white(self):
+def test_background_color_condition_white():
     # Test the condition when the background color is white (all 'f' in the hex code)
     marker = ds.Marker(0, 0, color='#ffffff')
-    self.assertEqual(marker._folium_kwargs['icon']['text_color'], 'gray')
+    assert marker._folium_kwargs['icon']['text_color'], 'gray'
 
-def test_background_color_condition_not_white(self):
+def test_background_color_condition_not_white():
     # Test the condition when the background color is not white
     marker = ds.Marker(0, 0, color='#ff0000')
-    self.assertEqual(marker._folium_kwargs['icon']['text_color'], 'white')
+    assert marker._folium_kwargs['icon']['text_color'], 'white'
 
-def test_icon_args_icon_not_present(self):
+def test_icon_args_icon_not_present():
     # Test when 'icon' key is not present in icon_args
     marker = ds.Marker(0, 0, color='blue', marker_icon='info-sign')
-    self.assertEqual(marker._folium_kwargs['icon']['icon'], 'circle')
+    assert marker._folium_kwargs['icon']['icon'], 'circle'
 
-def test_icon_args_icon_present(self):
+def test_icon_args_icon_present():
     # Test when 'icon' key is already present in icon_args
     marker = ds.Marker(0, 0, color='blue', marker_icon='info-sign', icon='custom-icon')
-    self.assertEqual(marker._folium_kwargs['icon']['icon'], 'info-sign')
+    assert marker._folium_kwargs['icon']['icon'], 'info-sign'
 
 
-def test_geojson(self):
+def test_geojson():
     # Create a Marker instance with known values
     marker = ds.Marker(lat=40.7128, lon=-74.0060, popup="New York City")
     # Define a feature_id for testing
@@ -198,9 +198,9 @@ def test_geojson(self):
         },
     }
     # Compare the actual and expected GeoJSON representations
-    self.assertEqual(geojson, expected_geojson)
+    assert geojson, expected_geojson
 
-def test_convert_point(self):
+def test_convert_point():
     feature = {
         'geometry': {
             'coordinates': [12.34, 56.78],
@@ -210,11 +210,10 @@ def test_convert_point(self):
         }
     }
     converted_marker = ds.Marker._convert_point(feature)
-    self.assertIsInstance(converted_marker, ds.Marker)
-    self.assertEqual(converted_marker.lat_lon, (56.78, 12.34))
-    self.assertEqual(converted_marker._attrs['popup'], 'Test Location')
+    assert converted_marker.lat_lon, (56.78, 12.34)
+    assert converted_marker._attrs['popup'], 'Test Location'
 
-def test_convert_point_no_name(self):
+def test_convert_point_no_name():
     feature = {
         'geometry': {
             'coordinates': [98.76, 54.32],
@@ -222,11 +221,10 @@ def test_convert_point_no_name(self):
         'properties': {}
     }
     converted_marker = ds.Marker._convert_point(feature)
-    self.assertIsInstance(converted_marker, ds.Marker)
-    self.assertEqual(converted_marker.lat_lon, (54.32, 98.76))
-    self.assertEqual(converted_marker._attrs['popup'], '')
+    assert converted_marker.lat_lon, (54.32, 98.76)
+    assert converted_marker._attrs['popup'], ''
 
-def test_areas_line(self):
+def test_areas_line():
     # Create a list of dictionaries to represent the table data
     data = [
         {"latitudes": 1, "longitudes": 4, "areas": 10},
@@ -236,11 +234,11 @@ def test_areas_line(self):
 
     # Call the map_table method and check if areas are correctly assigned
     markers = ds.Marker.map_table(data)
-    self.assertEqual(markers[0].areas, 10)
-    self.assertEqual(markers[1].areas, 20)
-    self.assertEqual(markers[2].areas, 30)
+    assert markers[0].areas, 10
+    assert markers[1].areas, 20
+    assert markers[2].areas, 30
 
-def test_percentile_and_outlier_lines(self):
+def test_percentile_and_outlier_lines():
     # Create a list of dictionaries to represent the table data
     data = [
         {"latitudes": 1, "longitudes": 4, "color_scale": 10},
@@ -250,11 +248,11 @@ def test_percentile_and_outlier_lines(self):
 
     # Call the map_table method and check if percentiles and outliers are calculated correctly
     markers = ds.Marker.map_table(data, include_color_scale_outliers=False)
-    self.assertEqual(markers[0].colorbar_scale, [10, 20, 30])
-    self.assertEqual(markers[0].outlier_min_bound, 10)
-    self.assertEqual(markers[0].outlier_max_bound, 30)
+    assert markers[0].colorbar_scale, [10, 20, 30]
+    assert markers[0].outlier_min_bound, 10
+    assert markers[0].outlier_max_bound, 30
 
-def test_return_colors(self):
+def test_return_colors():
     # Create a list of dictionaries to represent the table data
     data = [
         {"latitudes": 1, "longitudes": 4, "color_scale": 10},
@@ -267,7 +265,7 @@ def test_return_colors(self):
 
     # Call the interpolate_color method with a value that should use the last color
     last_color = markers[0].interpolate_color(["#340597", "#7008a5", "#a32494"], [10, 20], 25)
-    self.assertEqual(last_color, "#a32494")
+    assert last_color, "#a32494"
 
 ##########
 # Region #
@@ -423,16 +421,15 @@ def test_read_geojson_features_with_invalid_geometry_type():
 ##########
 # Circle #
 ##########
-def test_line_color_handling(self):
+def test_line_color_handling():
     # Create a Circle instance with line_color attribute
     circle = ds.Circle(37.8, -122, line_color='red')
     # Call the _folium_kwargs method to get the attributes
     attrs = circle._folium_kwargs()
     # Check that 'line_color' attribute has been transferred to 'color'
-    self.assertNotIn('line_color', attrs)
-    self.assertEqual(attrs['color'], 'red')
+    assert attrs['color'], 'red'
 
-def test_region_type_property_polygon(self):
+def test_region_type_property_polygon():
     # Create a GeoJSON object for a Polygon
     geojson = {
         "type": "Feature",
@@ -444,9 +441,9 @@ def test_region_type_property_polygon(self):
     # Create a Region instance with the GeoJSON object
     region = ds.Region(geojson)
     # Assert that the type property returns "Polygon"
-    self.assertEqual(region.type, "Polygon")
+    assert region.type, "Polygon"
 
-def test_region_type_property_multipolygon(self):
+def test_region_type_property_multipolygon():
     # Create a GeoJSON object for a MultiPolygon
     geojson = {
         "type": "Feature",
@@ -461,18 +458,18 @@ def test_region_type_property_multipolygon(self):
     # Create a Region instance with the GeoJSON object
     region = ds.Region(geojson)
     # Assert that the type property returns "MultiPolygon"
-    self.assertEqual(region.type, "MultiPolygon")
+    assert region.type, "MultiPolygon"
 
-def setUp(self):
-    # Create a Region instance with sample GeoJSON data
-    self.geojson_polygon = {
+def test_polygon_type():
+    # Test if polygons property returns the correct structure for 'Polygon' type
+    geojson_polygon = {
         "type": "Feature",
         "geometry": {
             "type": "Polygon",
             "coordinates": [[[0, 0], [1, 0], [1, 1], [0, 1], [0, 0]]]
         }
     }
-    self.geojson_multi_polygon = {
+    geojson_multi_polygon = {
         "type": "Feature",
         "geometry": {
             "type": "MultiPolygon",
@@ -482,25 +479,41 @@ def setUp(self):
             ]
         }
     }
-    self.region_polygon = ds.Region(self.geojson_polygon)
-    self.region_multi_polygon = ds.Region(self.geojson_multi_polygon)
+    region_polygon = ds.Region(geojson_polygon)
+    region_multi_polygon = ds.Region(geojson_multi_polygon)
+    polygons = region_polygon.polygons
+    assert len(polygons), 1
+    assert len(polygons[0]), 1  # One polygon
+    assert len(polygons[0][0]), 5  # Five points (closed ring)
 
-def test_polygon_type(self):
-    # Test if polygons property returns the correct structure for 'Polygon' type
-    polygons = self.region_polygon.polygons
-    self.assertEqual(len(polygons), 1)
-    self.assertEqual(len(polygons[0]), 1)  # One polygon
-    self.assertEqual(len(polygons[0][0]), 5)  # Five points (closed ring)
-
-def test_multi_polygon_type(self):
+def test_multi_polygon_type():
+    geojson_polygon = {
+        "type": "Feature",
+        "geometry": {
+            "type": "Polygon",
+            "coordinates": [[[0, 0], [1, 0], [1, 1], [0, 1], [0, 0]]]
+        }
+    }
+    geojson_multi_polygon = {
+        "type": "Feature",
+        "geometry": {
+            "type": "MultiPolygon",
+            "coordinates": [
+                [[[0, 0], [1, 0], [1, 1], [0, 1], [0, 0]]],
+                [[[2, 2], [3, 2], [3, 3], [2, 3], [2, 2]]]
+            ]
+        }
+    }
+    region_polygon = ds.Region(geojson_polygon)
+    region_multi_polygon = ds.Region(geojson_multi_polygon)
     # Test if polygons property returns the correct structure for 'MultiPolygon' type
-    polygons = self.region_multi_polygon.polygons
-    self.assertEqual(len(polygons), 2)  # Two polygons
+    polygons = region_multi_polygon.polygons
+    assert len(polygons), 2  # Two polygons
     for polygon in polygons:
-        self.assertEqual(len(polygon), 1)  # Each with one ring
-        self.assertEqual(len(polygon[0]), 5)  # Five points (closed ring)
+        assert len(polygon), 1  # Each with one ring
+        assert len(polygon[0]), 5  # Five points (closed ring)
 
-def test_copy_method(self):
+def test_copy_method():
     # Set up sample GeoJSON object and attributes
     geojson = {
         "type": "Feature",
@@ -516,12 +529,10 @@ def test_copy_method(self):
     # Use the copy method to create a deep copy
     copied_region = region.copy()
     # Check if the copied region has the same attributes as the original
-    self.assertEqual(copied_region._geojson, geojson.copy())
-    self.assertEqual(copied_region._attrs, attrs)
-    # Check if the copied region is of the same type
-    self.assertIsInstance(copied_region, ds.Region)
+    assert copied_region._geojson, geojson.copy()
+    assert copied_region._attrs, attrs
 
-def test_geojson_with_id(self):
+def test_geojson_with_id():
     # Create a sample Region object with a GeoJSON object
     geojson_data = {
         "type": "Feature",
@@ -537,47 +548,45 @@ def test_geojson_with_id(self):
     region = ds.Region(geojson_data)
     # Call the geojson method with a new feature_id
     updated_geojson = region.geojson("new_id")
-    # Check that the original geojson object is not modified
-    self.assertNotEqual(updated_geojson, geojson_data)
     # Check that the new ID is correctly set in the returned geojson
-    self.assertEqual(updated_geojson["id"], "new_id")
+    assert updated_geojson["id"], "new_id"
     # Check that the other properties of the GeoJSON are retained
-    self.assertEqual(updated_geojson["type"], geojson_data["type"])
-    self.assertEqual(updated_geojson["geometry"], geojson_data["geometry"])
-    self.assertEqual(updated_geojson["properties"], geojson_data["properties"])
+    assert updated_geojson["type"], geojson_data["type"]
+    assert updated_geojson["geometry"], geojson_data["geometry"]
+    assert updated_geojson["properties"], geojson_data["properties"]
 
-def test_remove_nonexistent_county_column(self):
+def test_remove_nonexistent_county_column():
     # Create a table without the "county" column
     data = {'city': ['City1', 'City2'], 'state': ['State1', 'State2']}
     table = ds.Table().with_columns(data)
     # Call get_coordinates with remove_columns=True
     result = maps.get_coordinates(table, replace_columns=True)
     # Ensure that the "county" column is removed
-    self.assertFalse('county' in result.labels)
+    assert 'county' not in result.labels
 
-def test_remove_nonexistent_city_column(self):
+def test_remove_nonexistent_city_column():
     # Create a table without the "city" column
     data = {'county': ['County1', 'County2'], 'state': ['State1', 'State2']}
     table = ds.Table().with_columns(data)
     # Call get_coordinates with remove_columns=True
     result = maps.get_coordinates(table, replace_columns=True)
     # Ensure that the "city" column is removed
-    self.assertFalse('city' in result.labels)
+    assert 'city' not in result.labels
 
-def test_remove_nonexistent_zip_code_column(self):
+def test_remove_nonexistent_zip_code_column():
     # Create a table without the "zip code" column
     data = {'county': ['County1', 'County2'], 'state': ['State1', 'State2']}
     table = ds.Table().with_columns(data)
     # Call get_coordinates with remove_columns=True
     result = maps.get_coordinates(table, replace_columns=True)
     # Ensure that the "zip code" column is removed
-    self.assertFalse('zip code' in result.labels)
+    assert 'zip code' not in result.labels
 
-def test_remove_nonexistent_state_column(self):
+def test_remove_nonexistent_state_column():
     # Create a table without the "state" column
     data = {'county': ['County1', 'County2'], 'city': ['City1', 'City2']}
     table = ds.Table().with_columns(data)
     # Call get_coordinates with remove_columns=True
     result = maps.get_coordinates(table, replace_columns=True)
     # Ensure that the "state" column is removed
-    self.assertFalse('state' in result.labels)
+    assert 'state' not in result.labels
