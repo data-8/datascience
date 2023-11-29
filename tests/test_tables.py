@@ -676,6 +676,9 @@ def test_apply(table):
                        np.array([18, 6, 6, 2]))
     with(pytest.raises(ValueError)):
         t.apply(lambda x, y: x + y, 'count', 'score')
+    with(pytest.warns(FutureWarning)):
+        assert_array_equal(t.apply(lambda x: x * x, ['points']),
+                           np.array([1, 4, 4, 100]))
 
     # Deprecated behavior
     assert_array_equal(t.apply(lambda x, y: x * y, 'count', 'points'),
