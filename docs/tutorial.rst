@@ -400,3 +400,36 @@ The main class in the maps module is the Map class. In this code we create a def
     with open('map.html', 'w') as f:    # make a file to store the html
         f.write(html)                   # write the html to the file
 
+------------
+The maps modules also allows you to make custom maps with markers, circles and regions.
+
+.. ipython:: python
+
+    # generates markers with custom sets of coordinates, colors and popups
+    marker1 = Marker(37.372, -121.758, color="green", popup="My green marker") 
+    marker2 = Marker(37.572, -121.758, color="orange", popup="My orange marker") 
+    
+    # generates a circle with a custom set of coordinates, color and popup
+    circle = Circle(37.5, -122, color="red", area=1000, popup="My Circle")
+
+    # make a geojson object which is needed when making a region
+    geojson = {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [                                                # specifies the coordinates
+            [[-121,37],[-121.5,37],[-121.5,37.5],[-121,37.5],[-121,37]] # these coordinates make a rectangle
+        ]
+      }
+    }
+    
+    # make a region with your geojson object
+    region = Region(geojson)
+    
+    
+    # Initialize the map  
+    custom_map = Map(features=[marker1, marker2, circle, region],       # specifies the features
+             width=800,                                                 # specifies a custom width
+             height=600                                                 # specifies a custom height
+                    )
+    custom_map.show()                                                   # display the map
