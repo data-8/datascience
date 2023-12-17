@@ -400,7 +400,6 @@ The main class in the maps module is the Map class. In this code we create a def
     with open('map.html', 'w') as f:    # make a file to store the html
         f.write(html)                   # write the html to the file
 
-------------
 The maps modules also allows you to make custom maps with markers, circles and regions.
 
 .. ipython:: python
