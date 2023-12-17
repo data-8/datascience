@@ -392,7 +392,7 @@ The main class in the maps module is the Map class. In this code we create a def
 
 .. ipython:: python
 
-    from datascience.maps import Map    # import the map function
+    from datascience.maps import Map    # import the Map class
     default_map = Map()                 # generate a default map
     default_map.show()                  # display the map
     
@@ -403,7 +403,8 @@ The main class in the maps module is the Map class. In this code we create a def
 The maps modules also allows you to make custom maps with markers, circles and regions.
 
 .. ipython:: python
-
+    from datascience.maps import Map, Marker, Circle, Region            # import the Map, Marker, Circle and Region class
+    
     # generates markers with custom sets of coordinates, colors and popups
     marker1 = Marker(37.372, -121.758, color="green", popup="My green marker") 
     marker2 = Marker(37.572, -121.758, color="orange", popup="My orange marker") 
