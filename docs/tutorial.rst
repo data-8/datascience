@@ -388,13 +388,13 @@ Let's do the bootstrap test on the two categories.
 
 Drawing Maps
 ------------
-The main class in the maps module is the Map class. In this code we create a default map. Maps can be displayed or converted to html.
+The main class in the maps module is the Map class. In this code we create a default Map. Maps can be displayed or converted to html.
 
 .. ipython:: python
 
     from datascience.maps import Map    # import the Map class
-    default_map = Map()                 # generate a default map
-    default_map.show()                  # display the map
+    default_map = Map()                 # generate a default Map
+    default_map.show()                  # display the Map
     
     html = default_map.as_html()        # generate the html
     with open('map.html', 'w') as f:    # make a file to store the html
