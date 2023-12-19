@@ -448,17 +448,17 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 
 <span class="gp">In [47]: </span><span class="n">normal_data</span>
 <span class="gh">Out[47]: </span>
-<span class="go">data1     | data2</span>
-<span class="go">0.500456  | 4.40152</span>
-<span class="go">-3.82675  | 5.14587</span>
-<span class="go">5.94581   | 8.75926</span>
-<span class="go">2.62396   | 3.62318</span>
-<span class="go">-0.808562 | 6.68086</span>
-<span class="go">3.49924   | 5.07407</span>
-<span class="go">2.03236   | 5.68779</span>
-<span class="go">-1.18842  | 7.43892</span>
-<span class="go">0.609402  | 3.94632</span>
-<span class="go">5.20838   | 1.89229</span>
+<span class="go">data1    | data2</span>
+<span class="go">2.05981  | 8.1182</span>
+<span class="go">-3.22487 | 1.0134</span>
+<span class="go">2.16345  | 4.19344</span>
+<span class="go">2.37821  | 5.85609</span>
+<span class="go">1.21266  | 2.20146</span>
+<span class="go">2.68269  | -3.23874</span>
+<span class="go">0.879138 | 5.58776</span>
+<span class="go">2.99951  | 5.77527</span>
+<span class="go">3.7169   | -0.0626483</span>
+<span class="go">0.788733 | 0.438713</span>
 <span class="go">... (90 rows omitted)</span>
 </pre></div>
 </div>
@@ -510,17 +510,17 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 converting to a pandas dataframe with <a class="reference internal" href="_autosummary/datascience.tables.Table.to_df.html#datascience.tables.Table.to_df" title="datascience.tables.Table.to_df"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_df()</span></code></a>:</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [56]: </span><span class="n">normal_data</span>
 <span class="gh">Out[56]: </span>
-<span class="go">data1     | data2</span>
-<span class="go">0.500456  | 4.40152</span>
-<span class="go">-3.82675  | 5.14587</span>
-<span class="go">5.94581   | 8.75926</span>
-<span class="go">2.62396   | 3.62318</span>
-<span class="go">-0.808562 | 6.68086</span>
-<span class="go">3.49924   | 5.07407</span>
-<span class="go">2.03236   | 5.68779</span>
-<span class="go">-1.18842  | 7.43892</span>
-<span class="go">0.609402  | 3.94632</span>
-<span class="go">5.20838   | 1.89229</span>
+<span class="go">data1    | data2</span>
+<span class="go">2.05981  | 8.1182</span>
+<span class="go">-3.22487 | 1.0134</span>
+<span class="go">2.16345  | 4.19344</span>
+<span class="go">2.37821  | 5.85609</span>
+<span class="go">1.21266  | 2.20146</span>
+<span class="go">2.68269  | -3.23874</span>
+<span class="go">0.879138 | 5.58776</span>
+<span class="go">2.99951  | 5.77527</span>
+<span class="go">3.7169   | -0.0626483</span>
+<span class="go">0.788733 | 0.438713</span>
 <span class="go">... (90 rows omitted)</span>
 
 <span class="go"># index = False prevents row numbers from appearing in the resulting CSV</span>
@@ -634,8 +634,8 @@ non-smokers.</p>
 
 <span class="gp">In [73]: </span><span class="n">bootstrapped_diff_means</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
 <span class="gh">Out[73]: </span>
-<span class="go">array([-0.38369517,  0.60001524,  0.33484468,  0.51976477,  0.99375657,</span>
-<span class="go">        0.38784222,  0.6071088 ,  0.61544556,  1.82818837,  0.78754666])</span>
+<span class="go">array([-1.26916221,  0.57409997,  0.52478328, -0.87250788,  1.24177827,</span>
+<span class="go">       -0.38085836,  0.65664183, -0.17360026,  1.84637628,  2.38732118])</span>
 
 <span class="gp">In [74]: </span><span class="n">num_diffs_greater</span> <span class="o">=</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">bootstrapped_diff_means</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">observed_diff</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
@@ -648,7 +648,22 @@ non-smokers.</p>
 </section>
 <section id="drawing-maps">
 <h2><a class="toc-backref" href="#id8" role="doc-backlink">Drawing Maps</a><a class="headerlink" href="#drawing-maps" title="Link to this heading">¶</a></h2>
-<p>To come.</p>
+<p>The main class in the maps module is the Map class. In this code we create a default Map. Maps can be displayed or converted to html.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [77]: </span><span class="kn">from</span> <span class="nn">datascience.maps</span> <span class="kn">import</span> <span class="n">Map</span>    <span class="c1"># import the Map class</span>
+
+<span class="gp">In [78]: </span><span class="n">default_map</span> <span class="o">=</span> <span class="n">Map</span><span class="p">()</span>                 <span class="c1"># generate a default Map</span>
+
+<span class="gp">In [79]: </span><span class="n">default_map</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>                  <span class="c1"># display the Map</span>
+<span class="go">&lt;IPython.core.display.HTML object&gt;</span>
+
+<span class="gp">In [80]: </span><span class="n">html</span> <span class="o">=</span> <span class="n">default_map</span><span class="o">.</span><span class="n">as_html</span><span class="p">()</span>        <span class="c1"># generate the html</span>
+
+<span class="gp">In [81]: </span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;map.html&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>    <span class="c1"># make a file to store the html</span>
+<span class="gp">   ....: </span>    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>                   <span class="c1"># write the html to the file</span>
+<span class="gp">   ....: </span>
+</pre></div>
+</div>
+<p>The maps modules also allows you to make custom maps with markers, circles and regions.</p>
 </section>
 </section>
 
