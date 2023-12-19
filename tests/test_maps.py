@@ -93,9 +93,23 @@ def test_map_copy(states):
     # and copy is returning a true copy
     assert map1 is not map2
 
-##########
+def test_map_overlay_undefined_feature():
+    marker1 = ds.Marker(51.514, -0.132)
+    marker2 = ds.Marker(52.514, -0.132)
+    marker1_map = ds.Map(marker1)
+    unchanged_map = marker1_map.overlay(marker2)
+    assert len(unchanged_map._features), 1
+    assert len(unchanged_map._folium_map._children.keys()), 1
+    marker2_map = ds.Map(marker2)
+    changed_map = marker1_map.overlay(marker2_map)
+    assert len(changed_map._features), 1
+    assert len(unchanged_map._folium_map._children.keys()), 2
+
+
+
+#############
 # ds.Marker #
-##########
+#############
 
 
 def test_marker_html():
@@ -138,41 +152,6 @@ def test_marker_map_table():
     assert markers[1].lat_lon[1], -2
     assert markers[2].lat_lon[1], -3
 
-def test_circle_map_table():
-    lat_init, lon_init, area_init, color_scale_init = 51, -8, 10, 10
-    lats, lons, areas, color_scales = [], [], [], []
-    for i in range(8):
-        lats.append(lat_init+i)
-        lons.append(lon_init+i)
-        areas.append((area_init + 10*i)**2*math.pi)
-        color_scales.append(color_scale_init + 10*i)
-    color_scales[-1] = 1000000
-    labels = ['A', 'B', 'C']
-    t = ds.Table().with_columns('A', lats, 'B', lons, 'areas', areas, 'color_scale', color_scales)
-    markers = ds.Circle.map_table(t, include_color_scale_outliers=False)
-
-    for i in range(8):
-        assert markers[i]._attrs['radius'], 10 + 10*i
-
-    # Call the map_table method and check if percentiles and outliers are calculated correctly
-    assert markers._attrs['colorbar_scale'], [10.0, 23.125, 36.25, 49.375, 62.5, 75.625, 88.75, 101.875, 115.0]
-
-    assert [markers[i]._attrs['color'] for i in range(8)], ['#340597', '#340597', '#7008a5', '#a32494', '#cf5073', '#cf5073', '#ee7c4c', '#f4e82d']
-
-
-def test_circle_html():
-    """ Tests that a Circle can be rendered. """
-    ds.Circle(51.514, -0.132).show()
-
-
-def test_circle_map():
-    """ Tests that Circle.map generates a map """
-    lats = [51, 52, 53]
-    lons = [-1, -2, -3]
-    labels = ['A', 'B', 'C']
-    ds.Circle.map(lats, lons).show()
-    ds.Circle.map(lats, lons, labels).show()
-
 def test_marker_copy():
     lat, lon = 51, 52
     a = ds.Marker(lat, lon)
@@ -201,6 +180,10 @@ def test_icon_args_icon_present():
     marker = ds.Marker(0, 0, color='blue', marker_icon='info-sign', icon='custom-icon')
     assert marker._folium_kwargs['icon'].options['icon'], 'info-sign'
 
+def test_user_tampered_marker_icon_attributes():
+    marker = ds.Marker(0, 0, color='#ff0000')
+    del marker._attrs["marker_icon"]
+    assert marker._folium_kwargs['icon'].options['icon'], 'circle'
 
 def test_geojson():
     # Create a Marker instance with known values
@@ -245,49 +228,58 @@ def test_convert_point_no_name():
     assert converted_marker.lat_lon, (54.32, 98.76)
     assert not converted_marker._attrs['popup']
 
-# def test_percentile_and_outlier_lines():
-#     # Create a list of dictionaries to represent the table data
-#     data = [
-#         {"latitudes": 1, "longitudes": 4, "color_scale": 10},
-#         {"latitudes": 2, "longitudes": 5, "color_scale": 20},
-#         {"latitudes": 3, "longitudes": 6, "color_scale": 30},
-#     ]
-
-#     # Call the map_table method and check if percentiles and outliers are calculated correctly
-#     markers = ds.Marker.map_table(data, include_color_scale_outliers=False)
-#     assert markers[0].colorbar_scale, [10, 20, 30]
-#     assert markers[0].outlier_min_bound, 10
-#     assert markers[0].outlier_max_bound, 30
-
-# def test_return_colors():
-#     # Create a list of dictionaries to represent the table data
-#     data = [
-#         {"latitudes": 1, "longitudes": 4, "color_scale": 10},
-#         {"latitudes": 2, "longitudes": 5, "color_scale": 20},
-#         {"latitudes": 3, "longitudes": 6, "color_scale": 30},
-#     ]
-
-#     # Call the map_table method
-#     markers = ds.Marker.map_table(data, include_color_scale_outliers=False)
-
-#     # Call the interpolate_color method with a value that should use the last color
-#     last_color = markers[0].interpolate_color(["#340597", "#7008a5", "#a32494"], [10, 20], 25)
-#     assert last_color, "#a32494"
 
 ##########
-# Region #
+# Circle #
 ##########
 
+def test_line_color_handling():
+    # Create a Circle instance with line_color attribute
+    circle = ds.Circle(37.8, -122, line_color='red')
+    # Call the _folium_kwargs method to get the attributes
+    attrs = circle._folium_kwargs
+    # Check that 'line_color' attribute has been transferred to 'color'
+    assert attrs['color'], 'red'
 
-def test_region_html(states):
-    states['CA'].show()
+def test_circle_map_table():
+    lat_init, lon_init, area_init, color_scale_init = 51, -8, 10, 10
+    lats, lons, areas, color_scales = [], [], [], []
+    for i in range(8):
+        lats.append(lat_init+i)
+        lons.append(lon_init+i)
+        areas.append((area_init + 10*i)**2*math.pi)
+        color_scales.append(color_scale_init + 10*i)
+    color_scales[-1] = 1000000
+    labels = ['A', 'B', 'C']
+    t = ds.Table().with_columns('A', lats, 'B', lons, 'areas', areas, 'color_scale', color_scales)
+    markers = ds.Circle.map_table(t, include_color_scale_outliers=False)
+
+    for i in range(8):
+        assert markers[i]._attrs['radius'], 10 + 10*i
+
+    # Call the map_table method and check if percentiles and outliers are calculated correctly
+    assert markers._attrs['colorbar_scale'], [10.0, 23.125, 36.25, 49.375, 62.5, 75.625, 88.75, 101.875, 115.0]
+
+    assert [markers[i]._attrs['color'] for i in range(8)], ['#340597', '#340597', '#7008a5', '#a32494', '#cf5073', '#cf5073', '#ee7c4c', '#f4e82d']
 
 
-def test_geojson(states):
-    """ Tests that geojson returns the original US States data """
-    data = json.load(open('tests/us-states.json', 'r'))
-    geo = states.geojson()
-    assert data == geo, '{}\n{}'.format(data, geo)
+def test_circle_html():
+    """ Tests that a Circle can be rendered. """
+    ds.Circle(51.514, -0.132).show()
+
+
+def test_circle_map():
+    """ Tests that Circle.map generates a map """
+    lats = [51, 52, 53]
+    lons = [-1, -2, -3]
+    labels = ['A', 'B', 'C']
+    ds.Circle.map(lats, lons).show()
+    ds.Circle.map(lats, lons, labels).show()
+
+def test_user_tampered_circle_color_attributes():
+    circle = ds.Circle(51.514, -0.132)
+    del circle._attrs["color"]
+    assert "color" not in circle._folium_kwargs
 
 
 ##########
@@ -345,9 +337,13 @@ def test_color_with_ids(states):
 # GeoJSON #
 ###########
 
-def test_read_geojson_with_dict(states):
+def test_read_geojson_with_dict():
     data = {'type': 'FeatureCollection', 'features': []}
     map_data = ds.Map.read_geojson(data)
+    assert isinstance(map_data, ds.Map)
+
+def test_read_geojson_with_gz_file():
+    map_data = ds.Map.read_geojson('tests/us-states-zipped.json.gz')
     assert isinstance(map_data, ds.Map)
 
 def test_read_geojson_features_with_valid_data():
@@ -423,46 +419,18 @@ def test_read_geojson_features_with_invalid_geometry_type():
     assert features['1'] is None
 
 ##########
-# Circle #
+# Region #
 ##########
-def test_line_color_handling():
-    # Create a Circle instance with line_color attribute
-    circle = ds.Circle(37.8, -122, line_color='red')
-    # Call the _folium_kwargs method to get the attributes
-    attrs = circle._folium_kwargs
-    # Check that 'line_color' attribute has been transferred to 'color'
-    assert attrs['color'], 'red'
 
-def test_region_type_property_polygon():
-    # Create a GeoJSON object for a Polygon
-    geojson = {
-        "type": "Feature",
-        "geometry": {
-            "type": "Polygon",
-            "coordinates": [[[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]]
-        }
-    }
-    # Create a Region instance with the GeoJSON object
-    region = ds.Region(geojson)
-    # Assert that the type property returns "Polygon"
-    assert region.type, "Polygon"
+def test_region_html(states):
+    states['CA'].show()
 
-def test_region_type_property_multipolygon():
-    # Create a GeoJSON object for a MultiPolygon
-    geojson = {
-        "type": "Feature",
-        "geometry": {
-            "type": "MultiPolygon",
-            "coordinates": [
-                [[[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]],
-                [[[2, 2], [2, 3], [3, 3], [3, 2], [2, 2]]]
-            ]
-        }
-    }
-    # Create a Region instance with the GeoJSON object
-    region = ds.Region(geojson)
-    # Assert that the type property returns "MultiPolygon"
-    assert region.type, "MultiPolygon"
+
+def test_geojson(states):
+    """ Tests that geojson returns the original US States data """
+    data = json.load(open('tests/us-states.json', 'r'))
+    geo = states.geojson()
+    assert data == geo, '{}\n{}'.format(data, geo)
 
 def test_polygon_type():
     # Test if polygons property returns the correct structure for 'Polygon' type
@@ -485,31 +453,15 @@ def test_polygon_type():
     }
     region_polygon = ds.Region(geojson_polygon)
     region_multi_polygon = ds.Region(geojson_multi_polygon)
+    assert region_polygon.type, "Polygon"
+    assert region_multi_polygon.type, "MultiPolygon"
+
+    # Test if polygons property returns the correct structure for 'Polygon' type
     polygons = region_polygon.polygons
     assert len(polygons), 1
     assert len(polygons[0]), 1  # One polygon
     assert len(polygons[0][0]), 5  # Five points (closed ring)
 
-def test_multi_polygon_type():
-    geojson_polygon = {
-        "type": "Feature",
-        "geometry": {
-            "type": "Polygon",
-            "coordinates": [[[0, 0], [1, 0], [1, 1], [0, 1], [0, 0]]]
-        }
-    }
-    geojson_multi_polygon = {
-        "type": "Feature",
-        "geometry": {
-            "type": "MultiPolygon",
-            "coordinates": [
-                [[[0, 0], [1, 0], [1, 1], [0, 1], [0, 0]]],
-                [[[2, 2], [3, 2], [3, 3], [2, 3], [2, 2]]]
-            ]
-        }
-    }
-    region_polygon = ds.Region(geojson_polygon)
-    region_multi_polygon = ds.Region(geojson_multi_polygon)
     # Test if polygons property returns the correct structure for 'MultiPolygon' type
     polygons = region_multi_polygon.polygons
     assert len(polygons), 2  # Two polygons
@@ -558,6 +510,10 @@ def test_geojson_with_id():
     assert updated_geojson["type"], geojson_data["type"]
     assert updated_geojson["geometry"], geojson_data["geometry"]
     assert updated_geojson["properties"], geojson_data["properties"]
+
+###################
+# get_coordinates #
+###################
 
 def test_remove_nonexistent_county_column():
     # Create a table without the "county" column

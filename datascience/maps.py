@@ -217,19 +217,16 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         # remove the following with new Folium release
         # rough approximation, assuming max_zoom is 18
         import math
-        try:
-            lat_diff = bounds['max_lat'] - bounds['min_lat']
-            lon_diff = bounds['max_lon'] - bounds['min_lon']
-            area, max_area = lat_diff*lon_diff, 180*360
-            if area:
-                factor = 1 + max(0, 1 - self._width/1000)/2 + max(0, 1-area**0.5)/2
-                zoom = math.log(area/max_area)/-factor
-            else:
-                zoom = self._default_zoom
-            zoom = max(1, min(18, round(zoom)))
-            attrs['zoom_start'] = zoom
-        except ValueError as e:
-            raise Exception('Check that your locations are lat-lon pairs', e)
+        lat_diff = bounds['max_lat'] - bounds['min_lat']
+        lon_diff = bounds['max_lon'] - bounds['min_lon']
+        area, max_area = lat_diff*lon_diff, 180*360
+        if area:
+            factor = 1 + max(0, 1 - self._width/1000)/2 + max(0, 1-area**0.5)/2
+            zoom = math.log(area/max_area)/-factor
+        else:
+            zoom = self._default_zoom
+        zoom = max(1, min(18, round(zoom)))
+        attrs['zoom_start'] = zoom
 
         return attrs
 
@@ -856,7 +853,7 @@ class Region(_MapFeature):
         """
         if self.type == 'Polygon':
             polygons = [self._geojson['geometry']['coordinates']]
-        elif self.type == 'MultiPolygon':
+        else: # self.type == "MultiPolygon"
             polygons = self._geojson['geometry']['coordinates']
         return [   [   [_lat_lons_from_geojson(s) for
                         s in ring  ]              for
@@ -980,11 +977,7 @@ def get_coordinates(table, replace_columns=False, remove_nans=False):
     table = table.with_columns("lat", lat, "lon", lon)
     table = table.drop(index_name)
     if replace_columns:
-        for label in ["county", "city", "zip code", "state"]:
-            try:
-                table = table.drop(label)
-            except KeyError:
-                pass
+        table = table.drop(["county", "city", "zip code", "state"])
     if remove_nans: 
         table = table.where("lat", are.below(float("inf"))) # NaNs are not considered to be smaller than infinity
     return table
