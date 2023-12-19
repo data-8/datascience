@@ -395,20 +395,21 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         data = None
         if isinstance(path_or_json_or_string_or_url, (dict, list)):
             data = path_or_json_or_string_or_url
-        try:
-            data = json.loads(path_or_json_or_string_or_url)
-        except ValueError:
-            pass
-        try:
-            path = path_or_json_or_string_or_url
-            if path.endswith('.gz') or path.endswith('.gzip'):
-                import gzip
-                contents = gzip.open(path, 'r').read().decode('utf-8')
-            else:
-                contents = open(path, 'r').read()
-            data = json.loads(contents)
-        except FileNotFoundError:
-            pass
+        else:
+            try:
+                data = json.loads(path_or_json_or_string_or_url)
+            except ValueError:
+                pass
+            try:
+                path = path_or_json_or_string_or_url
+                if path.endswith('.gz') or path.endswith('.gzip'):
+                    import gzip
+                    contents = gzip.open(path, 'r').read().decode('utf-8')
+                else:
+                    contents = open(path, 'r').read()
+                data = json.loads(contents)
+            except FileNotFoundError:
+                pass
         if not data:
             import urllib.request
             with urllib.request.urlopen(path_or_json_or_string_or_url) as url:
@@ -425,7 +426,7 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
             key = feature.get('id', prefix + str(i))
             feature_type = feature['geometry']['type']
             if feature_type == 'FeatureCollection':
-                _read_geojson_features(feature, features, prefix + '.' + key)
+                value = Map._read_geojson_features(feature['geometry'], features, prefix + '.' + key)
             elif feature_type == 'Point':
                 value = Circle._convert_point(feature)
             elif feature_type in ['Polygon', 'MultiPolygon']:
@@ -575,7 +576,7 @@ class Marker(_MapFeature):
         """Convert a GeoJSON point to a Marker."""
         lon, lat = feature['geometry']['coordinates']
         popup = feature['properties'].get('name', '')
-        return cls(lat, lon)
+        return cls(lat, lon, popup=popup)
 
     @classmethod
     def map(cls, latitudes, longitudes, labels=None, colors=None, areas=None, other_attrs=None, clustered_marker=False, **kwargs):
