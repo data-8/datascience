@@ -217,19 +217,16 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         # remove the following with new Folium release
         # rough approximation, assuming max_zoom is 18
         import math
-        try:
-            lat_diff = bounds['max_lat'] - bounds['min_lat']
-            lon_diff = bounds['max_lon'] - bounds['min_lon']
-            area, max_area = lat_diff*lon_diff, 180*360
-            if area:
-                factor = 1 + max(0, 1 - self._width/1000)/2 + max(0, 1-area**0.5)/2
-                zoom = math.log(area/max_area)/-factor
-            else:
-                zoom = self._default_zoom
-            zoom = max(1, min(18, round(zoom)))
-            attrs['zoom_start'] = zoom
-        except ValueError as e:
-            raise Exception('Check that your locations are lat-lon pairs', e)
+        lat_diff = bounds['max_lat'] - bounds['min_lat']
+        lon_diff = bounds['max_lon'] - bounds['min_lon']
+        area, max_area = lat_diff*lon_diff, 180*360
+        if area:
+            factor = 1 + max(0, 1 - self._width/1000)/2 + max(0, 1-area**0.5)/2
+            zoom = math.log(area/max_area)/-factor
+        else:
+            zoom = self._default_zoom
+        zoom = max(1, min(18, round(zoom)))
+        attrs['zoom_start'] = zoom
 
         return attrs
 
@@ -395,20 +392,21 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         data = None
         if isinstance(path_or_json_or_string_or_url, (dict, list)):
             data = path_or_json_or_string_or_url
-        try:
-            data = json.loads(path_or_json_or_string_or_url)
-        except ValueError:
-            pass
-        try:
-            path = path_or_json_or_string_or_url
-            if path.endswith('.gz') or path.endswith('.gzip'):
-                import gzip
-                contents = gzip.open(path, 'r').read().decode('utf-8')
-            else:
-                contents = open(path, 'r').read()
-            data = json.loads(contents)
-        except FileNotFoundError:
-            pass
+        else:
+            try:
+                data = json.loads(path_or_json_or_string_or_url)
+            except ValueError:
+                pass
+            try:
+                path = path_or_json_or_string_or_url
+                if path.endswith('.gz') or path.endswith('.gzip'):
+                    import gzip
+                    contents = gzip.open(path, 'r').read().decode('utf-8')
+                else:
+                    contents = open(path, 'r').read()
+                data = json.loads(contents)
+            except FileNotFoundError:
+                pass
         if not data:
             import urllib.request
             with urllib.request.urlopen(path_or_json_or_string_or_url) as url:
@@ -425,7 +423,7 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
             key = feature.get('id', prefix + str(i))
             feature_type = feature['geometry']['type']
             if feature_type == 'FeatureCollection':
-                _read_geojson_features(feature, features, prefix + '.' + key)
+                value = Map._read_geojson_features(feature['geometry'], features, prefix + '.' + key)
             elif feature_type == 'Point':
                 value = Circle._convert_point(feature)
             elif feature_type in ['Polygon', 'MultiPolygon']:
@@ -575,7 +573,7 @@ class Marker(_MapFeature):
         """Convert a GeoJSON point to a Marker."""
         lon, lat = feature['geometry']['coordinates']
         popup = feature['properties'].get('name', '')
-        return cls(lat, lon)
+        return cls(lat, lon, popup=popup)
 
     @classmethod
     def map(cls, latitudes, longitudes, labels=None, colors=None, areas=None, other_attrs=None, clustered_marker=False, **kwargs):
@@ -855,7 +853,7 @@ class Region(_MapFeature):
         """
         if self.type == 'Polygon':
             polygons = [self._geojson['geometry']['coordinates']]
-        elif self.type == 'MultiPolygon':
+        else: # self.type == "MultiPolygon"
             polygons = self._geojson['geometry']['coordinates']
         return [   [   [_lat_lons_from_geojson(s) for
                         s in ring  ]              for
@@ -979,11 +977,7 @@ def get_coordinates(table, replace_columns=False, remove_nans=False):
     table = table.with_columns("lat", lat, "lon", lon)
     table = table.drop(index_name)
     if replace_columns:
-        for label in ["county", "city", "zip code", "state"]:
-            try:
-                table = table.drop(label)
-            except KeyError:
-                pass
+        table = table.drop(["county", "city", "zip code", "state"])
     if remove_nans: 
         table = table.where("lat", are.below(float("inf"))) # NaNs are not considered to be smaller than infinity
     return table
