@@ -261,19 +261,16 @@
         <span class="c1"># remove the following with new Folium release</span>
         <span class="c1"># rough approximation, assuming max_zoom is 18</span>
         <span class="kn">import</span> <span class="nn">math</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">lat_diff</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;max_lat&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;min_lat&#39;</span><span class="p">]</span>
-            <span class="n">lon_diff</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;max_lon&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;min_lon&#39;</span><span class="p">]</span>
-            <span class="n">area</span><span class="p">,</span> <span class="n">max_area</span> <span class="o">=</span> <span class="n">lat_diff</span><span class="o">*</span><span class="n">lon_diff</span><span class="p">,</span> <span class="mi">180</span><span class="o">*</span><span class="mi">360</span>
-            <span class="k">if</span> <span class="n">area</span><span class="p">:</span>
-                <span class="n">factor</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="o">/</span><span class="mi">1000</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="o">-</span><span class="n">area</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
-                <span class="n">zoom</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">area</span><span class="o">/</span><span class="n">max_area</span><span class="p">)</span><span class="o">/-</span><span class="n">factor</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">zoom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_zoom</span>
-            <span class="n">zoom</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">zoom</span><span class="p">)))</span>
-            <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;zoom_start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">zoom</span>
-        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Check that your locations are lat-lon pairs&#39;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+        <span class="n">lat_diff</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;max_lat&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;min_lat&#39;</span><span class="p">]</span>
+        <span class="n">lon_diff</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;max_lon&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;min_lon&#39;</span><span class="p">]</span>
+        <span class="n">area</span><span class="p">,</span> <span class="n">max_area</span> <span class="o">=</span> <span class="n">lat_diff</span><span class="o">*</span><span class="n">lon_diff</span><span class="p">,</span> <span class="mi">180</span><span class="o">*</span><span class="mi">360</span>
+        <span class="k">if</span> <span class="n">area</span><span class="p">:</span>
+            <span class="n">factor</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="o">/</span><span class="mi">1000</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="o">-</span><span class="n">area</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+            <span class="n">zoom</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">area</span><span class="o">/</span><span class="n">max_area</span><span class="p">)</span><span class="o">/-</span><span class="n">factor</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">zoom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_zoom</span>
+        <span class="n">zoom</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">zoom</span><span class="p">)))</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;zoom_start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">zoom</span>
 
         <span class="k">return</span> <span class="n">attrs</span>
 
@@ -453,20 +450,21 @@
         <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path_or_json_or_string_or_url</span><span class="p">,</span> <span class="p">(</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">path_or_json_or_string_or_url</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">path_or_json_or_string_or_url</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">pass</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">path</span> <span class="o">=</span> <span class="n">path_or_json_or_string_or_url</span>
-            <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.gz&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.gzip&#39;</span><span class="p">):</span>
-                <span class="kn">import</span> <span class="nn">gzip</span>
-                <span class="n">contents</span> <span class="o">=</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">contents</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
-            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">path_or_json_or_string_or_url</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="n">path_or_json_or_string_or_url</span>
+                <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.gz&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.gzip&#39;</span><span class="p">):</span>
+                    <span class="kn">import</span> <span class="nn">gzip</span>
+                    <span class="n">contents</span> <span class="o">=</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">contents</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+                <span class="k">pass</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
             <span class="kn">import</span> <span class="nn">urllib.request</span>
             <span class="k">with</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">path_or_json_or_string_or_url</span><span class="p">)</span> <span class="k">as</span> <span class="n">url</span><span class="p">:</span>
@@ -484,7 +482,7 @@
             <span class="n">key</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">prefix</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
             <span class="n">feature_type</span> <span class="o">=</span> <span class="n">feature</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">feature_type</span> <span class="o">==</span> <span class="s1">&#39;FeatureCollection&#39;</span><span class="p">:</span>
-                <span class="n">_read_geojson_features</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">key</span><span class="p">)</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">Map</span><span class="o">.</span><span class="n">_read_geojson_features</span><span class="p">(</span><span class="n">feature</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">],</span> <span class="n">features</span><span class="p">,</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">key</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">feature_type</span> <span class="o">==</span> <span class="s1">&#39;Point&#39;</span><span class="p">:</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="n">Circle</span><span class="o">.</span><span class="n">_convert_point</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">feature_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Polygon&#39;</span><span class="p">,</span> <span class="s1">&#39;MultiPolygon&#39;</span><span class="p">]:</span>
@@ -649,7 +647,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a GeoJSON point to a Marker.&quot;&quot;&quot;</span>
         <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span> <span class="o">=</span> <span class="n">feature</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;coordinates&#39;</span><span class="p">]</span>
         <span class="n">popup</span> <span class="o">=</span> <span class="n">feature</span><span class="p">[</span><span class="s1">&#39;properties&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">popup</span><span class="o">=</span><span class="n">popup</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Marker.map">
 <a class="viewcode-back" href="../../maps.html#datascience.maps.Marker.map">[docs]</a>
@@ -944,7 +942,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;Polygon&#39;</span><span class="p">:</span>
             <span class="n">polygons</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;coordinates&#39;</span><span class="p">]]</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;MultiPolygon&#39;</span><span class="p">:</span>
+        <span class="k">else</span><span class="p">:</span> <span class="c1"># self.type == &quot;MultiPolygon&quot;</span>
             <span class="n">polygons</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;coordinates&#39;</span><span class="p">]</span>
         <span class="k">return</span> <span class="p">[</span>   <span class="p">[</span>   <span class="p">[</span><span class="n">_lat_lons_from_geojson</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span>
                         <span class="n">s</span> <span class="ow">in</span> <span class="n">ring</span>  <span class="p">]</span>              <span class="k">for</span>
@@ -1083,11 +1081,7 @@
     <span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span><span class="s2">&quot;lat&quot;</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="s2">&quot;lon&quot;</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
     <span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">index_name</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">replace_columns</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;county&quot;</span><span class="p">,</span> <span class="s2">&quot;city&quot;</span><span class="p">,</span> <span class="s2">&quot;zip code&quot;</span><span class="p">,</span> <span class="s2">&quot;state&quot;</span><span class="p">]:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="k">pass</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s2">&quot;county&quot;</span><span class="p">,</span> <span class="s2">&quot;city&quot;</span><span class="p">,</span> <span class="s2">&quot;zip code&quot;</span><span class="p">,</span> <span class="s2">&quot;state&quot;</span><span class="p">])</span>
     <span class="k">if</span> <span class="n">remove_nans</span><span class="p">:</span> 
         <span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s2">&quot;lat&quot;</span><span class="p">,</span> <span class="n">are</span><span class="o">.</span><span class="n">below</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)))</span> <span class="c1"># NaNs are not considered to be smaller than infinity</span>
     <span class="k">return</span> <span class="n">table</span></div>
