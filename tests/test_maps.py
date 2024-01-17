@@ -541,3 +541,26 @@ def test_remove_nonexistent_zip_code_column():
     result = maps.get_coordinates(table, replace_columns=True)
     # Ensure that the "zip code" column is removed
     assert 'zip code' not in result.labels
+
+def test_map_with_no_features():
+    """ Tests that a map with no features does not produce errors and has no markers or regions. """
+    empty_map = ds.Map(features=[])
+    empty_map.show()
+    assert len(empty_map._features) == 0, "Expected no features in the map"
+
+def test_adding_markers_to_existing_map(states):
+    """ Tests adding markers to an existing map and checks if they are correctly integrated. """
+    # Create an initial map with state regions
+    initial_map = states
+
+    # Create some markers
+    marker1 = ds.Marker(37.7749, -122.4194, label='San Francisco')  # San Francisco coordinates
+    marker2 = ds.Marker(34.0522, -118.2437, label='Los Angeles')    # Los Angeles coordinates
+
+    # Add markers to the existing map
+    updated_map = initial_map.overlay(marker1)
+    updated_map = updated_map.overlay(marker2)
+
+    # Check if the markers are correctly added
+    assert marker1 in updated_map._features, "San Francisco marker should be in the map"
+    assert marker2 in updated_map._features, "Los Angeles marker should be in the map"
