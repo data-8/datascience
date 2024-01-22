@@ -90,6 +90,19 @@ def test_xor():
     ps = [p(x) for x in range(1, 6)]
     assert ps == [True, False, False, True, True]
 
+def test_combined_predicates():
+    """Combining three predicates with different logical operators."""
+    p = (are.above(2) & are.below(5)) | are.equal_to(3)
+    ps = [p(x) for x in range(1, 7)]
+    assert ps == [False, True, True, True, True, False]
+
+def test_negation_of_combined_predicates():
+    """Negation of combined predicates."""
+    p = ~(are.above(2) & are.below(4))
+    ps = [p(x) for x in range(1, 6)]
+    assert ps == [True, True, False, True, True]
+
+
 ############
 # Doctests #
 ############
