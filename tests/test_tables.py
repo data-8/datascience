@@ -137,6 +137,12 @@ def test_basic(table):
     z      | 1     | 10
     """)
 
+def test_column_types(table):
+    """Tests that the column types are correct."""
+    t = table
+    for col_name in t.labels:
+        assert all(isinstance(item, (str, int)) for item in t[col_name])
+
 def test_column(table):
     """Test table.values()"""
     t = table
