@@ -63,3 +63,9 @@ Optionally, integrate with Coveralls for code coverage tracking:
 python3 coveralls
 
 That's it! You have now successfully set up your local development environment and generated a test report.
+
+After reviewing the results, you can determine which of the files under the source code folder need more tests based on their corresponding percentages.
+
+Our aim is to have 97% of overall codebase coverage to ensure that there are no discrepencies.
+
+Thank you for considering to help our project, we really appreciate it :)
