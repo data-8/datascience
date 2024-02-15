@@ -21,3 +21,45 @@ pip install datascience
 ```
 
 A log of all changes can be found in CHANGELOG.md.
+
+## Setting up Local Development Environment
+
+### For Windows Users
+
+#### Setting up Windows Subsystem for Linux (WSL)
+
+Before proceeding, it's recommended to set up Windows Subsystem for Linux (WSL) for better compatibility with development tools. Follow the official Microsoft documentation to install and set up WSL: [Install Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/install)
+
+Once WSL is set up, open your preferred Linux distribution and continue with the following steps.
+
+#### Installing Required Dependencies
+
+Ensure you have Python, pip, and other necessary tools installed within your WSL environment.
+
+sudo apt update
+sudo apt install python3 python3-pip
+
+### Generating local test report
+
+1. Clone the repository:
+git clone https://github.com/<your_username>/datascience.git
+
+2. Navigate to the project directory
+cd datascience
+
+3. Install required packages:
+pip install -r requirements.txt
+
+4. Run tests using pytest
+python3 pytest
+
+5. Generate coverage report:
+python3 coverage run -m pytest
+
+6. View coverage report:
+python3 coverage report
+
+Optionally, integrate with Coveralls for code coverage tracking:
+python3 coveralls
+
+That's it! You have now successfully set up your local development environment and generated a test report.
