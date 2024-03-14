@@ -1158,6 +1158,11 @@ def test_remove_single(table):
     z      | 1     | 10
     """)
 
+def test_remove_none(table):
+    num_rows_before = table.num_rows
+    assert table.remove([]) is None
+    assert table.num_rows == num_rows_before
+
 def test_remove_zeroth_row(table):
     table.remove(0)
     assert_equal(table, """
