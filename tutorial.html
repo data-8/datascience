@@ -449,16 +449,16 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 <span class="gp">In [47]: </span><span class="n">normal_data</span>
 <span class="gh">Out[47]: </span>
 <span class="go">data1    | data2</span>
-<span class="go">3.16957  | 3.75866</span>
-<span class="go">2.6255   | -0.569511</span>
-<span class="go">0.47506  | 2.82086</span>
-<span class="go">0.200926 | 8.79459</span>
-<span class="go">3.04412  | 6.94366</span>
-<span class="go">0.190606 | 5.32426</span>
-<span class="go">0.982727 | 0.802981</span>
-<span class="go">-1.10581 | 2.60784</span>
-<span class="go">5.27348  | 10.9046</span>
-<span class="go">2.66252  | 8.54207</span>
+<span class="go">-1.20011 | 2.81614</span>
+<span class="go">1.94625  | 1.98461</span>
+<span class="go">-2.23617 | 4.33198</span>
+<span class="go">0.163808 | 4.7598</span>
+<span class="go">2.13657  | 6.68041</span>
+<span class="go">-1.09672 | 5.5486</span>
+<span class="go">0.5919   | 6.09641</span>
+<span class="go">2.28616  | 5.60395</span>
+<span class="go">2.61927  | 1.99552</span>
+<span class="go">4.92661  | 8.06488</span>
 <span class="go">... (90 rows omitted)</span>
 </pre></div>
 </div>
@@ -511,16 +511,16 @@ converting to a pandas dataframe with <a class="reference internal" href="_autos
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [56]: </span><span class="n">normal_data</span>
 <span class="gh">Out[56]: </span>
 <span class="go">data1    | data2</span>
-<span class="go">3.16957  | 3.75866</span>
-<span class="go">2.6255   | -0.569511</span>
-<span class="go">0.47506  | 2.82086</span>
-<span class="go">0.200926 | 8.79459</span>
-<span class="go">3.04412  | 6.94366</span>
-<span class="go">0.190606 | 5.32426</span>
-<span class="go">0.982727 | 0.802981</span>
-<span class="go">-1.10581 | 2.60784</span>
-<span class="go">5.27348  | 10.9046</span>
-<span class="go">2.66252  | 8.54207</span>
+<span class="go">-1.20011 | 2.81614</span>
+<span class="go">1.94625  | 1.98461</span>
+<span class="go">-2.23617 | 4.33198</span>
+<span class="go">0.163808 | 4.7598</span>
+<span class="go">2.13657  | 6.68041</span>
+<span class="go">-1.09672 | 5.5486</span>
+<span class="go">0.5919   | 6.09641</span>
+<span class="go">2.28616  | 5.60395</span>
+<span class="go">2.61927  | 1.99552</span>
+<span class="go">4.92661  | 8.06488</span>
 <span class="go">... (90 rows omitted)</span>
 
 <span class="go"># index = False prevents row numbers from appearing in the resulting CSV</span>
@@ -634,8 +634,8 @@ non-smokers.</p>
 
 <span class="gp">In [73]: </span><span class="n">bootstrapped_diff_means</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
 <span class="gh">Out[73]: </span>
-<span class="go">array([-0.6929689 ,  0.27442753, -0.33656322,  0.14858693, -0.35160047,</span>
-<span class="go">       -0.3568597 ,  0.23675975,  0.78301263, -0.24442007, -2.02866981])</span>
+<span class="go">array([-1.77816171,  0.23773786, -1.50497738,  1.95732895, -1.18618462,</span>
+<span class="go">       -2.90481588, -0.09267639, -0.90782028, -1.84637019,  0.3219617 ])</span>
 
 <span class="gp">In [74]: </span><span class="n">num_diffs_greater</span> <span class="o">=</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">bootstrapped_diff_means</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">observed_diff</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
