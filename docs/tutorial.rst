@@ -93,8 +93,11 @@ CSVs from URLs are also valid inputs to
 
 ------
 
-It's also possible to add columns from a dictionary, but this option is
-discouraged because dictionaries do not preserve column order.
+It's also possible to add columns from a dictionary. For users< Python 3.6 this method is discouraged because dictionary does not preserve the order.
+
+**Note**- New Dict implementation in Python 3.6 makes it possible for maintaining order of columns in dictionaires. 
+          For more info- Read https://docs.python.org/3.6/whatsnew/3.6.html#whatsnew36-pep468
+
 
 .. ipython:: python
 
