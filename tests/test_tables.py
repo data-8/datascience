@@ -1965,3 +1965,44 @@ def test_num_columns(table):
     """Test that Tables returns right number of columns"""
     number = table.num_columns
     assert number == 3
+
+# Tests for make_unique_labels()
+def test_make_unique_labels_duplicate_labels():
+    # Test case 1: Non-unique labels
+    labels1 = ['a', 'b', 'a', 'c', 'b']
+    expected1 = ['a ', 'b ', '\u200ca ', 'c ', '\u200cb ']
+    assert make_unique_labels(labels1) == expected1
+
+
+def test_make_unique_labels_unique_labels():
+    # Test case 2: Unique labels
+    labels2 = ['x', 'y', 'z']
+    expected2 = ['x ', 'y ', 'z ']
+    assert make_unique_labels(labels2) == expected2
+
+
+def test_make_unique_labels_empty_input():
+    # Test case 3: Empty input
+    labels3 = []
+    expected3 = []
+    assert make_unique_labels(labels3) == expected3
+
+
+def test_make_unique_labels_single_label():
+    # Test case 4: Single label
+    labels4 = ['hello']
+    expected4 = ['hello ']
+    assert make_unique_labels(labels4) == expected4
+
+def test_make_unique_labels_duplicates_with_spaces():
+    # Test case 5: Labels with spaces
+    labels5 = ['a b', 'c d', 'a b']
+    expected5 = ['a b ', 'c d ', '\u200ca b ']
+    assert make_unique_labels(labels5) == expected5
+
+
+def test_make_unique_labels_duplicates_with_special_characters():
+    # Test case 6: Labels with special characters
+    labels6 = ['a!', 'b@', 'a!']
+    expected6 = ['a! ', 'b@ ', '\u200ca! ']
+    assert make_unique_labels(labels6) == expected6
