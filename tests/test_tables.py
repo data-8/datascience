@@ -1631,6 +1631,36 @@ def test_move_column(table):
     table = table.move_column(2, 1)
     assert table.labels == ('count', 'points', 'letter')
 
+
+def test_join_with_empty_self(table2):
+    empty_table = Table().with_columns(['letter', []])
+    result = empty_table.join('letter', table2)
+    assert result is None, "Expected None when joining with an empty self table"
+
+def test_join_with_empty_other(table):
+    empty_table = Table().with_columns(['points', []])
+    result = table.join('points', empty_table)
+    assert result is None, "Expected None when joining with an empty other table"
+
+def test_join_with_other_label(table, table2):
+    result = table.join('points', table2, 'points')
+    assert_equal(result, """
+    points | letter | count | names
+    1      | a      | 9     | one
+    2      | b      | 3     | two
+    2      | c      | 3     | two
+    """)
+
+def test_join_without_other_label(table, table2):
+    result = table.join('points', table2)
+    assert_equal(result, """
+    points | letter | count | names
+    1      | a      | 9     | one
+    2      | b      | 3     | two
+    2      | c      | 3     | two
+    """)
+
+
 ##################
 # Export/Display #
 ##################
