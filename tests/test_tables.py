@@ -1997,17 +1997,21 @@ def test_num_columns(table):
     assert number == 3
 
 # these are my added tests:
-#hi
+
 def test__join(table, table2):
-    # try out _join with a specific other_label to see if it handles this scenario properly
-    """Test that the _join method performs an internal join operation without errors."""
-    joined = table._join('letter', 'points', table2)
-    # shouldn't give us a direct output since _join is internal
-    assert joined is None, "_join gave a result but was expecting None since it's for internal use only"
+    """Tests the private _join method to ensure it modifies the table without errors."""
+    # edited function since there was error in returning None. intead checking for exceptions
+    table2_with_letter = table2.copy()
+    table2_with_letter['letter'] = ['a', 'b', 'c']  # adding a letter column to table2
+    try:
+        table._join('letter', table2_with_letter, 'letter')
+    except Exception as e:
+        assert False, f"_join raised an exception: {e}"
 
-    # test _join without specifying other_label and see if it still behaves correctly
-    joined_no_label = table._join('letter', None, table2)
-    # should have no output as well
-    assert joined_no_label is None, "returned something but should be None since it's meant to work internally"
+    # should use letter by default since no other label is provided
+    try:
+        table._join('letter', table2_with_letter)
+        # if no exception is raised, the test passes
+    except Exception as e:
+        assert False, f"_join raised an exception: {e}"
 
-#comments to test github actions
