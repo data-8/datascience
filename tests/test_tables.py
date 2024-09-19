@@ -1997,7 +1997,7 @@ def test_num_columns(table):
     assert number == 3
 
 # these are my added tests:
-
+#hi
 def test__join(table, table2):
     # try out _join with a specific other_label to see if it handles this scenario properly
     """Test that the _join method performs an internal join operation without errors."""
