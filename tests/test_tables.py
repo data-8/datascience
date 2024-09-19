@@ -1995,3 +1995,18 @@ def test_num_columns(table):
     """Test that Tables returns right number of columns"""
     number = table.num_columns
     assert number == 3
+
+# these are my added tests:
+
+def test__join(table, table2):
+    # try out _join with a specific other_label to see if it handles this scenario properly
+    """Test that the _join method performs an internal join operation without errors."""
+    joined = table._join('letter', 'points', table2)
+    # shouldn't give us a direct output since _join is internal
+    assert joined is None, "_join gave a result but was expecting None since it's for internal use only"
+
+    # test _join without specifying other_label and see if it still behaves correctly
+    joined_no_label = table._join('letter', None, table2)
+    # should have no output as well
+    assert joined_no_label is None, "returned something but should be None since it's meant to work internally"
+
