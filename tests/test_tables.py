@@ -1996,7 +1996,8 @@ def test_num_columns(table):
     number = table.num_columns
     assert number == 3
 
-# these are my added tests:
+# these are my added tests: 
+# tables are defined in beginning of file
 
 def test__join(table, table2):
     """Tests the private _join method to ensure it modifies the table without errors."""
@@ -2014,4 +2015,20 @@ def test__join(table, table2):
         # if no exception is raised, the test passes
     except Exception as e:
         assert False, f"_join raised an exception: {e}"
+
+
+
+def test_as_label(table):
+    """Tests the _as_label returns correctly for different input types."""
+    # string input
+    label_str = table._as_label('letter')
+    assert label_str == 'letter', f"Should be 'letter', got {label_str}"
+
+    # integer input
+    label_int = table._as_label(0) #look at table def in beginning of file
+    assert label_int == 'letter', f"Should be 'letter', got {label_int}"
+
+    # invalid input such as list
+    with pytest.raises(ValueError):
+        table._as_label([])  # should raise an error
 
