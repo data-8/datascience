@@ -1999,20 +1999,20 @@ def test_num_columns(table):
     assert number == 3
 
 # these are my added tests: 
-# removed some comments to make it more readable and follow the examples of other tests in the file
 # tables are defined in beginning of file
 def test_join_with_empty_table(): #line 2040
     """Tests the _join method when one of the tables is empty."""
-    empty_table = Table() 
-    non_empty_table = Table({'animal': ['cow', 'donkey', 'sheep']})
+    empty_table = Table() # testing for none from the _join function in the coveralls report
+    non_empty_table = Table({'animal': ['cow', 'donkey', 'sheep']}) # there was error with table copy here bc of non_defined parameter fixtures
     result = empty_table._join('lette', non_empty_table, 'lette')
     assert result is None, "Expected None from joining with an empty table"
 
 
 def test__join(table, table2): # line 2042
     """Tests the private _join method to ensure it modifies the table without errors."""
+    # edited function since there was error in returning None. instead checking for exceptions
     table2_with_letter = table2.copy()
-    table2_with_letter['letter'] = ['a', 'b', 'c'] 
+    table2_with_letter['letter'] = ['a', 'b', 'c']  # adding a letter column to table2
     try:
         table._join('letter', table2_with_letter, 'letter')
     except Exception as e:
@@ -2026,20 +2026,25 @@ def test__join(table, table2): # line 2042
         assert False, f"_join raised an exception: {e}"
 
 def test__join_helper_no_matching_rows(table, table2): # line 2064
-    table1_rows = table.index_by('letter')  
-    table2_rows = table2.index_by('points') 
+    # from tables from begining of file
+    table1_rows = table.index_by('letter')  # letter col from first table
+    table2_rows = table2.index_by('points')  # points col from table 2
     result = table._join_helper('letter', table1_rows, table2, ['points'], table2_rows)
+    # should return None since there are no matching rows
     assert result is None, "_join_helper did not return None when mismatched rows"
 
 
 def test_as_label(table): # line 2167
     """Tests the _as_label returns correctly for different input types."""
+    # string input
     label_str = table._as_label('letter')
     assert label_str == 'letter', f"Should be 'letter', got {label_str}"
    
+    # integer input
     label_int = table._as_label(0) #look at table def in beginning of file
     assert label_int == 'letter', f"Should be 'letter', got {label_int}"
 
+    # invalid input such as list
     with pytest.raises(ValueError): # similar to examples of other tests in file 
         table._as_label([])  # should raise an error
 
@@ -2049,14 +2054,17 @@ def test_as_label(table): # line 2167
 
 def test_split(table): # line 2396
     """Test the split method with various input values."""
+    # split k=2
     split_tables = table.split(2)
     assert len(split_tables) == 2, "Split should produce exactly 2 tables"
     assert split_tables[0].num_rows == 2, "First split table should have 2 rows"
     assert split_tables[1].num_rows == table.num_rows - 2, "Second table should have remaining rows"
 
+    # split k=0: invalid
     with pytest.raises(ValueError): 
         table.split(0)  
 
+    # should raise an error: splitting into exactly the same number of rows 
     with pytest.raises(ValueError):
         table.split(table.num_rows)  
 
@@ -2065,6 +2073,7 @@ def test_with_columns_empty_list(): # line 2574: both functions below tests diff
     table = Table(['letter'])  
     empty_labels_and_values = [] 
 
+    # calling with_columns with an empty list should return the same table (self)
     modified_table = table.with_columns(empty_labels_and_values)
     assert table.labels == modified_table.labels, "Expected the labels to remain unchanged."
     assert table.num_rows == modified_table.num_rows, "Expected the number of rows to remain unchanged."
@@ -2072,16 +2081,18 @@ def test_with_columns_empty_list(): # line 2574: both functions below tests diff
 
 def test_with_columns_invalid_label_type(): # line 2575
     """Test that with_columns raises an assertion error for invalid label type or incomplete input."""
-    table = Table(['letter'])  
+    table = Table(['letter'])  # I made an initial table with one column label
 
+    # test ensures even number of elements in the list
     with pytest.raises(AssertionError, match="Even length sequence required"):
+        # Pass an odd number of elements to cause the error
         table.with_columns(['letter'])
 
 
 def test_to_csv_file_creation():
     """Test that to_csv correctly writes the table to a CSV file."""
     table = Table().with_columns([
-        'tutoring', ['a', 'b', 'c', 'd'],
+        'tutoring', ['a', 'b', 'c', 'd'], # reference to group project lol
         'wage', [9, 20, 15, 14]
     ])
     
@@ -2095,6 +2106,7 @@ def test_to_csv_file_creation():
         contents = f.read()
         assert 'tutoring' in contents and 'wage' in contents, "Expected tutoring and wage labels in the CSV file."
     
+    # make sure to remove the file after the test
     os.remove(filename)
 
 
@@ -2105,6 +2117,8 @@ def test_plot_defaults_when_no_xticks():
         'enjoy_beach_price', [2, 20, 30, 300, 3]
     ])
 
+    # just need to call plot
+    # plot should not raise an error when defaults utilized
     try:
         table.plot()
     except Exception as e:
