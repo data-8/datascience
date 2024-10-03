@@ -103,6 +103,11 @@ def scrabble_table2():
         'pointsplus1', [2, 3, 3, 11],
         ])
 
+@pytest.fixture(scope='function')
+def empty_table():
+    """Setup empty table"""
+    return Table().with_columns("A",[])
+
 
 def assert_equal(string1, string2):
     string1, string2 = str(string1), str(string2)
@@ -1659,6 +1664,21 @@ def test_join_without_other_label(table, table2):
     2      | b      | 3     | two
     2      | c      | 3     | two
     """)
+
+def test_join_with_empty_table(table, empty_table):
+    result = empty_table._join('points', table)
+    assert result is None
+
+    result = table._join('points', empty_table)
+    assert result is None
+
+def test_join_without_other_label(table, table2):
+    result = table._join('points', table2)
+    assert result is not None
+
+
+
+
 
 
 ##################

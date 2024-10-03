@@ -44,6 +44,7 @@ def test_setup_map():
         'width': 960,
         'height': 500,
         'features': [],
+        'attr':'Map tiles by Stamen Design, CC BY 3.0 - Map data © OpenStreetMap'
     }
     """ Tests features as NumPy array. """
     kwargs2 = {
@@ -56,6 +57,7 @@ def test_setup_map():
             ds.Marker(51.514, -0.139), 
             ds.Marker(51.519, -0.132)
         ]),
+        'attr':'Map tiles by Stamen Design, CC BY 3.0 - Map data © OpenStreetMap'
     }
     ds.Map(**kwargs1).show()
     ds.Map(**kwargs2).show()

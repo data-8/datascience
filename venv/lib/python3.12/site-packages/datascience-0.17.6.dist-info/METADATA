@@ -1,0 +1,21 @@
+Metadata-Version: 2.1
+Name: datascience
+Version: 0.17.6
+Summary: A Jupyter notebook Python library for introductory data science
+Home-page: https://github.com/data-8/datascience
+Download-URL: https://github.com/data-8/datascience/archive/0.17.6.zip
+Author: John DeNero, David Culler, Alvin Wan, Sam Lau
+Author-email: ds8-instructors@berkeley.edu
+Keywords: data,tools,berkeley
+License-File: LICENSE
+Requires-Dist: folium (>=0.9.1)
+Requires-Dist: setuptools
+Requires-Dist: matplotlib (>=3.0.0)
+Requires-Dist: pandas
+Requires-Dist: scipy
+Requires-Dist: numpy
+Requires-Dist: ipython
+Requires-Dist: plotly
+Requires-Dist: branca
+
+A Jupyter notebook Python library for introductory data science
