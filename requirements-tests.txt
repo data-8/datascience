@@ -6,3 +6,4 @@ bokeh
 nbval
 pytest-cov
 pygments
+bokeh_sampledata
