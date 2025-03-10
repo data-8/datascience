@@ -39,6 +39,11 @@ def make_array(*elements):
     >>> make_array()
     array([], dtype=float64)
     """
+    if elements and all(isinstance(item, bool) for item in elements):
+        # Explicit check for bool, so it is not converted to int
+        # as Python bools will have isinstance(.., int) as True
+        return np.array(elements, dtype=bool)  
+
     if elements and all(isinstance(item, (int, np.integer)) for item in elements):
         # Specifically added for Windows machines where the default 
         # integer is int32 - see GH issue #339.
