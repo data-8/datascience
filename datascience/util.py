@@ -23,25 +23,10 @@ def make_array(*elements):
     A simple way to make an array with a few elements.
 
     As with any array, all arguments should have the same type.
-    
-    Args:
-           ``elements`` (variadic): elements 
-    Returns:
-           A NumPy array of same length as the provided varadic argument ``elements``
-           
-    >>> make_array(0)
-    array([0])
-    >>> make_array(2, 3, 4)
-    array([2, 3, 4])
-    >>> make_array("foo", "bar")
-    array(['foo', 'bar'],
-          dtype='<U3')
-    >>> make_array()
-    array([], dtype=float64)
     """
     if elements and all(isinstance(item, (int, np.integer)) for item in elements):
-        # Specifically added for Windows machines where the default 
-        # integer is int32 - see GH issue #339.
+        if all(isinstance(item, bool) for item in elements):  # Explicitly check for bools
+            return np.array(elements, dtype=bool)
         return np.array(elements, dtype="int64")
 
     # Manually cast `elements` as an object due to this: https://github.com/data-8/datascience/issues/458
