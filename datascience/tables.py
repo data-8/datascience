@@ -2239,16 +2239,16 @@ class Table(collections.abc.MutableMapping):
         return self._with_columns(percentiles)
 
     def sample(self, k=None, with_replacement=True, weights=None):
-        """Return a new table where k rows are randomly sampled from the
+        """Return a new table where n rows are randomly sampled from the
         original table.
 
         Args:
-            ``k`` -- specifies the number of rows (``int``) to be sampled from
-               the table. Default is k equal to number of rows in the table.
+            ``n`` -- specifies the number of rows (``int``) to be sampled from
+               the table. Default is n equal to number of rows in the table.
 
             ``with_replacement`` -- (``bool``) By default True;
-                Samples ``k`` rows with replacement from table, else samples
-                ``k`` rows without replacement.
+                Samples ``n`` rows with replacement from table, else samples
+                ``n`` rows without replacement.
 
             ``weights`` -- Array specifying probability the ith row of the
                 table is sampled. Defaults to None, which samples each row
@@ -2261,7 +2261,7 @@ class Table(collections.abc.MutableMapping):
                 in the table; or, if ``weights`` does not sum to 1.
 
         Returns:
-            A new instance of ``Table`` with ``k`` rows resampled.
+            A new instance of ``Table`` with ``n`` rows resampled.
 
         >>> jobs = Table().with_columns(
         ...     'job',  make_array('a', 'b', 'c', 'd'),
@@ -2284,28 +2284,28 @@ class Table(collections.abc.MutableMapping):
         b    | 20
         c    | 15
         a    | 10
-        >>> jobs.sample(k = 2) # doctest: +SKIP
+        >>> jobs.sample(n = 2) # doctest: +SKIP
         job  | wage
         b    | 20
         c    | 15
         >>> ws =  make_array(0.5, 0.5, 0, 0)
-        >>> jobs.sample(k=2, with_replacement=True, weights=ws) # doctest: +SKIP
+        >>> jobs.sample(n=2, with_replacement=True, weights=ws) # doctest: +SKIP
         job  | wage
         a    | 10
         a    | 10
-        >>> jobs.sample(k=2, weights=make_array(1, 0, 1, 0))
+        >>> jobs.sample(n=2, weights=make_array(1, 0, 1, 0))
         Traceback (most recent call last):
             ...
         ValueError: probabilities do not sum to 1
-        >>> jobs.sample(k=2, weights=make_array(1, 0, 0)) # Weights must be length of table.
+        >>> jobs.sample(n=2, weights=make_array(1, 0, 0)) # Weights must be length of table.
         Traceback (most recent call last):
             ...
         ValueError: 'a' and 'p' must have same size
         """
-        n = self.num_rows
-        if k is None:
-            k = n
-        index = np.random.choice(n, k, replace=with_replacement, p=weights)
+        total_rows = self.num_rows
+        if n is None:
+            n = total_rows
+        index = np.random.choice(total, n, replace=with_replacement, p=weights)
         columns = [[c[i] for i in index] for c in self.columns]
         sample = self._with_columns(columns)
         return sample
