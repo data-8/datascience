@@ -21,3 +21,20 @@ pip install datascience
 ```
 
 A log of all changes can be found in CHANGELOG.md.
+
+## Usage
+
+To use the `datascience` library, you can import it in your Python scripts or Jupyter Notebooks.
+
+```python
+from datascience import Table
+
+# Create a table with data
+data = Table().with_columns(
+  'A', [1, 2, 3, 4],
+  'B', [5, 6, 7, 8]
+)
+
+# Display the table
+data.show()
+
