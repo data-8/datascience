@@ -2351,16 +2351,16 @@ class Table(collections.abc.MutableMapping):
         label = self._unused_label(self._as_label(distribution) + ' sample')
         return self.with_column(label, sample)
 
-    def split(self, k):
+    def split(self, first_n):
         """Return a tuple of two tables where the first table contains
-        ``k`` rows randomly sampled and the second contains the remaining rows.
+        ``first_n`` rows randomly sampled and the second contains the remaining rows.
 
         Args:
-            ``k`` (int): The number of rows randomly sampled into the first
-                table. ``k`` must be between 1 and ``num_rows - 1``.
+            ``first_n`` (int): The number of rows randomly sampled into the first
+                table. ``first_n`` must be between 1 and ``num_rows - 1``.
 
         Raises:
-            ``ValueError``: ``k`` is not between 1 and ``num_rows - 1``.
+            ``ValueError``: ``first_n`` is not between 1 and ``num_rows - 1``.
 
         Returns:
             A tuple containing two instances of ``Table``.
@@ -2368,34 +2368,25 @@ class Table(collections.abc.MutableMapping):
         >>> jobs = Table().with_columns(
         ...     'job',  make_array('a', 'b', 'c', 'd'),
         ...     'wage', make_array(10, 20, 15, 8))
-        >>> jobs
-        job  | wage
-        a    | 10
-        b    | 20
-        c    | 15
-        d    | 8
         >>> sample, rest = jobs.split(3)
-        >>> sample # doctest: +SKIP
-        job  | wage
-        c    | 15
-        a    | 10
-        b    | 20
-        >>> rest # doctest: +SKIP
-        job  | wage
-        d    | 8
         """
-        if not 1 <= k <= self.num_rows - 1:
-            raise ValueError("Invalid value of k. k must be between 1 and the"
-                             "number of rows - 1")
+        if not 1 <= first_n <= self.num_rows - 1:
+            raise ValueError(
+                "Invalid value of first_n. first_n must be between 1 and the "
+                "number of rows - 1"
+            )
 
         rows = np.random.permutation(self.num_rows)
+        first = self.take(rows[:first_n])
+        rest  = self.take(rows[first_n:])
 
-        first = self.take(rows[:k])
-        rest = self.take(rows[k:])
+        # preserve formatting metadata
         for column_label in self._formats:
             first._formats[column_label] = self._formats[column_label]
-            rest._formats[column_label] = self._formats[column_label]
+            rest._formats[column_label]  = self._formats[column_label]
+
         return first, rest
+
 
 
     def with_row(self, row):
