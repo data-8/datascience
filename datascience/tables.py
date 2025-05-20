@@ -5349,15 +5349,14 @@ class Table(collections.abc.MutableMapping):
         >>> t.hist('value', group='category') # doctest: +SKIP
         <two overlaid histograms of the data [1, 2, 3] and [2, 5]>
         """
+
         # Matplotlib has deprecated the normed keyword.
-        # TODO consider changing this function to use density= instead too
         if 'normed' not in vargs and 'density' not in vargs:
             vargs['density'] = True
         elif 'normed' in vargs and 'density' not in vargs:
             vargs['density'] = vargs.pop('normed')
         elif 'normed' in vargs and 'density' in vargs:
-            raise ValueError("You can't specify both normed and density. "
-                             "Use one or the other.")
+            raise ValueError("You can't specify both normed and density. Use one or the other.")
 
         global _INTERACTIVE_PLOTS
         if _INTERACTIVE_PLOTS:
@@ -5366,18 +5365,18 @@ class Table(collections.abc.MutableMapping):
 
             return self.ihist(
                 *columns,
-                overlay = overlay,
-                bins = bins,
-                bin_column = bin_column,
-                unit = unit,
-                counts = counts,
-                group = group,
-                side_by_side = side_by_side,
-                left_end = left_end,
-                right_end = right_end,
-                width = width,
-                height = height,
-                rug = rug,
+                overlay=overlay,
+                bins=bins,
+                bin_column=bin_column,
+                unit=unit,
+                counts=counts,
+                group=group,
+                side_by_side=side_by_side,
+                left_end=left_end,
+                right_end=right_end,
+                width=width,
+                height=height,
+                rug=rug,
                 **vargs
             )
 
@@ -5389,7 +5388,7 @@ class Table(collections.abc.MutableMapping):
 
         if counts is not None and bin_column is None:
             warnings.warn("counts arg of hist is deprecated; use bin_column")
-            bin_column=counts
+            bin_column = counts
         if columns:
             columns_included = list(columns)
             if bin_column is not None:
@@ -5399,19 +5398,15 @@ class Table(collections.abc.MutableMapping):
             self = self.select(*columns_included)
         if group is not None:
             if bin_column is not None:
-                raise ValueError("Using bin_column and group together is "
-                                 "currently unsupported.")
+                raise ValueError("Using bin_column and group together is currently unsupported.")
             if len(columns) > 1:
-                raise ValueError("Using group with multiple histogram value "
-                                 "columns is currently unsupported.")
+                raise ValueError("Using group with multiple histogram value columns is currently unsupported.")
 
         # Check for non-numerical values and raise a ValueError if any found
         for col in self:
             if col != group and any(isinstance(cell, np.flexible) for cell in self[col]):
-                raise ValueError("The column '{0}' contains non-numerical "
-                    "values. A histogram cannot be drawn for this table."
-                    .format(col))
-
+                raise ValueError("The column '{0}' contains non-numerical values. A histogram cannot be drawn for this table."
+                                .format(col))
 
         if bin_column is not None and bins is None:
             bins = np.unique(self.column(bin_column))
@@ -5431,13 +5426,11 @@ class Table(collections.abc.MutableMapping):
             grouped = self.group(group, np.array)
             if grouped.num_rows > 20:
                 warnings.warn("It looks like you're making a grouped histogram with "
-                              "a lot of groups ({:d}), which is probably incorrect."
-                              .format(grouped.num_rows))
+                            "a lot of groups ({:d}), which is probably incorrect."
+                            .format(grouped.num_rows))
             return [("{}={}".format(group, k), (v[0][1],)) for k, v in grouped.index_by(group).items()]
 
-        # Populate values_dict: An ordered dict from column name to singleton
-        # tuple of array of values or a (values, weights) pair of arrays.  If
-        # any values have weights, they all must have weights.
+        # Populate values_dict: An ordered dict from column name to data arrays
         if bin_column is not None:
             values_dict = prepare_hist_with_bin_column(bin_column)
         elif group is not None:
@@ -5445,6 +5438,7 @@ class Table(collections.abc.MutableMapping):
         else:
             values_dict = [(k, (self.column(k),)) for k in self.labels]
         values_dict = collections.OrderedDict(values_dict)
+
         if left_end is not None or right_end is not None:
             if left_end is None:
                 if bins is not None and bins[0]:
@@ -5458,26 +5452,23 @@ class Table(collections.abc.MutableMapping):
                     right_end = max([max(self.column(k)) for k in self.labels if np.issubdtype(self.column(k).dtype, np.number)])
 
         def draw_hist(values_dict):
-            # Check if np.printoptions is set to legacy. Throw UserWarning if not
             if np.get_printoptions()['legacy'] != '1.13':
-                warnings.warn("We've detected you're not using the '1.13' legacy setting for `np.printoptions`. "
-                    "This may cause excessive error terms in your plots. We recommend solving this by running the "
-                    "following code: `np.set_printoptions(legacy='1.13')`", UserWarning)
-            # This code is factored as a function for clarity only.
+                    warnings.warn("We've detected you're not using the '1.13' legacy setting for `np.printoptions`. "
+                        "This may cause excessive error terms in your plots. We recommend solving this by running the "
+                        "following code: `np.set_printoptions(legacy='1.13')`", UserWarning)
             n = len(values_dict)
             colors = [rgb_color + (self.default_alpha,) for rgb_color in
-                itertools.islice(itertools.cycle(self.chart_colors), n)]
+                    itertools.islice(itertools.cycle(self.chart_colors), n)]
             hist_names = list(values_dict.keys())
             values = [v[0] for v in values_dict.values()]
             weights = [v[1] for v in values_dict.values() if len(v) > 1]
             if n > len(weights) > 0:
-                raise ValueError("Weights were provided for some columns, but not "
-                                 " all, and that's not supported.")
+                raise ValueError("Weights were provided for some columns, but not all, and that's not supported.")
             if rug and overlay and n > 1:
                 warnings.warn("Cannot plot overlaid rug plots; rug=True ignored", UserWarning)
             if vargs['density']:
                 y_label = 'Percent per ' + (unit if unit else 'unit')
-                percentage = plt.FuncFormatter(lambda x, _: "{:g}".format(100*x))
+                percentage = plt.FuncFormatter(lambda x, _: "{:g}".format(100 * x))
             else:
                 y_label = 'Count'
 
@@ -5490,32 +5481,31 @@ class Table(collections.abc.MutableMapping):
                     vargs['weights'] = weights
                 if not side_by_side:
                     vargs.setdefault('histtype', 'stepfilled')
-                figure = plt.figure(figsize=(width, height))
-                plt.hist(values, color=colors, **vargs)
-                # if rug:
-                #     plt.scatter(values, np.zeros_like(values), marker="|", color=colors)
-                axis = figure.get_axes()[0]
-                _vertical_x(axis)
-                axis.set_ylabel(y_label)
+                # Added to ensure proper default dimensions
+                plt.figure(figsize=(width, height))
+                plt.hist(values, color=colors, label=hist_names, **vargs)
+                plt.legend(loc=2, bbox_to_anchor=(1.05, 1))
+                _vertical_x(plt.gca())
+                plt.ylabel(y_label)
                 if vargs['density']:
-                    axis.yaxis.set_major_formatter(percentage)
+                    plt.gca().yaxis.set_major_formatter(percentage)
                 x_unit = ' (' + unit + ')' if unit else ''
                 if group is not None and len(self.labels) == 2:
-                    #There's a grouping in place but we're only plotting one column's values
+                    # There's a grouping in place but we're only plotting one column's values
                     label_not_grouped = [l for l in self.labels if l != group][0]
-                    axis.set_xlabel(label_not_grouped + x_unit, fontsize=16)
+                    plt.xlabel(label_not_grouped + x_unit, fontsize=16)
                 else:
-                    axis.set_xlabel(x_unit, fontsize=16)
-                plt.legend(hist_names, loc=2, bbox_to_anchor=(1.05, 1))
-                type(self).plots.append(axis)
+                    plt.xlabel(x_unit, fontsize=16)
+                type(self).plots.append(plt.gca())
             else:
-                _, axes = plt.subplots(n, 1, figsize=(width, height * n))
+                num_plots = n
+                fig, axes = plt.subplots(num_plots, 1, figsize=(width, height * num_plots))
                 if 'bins' in vargs:
                     bins = vargs['bins']
                     if isinstance(bins, numbers.Integral) and bins > 76 or hasattr(bins, '__len__') and len(bins) > 76:
                         # Use stepfilled when there are too many bins
                         vargs.setdefault('histtype', 'stepfilled')
-                if n == 1:
+                if num_plots == 1:
                     axes = [axes]
                 for i, (axis, hist_name, values_for_hist, color) in enumerate(zip(axes, hist_names, values, colors)):
                     axis.set_ylabel(y_label)
@@ -5529,14 +5519,21 @@ class Table(collections.abc.MutableMapping):
                     if left_end is not None and right_end is not None:
                         x_shade, height_shade, width_shade = _compute_shading(heights, bins.copy(), left_end, right_end)
                         axis.bar(x_shade, height_shade, width=width_shade,
-                                 color=self.chart_colors[1], align="edge")
+                                color=self.chart_colors[1], align="edge")
                     _vertical_x(axis)
                     if rug:
                         axis.scatter(values_for_hist, np.zeros_like(values_for_hist), marker="|",
-                                     color="black", s=100, zorder=10)
+                                    color="black", s=100, zorder=10)
                     type(self).plots.append(axis)
 
+            # Added to ensure proaper axis label dimensions
+            plt.tight_layout()
+
         draw_hist(values_dict)
+        # Added to make sure graph displays
+        plt.show()
+
+
 
     def hist_of_counts(self, *columns, overlay=True, bins=None, bin_column=None,
                        group=None, side_by_side=False, width=None, height=None, **vargs):
