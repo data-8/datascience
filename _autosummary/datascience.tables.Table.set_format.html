@@ -6,11 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>datascience.tables.Table.set_format &#8212; datascience 0.17.6 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=def86cc0" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=2bf1fcf8" />
     
     <script src="../_static/documentation_options.js?v=63ccc059"></script>
-    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     
@@ -19,7 +19,7 @@
     <link rel="next" title="datascience.tables.Table.move_to_start" href="datascience.tables.Table.move_to_start.html" />
     <link rel="prev" title="datascience.tables.Table.apply" href="datascience.tables.Table.apply.html" /> 
   </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -78,7 +78,7 @@ means <code class="docutils literal notranslate"><span class="pre">set_format</s
 <span class="go">bbar | 555</span>
 <span class="go">tbaz | 125</span>
 <span class="go">hbat | 430</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">datascience.formats</span> <span class="kn">import</span> <span class="n">CurrencyFormatter</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">datascience.formats</span><span class="w"> </span><span class="kn">import</span> <span class="n">CurrencyFormatter</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">account_info</span><span class="o">.</span><span class="n">set_format</span><span class="p">(</span><span class="s2">&quot;balance&quot;</span><span class="p">,</span> <span class="n">CurrencyFormatter</span><span class="p">(</span><span class="s2">&quot;BZ$&quot;</span><span class="p">))</span> <span class="c1"># Belize Dollar</span>
 <span class="go">user | balance</span>
 <span class="go">gfoo | BZ$200</span>
@@ -106,7 +106,7 @@ function.</p>
 <span class="go">bbar | 555</span>
 <span class="go">tbaz | 125</span>
 <span class="go">hbat | 430</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">iceland_krona_formatter</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">iceland_krona_formatter</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
 <span class="gp">... </span>   <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2"> kr&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">account_info</span><span class="o">.</span><span class="n">set_format</span><span class="p">(</span><span class="s2">&quot;balance&quot;</span><span class="p">,</span> <span class="n">iceland_krona_formatter</span><span class="p">)</span>
 <span class="go">user | balance</span>
@@ -135,12 +135,12 @@ method is also defined on the formatter class.</p>
 <span class="go">bbar | 555</span>
 <span class="go">tbaz | 125</span>
 <span class="go">hbat | 430</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">IcelandKronaFormatter</span><span class="p">():</span>
-<span class="gp">... </span>   <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">IcelandKronaFormatter</span><span class="p">():</span>
+<span class="gp">... </span>   <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="gp">... </span>       <span class="bp">self</span><span class="o">.</span><span class="n">converts_values</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="gp">...</span>
-<span class="gp">... </span>   <span class="k">def</span> <span class="nf">format_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">column</span><span class="p">):</span>
-<span class="gp">... </span>       <span class="k">def</span> <span class="nf">format_krona</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+<span class="gp">... </span>   <span class="k">def</span><span class="w"> </span><span class="nf">format_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">column</span><span class="p">):</span>
+<span class="gp">... </span>       <span class="k">def</span><span class="w"> </span><span class="nf">format_krona</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
 <span class="gp">... </span>           <span class="k">if</span> <span class="n">label</span><span class="p">:</span>
 <span class="gp">... </span>               <span class="k">return</span> <span class="n">value</span>
 <span class="gp">... </span>           <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2"> kr&quot;</span>
@@ -170,19 +170,19 @@ column values in a one time operation.</p>
 <span class="go">bbar | 555.55</span>
 <span class="go">tbaz | 125.65</span>
 <span class="go">hbat | 430.18</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">IcelandKronaFormatter</span><span class="p">():</span>
-<span class="gp">... </span>   <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">IcelandKronaFormatter</span><span class="p">():</span>
+<span class="gp">... </span>   <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="gp">... </span>       <span class="bp">self</span><span class="o">.</span><span class="n">converts_values</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="gp">...</span>
-<span class="gp">... </span>   <span class="k">def</span> <span class="nf">format_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">column</span><span class="p">):</span>
-<span class="gp">... </span>       <span class="k">def</span> <span class="nf">format_krona</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+<span class="gp">... </span>   <span class="k">def</span><span class="w"> </span><span class="nf">format_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">column</span><span class="p">):</span>
+<span class="gp">... </span>       <span class="k">def</span><span class="w"> </span><span class="nf">format_krona</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
 <span class="gp">... </span>           <span class="k">if</span> <span class="n">label</span><span class="p">:</span>
 <span class="gp">... </span>               <span class="k">return</span> <span class="n">value</span>
 <span class="gp">... </span>           <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2"> kr&quot;</span>
 <span class="gp">...</span>
 <span class="gp">... </span>       <span class="k">return</span> <span class="n">format_krona</span>
 <span class="gp">...</span>
-<span class="gp">... </span>   <span class="k">def</span> <span class="nf">convert_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+<span class="gp">... </span>   <span class="k">def</span><span class="w"> </span><span class="nf">convert_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
 <span class="gp">... </span>       <span class="c1"># Drop the fractional kr.</span>
 <span class="gp">... </span>       <span class="k">return</span> <span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">account_info</span><span class="o">.</span><span class="n">set_format</span><span class="p">(</span><span class="s2">&quot;balance&quot;</span><span class="p">,</span> <span class="n">IcelandKronaFormatter</span><span class="p">)</span>
@@ -216,15 +216,15 @@ custom formatter, you must do yourself.</p>
 <span class="go">bbar | 555      | 500</span>
 <span class="go">tbaz | 125      | 1175</span>
 <span class="go">hbat | 430      | 6700</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">IcelandKronaFormatter</span><span class="p">():</span>
-<span class="gp">... </span>   <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">IcelandKronaFormatter</span><span class="p">():</span>
+<span class="gp">... </span>   <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="gp">... </span>       <span class="bp">self</span><span class="o">.</span><span class="n">converts_values</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="gp">...</span>
-<span class="gp">... </span>   <span class="k">def</span> <span class="nf">format_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">column</span><span class="p">):</span>
+<span class="gp">... </span>   <span class="k">def</span><span class="w"> </span><span class="nf">format_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">column</span><span class="p">):</span>
 <span class="gp">... </span>       <span class="n">val_width</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">))</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="s2">&quot; kr&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">column</span><span class="p">])</span>
 <span class="gp">... </span>       <span class="n">val_width</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">label</span><span class="p">)),</span> <span class="n">val_width</span><span class="p">)</span>
 <span class="gp">...</span>
-<span class="gp">... </span>       <span class="k">def</span> <span class="nf">format_krona</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+<span class="gp">... </span>       <span class="k">def</span><span class="w"> </span><span class="nf">format_krona</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
 <span class="gp">... </span>           <span class="k">if</span> <span class="n">label</span><span class="p">:</span>
 <span class="gp">... </span>               <span class="k">return</span> <span class="n">value</span>
 <span class="gp">... </span>           <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2"> kr&quot;</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="n">val_width</span><span class="p">)</span>
@@ -247,7 +247,7 @@ custom formatter, you must do yourself.</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
   <div>
     <h3><a href="../index.html">Table of Contents</a></h3>
@@ -290,7 +290,7 @@ custom formatter, you must do yourself.</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -312,7 +312,7 @@ custom formatter, you must do yourself.</p>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
     </div>
   </body>
 </html>

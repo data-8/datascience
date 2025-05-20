@@ -6,11 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Start Here: datascience Tutorial &#8212; datascience 0.17.6 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=def86cc0" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=2bf1fcf8" />
     
     <script src="_static/documentation_options.js?v=63ccc059"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     
@@ -19,7 +19,7 @@
     <link rel="next" title="Data 8 datascience Reference" href="reference-nb/datascience-reference.html" />
     <link rel="prev" title="Welcome to datascience’s documentation!" href="index.html" /> 
   </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -72,7 +72,7 @@
 <p>The most important functionality in the package is is the <code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code>
 class, which is the structure used to represent columns of data. First, load
 the class:</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">datascience</span> <span class="kn">import</span> <span class="n">Table</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span><span class="w"> </span><span class="nn">datascience</span><span class="w"> </span><span class="kn">import</span> <span class="n">Table</span>
 </pre></div>
 </div>
 <p>In the IPython notebook, type <code class="docutils literal notranslate"><span class="pre">Table.</span></code> followed by the TAB-key to see a list
@@ -82,12 +82,12 @@ settings for all assignments and labs. This is so that plots and other available
 packages mirror the ones in the textbook more closely. The exact code we use is:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># HIDDEN</span>
 
-<span class="kn">import</span> <span class="nn">matplotlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span>
 <span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;Agg&#39;</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">datascience</span> <span class="kn">import</span> <span class="n">Table</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datascience</span><span class="w"> </span><span class="kn">import</span> <span class="n">Table</span>
 <span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;fivethirtyeight&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -449,16 +449,16 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 <span class="gp">In [47]: </span><span class="n">normal_data</span>
 <span class="gh">Out[47]: </span>
 <span class="go">data1     | data2</span>
-<span class="go">1.82671   | 0.575557</span>
-<span class="go">-0.111294 | 4.77468</span>
-<span class="go">-0.527647 | -3.20745</span>
-<span class="go">4.51506   | 0.852124</span>
-<span class="go">4.59658   | 3.55468</span>
-<span class="go">-0.410764 | 4.74999</span>
-<span class="go">0.773757  | 7.00782</span>
-<span class="go">4.83982   | 0.587711</span>
-<span class="go">-2.05991  | 5.39061</span>
-<span class="go">3.46965   | 2.40147</span>
+<span class="go">2.29623   | 1.74115</span>
+<span class="go">-0.866847 | 4.0634</span>
+<span class="go">2.062     | 0.029698</span>
+<span class="go">3.06466   | -0.432874</span>
+<span class="go">3.11375   | 5.59274</span>
+<span class="go">-2.40381  | 0.936617</span>
+<span class="go">1.03309   | 5.12565</span>
+<span class="go">-1.22136  | 6.27469</span>
+<span class="go">-0.770255 | 6.08037</span>
+<span class="go">-0.413341 | 6.07866</span>
 <span class="go">... (90 rows omitted)</span>
 </pre></div>
 </div>
@@ -466,30 +466,36 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [48]: </span><span class="n">normal_data</span><span class="o">.</span><span class="n">hist</span><span class="p">()</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="_images/hist.png"><img alt="_images/hist.png" src="_images/hist.png" style="width: 4in;" /></a>
+<a class="reference internal image-reference" href="_images/hist.png"><img alt="_images/hist.png" src="_images/hist.png" style="width: 4in;" />
+</a>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [49]: </span><span class="n">normal_data</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">bins</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="_images/hist_binned.png"><img alt="_images/hist_binned.png" src="_images/hist_binned.png" style="width: 4in;" /></a>
+<a class="reference internal image-reference" href="_images/hist_binned.png"><img alt="_images/hist_binned.png" src="_images/hist_binned.png" style="width: 4in;" />
+</a>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [50]: </span><span class="n">normal_data</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">bins</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">overlay</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="_images/hist_overlay.png"><img alt="_images/hist_overlay.png" src="_images/hist_overlay.png" style="width: 4in;" /></a>
+<a class="reference internal image-reference" href="_images/hist_overlay.png"><img alt="_images/hist_overlay.png" src="_images/hist_overlay.png" style="width: 4in;" />
+</a>
 <p>If we treat the <code class="docutils literal notranslate"><span class="pre">normal_data</span></code> table as a set of x-y points, we can
 <a class="reference internal" href="_autosummary/datascience.tables.Table.plot.html#datascience.tables.Table.plot" title="datascience.tables.Table.plot"><code class="xref py py-meth docutils literal notranslate"><span class="pre">plot()</span></code></a> and
 <a class="reference internal" href="_autosummary/datascience.tables.Table.scatter.html#datascience.tables.Table.scatter" title="datascience.tables.Table.scatter"><code class="xref py py-meth docutils literal notranslate"><span class="pre">scatter()</span></code></a>:</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [51]: </span><span class="n">normal_data</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">&#39;data1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;data1&#39;</span><span class="p">)</span> <span class="c1"># Sort first to make plot nicer</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="_images/plot.png"><img alt="_images/plot.png" src="_images/plot.png" style="width: 4in;" /></a>
+<a class="reference internal image-reference" href="_images/plot.png"><img alt="_images/plot.png" src="_images/plot.png" style="width: 4in;" />
+</a>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [52]: </span><span class="n">normal_data</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="s1">&#39;data1&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="_images/scatter.png"><img alt="_images/scatter.png" src="_images/scatter.png" style="width: 4in;" /></a>
+<a class="reference internal image-reference" href="_images/scatter.png"><img alt="_images/scatter.png" src="_images/scatter.png" style="width: 4in;" />
+</a>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [53]: </span><span class="n">normal_data</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="s1">&#39;data1&#39;</span><span class="p">,</span> <span class="n">fit_line</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="_images/scatter_line.png"><img alt="_images/scatter_line.png" src="_images/scatter_line.png" style="width: 4in;" /></a>
+<a class="reference internal image-reference" href="_images/scatter_line.png"><img alt="_images/scatter_line.png" src="_images/scatter_line.png" style="width: 4in;" />
+</a>
 <p>Use <a class="reference internal" href="_autosummary/datascience.tables.Table.barh.html#datascience.tables.Table.barh" title="datascience.tables.Table.barh"><code class="xref py py-meth docutils literal notranslate"><span class="pre">barh()</span></code></a> to display categorical data.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [54]: </span><span class="n">t</span>
 <span class="gh">Out[54]: </span>
@@ -502,7 +508,8 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 <span class="gp">In [55]: </span><span class="n">t</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="s1">&#39;letter&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="_images/barh.png"><img alt="_images/barh.png" src="_images/barh.png" style="width: 4in;" /></a>
+<a class="reference internal image-reference" href="_images/barh.png"><img alt="_images/barh.png" src="_images/barh.png" style="width: 4in;" />
+</a>
 </section>
 <section id="exporting">
 <h2><a class="toc-backref" href="#id6" role="doc-backlink">Exporting</a><a class="headerlink" href="#exporting" title="Link to this heading">¶</a></h2>
@@ -511,16 +518,16 @@ converting to a pandas dataframe with <a class="reference internal" href="_autos
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [56]: </span><span class="n">normal_data</span>
 <span class="gh">Out[56]: </span>
 <span class="go">data1     | data2</span>
-<span class="go">1.82671   | 0.575557</span>
-<span class="go">-0.111294 | 4.77468</span>
-<span class="go">-0.527647 | -3.20745</span>
-<span class="go">4.51506   | 0.852124</span>
-<span class="go">4.59658   | 3.55468</span>
-<span class="go">-0.410764 | 4.74999</span>
-<span class="go">0.773757  | 7.00782</span>
-<span class="go">4.83982   | 0.587711</span>
-<span class="go">-2.05991  | 5.39061</span>
-<span class="go">3.46965   | 2.40147</span>
+<span class="go">2.29623   | 1.74115</span>
+<span class="go">-0.866847 | 4.0634</span>
+<span class="go">2.062     | 0.029698</span>
+<span class="go">3.06466   | -0.432874</span>
+<span class="go">3.11375   | 5.59274</span>
+<span class="go">-2.40381  | 0.936617</span>
+<span class="go">1.03309   | 5.12565</span>
+<span class="go">-1.22136  | 6.27469</span>
+<span class="go">-0.770255 | 6.08037</span>
+<span class="go">-0.413341 | 6.07866</span>
 <span class="go">... (90 rows omitted)</span>
 
 <span class="go"># index = False prevents row numbers from appearing in the resulting CSV</span>
@@ -598,8 +605,10 @@ non-smokers.</p>
 <span class="gp">In [64]: </span><span class="n">smoker_and_wt</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;Maternal Smoker&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;Birth Weight&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">hist</span><span class="p">()</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="_images/not_m_smoker_weights.png"><img alt="_images/not_m_smoker_weights.png" src="_images/not_m_smoker_weights.png" style="width: 4in;" /></a>
-<a class="reference internal image-reference" href="_images/m_smoker_weights.png"><img alt="_images/m_smoker_weights.png" src="_images/m_smoker_weights.png" style="width: 4in;" /></a>
+<a class="reference internal image-reference" href="_images/not_m_smoker_weights.png"><img alt="_images/not_m_smoker_weights.png" src="_images/not_m_smoker_weights.png" style="width: 4in;" />
+</a>
+<a class="reference internal image-reference" href="_images/m_smoker_weights.png"><img alt="_images/m_smoker_weights.png" src="_images/m_smoker_weights.png" style="width: 4in;" />
+</a>
 <p>What’s the difference in mean birth weight of the two categories?</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [65]: </span><span class="n">nonsmoking_mean</span> <span class="o">=</span> <span class="n">smoker_and_wt</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;Maternal Smoker&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s1">&#39;Birth Weight&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 
@@ -614,7 +623,7 @@ non-smokers.</p>
 <p>Let’s do the bootstrap test on the two categories.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [69]: </span><span class="n">num_nonsmokers</span> <span class="o">=</span> <span class="n">smoker_and_wt</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;Maternal Smoker&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">num_rows</span>
 
-<span class="gp">In [70]: </span><span class="k">def</span> <span class="nf">bootstrap_once</span><span class="p">():</span>
+<span class="gp">In [70]: </span><span class="k">def</span><span class="w"> </span><span class="nf">bootstrap_once</span><span class="p">():</span>
 <span class="gp">   ....: </span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="gp">   ....: </span><span class="sd">    Computes one bootstrapped difference in means.</span>
 <span class="gp">   ....: </span><span class="sd">    The table.sample method lets us take random samples.</span>
@@ -634,8 +643,8 @@ non-smokers.</p>
 
 <span class="gp">In [73]: </span><span class="n">bootstrapped_diff_means</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
 <span class="gh">Out[73]: </span>
-<span class="go">array([ 1.80388805, -0.67214224, -1.15283758, -1.27664579, -0.44090985,</span>
-<span class="go">       -0.94612185,  0.43169249, -0.59991468, -0.63643677, -0.09511404])</span>
+<span class="go">array([ 1.52656276,  2.52777854, -1.94578363, -0.16760364, -0.40728857,</span>
+<span class="go">       -1.03872206, -0.06858936,  0.19573107, -0.65726343, -1.24416411])</span>
 
 <span class="gp">In [74]: </span><span class="n">num_diffs_greater</span> <span class="o">=</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">bootstrapped_diff_means</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">observed_diff</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
@@ -649,7 +658,7 @@ non-smokers.</p>
 <section id="drawing-maps">
 <h2><a class="toc-backref" href="#id8" role="doc-backlink">Drawing Maps</a><a class="headerlink" href="#drawing-maps" title="Link to this heading">¶</a></h2>
 <p>The main class in the maps module is the Map class. In this code we create a default Map. Maps can be displayed or converted to html.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [77]: </span><span class="kn">from</span> <span class="nn">datascience.maps</span> <span class="kn">import</span> <span class="n">Map</span>    <span class="c1"># import the Map class</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [77]: </span><span class="kn">from</span><span class="w"> </span><span class="nn">datascience.maps</span><span class="w"> </span><span class="kn">import</span> <span class="n">Map</span>    <span class="c1"># import the Map class</span>
 
 <span class="gp">In [78]: </span><span class="n">default_map</span> <span class="o">=</span> <span class="n">Map</span><span class="p">()</span>                 <span class="c1"># generate a default Map</span>
 
@@ -672,7 +681,7 @@ non-smokers.</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
   <div>
     <h3><a href="index.html">Table of Contents</a></h3>
@@ -722,7 +731,7 @@ non-smokers.</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -743,7 +752,7 @@ non-smokers.</p>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
     </div>
   </body>
 </html>

@@ -5,18 +5,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>datascience.maps &#8212; datascience 0.17.6 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=def86cc0" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2bf1fcf8" />
     
     <script src="../../_static/documentation_options.js?v=63ccc059"></script>
-    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
   </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -42,77 +42,77 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Map&#39;</span><span class="p">,</span> <span class="s1">&#39;Marker&#39;</span><span class="p">,</span> <span class="s1">&#39;Circle&#39;</span><span class="p">,</span> <span class="s1">&#39;Region&#39;</span><span class="p">,</span> <span class="s1">&#39;get_coordinates&#39;</span><span class="p">]</span>
 
 
-<span class="kn">import</span> <span class="nn">IPython.display</span>
-<span class="kn">import</span> <span class="nn">itertools</span>
-<span class="kn">import</span> <span class="nn">folium</span>
-<span class="kn">from</span> <span class="nn">folium.plugins</span> <span class="kn">import</span> <span class="n">MarkerCluster</span><span class="p">,</span> <span class="n">BeautifyIcon</span>
-<span class="kn">import</span> <span class="nn">pandas</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
-<span class="kn">import</span> <span class="nn">pkg_resources</span>
-<span class="kn">import</span> <span class="nn">branca.colormap</span> <span class="k">as</span> <span class="nn">cm</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">IPython.display</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">folium</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">folium.plugins</span><span class="w"> </span><span class="kn">import</span> <span class="n">MarkerCluster</span><span class="p">,</span> <span class="n">BeautifyIcon</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpl</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pkg_resources</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">branca.colormap</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cm</span>
 
-<span class="kn">import</span> <span class="nn">abc</span>
-<span class="kn">import</span> <span class="nn">collections</span>
-<span class="kn">import</span> <span class="nn">collections.abc</span>
-<span class="kn">import</span> <span class="nn">functools</span>
-<span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">math</span>
-<span class="kn">import</span> <span class="nn">random</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">abc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">collections</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">collections.abc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">functools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
-<span class="kn">from</span> <span class="nn">.tables</span> <span class="kn">import</span> <span class="n">Table</span>
-<span class="kn">from</span> <span class="nn">.predicates</span> <span class="kn">import</span> <span class="n">are</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.tables</span><span class="w"> </span><span class="kn">import</span> <span class="n">Table</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.predicates</span><span class="w"> </span><span class="kn">import</span> <span class="n">are</span>
 
 <span class="n">_number</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">_FoliumWrapper</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_FoliumWrapper</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A map element that can be drawn.&quot;&quot;&quot;</span>
     <span class="n">_width</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">_height</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">_folium_map</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Draw and cache map.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_folium_map</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_folium_map</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_folium_map</span>
 
-    <span class="k">def</span> <span class="nf">as_html</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">as_html</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate HTML to display map.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_folium_map</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inline_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_folium_map</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_height</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Publish HTML.&quot;&quot;&quot;</span>
         <span class="n">IPython</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">display</span><span class="p">(</span><span class="n">IPython</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">HTML</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">as_html</span><span class="p">()))</span>
 
-    <span class="k">def</span> <span class="nf">_repr_html_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_repr_html_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">as_html</span><span class="p">()</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_inline_map</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_inline_map</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns an embedded iframe of a folium.map.&quot;&quot;&quot;</span>
         <span class="n">html</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">_repr_html_</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">html</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">_set_folium_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_folium_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the _folium_map attribute to a map.&quot;&quot;&quot;</span>
 
 
 <div class="viewcode-block" id="Map">
 <a class="viewcode-back" href="../../maps.html#datascience.maps.Map">[docs]</a>
-<span class="k">class</span> <span class="nc">Map</span><span class="p">(</span><span class="n">_FoliumWrapper</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Mapping</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Map</span><span class="p">(</span><span class="n">_FoliumWrapper</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Mapping</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A map from IDs to features. Keyword args are forwarded to folium.&quot;&quot;&quot;</span>
 
     <span class="n">_mapper</span> <span class="o">=</span> <span class="n">folium</span><span class="o">.</span><span class="n">Map</span>
     <span class="n">_default_lat_lon</span> <span class="o">=</span> <span class="p">(</span><span class="mf">37.872</span><span class="p">,</span> <span class="o">-</span><span class="mf">122.258</span><span class="p">)</span>
     <span class="n">_default_zoom</span> <span class="o">=</span> <span class="mi">12</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="p">(),</span> <span class="n">ids</span><span class="o">=</span><span class="p">(),</span> <span class="n">width</span><span class="o">=</span><span class="mi">960</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="p">(),</span> <span class="n">ids</span><span class="o">=</span><span class="p">(),</span> <span class="n">width</span><span class="o">=</span><span class="mi">960</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
             <span class="n">features</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Sequence</span><span class="p">):</span>
@@ -140,7 +140,7 @@
 
 <div class="viewcode-block" id="Map.copy">
 <a class="viewcode-back" href="../../maps.html#datascience.maps.Map.copy">[docs]</a>
-    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Copies the current Map into a new one and returns it.</span>
 <span class="sd">        Note: This only copies rendering attributes. The underlying map is NOT deep-copied.</span>
@@ -153,21 +153,21 @@
         <span class="k">return</span> <span class="n">m</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_features</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_features</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_features</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_set_folium_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_folium_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">index_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;index_map&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">cluster_labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;cluster_labels&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_folium_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_map</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;clustered_marker&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
-            <span class="k">def</span> <span class="nf">customize_marker_cluster</span><span class="p">(</span><span class="n">color</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">customize_marker_cluster</span><span class="p">(</span><span class="n">color</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
                 <span class="c1"># Returns string for icon_create_function</span>
                 <span class="n">hexcolor</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">to_hex</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
                 <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
@@ -237,7 +237,7 @@
             <span class="n">colormap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">LinearColormap</span><span class="p">(</span><span class="n">colors</span> <span class="o">=</span> <span class="n">scale_colors</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="n">colorbar_scale</span><span class="p">,</span> <span class="n">caption</span> <span class="o">=</span> <span class="s2">&quot;*Legend above may exclude outliers.&quot;</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">include_color_scale_outliers</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">vmin</span> <span class="o">=</span> <span class="n">colorbar_scale</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">colorbar_scale</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_folium_map</span><span class="o">.</span><span class="n">add_child</span><span class="p">(</span><span class="n">colormap</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_create_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_height</span><span class="p">}</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_autozoom</span><span class="p">())</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
@@ -247,7 +247,7 @@
         <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;min_zoom&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;zoom_start&#39;</span><span class="p">]</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;min_zoom&#39;</span><span class="p">])</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mapper</span><span class="p">(</span><span class="o">**</span><span class="n">attrs</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_autozoom</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_autozoom</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate zoom and location.&quot;&quot;&quot;</span>
         <span class="n">bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_autobounds</span><span class="p">()</span>
         <span class="n">attrs</span> <span class="o">=</span> <span class="p">{}</span>
@@ -260,7 +260,7 @@
 
         <span class="c1"># remove the following with new Folium release</span>
         <span class="c1"># rough approximation, assuming max_zoom is 18</span>
-        <span class="kn">import</span> <span class="nn">math</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
         <span class="n">lat_diff</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;max_lat&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;min_lat&#39;</span><span class="p">]</span>
         <span class="n">lon_diff</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;max_lon&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">bounds</span><span class="p">[</span><span class="s1">&#39;min_lon&#39;</span><span class="p">]</span>
         <span class="n">area</span><span class="p">,</span> <span class="n">max_area</span> <span class="o">=</span> <span class="n">lat_diff</span><span class="o">*</span><span class="n">lon_diff</span><span class="p">,</span> <span class="mi">180</span><span class="o">*</span><span class="mi">360</span>
@@ -274,16 +274,16 @@
 
         <span class="k">return</span> <span class="n">attrs</span>
 
-    <span class="k">def</span> <span class="nf">_autobounds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_autobounds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Simple calculation for bounds.&quot;&quot;&quot;</span>
         <span class="n">bounds</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="n">prop</span><span class="p">,</span> <span class="n">compare</span><span class="p">,</span> <span class="n">extreme</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">check</span><span class="p">(</span><span class="n">prop</span><span class="p">,</span> <span class="n">compare</span><span class="p">,</span> <span class="n">extreme</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
             <span class="n">opp</span> <span class="o">=</span> <span class="nb">min</span> <span class="k">if</span> <span class="n">compare</span> <span class="ow">is</span> <span class="nb">max</span> <span class="k">else</span> <span class="nb">max</span>
             <span class="n">bounds</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">prop</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
             <span class="n">bounds</span><span class="p">[</span><span class="n">prop</span><span class="p">]</span> <span class="o">=</span> <span class="n">opp</span><span class="p">(</span><span class="n">compare</span><span class="p">(</span><span class="n">bounds</span><span class="p">[</span><span class="n">prop</span><span class="p">],</span> <span class="n">val</span><span class="p">),</span> <span class="n">extreme</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">bound_check</span><span class="p">(</span><span class="n">lat_lon</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">bound_check</span><span class="p">(</span><span class="n">lat_lon</span><span class="p">):</span>
             <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span> <span class="o">=</span> <span class="n">lat_lon</span>
             <span class="n">check</span><span class="p">(</span><span class="s1">&#39;max_lat&#39;</span><span class="p">,</span> <span class="nb">max</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="n">lat</span><span class="p">)</span>
             <span class="n">check</span><span class="p">(</span><span class="s1">&#39;min_lat&#39;</span><span class="p">,</span> <span class="nb">min</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="n">lat</span><span class="p">)</span>
@@ -300,7 +300,7 @@
         <span class="k">return</span> <span class="n">bounds</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">features</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">features</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">feature_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_features</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">f</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">([(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">key</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;feature&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">)])</span>
@@ -310,7 +310,7 @@
 
 <div class="viewcode-block" id="Map.format">
 <a class="viewcode-back" href="../../maps.html#datascience.maps.Map.format">[docs]</a>
-    <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply formatting.&quot;&quot;&quot;</span>
         <span class="n">attrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_height</span><span class="p">})</span>
@@ -320,7 +320,7 @@
 
 <div class="viewcode-block" id="Map.geojson">
 <a class="viewcode-back" href="../../maps.html#datascience.maps.Map.geojson">[docs]</a>
-    <span class="k">def</span> <span class="nf">geojson</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">geojson</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Render features as a FeatureCollection.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;FeatureCollection&quot;</span><span class="p">,</span>
@@ -330,7 +330,7 @@
 
 <div class="viewcode-block" id="Map.color">
 <a class="viewcode-back" href="../../maps.html#datascience.maps.Map.color">[docs]</a>
-    <span class="k">def</span> <span class="nf">color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">ids</span><span class="o">=</span><span class="p">(),</span> <span class="n">key_on</span><span class="o">=</span><span class="s1">&#39;feature.id&#39;</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s1">&#39;YlOrBr&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">ids</span><span class="o">=</span><span class="p">(),</span> <span class="n">key_on</span><span class="o">=</span><span class="s1">&#39;feature.id&#39;</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s1">&#39;YlOrBr&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Color map features by binning values.</span>
 
 <span class="sd">        values -- a sequence of values or a table of keys and values</span>
@@ -395,7 +395,7 @@
 
 <div class="viewcode-block" id="Map.overlay">
 <a class="viewcode-back" href="../../maps.html#datascience.maps.Map.overlay">[docs]</a>
-    <span class="k">def</span> <span class="nf">overlay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;Blue&#39;</span><span class="p">,</span> <span class="n">opacity</span><span class="o">=</span><span class="mf">0.6</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">overlay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;Blue&#39;</span><span class="p">,</span> <span class="n">opacity</span><span class="o">=</span><span class="mf">0.6</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Overlays ``feature`` on the map. Returns a new Map.</span>
 
@@ -444,7 +444,7 @@
 <div class="viewcode-block" id="Map.read_geojson">
 <a class="viewcode-back" href="../../maps.html#datascience.maps.Map.read_geojson">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">read_geojson</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path_or_json_or_string_or_url</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_geojson</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path_or_json_or_string_or_url</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read a geoJSON string, object, file, or URL. Return a dict of features keyed by ID.&quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="n">path_or_json_or_string_or_url</span>
         <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
@@ -458,7 +458,7 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">path</span> <span class="o">=</span> <span class="n">path_or_json_or_string_or_url</span>
                 <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.gz&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.gzip&#39;</span><span class="p">):</span>
-                    <span class="kn">import</span> <span class="nn">gzip</span>
+                    <span class="kn">import</span><span class="w"> </span><span class="nn">gzip</span>
                     <span class="n">contents</span> <span class="o">=</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">contents</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
@@ -466,7 +466,7 @@
             <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
                 <span class="k">pass</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
-            <span class="kn">import</span> <span class="nn">urllib.request</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">urllib.request</span>
             <span class="k">with</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">path_or_json_or_string_or_url</span><span class="p">)</span> <span class="k">as</span> <span class="n">url</span><span class="p">:</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
         <span class="k">assert</span> <span class="n">data</span><span class="p">,</span> <span class="s1">&#39;MapData accepts a valid geoJSON object, geoJSON string, path to a geoJSON file, or URL&#39;</span>
@@ -474,7 +474,7 @@
 
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_read_geojson_features</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_read_geojson_features</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a dict of features keyed by ID.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">features</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">features</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
@@ -495,14 +495,14 @@
 
 
 
-<span class="k">class</span> <span class="nc">_MapFeature</span><span class="p">(</span><span class="n">_FoliumWrapper</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_MapFeature</span><span class="p">(</span><span class="n">_FoliumWrapper</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A feature displayed on a map. When displayed alone, a map is created.&quot;&quot;&quot;</span>
 
     <span class="c1"># Default dimensions for displaying the feature in isolation</span>
     <span class="n">_width</span> <span class="o">=</span> <span class="mi">960</span>
     <span class="n">_height</span> <span class="o">=</span> <span class="mi">500</span>
 
-    <span class="k">def</span> <span class="nf">_set_folium_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_folium_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;A map containing only the feature.&quot;&quot;&quot;</span>
         <span class="n">m</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="p">],</span> <span class="n">width</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_height</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_folium_map</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
@@ -513,26 +513,26 @@
 
     <span class="nd">@property</span>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">lat_lons</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">lat_lons</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Sequence of lat_lons that describe a map feature (for zooming).&quot;&quot;&quot;</span>
 
     <span class="nd">@property</span>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">_folium_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_folium_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;kwargs for a call to a map method.&quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">geojson</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_id</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">geojson</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_id</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return GeoJSON.&quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">draw_on</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folium_map</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">draw_on</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folium_map</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add feature to Folium map object.&quot;&quot;&quot;</span>
 
 
 <div class="viewcode-block" id="Marker">
 <a class="viewcode-back" href="../../maps.html#datascience.maps.Marker">[docs]</a>
-<span class="k">class</span> <span class="nc">Marker</span><span class="p">(</span><span class="n">_MapFeature</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Marker</span><span class="p">(</span><span class="n">_MapFeature</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A marker displayed with Folium&#39;s simple_marker method.</span>
 
 <span class="sd">    popup -- text that pops up when marker is clicked</span>
@@ -562,7 +562,7 @@
 <span class="sd">    `https://python-visualization.github.io/folium/modules.html#folium.map.Icon`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">popup</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">popup</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">_number</span><span class="p">)</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">_number</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lat_lon</span> <span class="o">=</span> <span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
@@ -578,18 +578,18 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">lat_lons</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">lat_lons</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">lat_lon</span><span class="p">]</span>
 
 <div class="viewcode-block" id="Marker.copy">
 <a class="viewcode-back" href="../../maps.html#datascience.maps.Marker.copy">[docs]</a>
-    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a deep copy&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="bp">self</span><span class="o">.</span><span class="n">lat_lon</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">lat_lon</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_folium_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_folium_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">attrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;location&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lat_lon</span>
         <span class="n">icon_args</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="o">&amp;</span> <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="s1">&#39;marker_icon&#39;</span><span class="p">,</span> <span class="s1">&#39;clustered_marker&#39;</span><span class="p">,</span> <span class="s1">&#39;icon_angle&#39;</span><span class="p">,</span> <span class="s1">&#39;popup_width&#39;</span><span class="p">}}</span>
@@ -613,7 +613,7 @@
 
 <div class="viewcode-block" id="Marker.geojson">
 <a class="viewcode-back" href="../../maps.html#datascience.maps.Marker.geojson">[docs]</a>
-    <span class="k">def</span> <span class="nf">geojson</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_id</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">geojson</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_id</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;GeoJSON representation of the marker as a point.&quot;&quot;&quot;</span>
         <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lat_lon</span>
         <span class="k">return</span> <span class="p">{</span>
@@ -628,7 +628,7 @@
 
 <div class="viewcode-block" id="Marker.format">
 <a class="viewcode-back" href="../../maps.html#datascience.maps.Marker.format">[docs]</a>
-    <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply formatting.&quot;&quot;&quot;</span>
         <span class="n">attrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
@@ -638,12 +638,12 @@
 
 <div class="viewcode-block" id="Marker.draw_on">
 <a class="viewcode-back" href="../../maps.html#datascience.maps.Marker.draw_on">[docs]</a>
-    <span class="k">def</span> <span class="nf">draw_on</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folium_map</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">draw_on</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folium_map</span><span class="p">):</span>
         <span class="n">folium</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_folium_kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">add_to</span><span class="p">(</span><span class="n">folium_map</span><span class="p">)</span></div>
 
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">_convert_point</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_convert_point</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">feature</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a GeoJSON point to a Marker.&quot;&quot;&quot;</span>
         <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span> <span class="o">=</span> <span class="n">feature</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;coordinates&#39;</span><span class="p">]</span>
         <span class="n">popup</span> <span class="o">=</span> <span class="n">feature</span><span class="p">[</span><span class="s1">&#39;properties&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
@@ -652,7 +652,7 @@
 <div class="viewcode-block" id="Marker.map">
 <a class="viewcode-back" href="../../maps.html#datascience.maps.Marker.map">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">latitudes</span><span class="p">,</span> <span class="n">longitudes</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">areas</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">other_attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clustered_marker</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">map</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">latitudes</span><span class="p">,</span> <span class="n">longitudes</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">areas</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">other_attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clustered_marker</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return markers from columns of coordinates, labels, &amp; colors.</span>
 
 <span class="sd">        The areas column is not applicable to markers, but sets circle areas.</span>
@@ -732,7 +732,7 @@
 <div class="viewcode-block" id="Marker.map_table">
 <a class="viewcode-back" href="../../maps.html#datascience.maps.Marker.map_table">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">map_table</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">clustered_marker</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">include_color_scale_outliers</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">radius_in_meters</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">map_table</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">clustered_marker</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">include_color_scale_outliers</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">radius_in_meters</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return markers from the columns of a table.</span>
 <span class="sd">        </span>
 <span class="sd">        The first two columns of the table must be the latitudes and longitudes</span>
@@ -810,7 +810,7 @@
                 <span class="n">outlier_max_bound</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">vmax</span><span class="p">,</span> <span class="n">q3</span> <span class="o">+</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="n">IQR</span><span class="p">)</span>
             <span class="n">colorbar_scale</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">outlier_min_bound</span><span class="p">,</span> <span class="n">outlier_max_bound</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
             <span class="n">scale_colors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;#340597&quot;</span><span class="p">,</span> <span class="s2">&quot;#7008a5&quot;</span><span class="p">,</span> <span class="s2">&quot;#a32494&quot;</span><span class="p">,</span> <span class="s2">&quot;#cf5073&quot;</span><span class="p">,</span> <span class="s2">&quot;#ee7c4c&quot;</span><span class="p">,</span> <span class="s2">&quot;#f69344&quot;</span><span class="p">,</span> <span class="s2">&quot;#fcc22d&quot;</span><span class="p">,</span> <span class="s2">&quot;#f4e82d&quot;</span><span class="p">,</span> <span class="s2">&quot;#f4e82d&quot;</span><span class="p">]</span>
-            <span class="k">def</span> <span class="nf">interpolate_color</span><span class="p">(</span><span class="n">colors</span><span class="p">,</span> <span class="n">cutoffs</span><span class="p">,</span> <span class="n">datapoint</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">interpolate_color</span><span class="p">(</span><span class="n">colors</span><span class="p">,</span> <span class="n">cutoffs</span><span class="p">,</span> <span class="n">datapoint</span><span class="p">):</span>
                 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cutoff</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cutoffs</span><span class="p">):</span>
                     <span class="k">if</span> <span class="n">cutoff</span> <span class="o">&gt;=</span> <span class="n">datapoint</span><span class="p">:</span>
                         <span class="k">return</span> <span class="n">colors</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">colors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -832,7 +832,7 @@
 
 <div class="viewcode-block" id="Circle">
 <a class="viewcode-back" href="../../maps.html#datascience.maps.Circle">[docs]</a>
-<span class="k">class</span> <span class="nc">Circle</span><span class="p">(</span><span class="n">Marker</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Circle</span><span class="p">(</span><span class="n">Marker</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A marker displayed with either Folium&#39;s circle_marker or circle methods.</span>
 
 <span class="sd">    The ``circle_marker`` method draws circles that stay the same size regardless of map zoom, </span>
@@ -874,7 +874,7 @@
 
     <span class="n">_has_area</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">popup</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">area</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">popup</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">area</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># Add support for transitioning radius to area</span>
         <span class="n">radius</span> <span class="o">=</span> <span class="p">(</span><span class="n">area</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span>
         <span class="k">if</span> <span class="s1">&#39;radius&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
@@ -883,7 +883,7 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">popup</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_folium_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_folium_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">attrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;location&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lat_lon</span>
         <span class="k">if</span> <span class="s1">&#39;color&#39;</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
@@ -897,7 +897,7 @@
 
 <div class="viewcode-block" id="Circle.draw_on">
 <a class="viewcode-back" href="../../maps.html#datascience.maps.Circle.draw_on">[docs]</a>
-    <span class="k">def</span> <span class="nf">draw_on</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folium_map</span><span class="p">,</span> <span class="n">radius_in_meters</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">draw_on</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folium_map</span><span class="p">,</span> <span class="n">radius_in_meters</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">radius_in_meters</span><span class="p">:</span>
             <span class="n">folium</span><span class="o">.</span><span class="n">Circle</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_folium_kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">add_to</span><span class="p">(</span><span class="n">folium_map</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -908,10 +908,10 @@
 
 <div class="viewcode-block" id="Region">
 <a class="viewcode-back" href="../../maps.html#datascience.maps.Region">[docs]</a>
-<span class="k">class</span> <span class="nc">Region</span><span class="p">(</span><span class="n">_MapFeature</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Region</span><span class="p">(</span><span class="n">_MapFeature</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A GeoJSON feature displayed with Folium&#39;s geo_json method.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geojson</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geojson</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">assert</span> <span class="s1">&#39;type&#39;</span> <span class="ow">in</span> <span class="n">geojson</span>
         <span class="k">assert</span> <span class="n">geojson</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Feature&#39;</span>
         <span class="k">assert</span> <span class="s1">&#39;geometry&#39;</span> <span class="ow">in</span> <span class="n">geojson</span>
@@ -921,17 +921,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span> <span class="o">=</span> <span class="n">kwargs</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">lat_lons</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">lat_lons</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;A flat list of (lat, lon) pairs.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">_lat_lons_from_geojson</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;coordinates&#39;</span><span class="p">])</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The GEOJSON type of the regions: Polygon or MultiPolygon.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">polygons</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">polygons</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a list of polygons describing the region.</span>
 
 <span class="sd">        - Each polygon is a list of linear rings, where the first describes the</span>
@@ -950,25 +950,25 @@
                 <span class="n">polygon</span> <span class="ow">in</span> <span class="n">polygons</span><span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">properties</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">properties</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;properties&#39;</span><span class="p">,</span> <span class="p">{})</span>
 
 <div class="viewcode-block" id="Region.copy">
 <a class="viewcode-back" href="../../maps.html#datascience.maps.Region.copy">[docs]</a>
-    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a deep copy&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_folium_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_folium_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">attrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">attrs</span>
 
 <div class="viewcode-block" id="Region.geojson">
 <a class="viewcode-back" href="../../maps.html#datascience.maps.Region.geojson">[docs]</a>
-    <span class="k">def</span> <span class="nf">geojson</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_id</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">geojson</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_id</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return GeoJSON with ID substituted.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">feature_id</span><span class="p">)</span> <span class="o">==</span> <span class="n">feature_id</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geojson</span>
@@ -980,7 +980,7 @@
 
 <div class="viewcode-block" id="Region.format">
 <a class="viewcode-back" href="../../maps.html#datascience.maps.Region.format">[docs]</a>
-    <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply formatting.&quot;&quot;&quot;</span>
         <span class="n">attrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attrs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
@@ -989,7 +989,7 @@
 
 <div class="viewcode-block" id="Region.draw_on">
 <a class="viewcode-back" href="../../maps.html#datascience.maps.Region.draw_on">[docs]</a>
-    <span class="k">def</span> <span class="nf">draw_on</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folium_map</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">draw_on</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folium_map</span><span class="p">):</span>
         <span class="n">attrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_folium_kwargs</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">)</span>
         <span class="n">folium</span><span class="o">.</span><span class="n">GeoJson</span><span class="p">(</span>
@@ -1001,7 +1001,7 @@
 
 
 
-<span class="k">def</span> <span class="nf">_lat_lons_from_geojson</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_lat_lons_from_geojson</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a latitude-longitude pairs from nested GeoJSON coordinates.</span>
 
 <span class="sd">    GeoJSON coordinates are always stored in (longitude, latitude) order.</span>
@@ -1015,7 +1015,7 @@
 
 <div class="viewcode-block" id="get_coordinates">
 <a class="viewcode-back" href="../../maps.html#datascience.maps.get_coordinates">[docs]</a>
-<span class="k">def</span> <span class="nf">get_coordinates</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">replace_columns</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">remove_nans</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_coordinates</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">replace_columns</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">remove_nans</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Adds latitude and longitude coordinates to table based on other location identifiers. Must be in the United States.</span>
 
@@ -1092,7 +1092,7 @@
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
@@ -1108,7 +1108,7 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related" role="navigation" aria-label="Related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -1124,7 +1124,7 @@
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 2015, John DeNero, David Culler, Alvin Wan, and Sam Lau.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
     </div>
   </body>
 </html>
