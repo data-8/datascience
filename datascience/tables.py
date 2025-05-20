@@ -5709,7 +5709,8 @@ class Table(collections.abc.MutableMapping):
                 index = index_or_label
             else:
                 index = self._table.column_index(index_or_label)
-            return self[index]
+            value = self[index]
+            return value.item() if hasattr(value, 'item') else value
 
         def __repr__(self):
             return 'Row({})'.format(', '.join('{}={}'.format(
