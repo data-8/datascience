@@ -36,6 +36,8 @@ def make_array(*elements):
     >>> make_array("foo", "bar")
     array(['foo', 'bar'],
           dtype='<U3')
+    >>> make_array(True, False)
+    array([ True, False], dtype=bool)
     >>> make_array()
     array([], dtype=float64)
     """
