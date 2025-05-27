@@ -77,12 +77,15 @@
 <span class="sd">    &gt;&gt;&gt; make_array(&quot;foo&quot;, &quot;bar&quot;)</span>
 <span class="sd">    array([&#39;foo&#39;, &#39;bar&#39;],</span>
 <span class="sd">          dtype=&#39;&lt;U3&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; make_array(True, False)</span>
+<span class="sd">    array([ True, False], dtype=bool)</span>
 <span class="sd">    &gt;&gt;&gt; make_array()</span>
 <span class="sd">    array([], dtype=float64)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">elements</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">))</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">elements</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">elements</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">))</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">elements</span><span class="p">):</span>
         <span class="c1"># Specifically added for Windows machines where the default </span>
         <span class="c1"># integer is int32 - see GH issue #339.</span>
+        <span class="c1"># and ensures item is not bool, see issue #622.</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int64&quot;</span><span class="p">)</span>
 
     <span class="c1"># Manually cast `elements` as an object due to this: https://github.com/data-8/datascience/issues/458</span>
