@@ -36,12 +36,15 @@ def make_array(*elements):
     >>> make_array("foo", "bar")
     array(['foo', 'bar'],
           dtype='<U3')
+    >>> make_array(True, False)
+    array([ True, False], dtype=bool)
     >>> make_array()
     array([], dtype=float64)
     """
-    if elements and all(isinstance(item, (int, np.integer)) for item in elements):
+    if elements and all(isinstance(item, (int, np.integer)) and not isinstance(item, bool) for item in elements):
         # Specifically added for Windows machines where the default 
         # integer is int32 - see GH issue #339.
+        # and ensures item is not bool, see issue #622.
         return np.array(elements, dtype="int64")
 
     # Manually cast `elements` as an object due to this: https://github.com/data-8/datascience/issues/458
