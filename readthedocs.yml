@@ -5,7 +5,7 @@ formats: all
 build:
   os: ubuntu-24.04
   tools:
-    python: 3.6
+    python: "3.6"
 
 conda:
   environment: linux_environment.yml
