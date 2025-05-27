@@ -5,7 +5,7 @@ formats: all
 build:
   os: ubuntu-24.04
   tools:
-    python: "miniconda-3.12-24.9"
+    python: "miniconda3-3.12-24.9"
 
 sphinx:
   configuration: docs/conf.py
