@@ -5290,7 +5290,8 @@ class Table(collections.abc.MutableMapping):
                 grouped by the values in this column, and a separate histogram is
                 generated for each group.  The histograms are overlaid or plotted
                 separately depending on the overlay argument.  If None, no such
-                grouping is done.
+                grouping is done. Note: `group` cannot be used together with `bin_column` or when plotting
+                multiple columns. An error will be raised in these cases.
 
             side_by_side (bool): Whether histogram bins should be plotted side by
                 side (instead of directly overlaid).  Makes sense only when
