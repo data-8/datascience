@@ -20,6 +20,8 @@ def test_make_array():
     assert test3.dtype == "<U3"
     test4 = ds.make_array(list(range(10)))
     assert test4.dtype == "object"
+    test5 = ds.make_array(True, False)
+    assert test5.dtype == "bool"
 
 
 def test_percentile():

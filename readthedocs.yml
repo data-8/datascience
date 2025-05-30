@@ -3,13 +3,17 @@ version: 2
 formats: all
 
 build:
-  image: latest
+  os: ubuntu-24.04
+  tools:
+    python: "miniconda3-3.12-24.9"
+
+sphinx:
+  configuration: docs/conf.py
 
 conda:
   environment: linux_environment.yml
 
 python:
-  version: 3.6
   install:
     - requirements: requirements.txt
     - requirements: docs/requirements.txt
