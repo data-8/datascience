@@ -1659,8 +1659,8 @@ def test_join_without_other_label(table, table2):
     2      | b      | 3     | two
     2      | c      | 3     | two
     """)
-
-
+    
+    
 ##################
 # Export/Display #
 ##################
