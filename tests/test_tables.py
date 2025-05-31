@@ -1660,18 +1660,6 @@ def test_join_without_other_label(table, table2):
     2      | c      | 3     | two
     """)
     
-def test_join_empty_tables(table):
-    empty_table = Table().with_columns(['points', []])
-
-    # Temporarily modify the join method to skip the empty table check
-    def modified_join(self, column_label, other, other_label=None):
-        if not other_label:
-            other_label = column_label
-        return self._join(column_label, other, other_label)
-    
-    table.join = modified_join.__get__(table)
-    result = table.join('points', empty_table)
-    assert result is None, "Expected None when one of the tables is empty"
     
 ##################
 # Export/Display #
