@@ -258,6 +258,19 @@ Draw histograms with :meth:`~datascience.tables.Table.hist`:
     @savefig hist_overlay.png width=4in
     normal_data.hist(bins = range(-5, 10), overlay = True)
 
+Draw grouped histograms with the ``group`` argument:
+
+.. ipython:: python
+
+    grouped = Table().with_columns(
+        'value', np.random.normal(size=100),
+        'group', np.random.choice(['A', 'B'], size=100)
+    )
+
+    @savefig hist_group.png width=4in
+    grouped.hist('value', group='group')
+Note: group cannot be used together with bin_column, and does not support multiple histogram columns.
+
 If we treat the ``normal_data`` table as a set of x-y points, we can
 :meth:`~datascience.tables.Table.plot` and
 :meth:`~datascience.tables.Table.scatter`:
