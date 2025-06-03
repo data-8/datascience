@@ -2036,11 +2036,6 @@ class Table(collections.abc.MutableMapping):
 
     def _join(self, column_label, other, other_label=[]):
         """joins when COLUMN_LABEL is a string"""
-        if self.num_rows == 0 or other.num_rows == 0:
-            return None
-        if not other_label:
-            other_label = column_label
-
         self_rows = self.index_by(column_label)
         other_rows = other.index_by(other_label)
         return self._join_helper([column_label], self_rows, other, [other_label], other_rows)
