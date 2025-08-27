@@ -4,11 +4,12 @@ import datascience as ds
 from datascience import formats
 import os
 import time
+import pytest
 
 
 def assert_equal(string1, string2):
     string1, string2 = str(string1), str(string2)
-    whitespace = re.compile('\s')
+    whitespace = re.compile(r'\s')
     purify = lambda s: whitespace.sub('', s)
     assert purify(string1) == purify(string2), "\n%s\n!=\n%s" % (string1, string2)
 
@@ -92,11 +93,15 @@ def test_date_format():
     t.set_format('time', ds.DateFormatter("%Y-%m-%d %H:%M:%S.%f"))
     assert isinstance(t['time'][0], float)
 
-
+@pytest.mark.skipif(
+    not hasattr(time, "tzset"),
+    reason="time.tzset not available on this platform"
+)
 def test_date_formatter_format_value():
     formatter = formats.DateFormatter()
     os.environ["TZ"] = "UTC"
-    time.tzset()
+    if hasattr(time, "tzset"):   # ✅ only call tzset if it exists
+        time.tzset()
     assert_equal(formatter.format_value(1666264489.9004), "2022-10-20 11:14:49.900400")
 
 
