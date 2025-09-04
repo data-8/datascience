@@ -403,6 +403,7 @@ The main class in the maps module is the Map class. In this code we create a def
 The maps modules also allows you to make custom maps with markers, circles and regions.
 
 .. ipython:: python
+    
     from datascience.maps import Map, Marker, Circle, Region            # import the Map, Marker, Circle and Region class
     
     # generates markers with custom sets of coordinates, colors and popups
