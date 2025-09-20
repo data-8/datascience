@@ -75,7 +75,8 @@ the content of an example file:
 
 .. ipython:: python
 
-    cat sample.csv
+    with open('sample.csv') as f:
+        print(f.read())
 
 And this is how we load it in as a :class:`Table` using
 :meth:`~datascience.tables.Table.read_table`:
@@ -388,7 +389,8 @@ Let's do the bootstrap test on the two categories.
 
 Drawing Maps
 ------------
-The main class in the maps module is the Map class. In this code we create a default Map. Maps can be displayed or converted to html.
+
+The main class in the maps module is the Map class. Maps can be displayed or converted to HTML.
 
 .. ipython:: python
 
@@ -396,40 +398,41 @@ The main class in the maps module is the Map class. In this code we create a def
     default_map = Map()                 # generate a default Map
     default_map.show()                  # display the Map
     
-    html = default_map.as_html()        # generate the html
-    with open('map.html', 'w') as f:    # make a file to store the html
-        f.write(html)                   # write the html to the file
+    html = default_map.as_html()        # generate the HTML
+    with open('map.html', 'w') as f:    # make a file to store the HTML
+        f.write(html)                   # write the HTML to the file
 
-The maps modules also allows you to make custom maps with markers, circles and regions.
+The maps module also allows you to make custom maps with markers, circles, and regions.
 
 .. ipython:: python
-    from datascience.maps import Map, Marker, Circle, Region            # import the Map, Marker, Circle and Region class
-    
-    # generates markers with custom sets of coordinates, colors and popups
+
+    from datascience.maps import Map, Marker, Circle, Region
+
+    # Generate markers with custom coordinates, colors, and popups
     marker1 = Marker(37.372, -121.758, color="green", popup="My green marker") 
     marker2 = Marker(37.572, -121.758, color="orange", popup="My orange marker") 
     
-    # generates a circle with a custom set of coordinates, color and popup
+    # Generate a circle with custom coordinates, color, and popup
     circle = Circle(37.5, -122, color="red", area=1000, popup="My Circle")
 
-    # make a geojson object which is needed when making a region
+    # Make a GeoJSON object for the region
     geojson = {
-      "type": "Feature",
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [                                                # specifies the coordinates
-            [[-121,37],[-121.5,37],[-121.5,37.5],[-121,37.5],[-121,37]] # these coordinates make a rectangle
-        ]
-      }
+        "type": "Feature",
+        "geometry": {
+            "type": "Polygon",
+            "coordinates": [
+                [[-121,37],[-121.5,37],[-121.5,37.5],[-121,37.5],[-121,37]]  # rectangle
+            ]
+        }
     }
     
-    # make a region with your geojson object
+    # Create a region using the GeoJSON object
     region = Region(geojson)
     
-    
-    # Initialize the map  
-    custom_map = Map(features=[marker1, marker2, circle, region],       # specifies the features
-             width=800,                                                 # specifies a custom width
-             height=600                                                 # specifies a custom height
-                    )
-    custom_map.show()                                                   # display the map
+    # Initialize the map with all features
+    custom_map = Map(
+        features=[marker1, marker2, circle, region],  # specify features
+        width=800,                                     # custom width
+        height=600                                     # custom height
+    )
+    custom_map.show()  # display the map

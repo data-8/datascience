@@ -14,11 +14,9 @@ help:
 	@echo "  deploy_docs to deploy the docs to Github Pages"
 
 install:
-	pip install -e .
-
+	python -m pip install -e .
 test:
-	python3 tests.py
-
+	python -m pytest -q
 docs:
 	cd $(DOCS_DIR) ; make html
 
