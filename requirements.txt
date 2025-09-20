@@ -7,3 +7,8 @@ numpy
 ipython
 plotly
 branca
+pytest>=8.0.0
+pytest-mock>=3.0.0
+bokeh>=3.0.0
+bokeh_sampledata
+pypandoc
