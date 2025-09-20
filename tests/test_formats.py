@@ -96,8 +96,9 @@ def test_date_format():
 def test_date_formatter_format_value():
     formatter = formats.DateFormatter()
     os.environ["TZ"] = "UTC"
-    time.tzset()
-    assert_equal(formatter.format_value(1666264489.9004), "2022-10-20 11:14:49.900400")
+    if hasattr(time, 'tzset'):
+        time.tzset()
+        assert_equal(formatter.format_value(1666264489.9004), "2022-10-20 11:14:49.900400")
 
 
 def test_percent_formatter():

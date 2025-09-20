@@ -14,7 +14,7 @@ help:
 	@echo "  deploy_docs to deploy the docs to Github Pages"
 
 install:
-	python3 setup.py develop
+	pip install -e .
 
 test:
 	python3 tests.py

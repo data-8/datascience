@@ -17,7 +17,13 @@ For an example of usage, see the [Berkeley Data 8 class](http://data8.org/).
 Use `pip`:
 
 ```
-pip install datascience
+python -m pip install -e .
+```
+## Run tests
+
+```
+python -m pip install -e .[test] # installs test extras
+python -m pytest
 ```
 
 A log of all changes can be found in CHANGELOG.md.
