@@ -5512,7 +5512,8 @@
 <span class="sd">                grouped by the values in this column, and a separate histogram is</span>
 <span class="sd">                generated for each group.  The histograms are overlaid or plotted</span>
 <span class="sd">                separately depending on the overlay argument.  If None, no such</span>
-<span class="sd">                grouping is done.</span>
+<span class="sd">                grouping is done. Note: `group` cannot be used together with `bin_column` or when plotting</span>
+<span class="sd">                multiple columns. An error will be raised in these cases.</span>
 
 <span class="sd">            side_by_side (bool): Whether histogram bins should be plotted side by</span>
 <span class="sd">                side (instead of directly overlaid).  Makes sense only when</span>

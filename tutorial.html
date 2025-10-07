@@ -448,17 +448,17 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 
 <span class="gp">In [47]: </span><span class="n">normal_data</span>
 <span class="gh">Out[47]: </span>
-<span class="go">data1     | data2</span>
-<span class="go">4.10889   | 3.79812</span>
-<span class="go">2.10877   | 5.87951</span>
-<span class="go">1.16884   | 6.93931</span>
-<span class="go">0.849386  | 3.67755</span>
-<span class="go">2.0287    | 0.613698</span>
-<span class="go">3.20382   | 3.48714</span>
-<span class="go">-2.62477  | 6.22946</span>
-<span class="go">-0.436245 | 2.69085</span>
-<span class="go">-0.246423 | 4.74814</span>
-<span class="go">-2.3352   | 2.31298</span>
+<span class="go">data1      | data2</span>
+<span class="go">4.88439    | 1.63506</span>
+<span class="go">0.165602   | 1.18817</span>
+<span class="go">1.88742    | 3.85759</span>
+<span class="go">1.7141     | 3.53499</span>
+<span class="go">1.34176    | 1.77242</span>
+<span class="go">3.89849    | 3.02534</span>
+<span class="go">-0.0786259 | 4.94467</span>
+<span class="go">-2.83434   | 4.85554</span>
+<span class="go">1.05071    | 4.23709</span>
+<span class="go">4.45339    | 2.06407</span>
 <span class="go">... (90 rows omitted)</span>
 </pre></div>
 </div>
@@ -478,34 +478,47 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 </div>
 <a class="reference internal image-reference" href="_images/hist_overlay.png"><img alt="_images/hist_overlay.png" src="_images/hist_overlay.png" style="width: 4in;" />
 </a>
+<p>Draw grouped histograms with the <code class="docutils literal notranslate"><span class="pre">group</span></code> argument:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [51]: </span><span class="n">grouped</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
+<span class="gp">   ....: </span>    <span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">),</span>
+<span class="gp">   ....: </span>    <span class="s1">&#39;group&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="gp">   ....: </span><span class="p">)</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [52]: </span><span class="n">grouped</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/hist_group.png"><img alt="_images/hist_group.png" src="_images/hist_group.png" style="width: 4in;" />
+</a>
+<p>Note: group cannot be used together with bin_column, and does not support multiple histogram columns.</p>
 <p>If we treat the <code class="docutils literal notranslate"><span class="pre">normal_data</span></code> table as a set of x-y points, we can
 <a class="reference internal" href="_autosummary/datascience.tables.Table.plot.html#datascience.tables.Table.plot" title="datascience.tables.Table.plot"><code class="xref py py-meth docutils literal notranslate"><span class="pre">plot()</span></code></a> and
 <a class="reference internal" href="_autosummary/datascience.tables.Table.scatter.html#datascience.tables.Table.scatter" title="datascience.tables.Table.scatter"><code class="xref py py-meth docutils literal notranslate"><span class="pre">scatter()</span></code></a>:</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [51]: </span><span class="n">normal_data</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">&#39;data1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;data1&#39;</span><span class="p">)</span> <span class="c1"># Sort first to make plot nicer</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [53]: </span><span class="n">normal_data</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">&#39;data1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;data1&#39;</span><span class="p">)</span> <span class="c1"># Sort first to make plot nicer</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/plot.png"><img alt="_images/plot.png" src="_images/plot.png" style="width: 4in;" />
 </a>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [52]: </span><span class="n">normal_data</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="s1">&#39;data1&#39;</span><span class="p">)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [54]: </span><span class="n">normal_data</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="s1">&#39;data1&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/scatter.png"><img alt="_images/scatter.png" src="_images/scatter.png" style="width: 4in;" />
 </a>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [53]: </span><span class="n">normal_data</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="s1">&#39;data1&#39;</span><span class="p">,</span> <span class="n">fit_line</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [55]: </span><span class="n">normal_data</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="s1">&#39;data1&#39;</span><span class="p">,</span> <span class="n">fit_line</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/scatter_line.png"><img alt="_images/scatter_line.png" src="_images/scatter_line.png" style="width: 4in;" />
 </a>
 <p>Use <a class="reference internal" href="_autosummary/datascience.tables.Table.barh.html#datascience.tables.Table.barh" title="datascience.tables.Table.barh"><code class="xref py py-meth docutils literal notranslate"><span class="pre">barh()</span></code></a> to display categorical data.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [54]: </span><span class="n">t</span>
-<span class="gh">Out[54]: </span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [56]: </span><span class="n">t</span>
+<span class="gh">Out[56]: </span>
 <span class="go">letter | count | points</span>
 <span class="go">a      | 9     | 1</span>
 <span class="go">b      | 3     | 2</span>
 <span class="go">c      | 3     | 2</span>
 <span class="go">z      | 1     | 10</span>
 
-<span class="gp">In [55]: </span><span class="n">t</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="s1">&#39;letter&#39;</span><span class="p">)</span>
+<span class="gp">In [57]: </span><span class="n">t</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="s1">&#39;letter&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/barh.png"><img alt="_images/barh.png" src="_images/barh.png" style="width: 4in;" />
@@ -515,23 +528,23 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 <h2><a class="toc-backref" href="#id6" role="doc-backlink">Exporting</a><a class="headerlink" href="#exporting" title="Link to this heading">¶</a></h2>
 <p>Exporting to CSV is the most common operation and can be done by first
 converting to a pandas dataframe with <a class="reference internal" href="_autosummary/datascience.tables.Table.to_df.html#datascience.tables.Table.to_df" title="datascience.tables.Table.to_df"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_df()</span></code></a>:</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [56]: </span><span class="n">normal_data</span>
-<span class="gh">Out[56]: </span>
-<span class="go">data1     | data2</span>
-<span class="go">4.10889   | 3.79812</span>
-<span class="go">2.10877   | 5.87951</span>
-<span class="go">1.16884   | 6.93931</span>
-<span class="go">0.849386  | 3.67755</span>
-<span class="go">2.0287    | 0.613698</span>
-<span class="go">3.20382   | 3.48714</span>
-<span class="go">-2.62477  | 6.22946</span>
-<span class="go">-0.436245 | 2.69085</span>
-<span class="go">-0.246423 | 4.74814</span>
-<span class="go">-2.3352   | 2.31298</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [58]: </span><span class="n">normal_data</span>
+<span class="gh">Out[58]: </span>
+<span class="go">data1      | data2</span>
+<span class="go">4.88439    | 1.63506</span>
+<span class="go">0.165602   | 1.18817</span>
+<span class="go">1.88742    | 3.85759</span>
+<span class="go">1.7141     | 3.53499</span>
+<span class="go">1.34176    | 1.77242</span>
+<span class="go">3.89849    | 3.02534</span>
+<span class="go">-0.0786259 | 4.94467</span>
+<span class="go">-2.83434   | 4.85554</span>
+<span class="go">1.05071    | 4.23709</span>
+<span class="go">4.45339    | 2.06407</span>
 <span class="go">... (90 rows omitted)</span>
 
 <span class="go"># index = False prevents row numbers from appearing in the resulting CSV</span>
-<span class="gp">In [57]: </span><span class="n">normal_data</span><span class="o">.</span><span class="n">to_df</span><span class="p">()</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;normal_data.csv&#39;</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+<span class="gp">In [59]: </span><span class="n">normal_data</span><span class="o">.</span><span class="n">to_df</span><span class="p">()</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;normal_data.csv&#39;</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -550,10 +563,10 @@ days, that is, the number of days the baby was in the womb. There is also
 data on maternal age, maternal height, maternal pregnancy weight, and
 whether or not the mother was a smoker.</p>
 </div></blockquote>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [58]: </span><span class="n">baby</span> <span class="o">=</span> <span class="n">Table</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="s1">&#39;https://www.inferentialthinking.com/data/baby.csv&#39;</span><span class="p">)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [60]: </span><span class="n">baby</span> <span class="o">=</span> <span class="n">Table</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="s1">&#39;https://www.inferentialthinking.com/data/baby.csv&#39;</span><span class="p">)</span>
 
-<span class="gp">In [59]: </span><span class="n">baby</span> <span class="c1"># Let&#39;s take a peek at the table</span>
-<span class="gh">Out[59]: </span>
+<span class="gp">In [61]: </span><span class="n">baby</span> <span class="c1"># Let&#39;s take a peek at the table</span>
+<span class="gh">Out[61]: </span>
 <span class="go">Birth Weight | Gestational Days | Maternal Age | Maternal Height | Maternal Pregnancy Weight | Maternal Smoker</span>
 <span class="go">120          | 284              | 27           | 62              | 100                       | False</span>
 <span class="go">113          | 282              | 33           | 64              | 135                       | False</span>
@@ -568,10 +581,10 @@ whether or not the mother was a smoker.</p>
 <span class="go">... (1164 rows omitted)</span>
 
 <span class="go"># Select out columns we want.</span>
-<span class="gp">In [60]: </span><span class="n">smoker_and_wt</span> <span class="o">=</span> <span class="n">baby</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;Maternal Smoker&#39;</span><span class="p">,</span> <span class="s1">&#39;Birth Weight&#39;</span><span class="p">])</span>
+<span class="gp">In [62]: </span><span class="n">smoker_and_wt</span> <span class="o">=</span> <span class="n">baby</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;Maternal Smoker&#39;</span><span class="p">,</span> <span class="s1">&#39;Birth Weight&#39;</span><span class="p">])</span>
 
-<span class="gp">In [61]: </span><span class="n">smoker_and_wt</span>
-<span class="gh">Out[61]: </span>
+<span class="gp">In [63]: </span><span class="n">smoker_and_wt</span>
+<span class="gh">Out[63]: </span>
 <span class="go">Maternal Smoker | Birth Weight</span>
 <span class="go">False           | 120</span>
 <span class="go">False           | 113</span>
@@ -587,8 +600,8 @@ whether or not the mother was a smoker.</p>
 </pre></div>
 </div>
 <p>Let’s compare the number of smokers to non-smokers.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [62]: </span><span class="n">smoker_and_wt</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;Maternal Smoker&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;Maternal Smoker&#39;</span><span class="p">)</span>
-<span class="gh">Out[62]: </span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [64]: </span><span class="n">smoker_and_wt</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;Maternal Smoker&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;Maternal Smoker&#39;</span><span class="p">)</span>
+<span class="gh">Out[64]: </span>
 <span class="go">Maternal Smoker | count</span>
 <span class="go">False           | 715</span>
 <span class="go">True            | 459</span>
@@ -599,10 +612,10 @@ non-smokers.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="go"># Non smokers</span>
 <span class="go"># We do this by grabbing the rows that correspond to mothers that don&#39;t</span>
 <span class="go"># smoke, then plotting a histogram of just the birthweights.</span>
-<span class="gp">In [63]: </span><span class="n">smoker_and_wt</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;Maternal Smoker&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;Birth Weight&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">hist</span><span class="p">()</span>
+<span class="gp">In [65]: </span><span class="n">smoker_and_wt</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;Maternal Smoker&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;Birth Weight&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">hist</span><span class="p">()</span>
 
 <span class="go"># Smokers</span>
-<span class="gp">In [64]: </span><span class="n">smoker_and_wt</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;Maternal Smoker&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;Birth Weight&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">hist</span><span class="p">()</span>
+<span class="gp">In [66]: </span><span class="n">smoker_and_wt</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;Maternal Smoker&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;Birth Weight&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">hist</span><span class="p">()</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/not_m_smoker_weights.png"><img alt="_images/not_m_smoker_weights.png" src="_images/not_m_smoker_weights.png" style="width: 4in;" />
@@ -610,20 +623,20 @@ non-smokers.</p>
 <a class="reference internal image-reference" href="_images/m_smoker_weights.png"><img alt="_images/m_smoker_weights.png" src="_images/m_smoker_weights.png" style="width: 4in;" />
 </a>
 <p>What’s the difference in mean birth weight of the two categories?</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [65]: </span><span class="n">nonsmoking_mean</span> <span class="o">=</span> <span class="n">smoker_and_wt</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;Maternal Smoker&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s1">&#39;Birth Weight&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [67]: </span><span class="n">nonsmoking_mean</span> <span class="o">=</span> <span class="n">smoker_and_wt</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;Maternal Smoker&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s1">&#39;Birth Weight&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 
-<span class="gp">In [66]: </span><span class="n">smoking_mean</span> <span class="o">=</span> <span class="n">smoker_and_wt</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;Maternal Smoker&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s1">&#39;Birth Weight&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="gp">In [68]: </span><span class="n">smoking_mean</span> <span class="o">=</span> <span class="n">smoker_and_wt</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;Maternal Smoker&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s1">&#39;Birth Weight&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 
-<span class="gp">In [67]: </span><span class="n">observed_diff</span> <span class="o">=</span> <span class="n">nonsmoking_mean</span> <span class="o">-</span> <span class="n">smoking_mean</span>
+<span class="gp">In [69]: </span><span class="n">observed_diff</span> <span class="o">=</span> <span class="n">nonsmoking_mean</span> <span class="o">-</span> <span class="n">smoking_mean</span>
 
-<span class="gp">In [68]: </span><span class="n">observed_diff</span>
-<span class="gh">Out[68]: </span><span class="go">9.2661425720249184</span>
+<span class="gp">In [70]: </span><span class="n">observed_diff</span>
+<span class="gh">Out[70]: </span><span class="go">9.2661425720249184</span>
 </pre></div>
 </div>
 <p>Let’s do the bootstrap test on the two categories.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [69]: </span><span class="n">num_nonsmokers</span> <span class="o">=</span> <span class="n">smoker_and_wt</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;Maternal Smoker&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">num_rows</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [71]: </span><span class="n">num_nonsmokers</span> <span class="o">=</span> <span class="n">smoker_and_wt</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;Maternal Smoker&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">num_rows</span>
 
-<span class="gp">In [70]: </span><span class="k">def</span><span class="w"> </span><span class="nf">bootstrap_once</span><span class="p">():</span>
+<span class="gp">In [72]: </span><span class="k">def</span><span class="w"> </span><span class="nf">bootstrap_once</span><span class="p">():</span>
 <span class="gp">   ....: </span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="gp">   ....: </span><span class="sd">    Computes one bootstrapped difference in means.</span>
 <span class="gp">   ....: </span><span class="sd">    The table.sample method lets us take random samples.</span>
@@ -635,44 +648,80 @@ non-smokers.</p>
 <span class="gp">   ....: </span>    <span class="k">return</span> <span class="n">bootstrap_diff</span>
 <span class="gp">   ....: </span>
 
-<span class="gp">In [71]: </span><span class="n">repetitions</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="gp">In [73]: </span><span class="n">repetitions</span> <span class="o">=</span> <span class="mi">1000</span>
 
-<span class="gp">In [72]: </span><span class="n">bootstrapped_diff_means</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+<span class="gp">In [74]: </span><span class="n">bootstrapped_diff_means</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
 <span class="gp">   ....: </span>    <span class="p">[</span> <span class="n">bootstrap_once</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">repetitions</span><span class="p">)</span> <span class="p">])</span>
 <span class="gp">   ....: </span>
 
-<span class="gp">In [73]: </span><span class="n">bootstrapped_diff_means</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
-<span class="gh">Out[73]: </span>
-<span class="go">array([ 0.49646998, -0.35938876,  0.26616085,  0.02589393, -1.21359904,</span>
-<span class="go">        0.1510002 ,  0.06439051, -0.34238615, -1.4276856 ,  0.18852476])</span>
+<span class="gp">In [75]: </span><span class="n">bootstrapped_diff_means</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
+<span class="gh">Out[75]: </span>
+<span class="go">array([ 1.61120405, -0.09304508, -0.18753447,  1.34943706, -0.99561528,</span>
+<span class="go">        2.62673492,  0.35319713, -1.05751329, -0.26035315,  0.44704664])</span>
 
-<span class="gp">In [74]: </span><span class="n">num_diffs_greater</span> <span class="o">=</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">bootstrapped_diff_means</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">observed_diff</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="gp">In [76]: </span><span class="n">num_diffs_greater</span> <span class="o">=</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">bootstrapped_diff_means</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">observed_diff</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
-<span class="gp">In [75]: </span><span class="n">p_value</span> <span class="o">=</span> <span class="n">num_diffs_greater</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">bootstrapped_diff_means</span><span class="p">)</span>
+<span class="gp">In [77]: </span><span class="n">p_value</span> <span class="o">=</span> <span class="n">num_diffs_greater</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">bootstrapped_diff_means</span><span class="p">)</span>
 
-<span class="gp">In [76]: </span><span class="n">p_value</span>
-<span class="gh">Out[76]: </span><span class="go">0.0</span>
+<span class="gp">In [78]: </span><span class="n">p_value</span>
+<span class="gh">Out[78]: </span><span class="go">0.0</span>
 </pre></div>
 </div>
 </section>
 <section id="drawing-maps">
 <h2><a class="toc-backref" href="#id8" role="doc-backlink">Drawing Maps</a><a class="headerlink" href="#drawing-maps" title="Link to this heading">¶</a></h2>
 <p>The main class in the maps module is the Map class. In this code we create a default Map. Maps can be displayed or converted to html.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [77]: </span><span class="kn">from</span><span class="w"> </span><span class="nn">datascience.maps</span><span class="w"> </span><span class="kn">import</span> <span class="n">Map</span>    <span class="c1"># import the Map class</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [79]: </span><span class="kn">from</span><span class="w"> </span><span class="nn">datascience.maps</span><span class="w"> </span><span class="kn">import</span> <span class="n">Map</span>    <span class="c1"># import the Map class</span>
 
-<span class="gp">In [78]: </span><span class="n">default_map</span> <span class="o">=</span> <span class="n">Map</span><span class="p">()</span>                 <span class="c1"># generate a default Map</span>
+<span class="gp">In [80]: </span><span class="n">default_map</span> <span class="o">=</span> <span class="n">Map</span><span class="p">()</span>                 <span class="c1"># generate a default Map</span>
 
-<span class="gp">In [79]: </span><span class="n">default_map</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>                  <span class="c1"># display the Map</span>
+<span class="gp">In [81]: </span><span class="n">default_map</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>                  <span class="c1"># display the Map</span>
 <span class="go">&lt;IPython.core.display.HTML object&gt;</span>
 
-<span class="gp">In [80]: </span><span class="n">html</span> <span class="o">=</span> <span class="n">default_map</span><span class="o">.</span><span class="n">as_html</span><span class="p">()</span>        <span class="c1"># generate the html</span>
+<span class="gp">In [82]: </span><span class="n">html</span> <span class="o">=</span> <span class="n">default_map</span><span class="o">.</span><span class="n">as_html</span><span class="p">()</span>        <span class="c1"># generate the html</span>
 
-<span class="gp">In [81]: </span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;map.html&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>    <span class="c1"># make a file to store the html</span>
+<span class="gp">In [83]: </span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;map.html&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>    <span class="c1"># make a file to store the html</span>
 <span class="gp">   ....: </span>    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>                   <span class="c1"># write the html to the file</span>
 <span class="gp">   ....: </span>
 </pre></div>
 </div>
 <p>The maps modules also allows you to make custom maps with markers, circles and regions.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [84]: </span><span class="kn">from</span><span class="w"> </span><span class="nn">datascience.maps</span><span class="w"> </span><span class="kn">import</span> <span class="n">Map</span><span class="p">,</span> <span class="n">Marker</span><span class="p">,</span> <span class="n">Circle</span><span class="p">,</span> <span class="n">Region</span>            <span class="c1"># import the Map, Marker, Circle and Region class</span>
+
+<span class="go"># generates markers with custom sets of coordinates, colors and popups</span>
+<span class="gp">In [85]: </span><span class="n">marker1</span> <span class="o">=</span> <span class="n">Marker</span><span class="p">(</span><span class="mf">37.372</span><span class="p">,</span> <span class="o">-</span><span class="mf">121.758</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="n">popup</span><span class="o">=</span><span class="s2">&quot;My green marker&quot;</span><span class="p">)</span>
+
+<span class="gp">In [86]: </span><span class="n">marker2</span> <span class="o">=</span> <span class="n">Marker</span><span class="p">(</span><span class="mf">37.572</span><span class="p">,</span> <span class="o">-</span><span class="mf">121.758</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;orange&quot;</span><span class="p">,</span> <span class="n">popup</span><span class="o">=</span><span class="s2">&quot;My orange marker&quot;</span><span class="p">)</span>
+
+<span class="go"># generates a circle with a custom set of coordinates, color and popup</span>
+<span class="gp">In [87]: </span><span class="n">circle</span> <span class="o">=</span> <span class="n">Circle</span><span class="p">(</span><span class="mf">37.5</span><span class="p">,</span> <span class="o">-</span><span class="mi">122</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">area</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">popup</span><span class="o">=</span><span class="s2">&quot;My Circle&quot;</span><span class="p">)</span>
+
+<span class="go"># make a geojson object which is needed when making a region</span>
+<span class="gp">In [88]: </span><span class="n">geojson</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">   ....: </span>  <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Feature&quot;</span><span class="p">,</span>
+<span class="gp">   ....: </span>  <span class="s2">&quot;geometry&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">   ....: </span>    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Polygon&quot;</span><span class="p">,</span>
+<span class="gp">   ....: </span>    <span class="s2">&quot;coordinates&quot;</span><span class="p">:</span> <span class="p">[</span>                                                <span class="c1"># specifies the coordinates</span>
+<span class="gp">   ....: </span>        <span class="p">[[</span><span class="o">-</span><span class="mi">121</span><span class="p">,</span><span class="mi">37</span><span class="p">],[</span><span class="o">-</span><span class="mf">121.5</span><span class="p">,</span><span class="mi">37</span><span class="p">],[</span><span class="o">-</span><span class="mf">121.5</span><span class="p">,</span><span class="mf">37.5</span><span class="p">],[</span><span class="o">-</span><span class="mi">121</span><span class="p">,</span><span class="mf">37.5</span><span class="p">],[</span><span class="o">-</span><span class="mi">121</span><span class="p">,</span><span class="mi">37</span><span class="p">]]</span> <span class="c1"># these coordinates make a rectangle</span>
+<span class="gp">   ....: </span>    <span class="p">]</span>
+<span class="gp">   ....: </span>  <span class="p">}</span>
+<span class="gp">   ....: </span><span class="p">}</span>
+<span class="gp">   ....: </span>
+
+<span class="go"># make a region with your geojson object</span>
+<span class="gp">In [89]: </span><span class="n">region</span> <span class="o">=</span> <span class="n">Region</span><span class="p">(</span><span class="n">geojson</span><span class="p">)</span>
+
+<span class="go"># Initialize the map</span>
+<span class="gp">In [90]: </span><span class="n">custom_map</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="n">marker1</span><span class="p">,</span> <span class="n">marker2</span><span class="p">,</span> <span class="n">circle</span><span class="p">,</span> <span class="n">region</span><span class="p">],</span>       <span class="c1"># specifies the features</span>
+<span class="gp">   ....: </span>         <span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span>                                                 <span class="c1"># specifies a custom width</span>
+<span class="gp">   ....: </span>         <span class="n">height</span><span class="o">=</span><span class="mi">600</span>                                                 <span class="c1"># specifies a custom height</span>
+<span class="gp">   ....: </span>                <span class="p">)</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [91]: </span><span class="n">custom_map</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>                                                   <span class="c1"># display the map</span>
+<span class="go">&lt;IPython.core.display.HTML object&gt;</span>
+</pre></div>
+</div>
 </section>
 </section>
 

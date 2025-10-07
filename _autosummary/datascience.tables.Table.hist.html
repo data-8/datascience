@@ -75,7 +75,8 @@ If None, each value in each row is assigned a count of 1.</p>
 <dt>group (column name or index): A column of categories.  The rows are</dt><dd><p>grouped by the values in this column, and a separate histogram is
 generated for each group.  The histograms are overlaid or plotted
 separately depending on the overlay argument.  If None, no such
-grouping is done.</p>
+grouping is done. Note: <cite>group</cite> cannot be used together with <cite>bin_column</cite> or when plotting
+multiple columns. An error will be raised in these cases.</p>
 </dd>
 <dt>side_by_side (bool): Whether histogram bins should be plotted side by</dt><dd><p>side (instead of directly overlaid).  Makes sense only when
 plotting multiple histograms, either by passing several columns
