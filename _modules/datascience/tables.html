@@ -2171,11 +2171,6 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_label</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">other_label</span><span class="o">=</span><span class="p">[]):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;joins when COLUMN_LABEL is a string&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_rows</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">other</span><span class="o">.</span><span class="n">num_rows</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">other_label</span><span class="p">:</span>
-            <span class="n">other_label</span> <span class="o">=</span> <span class="n">column_label</span>
-
         <span class="n">self_rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_by</span><span class="p">(</span><span class="n">column_label</span><span class="p">)</span>
         <span class="n">other_rows</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">index_by</span><span class="p">(</span><span class="n">other_label</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_join_helper</span><span class="p">([</span><span class="n">column_label</span><span class="p">],</span> <span class="n">self_rows</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="p">[</span><span class="n">other_label</span><span class="p">],</span> <span class="n">other_rows</span><span class="p">)</span>
