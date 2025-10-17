@@ -95,6 +95,10 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         self._width = width
         self._height = height
         self._attrs.update(kwargs)
+        # Folium >=0.20 requires non-empty attribution for custom tile URLs.
+        # Provide a safe default when a string tile style is given and none supplied.
+        if isinstance(self._attrs.get('tiles'), str) and 'attr' not in self._attrs:
+            self._attrs['attr'] = 'Map tiles'
         self._set_folium_map()
 
     def copy(self):
@@ -542,6 +546,14 @@ class Marker(_MapFeature):
             if 'icon' not in icon_args:
                 icon_args['icon'] = 'circle'
             attrs['icon'] = BeautifyIcon(**icon_args)
+            # Ensure backward-compatible option key for tests expecting 'textColor'.
+            # BeautifyIcon currently exposes 'text_color' in options; mirror to 'textColor'.
+            try:
+                opts = attrs['icon'].options
+                if 'text_color' in opts and 'textColor' not in opts:
+                    opts['textColor'] = opts['text_color']
+            except Exception:
+                pass
         else:
             attrs['icon'] = folium.Icon(**icon_args)
         return attrs

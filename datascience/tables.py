@@ -5281,12 +5281,27 @@ class Table(collections.abc.MutableMapping):
             unit (string): A name for the units of the plotted column (e.g.
                 'kg'), to be used in the plot.
 
-            group (column name or index): A column of categories.  The rows are
-                grouped by the values in this column, and a separate histogram is
-                generated for each group.  The histograms are overlaid or plotted
-                separately depending on the overlay argument.  If None, no such
-                grouping is done. Note: `group` cannot be used together with `bin_column` or when plotting
-                multiple columns. An error will be raised in these cases.
+            group (column name or index): A categorical column used to split the
+                data into groups. A separate histogram is generated for each
+                unique value in this column. Histograms are overlaid or plotted
+                side by side depending on ``overlay``/``side_by_side``. If ``None``,
+                no grouping is applied.
+
+                Constraints and behavior:
+                - ``group`` cannot be combined with ``bin_column``.
+                - ``group`` requires exactly one histogram value column. If more
+                  than one value column is passed, a ``ValueError`` is raised.
+                - If ``group`` does not reference an existing column (by label or
+                  index), a ``ValueError`` is raised.
+
+                Usage examples:
+                >>> t = Table().with_columns(
+                ...     'height', make_array(160, 170, 180, 175),
+                ...     'gender', make_array('F', 'M', 'M', 'F'))
+                >>> t.hist('height', group='gender')  # doctest: +SKIP
+                <two histograms comparing height distributions by gender>
+                >>> t.hist('height', group='gender', side_by_side=True)  # doctest: +SKIP
+                <two histograms shown side by side for comparison>
 
             side_by_side (bool): Whether histogram bins should be plotted side by
                 side (instead of directly overlaid).  Makes sense only when
@@ -5386,6 +5401,16 @@ class Table(collections.abc.MutableMapping):
         if counts is not None and bin_column is None:
             warnings.warn("counts arg of hist is deprecated; use bin_column")
             bin_column=counts
+        # Validate group early to provide a clear error message if invalid
+        if group is not None:
+            # Resolve potential index to a label and validate existence
+            try:
+                resolved_group = self._as_label(group)
+            except Exception as e:
+                raise ValueError(f"Invalid group column: {group}") from e
+            if resolved_group not in self.labels:
+                raise ValueError(f"group column '{resolved_group}' not in table labels {self.labels}")
+            group = resolved_group
         if columns:
             columns_included = list(columns)
             if bin_column is not None:
@@ -5429,6 +5454,8 @@ class Table(collections.abc.MutableMapping):
                 warnings.warn("It looks like you're making a grouped histogram with "
                               "a lot of groups ({:d}), which is probably incorrect."
                               .format(grouped.num_rows))
+            if grouped.num_rows == 0:
+                return []
             return [("{}={}".format(group, k), (v[0][1],)) for k, v in grouped.index_by(group).items()]
 
         # Populate values_dict: An ordered dict from column name to singleton
@@ -5461,6 +5488,10 @@ class Table(collections.abc.MutableMapping):
                     "following code: `np.set_printoptions(legacy='1.13')`", UserWarning)
             # This code is factored as a function for clarity only.
             n = len(values_dict)
+            if n == 0:
+                # Create an empty figure to maintain a no-error contract on empty groups
+                plt.figure(figsize=(width, height))
+                return
             colors = [rgb_color + (self.default_alpha,) for rgb_color in
                 itertools.islice(itertools.cycle(self.chart_colors), n)]
             hist_names = list(values_dict.keys())
