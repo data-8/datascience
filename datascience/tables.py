@@ -1498,6 +1498,207 @@ class Table(collections.abc.MutableMapping):
         assert (row_numbers < self.num_rows).all(), row_numbers
         return self.take(row_numbers)
 
+    def drop_na(self, subset=None, axis='rows', how='any'):
+        """Return a new table with missing values removed.
+
+        Args:
+            subset (str or list, optional): Column label or list of labels/indices
+                to consider when detecting missing values. Defaults to all columns.
+            axis (str or int): 'rows' (0) to drop rows with missing values,
+                'columns' (1) to drop columns that contain missing values.
+            how (str): 'any' drops if any value is missing; 'all' drops only if
+                all values are missing (for the considered subset).
+
+        Returns:
+            A new instance of ``Table`` with rows/columns containing missing
+            values removed according to the provided options.
+        """
+        valid_axes = {'rows', 'row', 0, 'columns', 'cols', 1}
+        if axis not in valid_axes:
+            raise ValueError("axis must be 'rows' (0) or 'columns' (1)")
+        axis_rows = axis in {'rows', 'row', 0}
+
+        # Resolve subset -> list of column indices
+        if subset is None:
+            cols = list(range(len(self.labels)))
+        elif _util.is_non_string_iterable(subset):
+            cols = [self.column_index(lbl) if not isinstance(lbl, numbers.Integral) else int(lbl) for lbl in subset]
+        else:
+            cols = [self.column_index(subset) if not isinstance(subset, numbers.Integral) else int(subset)]
+
+        if axis_rows:
+            # Build mask of rows to keep
+            keep = []
+            for r in range(self.num_rows):
+                values = [list(self._columns.values())[ci][r] for ci in cols]
+                is_null = [pandas.isnull(v) for v in values]
+                drop = any(is_null) if how == 'any' else all(is_null)
+                keep.append(not drop)
+            row_idx = np.nonzero(np.array(keep))[0]
+            return self.take(row_idx)
+        else:
+            # Drop columns that contain NAs (considering all rows)
+            keep_labels = []
+            for i, label in enumerate(self.labels):
+                if i not in cols:
+                    # If not in subset, keep as-is
+                    keep_labels.append(label)
+                    continue
+                col = self._get_column(label)
+                is_null = pandas.isnull(col)
+                drop = is_null.any() if how == 'any' else is_null.all()
+                if not drop:
+                    keep_labels.append(label)
+            return self.select(keep_labels)
+
+    def fill_na(self, value=None, columns=None, strategy=None):
+        """Return a new table with missing values filled.
+
+        Args:
+            value: Scalar value to replace missing values with.
+            columns (str or list, optional): Column label(s)/indices to fill.
+                Defaults to all columns.
+            strategy (str, optional): One of {'mean','median','mode'}. Applied
+                per-column if ``value`` is not provided. Non-numeric columns are
+                skipped for mean/median; mode works for any type.
+
+        Returns:
+            New ``Table`` with filled values.
+        """
+        # Resolve columns list
+        if columns is None:
+            target_labels = list(self.labels)
+        elif _util.is_non_string_iterable(columns):
+            target_labels = [self._as_label(c) if not isinstance(c, numbers.Integral) else self.labels[int(c)] for c in columns]
+        else:
+            target_labels = [self._as_label(columns) if not isinstance(columns, numbers.Integral) else self.labels[int(columns)]]
+
+        t = self.copy()
+        for label in target_labels:
+            col = t[label]
+            mask = pandas.isnull(col)
+            if not mask.any():
+                continue
+            if value is not None:
+                filled = np.where(mask, value, col)
+                t[label] = np.array(filled, dtype=object)
+                continue
+            # strategy-based
+            if strategy is None:
+                continue
+            if strategy not in {'mean','median','mode'}:
+                raise ValueError("Unsupported strategy; use 'mean', 'median', or 'mode'")
+            # Compute fill value
+            non_null = np.array([v for v in col if not pandas.isnull(v)], dtype=object)
+            if non_null.size == 0:
+                continue
+            fill_val = None
+            if strategy == 'mode':
+                # Most frequent value
+                vals, counts = np.unique(non_null, return_counts=True)
+                fill_val = vals[np.argmax(counts)]
+            else:
+                # Numeric strategies
+                try:
+                    arr = non_null.astype(float)
+                    fill_val = np.nanmean(arr) if strategy == 'mean' else np.nanmedian(arr)
+                except Exception:
+                    # Skip non-numeric
+                    continue
+            filled = np.where(mask, fill_val, col)
+            t[label] = np.array(filled, dtype=object)
+        return t
+
+    def drop_duplicates(self, subset=None, keep='first'):
+        """Return a new table with duplicate rows removed.
+
+        Args:
+            subset (str or list, optional): Column label(s)/indices to consider
+                for identifying duplicates. Defaults to all columns.
+            keep (str): 'first', 'last', or 'none' (drop all duplicates).
+
+        Returns:
+            New ``Table`` with duplicates removed.
+        """
+        # Resolve subset
+        if subset is None:
+            cols = list(range(len(self.labels)))
+        elif _util.is_non_string_iterable(subset):
+            cols = [self.column_index(lbl) if not isinstance(lbl, numbers.Integral) else int(lbl) for lbl in subset]
+        else:
+            cols = [self.column_index(subset) if not isinstance(subset, numbers.Integral) else int(subset)]
+
+        seen = {}
+        to_keep = []
+        keys = []
+        # Build key per row
+        for r in range(self.num_rows):
+            key = tuple(list(self._columns.values())[ci][r] for ci in cols)
+            keys.append(key)
+        if keep == 'first':
+            for i, k in enumerate(keys):
+                if k not in seen:
+                    seen[k] = i
+                    to_keep.append(i)
+        elif keep == 'last':
+            last_idx = {}
+            for i, k in enumerate(keys):
+                last_idx[k] = i
+            to_keep = sorted(last_idx.values())
+        elif keep == 'none':
+            counts = collections.Counter(keys)
+            to_keep = [i for i, k in enumerate(keys) if counts[k] == 1]
+        else:
+            raise ValueError("keep must be one of 'first', 'last', 'none'")
+        return self.take(np.array(to_keep, dtype=int))
+
+    def convert_types(self, mapping=None, infer=False):
+        """Return a new table with column types converted.
+
+        Args:
+            mapping (dict): {label: type_or_callable} applied elementwise to
+                convert the column.
+            infer (bool): If True, attempt to infer numeric types for columns of
+                strings (e.g., cast to int or float where possible).
+
+        Returns:
+            New ``Table`` with converted columns.
+        """
+        t = self.copy()
+        if mapping:
+            for label, conv in mapping.items():
+                lbl = label if isinstance(label, str) else self.labels[int(label)]
+                col = t[lbl]
+                def _apply(v):
+                    try:
+                        return conv(v)
+                    except Exception:
+                        return v
+                t[lbl] = np.array([_apply(v) for v in col], dtype=object)
+        if infer:
+            for label in t.labels:
+                col = t[label]
+                # skip if already numeric
+                try:
+                    if np.issubdtype(np.array(col).dtype, np.number):
+                        continue
+                except Exception:
+                    pass
+                # try int, then float
+                try:
+                    vals = [int(v) if not pandas.isnull(v) else v for v in col]
+                    if all((pandas.isnull(v) or isinstance(v, (int, np.integer))) for v in vals):
+                        t[label] = np.array(vals, dtype=object)
+                        continue
+                except Exception:
+                    pass
+                try:
+                    vals = [float(v) if not pandas.isnull(v) else v for v in col]
+                    t[label] = np.array(vals, dtype=object)
+                except Exception:
+                    pass
+        return t
+
     def group(self, column_or_label, collect=None):
         """Group rows by unique values in a column; count or aggregate others.
 

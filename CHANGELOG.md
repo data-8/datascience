@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.19.0
+* Add data cleaning utilities to Table:
+  - Table.drop_na: drop rows/columns with missing values (any/all)
+  - Table.fill_na: fill missing values with a scalar or strategy (mean/median/mode)
+  - Table.drop_duplicates: remove duplicate rows with subset/keep options
+  - Table.convert_types: convert types via mapping or simple inference
+* Tests for new utilities in tests/test_cleaning.py
+
 ### v0.18.0
 * Improved color contrast for charts (gold, blue)
 * Fixed make_array() so it doesn't auto-convert booleans to integers
