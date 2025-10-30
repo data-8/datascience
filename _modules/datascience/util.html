@@ -4,11 +4,11 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>datascience.util &#8212; datascience 0.18.0 documentation</title>
+    <title>datascience.util &#8212; datascience 0.18.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2bf1fcf8" />
     
-    <script src="../../_static/documentation_options.js?v=ba2e7b09"></script>
+    <script src="../../_static/documentation_options.js?v=1e56ff10"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -25,7 +25,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.18.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.18.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">datascience.util</a></li> 
       </ul>
@@ -176,7 +176,7 @@
 
 <div class="viewcode-block" id="sample_proportions">
 <a class="viewcode-back" href="../../util.html#datascience.util.sample_proportions">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">sample_proportions</span><span class="p">(</span><span class="n">sample_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sample_proportions</span><span class="p">(</span><span class="n">sample_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the proportion of random draws for each outcome in a distribution.</span>
 
 <span class="sd">    This function is similar to np.random.Generator.multinomial, but returns proportions</span>
@@ -187,10 +187,12 @@
 
 <span class="sd">        ``probabilities``: An array of probabilities that forms a distribution.</span>
 
+<span class="sd">        ``seed``: Optional seed for reproducibility. If None, results will be random.</span>
+
 <span class="sd">    Returns:</span>
 <span class="sd">        An array with the same length as ``probability`` that sums to 1.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">()</span>
+    <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">rng</span><span class="o">.</span><span class="n">multinomial</span><span class="p">(</span><span class="n">sample_size</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">)</span> <span class="o">/</span> <span class="n">sample_size</span></div>
 
 
@@ -198,7 +200,7 @@
 <div class="viewcode-block" id="proportions_from_distribution">
 <a class="viewcode-back" href="../../util.html#datascience.util.proportions_from_distribution">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">proportions_from_distribution</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">sample_size</span><span class="p">,</span>
-                                  <span class="n">column_name</span><span class="o">=</span><span class="s1">&#39;Random Sample&#39;</span><span class="p">):</span>
+                                  <span class="n">column_name</span><span class="o">=</span><span class="s1">&#39;Random Sample&#39;</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Adds a column named ``column_name`` containing the proportions of a random</span>
 <span class="sd">    draw using the distribution in ``label``.</span>
@@ -218,6 +220,8 @@
 <span class="sd">        ``column_name``: The name of the new column that contains the sampled</span>
 <span class="sd">            proportions. Defaults to ``&#39;Random Sample&#39;``.</span>
 
+<span class="sd">        ``seed``: Optional seed for reproducibility. If None, results will be random.</span>
+
 <span class="sd">    Returns:</span>
 <span class="sd">        A copy of ``table`` with a column ``column_name`` containing the</span>
 <span class="sd">        sampled proportions. The proportions will sum to 1.</span>
@@ -226,8 +230,8 @@
 <span class="sd">        ``ValueError``: If the ``label`` is not in the table, or if</span>
 <span class="sd">            ``table.column(label)`` does not sum to 1.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">proportions</span> <span class="o">=</span> <span class="n">sample_proportions</span><span class="p">(</span><span class="n">sample_size</span><span class="p">,</span> <span class="n">table</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">label</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">table</span><span class="o">.</span><span class="n">with_column</span><span class="p">(</span><span class="s1">&#39;Random Sample&#39;</span><span class="p">,</span> <span class="n">proportions</span><span class="p">)</span></div>
+    <span class="n">proportions</span> <span class="o">=</span> <span class="n">sample_proportions</span><span class="p">(</span><span class="n">sample_size</span><span class="p">,</span> <span class="n">table</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">label</span><span class="p">),</span> <span class="n">seed</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">table</span><span class="o">.</span><span class="n">with_column</span><span class="p">(</span><span class="n">column_name</span><span class="p">,</span> <span class="n">proportions</span><span class="p">)</span></div>
 
 
 
@@ -359,7 +363,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.18.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">datascience 0.18.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">datascience.util</a></li> 
       </ul>

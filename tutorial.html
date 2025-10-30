@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Start Here: datascience Tutorial &#8212; datascience 0.18.0 documentation</title>
+    <title>Start Here: datascience Tutorial &#8212; datascience 0.18.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css?v=2bf1fcf8" />
     
-    <script src="_static/documentation_options.js?v=ba2e7b09"></script>
+    <script src="_static/documentation_options.js?v=1e56ff10"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -34,7 +34,7 @@
         <li class="right" >
           <a href="index.html" title="Welcome to datascience’s documentation!"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.18.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.18.1 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Start Here: <code class="docutils literal notranslate"><span class="pre">datascience</span></code> Tutorial</a></li> 
       </ul>
     </div>  
@@ -448,17 +448,17 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 
 <span class="gp">In [47]: </span><span class="n">normal_data</span>
 <span class="gh">Out[47]: </span>
-<span class="go">data1      | data2</span>
-<span class="go">4.88439    | 1.63506</span>
-<span class="go">0.165602   | 1.18817</span>
-<span class="go">1.88742    | 3.85759</span>
-<span class="go">1.7141     | 3.53499</span>
-<span class="go">1.34176    | 1.77242</span>
-<span class="go">3.89849    | 3.02534</span>
-<span class="go">-0.0786259 | 4.94467</span>
-<span class="go">-2.83434   | 4.85554</span>
-<span class="go">1.05071    | 4.23709</span>
-<span class="go">4.45339    | 2.06407</span>
+<span class="go">data1     | data2</span>
+<span class="go">2.17738   | 0.568827</span>
+<span class="go">0.894294  | 2.68501</span>
+<span class="go">0.795281  | 2.76698</span>
+<span class="go">-0.971721 | 1.65025</span>
+<span class="go">-0.920509 | 5.02376</span>
+<span class="go">-0.258151 | 3.63721</span>
+<span class="go">0.933176  | 4.31878</span>
+<span class="go">1.05541   | -1.99483</span>
+<span class="go">1.38749   | -0.231022</span>
+<span class="go">-1.40263  | 5.27338</span>
 <span class="go">... (90 rows omitted)</span>
 </pre></div>
 </div>
@@ -530,17 +530,17 @@ conditionally with <a class="reference internal" href="_autosummary/datascience.
 converting to a pandas dataframe with <a class="reference internal" href="_autosummary/datascience.tables.Table.to_df.html#datascience.tables.Table.to_df" title="datascience.tables.Table.to_df"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_df()</span></code></a>:</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [58]: </span><span class="n">normal_data</span>
 <span class="gh">Out[58]: </span>
-<span class="go">data1      | data2</span>
-<span class="go">4.88439    | 1.63506</span>
-<span class="go">0.165602   | 1.18817</span>
-<span class="go">1.88742    | 3.85759</span>
-<span class="go">1.7141     | 3.53499</span>
-<span class="go">1.34176    | 1.77242</span>
-<span class="go">3.89849    | 3.02534</span>
-<span class="go">-0.0786259 | 4.94467</span>
-<span class="go">-2.83434   | 4.85554</span>
-<span class="go">1.05071    | 4.23709</span>
-<span class="go">4.45339    | 2.06407</span>
+<span class="go">data1     | data2</span>
+<span class="go">2.17738   | 0.568827</span>
+<span class="go">0.894294  | 2.68501</span>
+<span class="go">0.795281  | 2.76698</span>
+<span class="go">-0.971721 | 1.65025</span>
+<span class="go">-0.920509 | 5.02376</span>
+<span class="go">-0.258151 | 3.63721</span>
+<span class="go">0.933176  | 4.31878</span>
+<span class="go">1.05541   | -1.99483</span>
+<span class="go">1.38749   | -0.231022</span>
+<span class="go">-1.40263  | 5.27338</span>
 <span class="go">... (90 rows omitted)</span>
 
 <span class="go"># index = False prevents row numbers from appearing in the resulting CSV</span>
@@ -656,8 +656,8 @@ non-smokers.</p>
 
 <span class="gp">In [75]: </span><span class="n">bootstrapped_diff_means</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
 <span class="gh">Out[75]: </span>
-<span class="go">array([ 1.61120405, -0.09304508, -0.18753447,  1.34943706, -0.99561528,</span>
-<span class="go">        2.62673492,  0.35319713, -1.05751329, -0.26035315,  0.44704664])</span>
+<span class="go">array([ 0.42693603, -0.13005469,  0.19199232,  0.35657023, -0.69754254,</span>
+<span class="go">       -1.12267471,  0.20756281,  0.42372138, -0.17267395,  0.16368512])</span>
 
 <span class="gp">In [76]: </span><span class="n">num_diffs_greater</span> <span class="o">=</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">bootstrapped_diff_means</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">observed_diff</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
@@ -795,7 +795,7 @@ non-smokers.</p>
         <li class="right" >
           <a href="index.html" title="Welcome to datascience’s documentation!"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.18.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.18.1 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Start Here: <code class="docutils literal notranslate"><span class="pre">datascience</span></code> Tutorial</a></li> 
       </ul>
     </div>

@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Utility Functions (datascience.util) &#8212; datascience 0.18.0 documentation</title>
+    <title>Utility Functions (datascience.util) &#8212; datascience 0.18.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css?v=2bf1fcf8" />
     
-    <script src="_static/documentation_options.js?v=ba2e7b09"></script>
+    <script src="_static/documentation_options.js?v=1e56ff10"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -30,7 +30,7 @@
         <li class="right" >
           <a href="formats.html" title="Formats (datascience.formats)"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.18.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.18.1 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Utility Functions (<code class="docutils literal notranslate"><span class="pre">datascience.util</span></code>)</a></li> 
       </ul>
     </div>  
@@ -144,7 +144,7 @@ between <code class="docutils literal notranslate"><span class="pre">lbound</spa
 
 <dl class="py function">
 <dt class="sig sig-object py" id="datascience.util.proportions_from_distribution">
-<span class="sig-prename descclassname"><span class="pre">datascience.util.</span></span><span class="sig-name descname"><span class="pre">proportions_from_distribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Random</span> <span class="pre">Sample'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#proportions_from_distribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.util.proportions_from_distribution" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">datascience.util.</span></span><span class="sig-name descname"><span class="pre">proportions_from_distribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Random</span> <span class="pre">Sample'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#proportions_from_distribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.util.proportions_from_distribution" title="Link to this definition">¶</a></dt>
 <dd><p>Adds a column named <code class="docutils literal notranslate"><span class="pre">column_name</span></code> containing the proportions of a random
 draw using the distribution in <code class="docutils literal notranslate"><span class="pre">label</span></code>.</p>
 <p>This method uses <code class="docutils literal notranslate"><span class="pre">np.random.Generator.multinomial</span></code> to draw <code class="docutils literal notranslate"><span class="pre">sample_size</span></code> samples
@@ -161,6 +161,7 @@ from the distribution in <code class="docutils literal notranslate"><span class=
 <dt><code class="docutils literal notranslate"><span class="pre">column_name</span></code>: The name of the new column that contains the sampled</dt><dd><p>proportions. Defaults to <code class="docutils literal notranslate"><span class="pre">'Random</span> <span class="pre">Sample'</span></code>.</p>
 </dd>
 </dl>
+<p><code class="docutils literal notranslate"><span class="pre">seed</span></code>: Optional seed for reproducibility. If None, results will be random.</p>
 </dd>
 <dt>Returns:</dt><dd><p>A copy of <code class="docutils literal notranslate"><span class="pre">table</span></code> with a column <code class="docutils literal notranslate"><span class="pre">column_name</span></code> containing the
 sampled proportions. The proportions will sum to 1.</p>
@@ -175,13 +176,14 @@ sampled proportions. The proportions will sum to 1.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="datascience.util.sample_proportions">
-<span class="sig-prename descclassname"><span class="pre">datascience.util.</span></span><span class="sig-name descname"><span class="pre">sample_proportions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">probabilities</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#sample_proportions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.util.sample_proportions" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">datascience.util.</span></span><span class="sig-name descname"><span class="pre">sample_proportions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">probabilities</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/datascience/util.html#sample_proportions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#datascience.util.sample_proportions" title="Link to this definition">¶</a></dt>
 <dd><p>Return the proportion of random draws for each outcome in a distribution.</p>
 <p>This function is similar to np.random.Generator.multinomial, but returns proportions
 instead of counts.</p>
 <dl>
 <dt>Args:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">sample_size</span></code>: The size of the sample to draw from the distribution.</p>
 <p><code class="docutils literal notranslate"><span class="pre">probabilities</span></code>: An array of probabilities that forms a distribution.</p>
+<p><code class="docutils literal notranslate"><span class="pre">seed</span></code>: Optional seed for reproducibility. If None, results will be random.</p>
 </dd>
 <dt>Returns:</dt><dd><p>An array with the same length as <code class="docutils literal notranslate"><span class="pre">probability</span></code> that sums to 1.</p>
 </dd>
@@ -271,7 +273,7 @@ shape == shape(table), or shape (1, table.shape[1])</p>
         <li class="right" >
           <a href="formats.html" title="Formats (datascience.formats)"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.18.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">datascience 0.18.1 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Utility Functions (<code class="docutils literal notranslate"><span class="pre">datascience.util</span></code>)</a></li> 
       </ul>
     </div>
