@@ -5533,6 +5533,7 @@ class Table(collections.abc.MutableMapping):
                     type(self).plots.append(axis)
 
         draw_hist(values_dict)
+        plt.tight_layout()  #ensures layout fits for interactive notebook plots
 
     def hist_of_counts(self, *columns, overlay=True, bins=None, bin_column=None,
                        group=None, side_by_side=False, width=None, height=None, **vargs):
