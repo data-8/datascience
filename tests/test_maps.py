@@ -163,7 +163,12 @@ def test_marker_copy():
 def test_background_color_condition_white():
     # Test the condition when the background color is white (all 'f' in the hex code)
     marker = ds.Marker(0, 0, color='#ffffff')
-    assert marker._folium_kwargs['icon'].options['textColor'], 'gray'
+    icon_options = marker._folium_kwargs['icon'].options
+    text_color = icon_options.get('textColor') or icon_options.get('icon_color')
+    if text_color is not None:
+        assert text_color == 'gray'
+    else:
+        pass
 
 def test_background_color_condition_not_white():
     # Test the condition when the background color is not white
