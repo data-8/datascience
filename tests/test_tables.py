@@ -1995,3 +1995,12 @@ def test_num_columns(table):
     """Test that Tables returns right number of columns"""
     number = table.num_columns
     assert number == 3
+
+def test_as_label(table):
+    """Test that as_label raises ValueError for invalid index_or_label along with correct message"""
+    
+    invalid_input = None
+    
+    with pytest.raises(ValueError) as t:
+        table._as_label(invalid_input)
+    assert str(t.value) == "None is not a label or index"
