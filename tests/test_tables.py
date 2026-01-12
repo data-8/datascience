@@ -1999,10 +1999,8 @@ def test_num_columns(table):
 def test_as_label(table):
     """Test that as_label raises ValueError for invalid index_or_label along with correct message"""
     
-    invalid_input = None
-    
     with pytest.raises(ValueError) as t:
-        table._as_label(invalid_input)
+        table.set_format(None, CurrencyFormatter(int_to_float=True))
     assert str(t.value) == "None is not a label or index"
 def test_split(table):
     """Test that split copies over the _formats variable from the original table to the new tables correctly after splitting"""
