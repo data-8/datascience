@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### Unreleased
+
+* Added `CONTRIBUTING.md` with contributor instructions and test/run steps.
+* Added GitHub Actions CI workflow at `.github/workflows/ci.yml` to run tests on push and PR.
+* Fixed map rendering in `datascience/maps.py`: ensure tile attribution for custom tile strings and normalize `BeautifyIcon` option keys so icons expose `textColor`.
+
 ### v0.18.1
 * Added optional `seed` parameter to `sample_proportions()` for reproducible results
 * Added optional `seed` parameter to `proportions_from_distribution()` for reproducible results

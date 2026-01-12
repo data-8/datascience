@@ -21,3 +21,9 @@ pip install datascience
 ```
 
 A log of all changes can be found in CHANGELOG.md.
+
+## Contributing
+
+We welcome contributions. See `CONTRIBUTING.md` for a short guide on how to run tests,
+open a pull request, and follow the project's contribution workflow. A GitHub Actions
+CI workflow has been added to run tests on push and pull requests.

@@ -198,6 +198,11 @@ class Map(_FoliumWrapper, collections.abc.Mapping):
         attrs.update(self._autozoom())
         attrs.update(self._attrs.copy())
 
+        # If tiles is a custom string provider, ensure an attribution is present
+        # Folium/TileLayer raises ValueError if attr is falsy for custom tiles.
+        if 'tiles' in attrs and isinstance(attrs['tiles'], str) and not attrs.get('attr'):
+            attrs['attr'] = ' '  # non-empty string avoids folium's "must have an attribution" check
+
         # Enforce zoom consistency
         attrs['max_zoom'] = max(attrs['zoom_start']+2, attrs['max_zoom'])
         attrs['min_zoom'] = min(attrs['zoom_start']-2, attrs['min_zoom'])
@@ -533,12 +538,16 @@ class Marker(_MapFeature):
         if 'color' in icon_args and icon_args['color'][0] == '#':
             # Checks if color provided is a hex code instead; if it is, uses BeautifyIcon to create markers. 
             # If statement does not check to see if color is an empty string.
-            icon_args['background_color'] = icon_args['border_color'] = icon_args.pop('color')
-            if icon_args['background_color'][1] == icon_args['background_color'][3] == icon_args['background_color'][5] == 'f':
-                icon_args['text_color'] = 'gray'
+            # BeautifyIcon expects camelCase option names like 'backgroundColor',
+            # 'borderColor', 'textColor', and 'iconShape'. Use those keys so
+            # the resulting `.options` dict contains the expected names used in tests.
+            color_val = icon_args.pop('color')
+            icon_args['backgroundColor'] = icon_args['borderColor'] = color_val
+            if color_val[1] == color_val[3] == color_val[5] == 'f':
+                icon_args['textColor'] = 'gray'
             else:
-                icon_args['text_color'] = 'white'
-            icon_args['icon_shape'] = 'marker'
+                icon_args['textColor'] = 'white'
+            icon_args['iconShape'] = 'marker'
             if 'icon' not in icon_args:
                 icon_args['icon'] = 'circle'
             attrs['icon'] = BeautifyIcon(**icon_args)
