@@ -535,7 +535,8 @@ class Marker(_MapFeature):
             # If statement does not check to see if color is an empty string.
             icon_args['background_color'] = icon_args['border_color'] = icon_args.pop('color')
             if icon_args['background_color'][1] == icon_args['background_color'][3] == icon_args['background_color'][5] == 'f':
-                icon_args['text_color'] = 'gray'
+                # White background, use black text for visibility
+                icon_args['text_color'] = 'black'
             else:
                 icon_args['text_color'] = 'white'
             icon_args['icon_shape'] = 'marker'

@@ -39,7 +39,7 @@ def test_draw_map(states):
 def test_setup_map():
     """ Tests that passing kwargs doesn't error. """
     kwargs1 = {
-        'tiles': 'Stamen Toner',
+        'tiles': 'OpenStreetMap',
         'zoom_start': 17,
         'width': 960,
         'height': 500,
@@ -47,7 +47,7 @@ def test_setup_map():
     }
     """ Tests features as NumPy array. """
     kwargs2 = {
-        'tiles': 'Stamen Toner',
+        'tiles': 'OpenStreetMap',
         'zoom_start': 17,
         'width': 960,
         'height': 500,
@@ -163,12 +163,12 @@ def test_marker_copy():
 def test_background_color_condition_white():
     # Test the condition when the background color is white (all 'f' in the hex code)
     marker = ds.Marker(0, 0, color='#ffffff')
-    assert marker._folium_kwargs['icon'].options['textColor'], 'gray'
+    assert marker._folium_kwargs['icon'].options['text_color'], 'black'
 
 def test_background_color_condition_not_white():
     # Test the condition when the background color is not white
     marker = ds.Marker(0, 0, color='#ff0000')
-    assert marker._folium_kwargs['icon'].options['textColor'], 'white'
+    assert marker._folium_kwargs['icon'].options['text_color'], 'white'
 
 def test_icon_args_icon_not_present():
     # Test when 'icon' key is not present in icon_args

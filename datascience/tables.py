@@ -4037,12 +4037,14 @@ class Table(collections.abc.MutableMapping):
         if height is None:
             height = 5
 
+        if "colors" in vargs and vargs["colors"]:
+            warnings.warn("scatter(colors=x) has been removed. Use scatter(group=x)", FutureWarning)
+            vargs.pop("colors")
+
         options = self.default_options.copy()
         options.update(vargs)
 
         x_data, y_labels =  self._split_column_and_labels(column_for_x)
-        if "colors" in vargs and vargs["colors"]:
-            warnings.warn("scatter(colors=x) has been removed. Use scatter(group=x)", FutureWarning)
         if group is not None:
             y_labels.remove(self._as_label(group))
         if sizes is not None:
@@ -4073,7 +4075,8 @@ class Table(collections.abc.MutableMapping):
             if fit_line:
                 m, b = np.polyfit(x_data, self[label], 1)
                 minx, maxx = np.min(x_data),np.max(x_data)
-                axis.plot([minx,maxx],[m*minx+b,m*maxx+b], color=color)
+                line_color = color_list[0] if group is not None else color
+                axis.plot([minx,maxx],[m*minx+b,m*maxx+b], color=line_color)
             if labels is not None:
                 for x, y, label in zip(x_data, y_data, self[labels]):
                     axis.annotate(label, (x, y),
