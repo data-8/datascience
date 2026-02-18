@@ -527,24 +527,39 @@ class Marker(_MapFeature):
     def _folium_kwargs(self):
         attrs = self._attrs.copy()
         attrs['location'] = self.lat_lon
+
         icon_args = {k: attrs.pop(k) for k in attrs.keys() & {'color', 'marker_icon', 'clustered_marker', 'icon_angle', 'popup_width'}}
         if 'marker_icon' in icon_args:
             icon_args['icon'] = icon_args.pop('marker_icon')
+
         if 'color' in icon_args and icon_args['color'][0] == '#':
-            # Checks if color provided is a hex code instead; if it is, uses BeautifyIcon to create markers. 
-            # If statement does not check to see if color is an empty string.
-            icon_args['background_color'] = icon_args['border_color'] = icon_args.pop('color')
-            if icon_args['background_color'][1] == icon_args['background_color'][3] == icon_args['background_color'][5] == 'f':
-                icon_args['text_color'] = 'gray'
-            else:
-                icon_args['text_color'] = 'white'
+            # Use hex code -> BeautifyIcon
+            hex_color = icon_args.pop('color')
+            icon_args['background_color'] = hex_color
+            icon_args['border_color'] = hex_color
+
+            # Determine a visible text color
+            def text_color_for_bg(bg):
+                bg = bg.lstrip('#')
+                r, g, b = int(bg[0:2], 16), int(bg[2:4], 16), int(bg[4:6], 16)
+                brightness = (r*299 + g*587 + b*114)/1000
+                if brightness > 240:
+                    return 'gray'
+                elif brightness > 186:
+                    return 'black'
+                else:
+                    return 'white'
+
+            icon_args['textColor'] = text_color_for_bg(hex_color)
             icon_args['icon_shape'] = 'marker'
             if 'icon' not in icon_args:
                 icon_args['icon'] = 'circle'
             attrs['icon'] = BeautifyIcon(**icon_args)
         else:
             attrs['icon'] = folium.Icon(**icon_args)
+
         return attrs
+
 
     def geojson(self, feature_id):
         """GeoJSON representation of the marker as a point."""

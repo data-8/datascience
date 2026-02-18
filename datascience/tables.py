@@ -3045,7 +3045,8 @@ class Table(collections.abc.MutableMapping):
             <class 'datascience.tables.Table'>
 
             >>> type(table_df)
-            <class 'pandas.core.frame.DataFrame'>
+            <class 'pandas.DataFrame'>
+
 
         """
         return pandas.DataFrame(self._columns)

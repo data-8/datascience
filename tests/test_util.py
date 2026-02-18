@@ -148,3 +148,33 @@ def test_is_non_string_iterable():
             pass
     is_sequence = IsSequence()
     assert ds.is_non_string_iterable(is_sequence) == True
+
+
+def test_plot_normal_cdf_no_shading():
+    """Test plot_normal_cdf with no shading."""
+    ds.plot_normal_cdf()
+
+
+def test_plot_normal_cdf_right_bound():
+    """Test plot_normal_cdf with right boundary."""
+    ds.plot_normal_cdf(rbound=1.5)
+
+
+def test_plot_normal_cdf_left_bound():
+    """Test plot_normal_cdf with left boundary."""
+    ds.plot_normal_cdf(lbound=-1.5)
+
+
+def test_plot_normal_cdf_both_bounds():
+    """Test plot_normal_cdf with both boundaries."""
+    ds.plot_normal_cdf(lbound=-1.0, rbound=1.0)
+
+
+def test_plot_normal_cdf_custom_params():
+    """Test plot_normal_cdf with custom mean and standard deviation."""
+    ds.plot_normal_cdf(lbound=-2.0, rbound=2.0, mean=0, sd=1)
+
+
+def test_plot_cdf_area():
+    """Test plot_cdf_area (old name for plot_normal_cdf)."""
+    ds.plot_cdf_area(rbound=1.0)

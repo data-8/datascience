@@ -152,3 +152,11 @@ def test_function_formatter():
 
     func_formatter = formats.FunctionFormatter(_mult_ten)
     assert func_formatter.format_value(5) == '50'
+
+def test_distribution_formatter_negative():
+    """Test that DistributionFormatter raises assertion on negative values."""
+    import numpy as np
+    counts = np.array([9, 10, -18, 23])
+    formatter = ds.DistributionFormatter()
+    with pytest.raises(AssertionError):
+        formatter.convert_column(counts)
