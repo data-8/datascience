@@ -14,6 +14,7 @@ from scipy import optimize
 import functools
 import math
 import collections
+from collections.abc import Iterable
 
 # Change matplotlib formatting. TODO incorporate into a style?
 plt.rcParams['patch.force_edgecolor'] = True
@@ -261,11 +262,11 @@ def minimize(f, start=None, smooth=False, log=None, array=False, **vargs):
     else:
         return result.x
 
-def is_non_string_iterable(value):
+def is_non_string_iterable(value: object)-> bool:
     """Returns a boolean value representing whether a value is iterable."""
     if isinstance(value, str):
         return False
-    if hasattr(value, '__iter__'):
+    if isinstance(value, Iterable):
         return True
     return False
 
