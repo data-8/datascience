@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### v0.18.2
+* Fixed duplicate index check in `_lat_lons_from_geojson` where `s[0]` was validated twice instead of checking both `s[0]` and `s[1]`
+
 ### v0.18.1
 * Added optional `seed` parameter to `sample_proportions()` for reproducible results
 * Added optional `seed` parameter to `proportions_from_distribution()` for reproducible results
