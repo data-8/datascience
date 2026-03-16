@@ -904,7 +904,7 @@ def _lat_lons_from_geojson(s):
 
     GeoJSON coordinates are always stored in (longitude, latitude) order.
     """
-    if len(s) >= 2 and isinstance(s[0], _number) and isinstance(s[0], _number):
+    if len(s) >= 2 and isinstance(s[0], _number) and isinstance(s[1], _number):
         lat, lon = s[1], s[0]
         return [(lat, lon)]
     else:
