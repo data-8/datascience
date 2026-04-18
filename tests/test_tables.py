@@ -2015,3 +2015,28 @@ def test_with_columns(table):
     t = table.with_columns()
 
     assert table is t
+#New 
+import warnings
+from datascience import Table
+
+
+def test_scatter_colors_warning():
+    t = Table().with_columns(
+        "x", [1, 2, 3],
+        "y", [4, 5, 6]
+    )
+
+    with warnings.catch_warnings(record=True) as w:
+        warnings.simplefilter("always")
+
+        try:
+            t.scatter("x", "y", colors="x")
+        except Exception:
+            # This crash is expected due to matplotlib
+            pass
+
+    # 👇 IMPORTANT: assertion OUTSIDE try block
+    assert any(
+        "removed" in str(warning.message)
+        for warning in w
+    )
