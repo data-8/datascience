@@ -3183,7 +3183,7 @@ class Table(collections.abc.MutableMapping):
         >>> table.plot('days') # doctest: +SKIP
         <plotly interactive line graph with days as x-axis and lines for price and projection>
         """
-        global _INTERACTIVE_PLOTS
+        
         _INTERACTIVE_PLOTS = True
         if go is None or make_subplots is None:
             cls._import_plotly()
@@ -3217,7 +3217,7 @@ class Table(collections.abc.MutableMapping):
         >>> table.plot('days') # doctest: +SKIP
         <matplotlib line graph with days as x-axis and lines for price and projection>
         """
-        global _INTERACTIVE_PLOTS
+        
         _INTERACTIVE_PLOTS = False
 
     def plot(self, column_for_xticks=None, select=None, overlay=True, width=None, height=None, **vargs):
@@ -3265,7 +3265,7 @@ class Table(collections.abc.MutableMapping):
         >>> table.plot('days', 'price') # doctest: +SKIP
         <line graph with days as x-axis and line for price>
         """
-        global _INTERACTIVE_PLOTS
+        
         if _INTERACTIVE_PLOTS:
             return self.iplot(column_for_xticks, select, overlay, width, height, **vargs)
 
@@ -3586,7 +3586,7 @@ class Table(collections.abc.MutableMapping):
                 See http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.bar
                 for additional arguments that can be passed into vargs.
         """
-        global _INTERACTIVE_PLOTS
+        
         if _INTERACTIVE_PLOTS:
             show = vargs.pop('show', True)
             return self.ibar(
@@ -3780,7 +3780,7 @@ class Table(collections.abc.MutableMapping):
         >>> t.barh('Furniture', make_array(1, 2)) # doctest: +SKIP
         <bar graph with furniture as categories and bars for count and price>
         """
-        global _INTERACTIVE_PLOTS
+        
         if _INTERACTIVE_PLOTS:
             show = vargs.pop('show', True)
             return self.ibarh(
@@ -4015,7 +4015,7 @@ class Table(collections.abc.MutableMapping):
         >>> table.scatter('x', fit_line=True) # doctest: +SKIP
         <scatterplot of values in y and z on x with lines of best fit>
         """
-        global _INTERACTIVE_PLOTS
+        
         if _INTERACTIVE_PLOTS:
             return self.iscatter(
                 column_for_x = column_for_x,
@@ -4404,7 +4404,7 @@ class Table(collections.abc.MutableMapping):
         <plotly 3D scatterplot of values in z1 on x and y>
         <plotly 3D scatterplot of values in z2 on x and y
         """
-        global _INTERACTIVE_PLOTS
+        
 
         # can't use scatter3d if not interactive mode; just a wrapper for iscatter3d
         if not _INTERACTIVE_PLOTS:
@@ -5355,7 +5355,7 @@ class Table(collections.abc.MutableMapping):
             raise ValueError("You can't specify both normed and density. "
                              "Use one or the other.")
 
-        global _INTERACTIVE_PLOTS
+        
         if _INTERACTIVE_PLOTS:
             if "shade_split" not in vargs:
                 vargs["shade_split"] = "split"
