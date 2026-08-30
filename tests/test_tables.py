@@ -1960,6 +1960,18 @@ def test_array_roundtrip(table):
         assert_equal(c0, c1)
 
 
+def test_to_csv(table):
+    import tempfile
+    import os
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        filename = os.path.join(tmp_dir, 'test_output.csv')
+        table.to_csv(filename)
+        t = Table.read_table(filename)
+        for (c0, c1) in zip(t.columns, table.columns):
+            assert_equal(c0, c1)
+
+
+
 def test_url_parse():
     """Test that Tables parses URLs correctly"""
     with pytest.raises(ValueError):
