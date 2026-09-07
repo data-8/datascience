@@ -147,6 +147,15 @@ def test_column(table):
     with pytest.raises(ValueError):
         t.column('abc')
 
+def test_as_label(table):
+    """Test table._as_label()"""
+    t = table
+    assert t._as_label('letter') == 'letter'
+    assert t._as_label(0) == 'letter'
+    with pytest.raises(ValueError):
+        t._as_label(3.14)
+
+
 def test_values():
     t1 = Table().with_columns({
         'row1': ['a', 'b', 'c'],
