@@ -1603,6 +1603,13 @@ def test_join_no_rows():
     assert t3 == None
     t4 = t2.join('letter', t1)
     assert t4 == None
+
+def test_join_no_matching_values():
+    t1 = Table().with_columns('letter', make_array('a', 'b'), 'x', make_array(1, 2))
+    t2 = Table().with_columns('letter', make_array('c', 'd'), 'y', make_array(3, 4))
+    assert t1.join('letter', t2) is None
+    t3 = Table().with_columns('letter', make_array('a', 'b'), 'x', make_array(9, 9))
+    assert t1.join(['letter', 'x'], t3) is None
     
 def test_percentile(numbers_table):
     assert_equal(numbers_table.percentile(76), """
