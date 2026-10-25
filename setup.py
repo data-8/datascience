@@ -1,6 +1,5 @@
 import sys
 from setuptools import setup
-from setuptools.command.test import test as TestCommand
 
 
 if sys.version_info < (3, 6):
@@ -9,38 +8,15 @@ if sys.version_info < (3, 6):
 with open('requirements.txt') as fid:
     install_requires = [l.strip() for l in fid.readlines() if l]
 
-tests_requires = [
-    'pytest',
-    'coverage',
-    'coveralls',
-    'bokeh'
-]
-
 with open('datascience/version.py') as fid:
      for line in fid:
          if line.startswith('__version__'):
              version = line.strip().split()[-1][1:-1]
              break
 
-class PyTest(TestCommand):
-    user_options = [('pytest-args=', 'a', "Arguments to pass to py.test")]
-
-    def initialize_options(self):
-        TestCommand.initialize_options(self)
-        self.pytest_args = ['--nbval-lax', '--cov=datascience', 'tests']
-
-    def finalize_options(self):
-        TestCommand.finalize_options(self)
-
-    def pytest_collectstart(collector):
-        collector.skip_compare += 'text/html'
-
-    def run_tests(self):
-        # import here, cause outside the eggs aren't loaded
-        import pytest
-        errno = pytest.main(self.pytest_args)
-        sys.exit(errno)
-
+# Test dependencies are listed in requirements-tests.txt and the test suite is
+# run with pytest directly (`make test`). The `setup.py test` command was
+# removed in Setuptools 72, so it is no longer wired up here.
 
 setup(
     name = 'datascience',
@@ -48,8 +24,6 @@ setup(
     python_requires='>=3.6',
     version = version,
     install_requires = install_requires,
-    tests_require = tests_requires,
-    cmdclass = {'test': PyTest},
     description = 'A Jupyter notebook Python library for introductory data science',
     long_description = 'A Jupyter notebook Python library for introductory data science',
     author = 'John DeNero, David Culler, Alvin Wan, Sam Lau',

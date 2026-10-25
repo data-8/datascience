@@ -2,7 +2,7 @@ pytest==7.1.2
 pytest-mock
 coverage
 coveralls
-bokeh
+bokeh>=3.0.0
 nbval
 pytest-cov
 pygments
