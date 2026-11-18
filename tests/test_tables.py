@@ -577,6 +577,12 @@ def test_join(table, table2):
     c      | 3     | 2      | 6
     z      | 1     | 10     | 10
     """)
+    
+def test_join_no_matches(table, table2):
+    t = table
+    u = table2
+    u['points'] = (3, 4, 5)
+    assert t.join('points', u) is None
 
 def test_set_format_with_no_format_column(mocker, table):
     MockNumberFormatter = mocker.NonCallableMock(spec=NumberFormatter)
@@ -1008,6 +1014,7 @@ def test_append_table(table):
 
 
 def test_append_different_table(table, table2):
+        """Tests that join returns None when there are no matching rows."""
     u = table2
     with pytest.raises(ValueError):
         table.append(u)
